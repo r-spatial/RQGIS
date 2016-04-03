@@ -15,15 +15,29 @@ knitr::opts_chunk$set(
 ```
 
 
+
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
 
 # RQGIS
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This gives the user an extensive suite of GIS functions, Since QGIS combines the functionalities of various GIS - QGIS, SAGA, GRASS, GDAL and Sextante. The main advantages of RQGIS are:
+
 1. It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2. It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem. 
-3. R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`. Besides, both RSAGA and spgrass let you specify specific GIS function arguments while taking the default values for unspecified GIS function arguments. So far, this is not possible using RQGIS, i.e. you need to specify each single function argument. This can be tedious and we hope that we will take care of this in future releases.
+3. R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`. Besides, both RSAGA and spgrass let you specify specific GIS function arguments while retrieving automatically the default values for unspecified GIS function arguments. So far, this is not possible using RQGIS, i.e. you need to specify each single function argument. This can be tedious and we hope that we will take care of this in future releases.
 
 # Installation 
+Before installing RQGIS, go to [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/), download the latest OSGeo4W and make sure that following components will be installed (advanced settings):
+
+- gdal
+- grass
+- msys
+- Python27
+- qgis
+- Qt4
+- saga
+
+These programms should appear as folder names in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
+
 You can install the latest RQGIS development version from Github with
 
 ```{r, eval = FALSE}
@@ -36,16 +50,19 @@ devtools::install_github("hadley/lazyeval")
 devtools::install_github("jannes-m/RQGIS")
 ```
 
+**Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
+
 # Usage
 Subsequently, we show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to add coordinates to a spatial object. 
 Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
-```{r, warning = FALSE, error = FALSE, message = FALSE}
+```{r ger_download, warning = FALSE, error = FALSE, message = FALSE, cache = TRUE}
+
 # attach packages
 library("raster")
 library("rgdal")
 
-# path to a temporary folder
+# define path to a temporary folder
 dir_tmp <- tempdir()
 # download German administrative areas
 ger <- getData(name = "GADM", country = "DEU", level = 2)
@@ -55,7 +72,7 @@ writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 
 Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word add and coordinate.
 
-```{r, warning = FALSE, error = FALSE}
+```{r, warning = FALSE, error = FALSE, cache = TRUE}
 # attach RQGIS
 library("RQGIS")
 
@@ -65,14 +82,18 @@ find_algorithms(search_term = "add coordinate")
 
 This gives us a function named `saga:addcoordinatestopoints`. Subsequently, we would like to know how we can use it.
 
-```{r, error = FALSE}
+```{r, error = FALSE, cache = TRUE}
 get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
 ```
 
 All the function expects is a parameter called INPUT, i.e. the path to a shapefile we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
-```{r, warning = FALSE, error = FALSE}
-# construct a list with our function paramters
+
+```{r, message = FALSE, warning = FALSE, error = FALSE, depends = "ger_download", cache = TRUE}
+
+
+library("rgdal")
+# construct a list with our function parameters
 params <- list(
   # path to the input shapefile
   INPUT = paste(dir_tmp, "ger.shp", sep = "\\"),
@@ -87,12 +108,13 @@ ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
 head(ger_coords@data)
 ```
 
-Excellent! QGIS added coordinates to our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using ´sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
+Excellent! QGIS added the coordinates in columns x and y to our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
 
 
 
 # TO DO:
-- move RQGIS to git!!!
+
+- OSGeo4w installation guide/manual with screenshots
 - processing.runalg -> user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way
 - Check if run_qgis in fact is able to run all QGIS, SAGA, GRASS functions. It could be a problem that one needs to specify function arguments as characters.
 - Take care of the error message:
@@ -100,9 +122,7 @@ Excellent! QGIS added coordinates to our shapefile using SAGA. Of course, this i
   193: %1 ist keine zulässige Win32-Anwendung.
 - Write find_root for Linux and Apple
 - Write html-vignette
-- Write RQGIS paper
-- Performance test of SAGA, GRASS, QGIS and ArcGIS
 - find out if SAGA and GRASS can be located somewhere else on the system,
     i.e. if they can be located outside of C:/OSGeo4W64
-- Find out what Sextante is
+- Check out Sextante functions
 - Test GDAL functions
