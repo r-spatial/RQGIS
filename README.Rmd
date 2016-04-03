@@ -50,21 +50,14 @@ devtools::install_github("hadley/lazyeval")
 devtools::install_github("jannes-m/RQGIS")
 ```
 
-<<<<<<< HEAD
 **Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
-=======
-**Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
->>>>>>> a604af7903865ccc398b66253bda77f25e943ddc
 
 # Usage
 Subsequently, we show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to add coordinates to a spatial object. 
 Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
 ```{r ger_download, warning = FALSE, error = FALSE, message = FALSE, cache = TRUE}
-<<<<<<< HEAD
 
-=======
->>>>>>> a604af7903865ccc398b66253bda77f25e943ddc
 # attach packages
 library("raster")
 library("rgdal")
@@ -95,18 +88,12 @@ get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
 
 All the function expects is a parameter called INPUT, i.e. the path to a shapefile we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
-<<<<<<< HEAD
 
 ```{r, message = FALSE, warning = FALSE, error = FALSE, depends = "ger_download", cache = TRUE}
 
 
 library("rgdal")
 # construct a list with our function parameters
-=======
-```{r, warning = FALSE, error = FALSE, depends = "ger_download", cache = TRUE}
-library("rgdal")
-# construct a list with our function paramters
->>>>>>> a604af7903865ccc398b66253bda77f25e943ddc
 params <- list(
   # path to the input shapefile
   INPUT = paste(dir_tmp, "ger.shp", sep = "\\"),
@@ -121,11 +108,7 @@ ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
 head(ger_coords@data)
 ```
 
-<<<<<<< HEAD
 Excellent! QGIS added the coordinates in columns x and y to our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
-=======
-Excellent! QGIS added coordinates to our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
->>>>>>> a604af7903865ccc398b66253bda77f25e943ddc
 
 
 
