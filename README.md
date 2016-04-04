@@ -52,7 +52,7 @@ library("rgdal")
 dir_tmp <- tempdir()
 # download German administrative areas
 ger <- getData(name = "GADM", country = "DEU", level = 1)
-# save ger as a shapefile
+# save ger as a shapefile in our temporary folder
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
 
@@ -110,7 +110,7 @@ plot(ger_coords)
 points(ger_coords$X, ger_coords$Y, pch = 16, col = "lightblue")
 ```
 
-![](README-unnamed-chunk-5-1.png)
+<img src="README-unnamed-chunk-5-1.png" title="" alt="" style="display: block; margin: auto;" />
 
 Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns `X` and `Y` using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
