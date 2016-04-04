@@ -4,7 +4,8 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(algorithm_name = "", osgeo4w_root = find_root())
+get_options(algorithm_name = "", osgeo4w_root = ifelse(Sys.info()["sysname"]
+  == "Windows", find_root(), NULL))
 }
 \arguments{
 \item{algorithm_name}{Name of the GIS function for which options should be

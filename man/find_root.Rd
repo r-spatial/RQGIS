@@ -11,9 +11,9 @@ find_root(root_name = "OSGeo4W")
 installed.}
 }
 \description{
-\code{find_root} looks for OSGeo on your system under C:, C:/Program
-  Files and C:/Program Files (x86). So far, this function is only available
-  for Windows.
+\code{find_root} looks for OSGeo on your system under C:,
+  C:/Program Files and C:/Program Files (x86). So far, this function is only
+  available for Windows.
 }
 \examples{
 find_root()

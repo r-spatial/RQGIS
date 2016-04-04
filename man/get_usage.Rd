@@ -4,7 +4,8 @@
 \alias{get_usage}
 \title{Get usage of a specific GIS function}
 \usage{
-get_usage(algorithm_name = "", osgeo4w_root = find_root(), intern = TRUE)
+get_usage(algorithm_name = "", osgeo4w_root = ifelse(Sys.info()["sysname"]
+  == "Windows", find_root(), NULL), intern = FALSE)
 }
 \arguments{
 \item{algorithm_name}{Name of the function whose parameters are being

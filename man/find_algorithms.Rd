@@ -4,7 +4,9 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "", osgeo4w_root = find_root())
+find_algorithms(search_term = "",
+  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
+  NULL))
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only
