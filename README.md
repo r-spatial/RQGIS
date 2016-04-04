@@ -96,11 +96,7 @@ run_qgis(algorithm = "saga:addcoordinatestopoints",
          params = params)
 
 # load the shapefile QGIS has created for us
-ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
-#> OGR data source with driver: ESRI Shapefile 
-#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpGmpE1U", layer: "ger_coords"
-#> with 403 features
-#> It has 17 fields
+ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 # let's have a look at the output
 head(ger_coords@data)
 #>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 ID_2          NAME_2
