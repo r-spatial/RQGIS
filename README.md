@@ -51,7 +51,7 @@ library("rgdal")
 # define path to a temporary folder
 dir_tmp <- tempdir()
 # download German administrative areas
-ger <- getData(name = "GADM", country = "DEU", level = 2)
+ger <- getData(name = "GADM", country = "DEU", level = 1)
 # save ger as a shapefile
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
@@ -84,7 +84,6 @@ get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
 All the function expects is a parameter called INPUT, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ``` r
-
 library("rgdal")
 # construct a list with our function parameters
 params <- list(
@@ -100,18 +99,20 @@ ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 
 # let's have a look at the output
 head(ger_coords@data, 2)
-#>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 ID_2          NAME_2
-#> 0        1   86 DEU Germany    1 Baden-Württemberg    1 Alb-Donau-Kreis
-#> 1        2   86 DEU Germany    1 Baden-Württemberg    2       Böblingen
-#>     HASC_2 CCN_2 CCA_2    TYPE_2 ENGTYPE_2 NL_NAME_2 VARNAME_2        X
-#> 0 DE.BW.AD    NA 08425 Landkreis  District      <NA>      <NA> 9.948325
-#> 1 DE.BW.BL    NA 08115 Landkreis  District      <NA>      <NA> 8.938024
-#>          Y
-#> 0 48.63110
-#> 1 48.86639
+#>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 HASC_1 CCN_1 CCA_1
+#> 0        1   86 DEU Germany    1 Baden-Württemberg  DE.BW    NA    08
+#> 1        2   86 DEU Germany    2            Bayern  DE.BY    NA    09
+#>      TYPE_1 ENGTYPE_1 NL_NAME_1 VARNAME_1         X        Y
+#> 0      Land     State      <NA>      <NA>  8.701283 47.71523
+#> 1 Freistaat      <NA>      <NA>   Bavaria 10.454459 47.55574
+# and plot it
+plot(ger_coords)
+points(ger_coords$X, ger_coords$Y, pch = 16, col = "lightblue")
 ```
 
-Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns x and y using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
+![](README-unnamed-chunk-5-1.png)
+
+Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns `X` and `Y` using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 TO DO:
 ======

@@ -64,7 +64,7 @@ library("rgdal")
 # define path to a temporary folder
 dir_tmp <- tempdir()
 # download German administrative areas
-ger <- getData(name = "GADM", country = "DEU", level = 2)
+ger <- getData(name = "GADM", country = "DEU", level = 1)
 # save ger as a shapefile
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
@@ -89,8 +89,7 @@ get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
 All the function expects is a parameter called INPUT, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 
-```{r, message = FALSE, warning = FALSE, error = FALSE, depends = "ger_download", cache = TRUE}
-
+```{r, message = FALSE, warning = FALSE, error = FALSE, depends = "ger_download"}
 library("rgdal")
 # construct a list with our function parameters
 params <- list(
@@ -106,6 +105,9 @@ ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 
 # let's have a look at the output
 head(ger_coords@data, 2)
+# and plot it
+plot(ger_coords)
+points(ger_coords$X, ger_coords$Y, pch = 16, col = "lightblue")
 ```
 
 Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns `X` and `Y` using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
