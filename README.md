@@ -56,25 +56,21 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *centorid*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. Note also, that most other RQGIS functions require the path to your OSGeo4W-installation such as `get_usage`, `get_options` and `run_qgis`.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. Note also, that most other RQGIS functions require the path to your OSGeo4W-installation such as `get_usage`, `get_options` and `run_qgis`.
 
 ``` r
 # attach RQGIS
 library("RQGIS")
 
-# look for a function that contains the words "centroid"
-find_algorithms(search_term = "centroid", 
+# look for a function that contains the words "polygon" and "centroid"
+find_algorithms(search_term = "polygon centroid", 
                 osgeo4w_root = find_root())
-#> [1] "Generate points (pixel centroids) along line--------->qgis:generatepointspixelcentroidsalongline"                           
-#> [2] "Generate points (pixel centroids) inside polygons---->qgis:generatepointspixelcentroidsinsidepolygons"                      
-#> [3] "Polygon centroids------------------------------------>qgis:polygoncentroids"                                                
-#> [4] "v.delaunay - Creates a Delaunay triangulation from an input vector map containing points or centroids.--->grass7:v.delaunay"
-#> [5] "Polygon centroids------------------------------------>saga:polygoncentroids"                                                
-#> [6] "v.delaunay - Creates a Delaunay triangulation from an input vector map containing points or centroids.--->grass:v.delaunay" 
-#> [7] ""
+#> [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
+#> [2] "Polygon centroids------------------------------------>saga:polygoncentroids"
+#> [3] ""
 ```
 
-This gives us a function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
+This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
 get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
@@ -86,7 +82,6 @@ get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
 All the function expects is a parameter called INPUT\_LAYER, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ``` r
-library("rgdal")
 # construct a list with our function parameters
 params <- list(
   # path to the input shapefile
@@ -95,26 +90,23 @@ params <- list(
   OUTPUT_LAYER = paste(dir_tmp, "ger_coords.shp", sep = "\\"))
 run_qgis(algorithm = "qgis:polygoncentroids", 
          params = params)
+```
 
-# load the shapefile QGIS has created for us
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectation. Therefore, we load the result into R and visualize it.
+
+``` r
+# load the point shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 
-# let's have a look at the output
-head(ger_coords@data, 2)
-#>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 HASC_1 CCN_1 CCA_1
-#> 1        1   86 DEU Germany    1 Baden-Württemberg  DE.BW    NA    08
-#> 2        2   86 DEU Germany    2            Bayern  DE.BY    NA    09
-#>      TYPE_1 ENGTYPE_1 NL_NAME_1 VARNAME_1
-#> 1      Land     State      <NA>      <NA>
-#> 2 Freistaat      <NA>      <NA>   Bavaria
-# and plot it
+# first, plot the federal states of Germany
 plot(ger)
+# next plot the centroids created by QGIS
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-<img src="README-unnamed-chunk-5-1.png" title="" alt="" style="display: block; margin: auto;" />
+![](README-unnamed-chunk-6-1.png)
 
-Excellent! QGIS created a points shapefile containing the centroids of our polygons shapefile. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 TO DO:
 ======
