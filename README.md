@@ -12,7 +12,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 Installation
 ============
 
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, download and make sure that following components will be installed on your system (advanced settings):
+Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, download and make sure that following components will be installed on your system using the advanced settings during the installation process:
 
 -   gdal
 -   grass
@@ -56,7 +56,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 2)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word add and coordinate.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *add* and *coordinate*.
 
 ``` r
 # attach RQGIS
@@ -97,7 +97,7 @@ run_qgis(algorithm = "saga:addcoordinatestopoints",
 # load the shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
 #> OGR data source with driver: ESRI Shapefile 
-#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpqowAWH", layer: "ger_coords"
+#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpGmpE1U", layer: "ger_coords"
 #> with 403 features
 #> It has 17 fields
 # let's have a look at the output

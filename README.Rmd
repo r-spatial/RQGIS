@@ -26,7 +26,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 3. R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`. Besides, both RSAGA and spgrass let you specify specific GIS function arguments while retrieving automatically the default values for unspecified GIS function arguments. So far, this is not possible using RQGIS, i.e. you need to specify each single function argument. This can be tedious and we hope that we will take care of this in future releases.
 
 # Installation 
-Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/), download and make sure that following components will be installed on your system (advanced settings):
+Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/), download and make sure that following components will be installed on your system using the advanced settings during the installation process:
 
 - gdal
 - grass
@@ -69,7 +69,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 2)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word add and coordinate.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *add* and *coordinate*.
 
 ```{r, warning = FALSE, error = FALSE, cache = TRUE}
 # attach RQGIS
