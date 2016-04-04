@@ -69,14 +69,15 @@ ger <- getData(name = "GADM", country = "DEU", level = 2)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *add* and *coordinate*.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *add* and *coordinate*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. The same holds true for most other RQGIS functions such as `get_usage`, `get_options` and `run_qgis`.
 
 ```{r, warning = FALSE, error = FALSE, cache = TRUE}
 # attach RQGIS
 library("RQGIS")
 
-# look for a function that contains the word "coordinate"
-find_algorithms(search_term = "add coordinate")
+# look for a function that contains the words "add" and "coordinate"
+find_algorithms(search_term = "add coordinate", 
+                osgeo4w_root = find_root())
 ```
 
 This gives us a function named `saga:addcoordinatestopoints`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
