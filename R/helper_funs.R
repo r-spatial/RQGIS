@@ -1,7 +1,7 @@
 #' @title Looking for OSGEO on your system
-#' @description \code{find_root} looks for OSGeo on your system under C:, C:/Program
-#'   Files and C:/Program Files (x86). So far, this function is only available
-#'   for Windows.
+#' @description \code{find_root} looks for OSGeo on your system under C:,
+#'   C:/Program Files and C:/Program Files (x86). So far, this function is only
+#'   available for Windows.
 #' @param root_name Name of the folder where QGIS, SAGA, GRASS, etc. is
 #'   installed.
 #' @author Jannes Muenchow
@@ -37,12 +37,6 @@ find_root <- function(root_name = "OSGeo4W") {
 #' @param osgeo4w_root Path to the OSGeo folder or QGIS folder
 #' @author Jannes Muenchow
 read_cmds <- function(osgeo4w_root = find_root()) {
-
-  # check osgeo4w_root, i.e. bring it in a general form. Take care of C:/, C://,
-  # C:\\, C:\
-
-  # look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and
-  # if we need to specify the paths to the GIS in QGIS, I don't think so)
 
   # load raw Python file
   py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
