@@ -139,3 +139,4 @@ TO DO:
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
 -   Check out Sextante and test GDAL functions
 -   look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and if we need to specify the paths to the GIS in QGIS, I don't think so)
+-   maybe you should write a `check_apps`-function testing if all necessary components were installed (saga, rgdal, grass, qgis, Python, msys, ...)
