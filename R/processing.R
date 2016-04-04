@@ -15,7 +15,14 @@
 #' find_algorithms(search_term = "add")
 #' @export
 find_algorithms <- function(search_term = "",
-                            osgeo4w_root = find_root()) {
+                            osgeo4w_root =
+                              ifelse(Sys.info()["sysname"] == "Windows",
+                                     find_root(), NULL)) {
+
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
+
   execute_cmds(processing_name = "processing.alglist",
                params = shQuote(search_term),
                intern = TRUE)
@@ -38,8 +45,15 @@ find_algorithms <- function(search_term = "",
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(algorithm_name = "saga:addcoordinatestopoints")
 get_usage <- function(algorithm_name = "",
-                      osgeo4w_root = find_root(),
+                      osgeo4w_root =
+                        ifelse(Sys.info()["sysname"] == "Windows",
+                               find_root(), NULL),
                       intern = FALSE) {
+
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
+
   execute_cmds(processing_name = "processing.alghelp",
                params = shQuote(algorithm_name),
                intern = intern)
@@ -55,7 +69,13 @@ get_usage <- function(algorithm_name = "",
 #' @examples
 #' get_options(algorithm_name = "saga:slopeaspectcurvature")
 get_options <- function(algorithm_name = "",
-                           osgeo4w_root = find_root()) {
+                        osgeo4w_root =
+                          ifelse(Sys.info()["sysname"] == "Windows",
+                                 find_root(), NULL)) {
+
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(algorithm_name))
 }
@@ -89,7 +109,13 @@ get_options <- function(algorithm_name = "",
 #'          params = params)
 #' }
 run_qgis <- function(algorithm = NULL, params = list(),
-                     osgeo4w_root = find_root()) {
+                     osgeo4w_root =
+                       ifelse(Sys.info()["sysname"] == "Windows",
+                              find_root(), NULL)) {
+
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
 
   nm = names(params)
   val = as.character(unlist(params))

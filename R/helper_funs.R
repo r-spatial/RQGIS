@@ -36,7 +36,11 @@ find_root <- function(root_name = "OSGeo4W") {
 #'   commands.
 #' @param osgeo4w_root Path to the OSGeo folder or QGIS folder
 #' @author Jannes Muenchow
-read_cmds <- function(osgeo4w_root = find_root()) {
+read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
+                                            find_root(), NULL)) {
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
 
   # load raw Python file
   py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
@@ -82,8 +86,15 @@ read_cmds <- function(osgeo4w_root = find_root()) {
 #' @author Jannes Muenchow
 execute_cmds <- function(processing_name = "",
                          params = "",
-                         osgeo4w_root = find_root(),
+                         osgeo4w_root =
+                           ifelse(Sys.info()["sysname"] == "Windows",
+                                  find_root(), NULL),
                          intern = FALSE) {
+
+  if (is.null(osgeo4w_root)) {
+    stop("Please specify the path to your OSGeo4W-installation!")
+  }
+
   cwd <- getwd()
   on.exit(setwd(cwd))
   tmp_dir <- tempdir()
