@@ -3,7 +3,7 @@
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This gives the user an extensive suite of GIS functions, Since QGIS combines the functionalities of various GIS - QGIS, SAGA, GRASS, GDAL and Sextante. The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS combines the functionalities of various GIS - QGIS, SAGA GIS, GRASS GIS and GDAL (Sextante). The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
@@ -12,7 +12,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 Installation
 ============
 
-Before installing RQGIS, go to <http://trac.osgeo.org/osgeo4w/>, download the latest OSGeo4W and make sure that following components will be installed (advanced settings):
+Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, download and make sure that following components will be installed on your system (advanced settings):
 
 -   gdal
 -   grass
@@ -22,7 +22,7 @@ Before installing RQGIS, go to <http://trac.osgeo.org/osgeo4w/>, download the la
 -   Qt4
 -   saga
 
-These programms should appear as folder names in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
+After the installation of OSGeo4W these programs should be found in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
 
 You can install the latest RQGIS development version from Github with
 
@@ -41,10 +41,9 @@ devtools::install_github("jannes-m/RQGIS")
 Usage
 =====
 
-Subsequently, we show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to add coordinates to a spatial object. Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to add coordinates to a spatial object. Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
 ``` r
-
 # attach packages
 library("raster")
 library("rgdal")
@@ -57,7 +56,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 2)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word add and coordinate.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word add and coordinate.
 
 ``` r
 # attach RQGIS
@@ -69,7 +68,7 @@ find_algorithms(search_term = "add coordinate")
 #> [2] ""
 ```
 
-This gives us a function named `saga:addcoordinatestopoints`. Subsequently, we would like to know how we can use it.
+This gives us a function named `saga:addcoordinatestopoints`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
 get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
@@ -85,7 +84,6 @@ All the function expects is a parameter called INPUT, i.e. the path to a shapefi
 
 ``` r
 
-
 library("rgdal")
 # construct a list with our function parameters
 params <- list(
@@ -99,7 +97,7 @@ run_qgis(algorithm = "saga:addcoordinatestopoints",
 # load the shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
 #> OGR data source with driver: ESRI Shapefile 
-#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpIrGpZD", layer: "ger_coords"
+#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpqowAWH", layer: "ger_coords"
 #> with 403 features
 #> It has 17 fields
 # let's have a look at the output
@@ -127,7 +125,7 @@ head(ger_coords@data)
 #> 5 47.58434
 ```
 
-Excellent! QGIS added the coordinates in columns x and y to our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
+Excellent! QGIS added the coordinates in columns x and y to the attribute table of our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
 
 TO DO:
 ======
@@ -139,5 +137,5 @@ TO DO:
 -   Write find\_root for Linux and Apple
 -   Write html-vignette
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
--   Check out Sextante functions
--   Test GDAL functions
+-   Check out Sextante and test GDAL functions
+-   write a more complex example
