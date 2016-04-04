@@ -97,29 +97,18 @@ run_qgis(algorithm = "saga:addcoordinatestopoints",
 
 # load the shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
+
 # let's have a look at the output
-head(ger_coords@data)
+head(ger_coords@data, 2)
 #>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 ID_2          NAME_2
 #> 0        1   86 DEU Germany    1 Baden-Württemberg    1 Alb-Donau-Kreis
 #> 1        2   86 DEU Germany    1 Baden-Württemberg    2       Böblingen
-#> 2        3   86 DEU Germany    1 Baden-Württemberg    3     Baden-Baden
-#> 3        4   86 DEU Germany    1 Baden-Württemberg    4        Biberach
-#> 4        5   86 DEU Germany    1 Baden-Württemberg    5   Bodenseekreis
-#> 5        6   86 DEU Germany    1 Baden-Württemberg    6        Bodensee
-#>     HASC_2 CCN_2 CCA_2     TYPE_2  ENGTYPE_2 NL_NAME_2 VARNAME_2        X
-#> 0 DE.BW.AD    NA 08425  Landkreis   District      <NA>      <NA> 9.948325
-#> 1 DE.BW.BL    NA 08115  Landkreis   District      <NA>      <NA> 8.938024
-#> 2 DE.BW.BB    NA 08211 Stadtkreis   District      <NA>      <NA> 8.288034
-#> 3 DE.BW.BR    NA 08426  Landkreis   District      <NA>      <NA> 9.885155
-#> 4 DE.BW.BD    NA 08435  Landkreis   District      <NA>      <NA> 9.270726
-#> 5     <NA>    NA  <NA> Water body Water body      <NA>      <NA> 9.602077
+#>     HASC_2 CCN_2 CCA_2    TYPE_2 ENGTYPE_2 NL_NAME_2 VARNAME_2        X
+#> 0 DE.BW.AD    NA 08425 Landkreis  District      <NA>      <NA> 9.948325
+#> 1 DE.BW.BL    NA 08115 Landkreis  District      <NA>      <NA> 8.938024
 #>          Y
 #> 0 48.63110
 #> 1 48.86639
-#> 2 48.77347
-#> 3 48.29379
-#> 4 47.87971
-#> 5 47.58434
 ```
 
 Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns x and y using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
