@@ -56,8 +56,12 @@ read_cmds <- function(osgeo4w_root = find_root()) {
 
   # check if GRASS path is correct and which version is available on the system
   vers <- dir(paste0(osgeo4w_root, "\\apps\\grass"))
+  if (length(vers) < 1) {
+    stop("Please install at least one GRASS version under '../OSGeo4W/apps/'!")
+  }
   # check if grass-7.0.3 is available
   if (!any(grepl("grass-7.0.3", vers))) {
+    # if not, simply use the older version
     cmd <- gsub("grass.*\\d", vers[1], cmd)
   }
 
