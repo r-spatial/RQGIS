@@ -80,7 +80,7 @@ get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
 #> [6] ""
 ```
 
-All the function expects is a parameter called INPUT, i.e. the path to a shapefile we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
+All the function expects is a parameter called INPUT, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ``` r
 
@@ -125,7 +125,7 @@ head(ger_coords@data)
 #> 5 47.58434
 ```
 
-Excellent! QGIS added the coordinates in columns x and y to the attribute table of our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come...
+Excellent! QGIS added the coordinates in columns x and y to the attribute table of our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 TO DO:
 ======
@@ -135,7 +135,7 @@ TO DO:
 -   Check if run\_qgis in fact is able to run all QGIS, SAGA, GRASS functions. It could be a problem that one needs to specify function arguments as characters.
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   Write find\_root for Linux and Apple
--   Write html-vignette
+-   Write html-vignette, i.e. present a more complex QGIS example
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
 -   Check out Sextante and test GDAL functions
--   write a more complex example
+-   look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and if we need to specify the paths to the GIS in QGIS, I don't think so)
