@@ -108,7 +108,7 @@ ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 head(ger_coords@data, 2)
 ```
 
-Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns x and y using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
+Excellent! QGIS added the coordinates to the attribute table of our shapefile in columns `X` and `Y` using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 
 # TO DO:
