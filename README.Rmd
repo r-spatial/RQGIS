@@ -71,7 +71,7 @@ writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 
 Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. Note also, that most other RQGIS functions require the path to your OSGeo4W-installation such as `get_usage`, `get_options` and `run_qgis`.
 
-```{r, warning = FALSE, error = FALSE, cache = TRUE}
+```{r, warning = FALSE, error = FALSE}
 # attach RQGIS
 library("RQGIS")
 
@@ -82,11 +82,11 @@ find_algorithms(search_term = "polygon centroid",
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
-```{r, error = FALSE, cache = TRUE}
+```{r, error = FALSE}
 get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
 ```
 
-All the function expects is a parameter called INPUT\_LAYER, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
+All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ```{r, error = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 5, fig.align = "center"}
 # construct a list with our function parameters
@@ -104,7 +104,6 @@ Excellent! No error message occured, that means QGIS created a points shapefile 
 ```{r}
 # load the point shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
-
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS

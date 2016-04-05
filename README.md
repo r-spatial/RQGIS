@@ -79,7 +79,7 @@ get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
 #> [5] ""                               ""
 ```
 
-All the function expects is a parameter called INPUT\_LAYER, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
+All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ``` r
 # construct a list with our function parameters
@@ -92,12 +92,11 @@ run_qgis(algorithm = "qgis:polygoncentroids",
          params = params)
 ```
 
-Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectation. Therefore, we load the result into R and visualize it.
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
 
 ``` r
 # load the point shapefile QGIS has created for us
 ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
-
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
