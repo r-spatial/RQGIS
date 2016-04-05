@@ -8,7 +8,7 @@ Description: RQGIS establishes an interface between R and QGIS, i.e. it allows
   the user to access QGIS functionalities from within R. It achieves this
   by using the QGIS API via the command line. This gives the user an extensive
   suite of GIS functions, Since QGIS combines the functionalities of various GIS -
-  QGIS, SAGA, GRASS, GDAL and Sextante.
+  QGIS, SAGA, GRASS and GDAL.
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 5.0.1

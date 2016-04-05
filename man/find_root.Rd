@@ -8,7 +8,7 @@ find_root(root_name = "OSGeo4W")
 }
 \arguments{
 \item{root_name}{Name of the folder where QGIS, SAGA, GRASS, etc. is
-installed.}
+installed. Under Windows this is usually \code{C:/OSGeo4W64}.}
 }
 \description{
 \code{find_root} looks for OSGeo on your system under C:,
@@ -16,7 +16,7 @@ installed.}
   available for Windows.
 }
 \examples{
-find_root()
+find_root(root_name = "OSGeo4w")
 }
 \author{
 Jannes Muenchow
