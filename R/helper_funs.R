@@ -32,6 +32,96 @@ find_root <- function(root_name = "OSGeo4W") {
   osgeo4w_root
 }
 
+find_root_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys", 
+                          Python27 = "python2.7", qgis = "QGIS", qt4 = "qt", 
+                          saga = "saga") {
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        
+        # check gdal
+        if (any(grepl(gdal, dir("/usr/local/Cellar")))) {
+            gdal_root <- paste0("/usr/local/Cellar/gdal/",
+                                grep('[0-9]', dir("/usr/local/Cellar/gdal"),
+                                     value = TRUE)[1], "/bin")
+            gdal_root = paste0("GDAL path: ", gdal_root)
+            print(gdal_root)
+        }
+        else {
+            stop("It seems you do not have 'GDAL' installed. Please install
+                 'it on your system!
+                 To do so, execute the following lines in a terminal and follow
+                 the instructions:
+                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
+                 2. brew install gdal")
+        }
+        
+        # check grass
+        if (any(grepl(grass, dir("/Applications")))) {
+            grass_root <- paste0("/Applications/", grep(grass, dir("/Applications/"),
+                                                value = TRUE)[1])
+            grass_root = paste0("GRASS path: ", grass_root)
+            print(grass_root)
+        }
+        else {
+            stop("It seems you do not have 'GRASS' installed. Please install
+                 it on your system!
+                 To do so, follow the instructions on this site: 
+                 'https://grass.osgeo.org/download/software/mac-osx/'")
+        }
+        
+        # check python
+        if (any(grepl(Python27, dir("/usr/bin")))) {
+            python_root <- paste0("/usr/bin/", grep(Python27, dir("/usr/bin"),
+                                                        value = TRUE)[1])
+            python_root = paste0("Python path: ", python_root)
+            print(python_root)
+        }
+        else {
+            stop("It seems you do not have 'Python 2.7' installed. Please install
+                 it on your system!
+                 To do so, install the latest Python 2 release from this site:
+                 'https://www.python.org/downloads/mac-osx/'")
+        }
+        
+        # check QGIS
+        if (any(grepl(qgis, dir("/Applications")))) {
+            qgis_root <- paste0("/Applications/", grep(qgis, dir("/Applications/"),
+                                                        value = TRUE)[1])
+            qgis_root = paste0("QGIS path: ", qgis_root)
+            print(qgis_root)
+        }
+        else {
+            stop("It seems you do not have 'QGIS' installed. Please install
+                 it on your system!
+                 To do so, follow the instructions on this site:
+                 'https://www.qgis.org/de/site/forusers/download.html'")
+        }
+        
+        # check qt4
+        if (any(grepl(qt4, dir("/usr/local/Cellar")))) {
+            qt4_root <- paste0("/usr/local/Cellar/qt/",
+                                grep('[0-9]', dir("/usr/local/Cellar/qt"),
+                                     value = TRUE)[1], "/bin")
+            qt4_root = paste0("Qt4 path: ", qt4_root)
+            print(qt4_root)
+        }
+        else {
+            stop("It seems you do not have 'Qt4' installed. Please install
+                 it on your system!
+                 To do so, execute the following lines in a terminal and follow
+                 the instructions:
+                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
+                 2. brew install qt4")
+        }
+        
+    }
+    else {
+        stop("It seems your not running a MAC but either Windows or Linux. 
+             Please use functions according to your system")
+    }
+}
+    
+
 #' @title Read command skeletons
 #' @description This function simply reads prefabricated Python and batch
 #'   commands.
