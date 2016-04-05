@@ -4,7 +4,9 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(algorithm = NULL, params = list(), osgeo4w_root = find_root())
+run_qgis(algorithm = NULL, params = list(),
+  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
+  NULL))
 }
 \arguments{
 \item{algorithm}{Name of the GIS function to be used (see

@@ -5,7 +5,8 @@
 \title{Building and executing cmd and Python scripts}
 \usage{
 execute_cmds(processing_name = "", params = "",
-  osgeo4w_root = find_root(), intern = FALSE)
+  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
+  NULL), intern = FALSE)
 }
 \arguments{
 \item{processing_name}{Name of the function from the processing library that

@@ -4,7 +4,8 @@
 \alias{read_cmds}
 \title{Read command skeletons}
 \usage{
-read_cmds(osgeo4w_root = find_root())
+read_cmds(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
+  find_root(), NULL))
 }
 \arguments{
 \item{osgeo4w_root}{Path to the OSGeo folder or QGIS folder}

@@ -12,7 +12,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 Installation
 ============
 
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, download and make sure that following components will be installed on your system using the advanced settings during the installation process:
+Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, and make sure that following components will be installed on your system using the advanced settings during the installation process:
 
 -   gdal
 -   grass
@@ -41,7 +41,7 @@ devtools::install_github("jannes-m/RQGIS")
 Usage
 =====
 
-Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to add coordinates to a spatial object. Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to retrieve the centroid coordinates of a spatial polygon object. Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
 ``` r
 # attach packages
@@ -51,92 +51,72 @@ library("rgdal")
 # define path to a temporary folder
 dir_tmp <- tempdir()
 # download German administrative areas
-ger <- getData(name = "GADM", country = "DEU", level = 2)
-# save ger as a shapefile
-writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile")
+ger <- getData(name = "GADM", country = "DEU", level = 1)
+# save ger as a shapefile in our temporary folder
+writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which adds coordinates to the attribute table of a shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the word *add* and *coordinate*.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. Note also, that most other RQGIS functions require the path to your OSGeo4W-installation such as `get_usage`, `get_options` and `run_qgis`.
 
 ``` r
 # attach RQGIS
 library("RQGIS")
 
-# look for a function that contains the word "coordinate"
-find_algorithms(search_term = "add coordinate")
-#> [1] "Add coordinates to points---------------------------->saga:addcoordinatestopoints"
-#> [2] ""
+# look for a function that contains the words "polygon" and "centroid"
+find_algorithms(search_term = "polygon centroid", 
+                osgeo4w_root = find_root())
+#> [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
+#> [2] "Polygon centroids------------------------------------>saga:polygoncentroids"
+#> [3] ""
 ```
 
-This gives us a function named `saga:addcoordinatestopoints`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
+This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
-get_usage(algorithm_name = "saga:addcoordinatestopoints", intern = TRUE)
-#> [1] "ALGORITHM: Add coordinates to points"
-#> [2] "\tINPUT <ParameterVector>"            
-#> [3] "\tOUTPUT <OutputVector>"              
-#> [4] ""                                    
-#> [5] ""                                    
-#> [6] ""
+get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
+#> [1] "ALGORITHM: Polygon centroids"   "\tINPUT_LAYER <ParameterVector>"
+#> [3] "\tOUTPUT_LAYER <OutputVector>"   ""                              
+#> [5] ""                               ""
 ```
 
-All the function expects is a parameter called INPUT, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
+All the function expects is a parameter called INPUT\_LAYER, i.e. the path to a shapefile whose attribute table we wish to extend with coordinates, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
 ``` r
-
-library("rgdal")
 # construct a list with our function parameters
 params <- list(
   # path to the input shapefile
-  INPUT = paste(dir_tmp, "ger.shp", sep = "\\"),
+  INPUT_LAYER = paste(dir_tmp, "ger.shp", sep = "\\"),
   # path to the output shapefile
-  OUTPUT = paste(dir_tmp, "ger_coords.shp", sep = "\\"))
-run_qgis(algorithm = "saga:addcoordinatestopoints", 
+  OUTPUT_LAYER = paste(dir_tmp, "ger_coords.shp", sep = "\\"))
+run_qgis(algorithm = "qgis:polygoncentroids", 
          params = params)
-
-# load the shapefile QGIS has created for us
-ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords")
-#> OGR data source with driver: ESRI Shapefile 
-#> Source: "C:\Users\pi37pat\AppData\Local\Temp\RtmpGmpE1U", layer: "ger_coords"
-#> with 403 features
-#> It has 17 fields
-# let's have a look at the output
-head(ger_coords@data)
-#>   OBJECTID ID_0 ISO  NAME_0 ID_1            NAME_1 ID_2          NAME_2
-#> 0        1   86 DEU Germany    1 Baden-Württemberg    1 Alb-Donau-Kreis
-#> 1        2   86 DEU Germany    1 Baden-Württemberg    2       Böblingen
-#> 2        3   86 DEU Germany    1 Baden-Württemberg    3     Baden-Baden
-#> 3        4   86 DEU Germany    1 Baden-Württemberg    4        Biberach
-#> 4        5   86 DEU Germany    1 Baden-Württemberg    5   Bodenseekreis
-#> 5        6   86 DEU Germany    1 Baden-Württemberg    6        Bodensee
-#>     HASC_2 CCN_2 CCA_2     TYPE_2  ENGTYPE_2 NL_NAME_2 VARNAME_2        X
-#> 0 DE.BW.AD    NA 08425  Landkreis   District      <NA>      <NA> 9.948325
-#> 1 DE.BW.BL    NA 08115  Landkreis   District      <NA>      <NA> 8.938024
-#> 2 DE.BW.BB    NA 08211 Stadtkreis   District      <NA>      <NA> 8.288034
-#> 3 DE.BW.BR    NA 08426  Landkreis   District      <NA>      <NA> 9.885155
-#> 4 DE.BW.BD    NA 08435  Landkreis   District      <NA>      <NA> 9.270726
-#> 5     <NA>    NA  <NA> Water body Water body      <NA>      <NA> 9.602077
-#>          Y
-#> 0 48.63110
-#> 1 48.86639
-#> 2 48.77347
-#> 3 48.29379
-#> 4 47.87971
-#> 5 47.58434
 ```
 
-Excellent! QGIS added the coordinates in columns x and y to the attribute table of our shapefile using SAGA. Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectation. Therefore, we load the result into R and visualize it.
+
+``` r
+# load the point shapefile QGIS has created for us
+ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
+
+# first, plot the federal states of Germany
+plot(ger)
+# next plot the centroids created by QGIS
+plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+```
+
+![](README-unnamed-chunk-6-1.png)
+
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 TO DO:
 ======
 
 -   OSGeo4w installation guide/manual with screenshots
 -   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way
--   Check if run\_qgis in fact is able to run all QGIS, SAGA, GRASS functions. It could be a problem that one needs to specify function arguments as characters.
+-   Check if run\_qgis in fact is able to run all QGIS, SAGA, GRASS, GDAL functions (Sextante). It could be a problem that one needs to specify function arguments as characters.
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   Write find\_root for Linux and Apple
 -   Write html-vignette, i.e. present a more complex QGIS example
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
--   Check out Sextante and test GDAL functions
 -   look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and if we need to specify the paths to the GIS in QGIS, I don't think so)
--   maybe you should write a `check_apps`-function testing if all necessary components were installed (saga, rgdal, grass, qgis, Python, msys, ...)
+-   you should write a `check_apps`-function testing if all necessary components were installed (saga, rgdal, grass, qgis, Python, msys, ...)
