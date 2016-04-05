@@ -114,3 +114,11 @@ execute_cmds <- function(processing_name = "",
   cat(cmd, file = "batch_cmd.cmd")
   system("batch_cmd.cmd", intern = intern)
 }
+
+# check_apps should be used within read_cmds
+check_apps <- function(osgeo4w_root =
+                         ifelse(Sys.info()["sysname"] == "Windows",
+                                find_root(), NULL)) {
+  path <- paste(osgeo4w_root, "apps", sep = "\\")
+  grep("gdal|grass|msys|Python27|qgis|Qt4|saga", dir(path))
+}
