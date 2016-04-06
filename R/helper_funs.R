@@ -32,7 +32,8 @@ find_root <- function(root_name = "OSGeo4W") {
   osgeo4w_root
 }
 
-find_root_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys", 
+### not functional
+check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys", 
                           Python27 = "python2.7", qgis = "QGIS", qt4 = "qt", 
                           saga = "saga") {
     
@@ -207,8 +208,98 @@ execute_cmds <- function(processing_name = "",
 
 # check_apps should be used within read_cmds
 check_apps <- function(osgeo4w_root =
-                         ifelse(Sys.info()["sysname"] == "Windows",
-                                find_root(), NULL)) {
-  path <- paste(osgeo4w_root, "apps", sep = "\\")
-  grep("gdal|grass|msys|Python27|qgis|Qt4|saga", dir(path))
+                           ifelse(Sys.info()["sysname"] == "Windows",
+                                  find_root(), NULL)) {
+    
+    osgeo4w_root_apps <- paste0(find_root(), "/apps")
+    gsub("\\\\", "/", osgeo4w_root_apps) 
+    
+    
+    if (Sys.info()["sysname"] == "Windows") {
+        
+        # path refinement for reg. expr. search
+        osgeo4w_root_apps <- paste0(find_root(), "/apps")
+        gsub("\\\\", "/", osgeo4w_root_apps) 
+        
+        # check gdal
+        if (any(grepl("gdal", dir(osgeo4w_root_apps)))) {
+            gdal_root <- paste0(osgeo4w_root_apps, "gdal")
+            gdal_root = paste0("GDAL path: ", gdal_root)
+        }
+        else { 
+            stop("It seems you do not have 'GDAL' installed. Please install 
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check grass
+        if (any(grepl("grass", dir(osgeo4w_root_apps)))) {
+            grass_root <- paste0(osgeo4w_root_apps, "grass")
+            grass_root = paste0("grass path: ", grass_root)
+        }
+        else { 
+            stop("It seems you do not have 'grass' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        
+        # check msys
+        if (any(grepl("msys", dir(osgeo4w_root_apps)))) {
+            msys_root <- paste0(osgeo4w_root_apps, "msys")
+            msys_root = paste0("msys path: ", msys_root)
+        }
+        else {
+            stop("It seems you do not have 'msys' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check Python27
+        if (any(grepl("Python27", dir(osgeo4w_root_apps)))) {
+            Python27_root <- paste0(osgeo4w_root_apps, "Python27")
+            Python27_root = paste0("Python27 path: ", Python27_root)
+        }
+        else {
+            stop("It seems you do not have 'Python27' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check qgis
+        if (any(grepl("qgis", dir(osgeo4w_root_apps)))) {
+            qgis_root <- paste0(osgeo4w_root_apps, "qgis")
+            qgis_root = paste0("qgis path: ", qgis_root)
+        }
+        else {
+            stop("It seems you do not have 'qgis' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check qgis
+        if (any(grepl("qgis", dir(osgeo4w_root_apps)))) {
+            qgis_root <- paste0(osgeo4w_root_apps, "qgis")
+            qgis_root = paste0("qgis path: ", qgis_root)
+        }
+        else {
+            stop("It seems you do not have 'qgis' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check Qt4
+        if (any(grepl("Qt4", dir(osgeo4w_root_apps)))) {
+            Qt4_root <- paste0(osgeo4w_root_apps, "Qt4")
+            Qt4_root = paste0("Qt4 path: ", Qt4_root)
+        }
+        else {
+            stop("It seems you do not have 'Qt4' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+        
+        # check SAGA
+        if (any(grepl("saga", dir(osgeo4w_root_apps)))) {
+            saga_root <- paste0(osgeo4w_root_apps, "saga")
+            saga_root = paste0("saga path: ", saga_root)
+        }
+        else {
+            stop("It seems you do not have 'saga' installed. Please install
+               it on your system using 'OSGEO4W' advanced installation")
+        }
+    }
 }
