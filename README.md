@@ -119,3 +119,4 @@ TO DO:
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
 -   look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and if we need to specify the paths to the GIS in QGIS, I don't think so)
 -   you should write a `check_apps`-function testing if all necessary components were installed (saga, rgdal, grass, qgis, Python, msys, ...)
+-   write a function set\_env() replacing find\_root since OSGeo Apps are located in various locations under Linux/Mac
