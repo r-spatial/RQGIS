@@ -56,7 +56,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Please note, that `find_algorithms` needs to know where OSGeo4W is located on your system. Under Windows `find_root` will look for OSGeo4W in `C:`, `C:/Program Files` and `C:/Program Files (x86)`. If you are using Linux or a Mac or if you have installed OSGeo4W in another location, you need to specify the path to your OSGeo4W-installation yourself. Note also, that most other RQGIS functions require the path to your OSGeo4W-installation such as `get_usage`, `get_options` and `run_qgis`.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us. The only thing we need to do is, specify the path to the OSGeo4W-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive. So far `set_env` only works on Windows-systems, but we are working hard to make it availabe for UNIX-systems as well. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the list containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -65,6 +65,36 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env(path = "C:/OSGeo4W64")
+# have a look at the QGIS environment
+my_env
+#> $root
+#> [1] "C:\\OSGeo4W64"
+#> 
+#> $qgis
+#> [1] "C:\\OSGeo4W64\\apps\\qgis"
+#> 
+#> $Python27
+#> [1] "C:\\OSGeo4W64\\apps\\Python27"
+#> 
+#> $Qt4
+#> [1] "C:\\OSGeo4W64\\apps\\Qt4"
+#> 
+#> $gdal
+#> [1] "C:\\OSGeo4W64\\apps\\gdal"
+#> 
+#> $msys
+#> [1] "C:\\OSGeo4W64\\apps\\msys"
+#> 
+#> $grass
+#> [1] "C:\\OSGeo4W64\\apps\\grass"
+#> 
+#> $saga
+#> [1] "C:\\OSGeo4W64\\apps\\saga"
+```
+
+Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
+
+``` r
 # look for a function that contains the words "polygon" and "centroid"
 find_algorithms(search_term = "polygon centroid", 
                 qgis_env = my_env)
@@ -109,7 +139,7 @@ plot(ger)
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-6-1.png)
+![](README-unnamed-chunk-7-1.png)
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
@@ -122,7 +152,5 @@ TO DO:
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   Write find\_root for Linux and Apple
 -   Write html-vignette, i.e. present a more complex QGIS example
--   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64
--   look for SAGA, GRASS GIS, GDAL, sys, etc. (and find out if we need sys and if we need to specify the paths to the GIS in QGIS, I don't think so)
--   you should write a `check_apps`-function testing if all necessary components were installed (saga, rgdal, grass, qgis, Python, msys, ...)
--   write a function set\_env() replacing find\_root since OSGeo Apps are located in various locations under Linux/Mac
+-   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64. I think they might but that would make it quite hard to set the environment under Windows since the OSGeo4W-installation already comes with various batch scripts to set up the environment. Not using the OSGeo4W-installation would mean to set up the environment manually. I don't think that this is a good idea, especially if you aim to do so in a generic way.
+-   extent set\_env() so that it can be run under UNIX systems
