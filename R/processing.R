@@ -1,3 +1,60 @@
+#' @title Retrieve the environment settings to run QGIS from within R
+#' @description \code{set_env} tries to find all the paths necessary to run QGIS from within R.
+#' @param path Path to the OSGeo4W-installation (only for machines running on
+#'   Windows). 
+#' @details If you do not specify function parameter \code{path}, the function 
+#'   looks for \code{qgis.bat}-file on your C: drive. However, this only works 
+#'   if you have used the OSGeo4W-installation. That means, if you installed
+#'   QGIS on your system without using the OSGeo4W-routine, the function might
+#'   still be able to find the QGIS-installation. However, RQGIS will throw an
+#'   error message since \code{check_apps} will not find the dependencies
+#'   necessary to use the Python QGIS API.
+#' @examples 
+#' set_env()
+#' @export
+#' @author Jannes Muenchow
+set_env <- function(path = NULL) {
+    
+    if (is.null(path)) {
+        
+        message("Trying to find OSGeo4W on your C: drive.")
+        
+        # raw command
+        # change to C: drive and (&) list all subfolders of C:
+        # /b bare format (no heading, file sizes or summary)
+        # /s include all subfolders
+        # findstr allows you to use regular expressions
+        raw <- "C: & dir /s /b | findstr"
+        
+        # search QGIS on the the C: drive
+        cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
+        path <- shell(cmd, intern = TRUE)
+        # # search GRASS
+        # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
+        # tmp <- shell(cmd, intern = TRUE)
+        # # look for Python27
+        # cmd <- paste(raw, shQuote("Python27$"))
+        # shell(cmd, intern = TRUE)
+        
+        if (length(path) == 0) {
+            stop("Sorry, OSGeo4W and QGIS are not installed on the C: drive.",
+                 " Please specify the path to your OSGeo4W-installation", 
+                 " manually.")
+        } else if (length(path) > 1) {
+            stop("There are several QGIS installations on your system:\n",
+                 paste(path, collapse = "\n"))
+        } else {
+            # define root, i.e. OSGeo4W-installation
+            path <-  gsub("\\\\bin.*", "", path)
+            path <- gsub("\\\\", "/", path)
+        }
+    }
+    out <- list(root = path)
+    # return your result
+    c(out, check_apps(osgeo4w_root = path))
+}
+
+
 #' @title Find and list available QGIS algorithms
 #' @description \code{find_algorithms} lists or queries all algorithms which
 #'   can be used via the command line and the QGIS API.
