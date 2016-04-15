@@ -4,14 +4,14 @@
 \alias{get_usage}
 \title{Get usage of a specific GIS function}
 \usage{
-get_usage(algorithm_name = "", osgeo4w_root = ifelse(Sys.info()["sysname"]
-  == "Windows", find_root(), NULL), intern = FALSE)
+get_usage(algorithm_name = "", qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
 \item{algorithm_name}{Name of the function whose parameters are being
 searched for.}
 
-\item{osgeo4w_root}{Path to OSGeo4W on your system.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 
 \item{intern}{Logical which indicates whether to capture the output of the
 command as an \code{R} character vector (see also

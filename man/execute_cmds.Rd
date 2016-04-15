@@ -4,9 +4,8 @@
 \alias{execute_cmds}
 \title{Building and executing cmd and Python scripts}
 \usage{
-execute_cmds(processing_name = "", params = "",
-  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
-  NULL), intern = FALSE)
+execute_cmds(processing_name = "", params = "", qgis_env = set_env(),
+  intern = FALSE)
 }
 \arguments{
 \item{processing_name}{Name of the function from the processing library that
@@ -14,7 +13,8 @@ should be used.}
 
 \item{params}{Parameter to be used with the processing function.}
 
-\item{osgeo4w_root}{Path to the OSGeo4W installation on your system.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 
 \item{intern}{Logical which indicates whether to capture the output of the
 command as an \code{R} character vector (see also \code{\link[base]{system}}.}

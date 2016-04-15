@@ -4,14 +4,14 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(algorithm_name = "", osgeo4w_root = ifelse(Sys.info()["sysname"]
-  == "Windows", find_root(), NULL))
+get_options(algorithm_name = "", qgis_env = set_env())
 }
 \arguments{
 \item{algorithm_name}{Name of the GIS function for which options should be
 returned.}
 
-\item{osgeo4w_root}{Path to OSGeo4W on your system.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 }
 \description{
 \code{get_options} lists all available parameter options for

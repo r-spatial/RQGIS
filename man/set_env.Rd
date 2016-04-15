@@ -11,7 +11,8 @@ set_env(path = NULL)
 Windows).}
 }
 \description{
-\code{set_env} tries to find all the paths necessary to run QGIS from within R.
+\code{set_env} tries to find all the paths necessary to run QGIS
+  from within R.
 }
 \details{
 If you do not specify function parameter \code{path}, the function 

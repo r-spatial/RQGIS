@@ -4,11 +4,11 @@
 \alias{read_cmds}
 \title{Read command skeletons}
 \usage{
-read_cmds(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
-  find_root(), NULL))
+read_cmds(qgis_env = set_env())
 }
 \arguments{
-\item{osgeo4w_root}{Path to the OSGeo folder or QGIS folder}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 }
 \description{
 This function simply reads prefabricated Python and batch

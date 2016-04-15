@@ -4,9 +4,7 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(algorithm = NULL, params = list(),
-  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
-  NULL))
+run_qgis(algorithm = NULL, params = list(), qgis_env = set_env())
 }
 \arguments{
 \item{algorithm}{Name of the GIS function to be used (see
@@ -16,7 +14,8 @@ run_qgis(algorithm = NULL, params = list(),
 with the selected GIS function (see \code{\link{get_usage}} and
 \code{\link{get_options}}).}
 
-\item{osgeo4w_root}{Path to OSGeo4W on your system.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 }
 \description{
 \code{run_qgis} is the workhorse of the R-QGIS interface: It
@@ -29,15 +28,18 @@ This workhorse function calls QGIS via Python (QGIS API) using the
 }
 \examples{
 \dontrun{
+# set the environment
+my_env <- set_env()
 # find out how a function is called
-find_algorithms(search_term = "add")
+find_algorithms(search_term = "add", qgis_env = my_env)
 # find out how it works
-get_usage(algorithm_name = "saga:addcoordinatestopoints")
+get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
 # specify the parameters in the exact same order as listed by get_usage
 params <- list(INPUT = "C:/Users/pi37pat/Desktop/test/random_squares.shp",
      OUTPUT = "C:/Users/pi37pat/Desktop/test/qgis_testi2.shp")
 run_qgis(algorithm = "saga:addcoordinatestopoints",
-         params = params)
+         params = params,
+         qgis_env = my_env)
 }
 }
 \author{

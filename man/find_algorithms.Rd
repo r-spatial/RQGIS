@@ -4,15 +4,14 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "",
-  osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows", find_root(),
-  NULL))
+find_algorithms(search_term = "", qgis_env = set_env())
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only
 functions which contain the indicated string.}
 
-\item{osgeo4w_root}{Path to the OSGEO or QGIS folder on your system.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \link{\code{set_env}}.}
 }
 \value{
 Python console output will be captured as an R character vector.
