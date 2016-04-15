@@ -248,48 +248,5 @@ check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys",
     }
 
 
-set_env <- function(path = NULL) {
-    
-    path <- "C:/OSGeo4W64/"
-    
-    if (!is.null(path)) {
-        out <- list(root = path)
-        out <- c(out, check_apps(osgeo4w_root = path))
-        
-        
-    } else {
-        # raw command
-        # change to C: drive and (&) list all subfolders of C:
-        # /b bare format (no heading, file sizes or summary)
-        # /s include all subfolders
-        # findstr allows you to use regular expressions
-        raw <- "C: & dir /s /b | findstr"
-        
-        # search QGIS
-        cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
-        tmp <- shell(cmd, intern = TRUE)        
-        # search GRASS
-        cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
-        tmp <- shell(cmd, intern = TRUE)
-        
-        # search msys
-        
-        # look for Python27
-        cmd <- paste(raw, shQuote("Python27$"))
-        shell(cmd, intern = TRUE)
-        
-        # search Qt4
-        
-        # search SAGA
-    }
-    # output should be a list containing paths to
-    # SAGA
-    # QGIS
-    # GRASS
-    # Python27
-    # msys
-    # GDAL
-    # Qt4
-    
-}
+
 
