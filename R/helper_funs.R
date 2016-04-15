@@ -35,22 +35,19 @@ find_root <- function(root_name = "OSGeo4W") {
 #' @title Read command skeletons
 #' @description This function simply reads prefabricated Python and batch
 #'   commands.
-#' @param osgeo4w_root Path to the OSGeo folder or QGIS folder
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @author Jannes Muenchow
-read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
-                                            find_root(), NULL)) {
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
-
+read_cmds <- function(qgis_env = set_env()) {
+  
   # load raw Python file
   py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
   py_cmd <- readLines(py_cmd)
   # change paths if necessary
-  if (osgeo4w_root != "C:\\OSGeo4W64") {
+  if (qgis_env$root != "C:/OSGeo4W64") {
     py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                         osgeo4w_root, "\\apps\\qgis'", "True)")
-    py_cmd[15] <- paste0("sys.path.append(r'", osgeo4w_root,
+                         qgis_env$root, "\\apps\\qgis'", ", True)")
+    py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
                          "\\apps\\qgis\\python\\plugins')")
   }
 
@@ -60,14 +57,15 @@ read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
   # check osgewo4w_root
 
   # check if GRASS path is correct and which version is available on the system
-  vers <- dir(paste0(osgeo4w_root, "\\apps\\grass"))
-  if (length(vers) < 1) {
-    stop("Please install at least one GRASS version under '../OSGeo4W/apps/'!")
-  }
-  # check if grass-7.0.3 is available
-  if (!any(grepl("grass-7.0.3", vers))) {
-    # if not, simply use the older version
-    cmd <- gsub("grass.*\\d", vers[1], cmd)
+  vers <- dir(paste0(qgis_env, "\\apps\\grass"))
+  # check if grass-7 is available
+  ind <- grepl("grass-7..*\\d$", vers)
+  if (any(grepl("grass-7..*[0-9]$", vers))) {
+      cmd <- gsub("grass-\\d.\\d.\\d", vers[ind], cmd)
+    
+  } else {
+      # if not, simply use the older version
+      cmd <- gsub("grass-\\d.\\d.\\d", vers[1], cmd)
   }
 
   # return your result
@@ -81,27 +79,22 @@ read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
 #' @param processing_name Name of the function from the processing library that
 #'   should be used.
 #' @param params Parameter to be used with the processing function.
-#' @param osgeo4w_root Path to the OSGeo4W installation on your system.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also \code{\link[base]{system}}.
 #' @author Jannes Muenchow
 execute_cmds <- function(processing_name = "",
                          params = "",
-                         osgeo4w_root =
-                           ifelse(Sys.info()["sysname"] == "Windows",
-                                  find_root(), NULL),
+                         qgis_env = set_env(),
                          intern = FALSE) {
-
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
 
   cwd <- getwd()
   on.exit(setwd(cwd))
   tmp_dir <- tempdir()
   setwd(tmp_dir)
   # load raw Python file (has to be called from the command line)
-  cmds <- read_cmds(osgeo4w_root = osgeo4w_root)
+  cmds <- read_cmds(qgis_env = qgis_env)
   py_cmd <- c(cmds$py_cmd,
               paste0(processing_name, "(", params, ")",
                      "\n"))
@@ -130,13 +123,13 @@ execute_cmds <- function(processing_name = "",
 #' @author Jannes Muenchow, Patrick Schratz
 check_apps <- function(osgeo4w_root) {
     
-    path_apps <- paste0(osgeo4w_root, "/apps")
+    path_apps <- paste0(osgeo4w_root, "\\apps")
     
     # define apps to check
     apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
     out <- lapply(apps, function(app) {
         if (any(grepl(app, dir(path_apps)))) {
-            path <- paste(path_apps, app, sep = "/")
+            path <- paste(path_apps, app, sep = "\\")
         }
         else {
             path <- NULL
@@ -150,7 +143,7 @@ check_apps <- function(osgeo4w_root) {
                            " using the 'OSGEO4W' advanced installation", 
                            " routine."))
         }
-        gsub("//|\\\\", "/", path)
+        gsub("//|/", "\\\\", path)
     })
     names(out) <- apps
     # return your result
