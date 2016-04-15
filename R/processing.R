@@ -1,5 +1,6 @@
 #' @title Retrieve the environment settings to run QGIS from within R
-#' @description \code{set_env} tries to find all the paths necessary to run QGIS from within R.
+#' @description \code{set_env} tries to find all the paths necessary to run QGIS
+#'   from within R.
 #' @param path Path to the OSGeo4W-installation (only for machines running on
 #'   Windows). 
 #' @details If you do not specify function parameter \code{path}, the function 
@@ -16,7 +17,6 @@
 set_env <- function(path = NULL) {
     
     if (is.null(path)) {
-        
         message("Trying to find OSGeo4W on your C: drive.")
         
         # raw command
@@ -46,9 +46,9 @@ set_env <- function(path = NULL) {
         } else {
             # define root, i.e. OSGeo4W-installation
             path <-  gsub("\\\\bin.*", "", path)
-            path <- gsub("\\\\", "/", path)
         }
     }
+    path <- gsub("/|//", "\\\\", path)
     out <- list(root = path)
     # return your result
     c(out, check_apps(osgeo4w_root = path))
@@ -58,7 +58,8 @@ set_env <- function(path = NULL) {
 #' @title Find and list available QGIS algorithms
 #' @description \code{find_algorithms} lists or queries all algorithms which
 #'   can be used via the command line and the QGIS API.
-#' @param osgeo4w_root Path to the OSGEO or QGIS folder on your system.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @param search_term A character to query QGIS functions, i.e. to list only
 #'   functions which contain the indicated string.
 #' @details Function \code{find_algorithms} simply calls
@@ -72,16 +73,11 @@ set_env <- function(path = NULL) {
 #' find_algorithms(search_term = "add")
 #' @export
 find_algorithms <- function(search_term = "",
-                            osgeo4w_root =
-                              ifelse(Sys.info()["sysname"] == "Windows",
-                                     find_root(), NULL)) {
-
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
+                            qgis_env = set_env()) {
 
   execute_cmds(processing_name = "processing.alglist",
                params = shQuote(search_term),
+               qgis_env = qgis_env,
                intern = TRUE)
 }
 
@@ -90,7 +86,8 @@ find_algorithms <- function(search_term = "",
 #'   function.
 #' @param algorithm_name Name of the function whose parameters are being
 #'   searched for.
-#' @param osgeo4w_root Path to OSGeo4W on your system.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also
 #'   \code{\link[base]{system}}.
@@ -102,17 +99,12 @@ find_algorithms <- function(search_term = "",
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(algorithm_name = "saga:addcoordinatestopoints")
 get_usage <- function(algorithm_name = "",
-                      osgeo4w_root =
-                        ifelse(Sys.info()["sysname"] == "Windows",
-                               find_root(), NULL),
+                      qgis_env = set_env(),
                       intern = FALSE) {
-
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
 
   execute_cmds(processing_name = "processing.alghelp",
                params = shQuote(algorithm_name),
+               qgis_env = qgis_env,
                intern = intern)
 }
 
@@ -121,22 +113,18 @@ get_usage <- function(algorithm_name = "",
 #'   the required GIS function.
 #' @param algorithm_name Name of the GIS function for which options should be
 #'   returned.
-#' @param osgeo4w_root Path to OSGeo4W on your system.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
 #' get_options(algorithm_name = "saga:slopeaspectcurvature")
 get_options <- function(algorithm_name = "",
-                        osgeo4w_root =
-                          ifelse(Sys.info()["sysname"] == "Windows",
-                                 find_root(), NULL)) {
+                        qgis_env = set_env()) {
 
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
   execute_cmds(processing_name = "processing.algoptions",
-               params = shQuote(algorithm_name))
+               params = shQuote(algorithm_name),
+               qgis_env = qgis_env)
 }
-
 
 
 #' @title Interface to QGIS commands
@@ -148,31 +136,29 @@ get_options <- function(algorithm_name = "",
 #' @param params A list of function arguments that should be used in conjunction
 #'   with the selected GIS function (see \code{\link{get_usage}} and
 #'   \code{\link{get_options}}).
-#' @param osgeo4w_root Path to OSGeo4W on your system.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \link{\code{set_env}}.
 #' @details This workhorse function calls QGIS via Python (QGIS API) using the
 #'   command line.
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
 #' \dontrun{
+#' # set the environment
+#' my_env <- set_env()
 #' # find out how a function is called
-#' find_algorithms(search_term = "add")
+#' find_algorithms(search_term = "add", qgis_env = my_env)
 #' # find out how it works
-#' get_usage(algorithm_name = "saga:addcoordinatestopoints")
+#' get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
 #' # specify the parameters in the exact same order as listed by get_usage
 #' params <- list(INPUT = "C:/Users/pi37pat/Desktop/test/random_squares.shp",
 #'      OUTPUT = "C:/Users/pi37pat/Desktop/test/qgis_testi2.shp")
 #' run_qgis(algorithm = "saga:addcoordinatestopoints",
-#'          params = params)
+#'          params = params,
+#'          qgis_env = my_env)
 #' }
 run_qgis <- function(algorithm = NULL, params = list(),
-                     osgeo4w_root =
-                       ifelse(Sys.info()["sysname"] == "Windows",
-                              find_root(), NULL)) {
-
-  if (is.null(osgeo4w_root)) {
-    stop("Please specify the path to your OSGeo4W-installation!")
-  }
+                     qgis_env = set_env()) {
 
   nm = names(params)
   val = as.character(unlist(params))
@@ -185,5 +171,6 @@ run_qgis <- function(algorithm = NULL, params = list(),
   args <- paste0(paste(start, args, sep = ", "))
   # run QGIS command
   execute_cmds(processing_name = "processing.runalg",
-               params = args)
+               params = args,
+               qgis_env = qgis_env)
 }
