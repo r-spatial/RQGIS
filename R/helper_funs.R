@@ -1,37 +1,3 @@
-#' @title Looking for OSGEO on your system
-#' @description \code{find_root} looks for OSGeo on your system under C:,
-#'   C:/Program Files and C:/Program Files (x86). So far, this function is only
-#'   available for Windows.
-#' @param root_name Name of the folder where QGIS, SAGA, GRASS, etc. is
-#'   installed. Under Windows this is usually \code{C:/OSGeo4W64}.
-#' @author Jannes Muenchow
-#' @export
-#' @examples
-#' find_root(root_name = "OSGeo4w")
-find_root <- function(root_name = "OSGeo4W") {
-  osgeo4w_root <- NULL
-
-  if (Sys.info()["sysname"] == "Windows") {
-    if (any(grepl(root_name, dir("C:/")))) {
-      osgeo4w_root <- paste0("C:\\",
-                             grep(root_name, dir("C:/"), value = TRUE)[1])
-    } else if (any(grepl(root_name, dir("C:/Program Files")))) {
-      osgeo4w_root <-
-        paste0("C:\\Program Files\\",
-               grep(root_name, dir("C:/Program Files"), value = TRUE)[1])
-    } else if (any(grepl(root_name, dir("C:/Program Files (x86)")))) {
-      osgeo4w_root <-
-        paste0("C:\\Program Files (x86)\\",
-               grep(root_name, dir("C:/Program Files (x86)"), value = TRUE)[1])
-    }
-  }
-  if (is.null(osgeo4w_root)) {
-    stop("Sorry, I could not find ", root_name, " on your system!
-         Please provide the path to OSGeo4W yourself!")
-  }
-  osgeo4w_root
-}
-
 #' @title Read command skeletons
 #' @description This function simply reads prefabricated Python and batch
 #'   commands.
