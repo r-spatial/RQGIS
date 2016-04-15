@@ -75,15 +75,20 @@ Now that we have a shapefile, we can move on to using RQGIS. First of all, we ne
 # attach RQGIS
 library("RQGIS")
 
+# set the environment, i.e. specify all the paths necessary to run QGIS from 
+# within R
+my_env <- set_env(path = "C:/OSGeo4W64")
 # look for a function that contains the words "polygon" and "centroid"
 find_algorithms(search_term = "polygon centroid", 
-                osgeo4w_root = find_root())
+                qgis_env = my_env)
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ```{r, error = FALSE}
-get_usage(algorithm_name = "qgis:polygoncentroids", intern = TRUE)
+get_usage(algorithm_name = "qgis:polygoncentroids",
+          qgis_env = my_env,
+          intern = TRUE)
 ```
 
 All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
@@ -96,6 +101,7 @@ params <- list(
   # path to the output shapefile
   OUTPUT_LAYER = paste(dir_tmp, "ger_coords.shp", sep = "\\"))
 run_qgis(algorithm = "qgis:polygoncentroids", 
+         qgis_env = my_env,
          params = params)
 ```
 
