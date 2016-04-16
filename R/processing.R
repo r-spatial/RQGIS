@@ -14,7 +14,14 @@
 #' set_env()
 #' @export
 #' @author Jannes Muenchow
-set_env <- function(path = NULL) {
+set_env <- function(path = NULL,
+                    qgis = NULL,
+                    python27 = NULL,
+                    qt4 = NULL,
+                    gdal = NULL,
+                    msys = NULL,
+                    grass = NULL,
+                    saga = NULL) {
     
     if (is.null(path)) {
         message("Trying to find OSGeo4W on your C: drive.")
@@ -48,12 +55,14 @@ set_env <- function(path = NULL) {
             path <-  gsub("\\\\bin.*", "", path)
         }
     }
+    # harmonize path syntax
     path <- gsub("/|//", "\\\\", path)
+    # make sure that the root path does not end with some sort of slash
+    path <- gsub("/$|//$|\\$|\\\\$", "", path)
     out <- list(root = path)
     # return your result
     c(out, check_apps(osgeo4w_root = path))
 }
-
 
 #' @title Find and list available QGIS algorithms
 #' @description \code{find_algorithms} lists or queries all algorithms which

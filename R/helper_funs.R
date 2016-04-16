@@ -111,7 +111,7 @@ check_apps <- function(osgeo4w_root) {
         }
         gsub("//|/", "\\\\", path)
     })
-    names(out) <- apps
+    names(out) <- tolower(apps)
     # return your result
     out
 }
