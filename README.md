@@ -3,7 +3,7 @@
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS combines the functionalities of various GIS - QGIS, SAGA GIS, GRASS GIS and GDAL (Sextante). The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
@@ -56,7 +56,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us. The only thing we need to do is, specify the path to the OSGeo4W-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive. So far `set_env` only works on Windows-systems, but we are working hard to make it availabe for UNIX-systems as well. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the list containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us. The only thing we need to do is: specify the path to the OSGeo4W-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive. So far `set_env` only works on Windows-systems, but we are working hard to make it availabe for UNIX-systems as well. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the output list containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -65,7 +65,7 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env(path = "C:/OSGeo4W64")
-# have a look at the QGIS environment
+# have a look at the paths necessary to run QGIS from within R
 my_env
 #> $root
 #> [1] "C:\\OSGeo4W64"
@@ -153,4 +153,5 @@ TO DO:
 -   Write find\_root for Linux and Apple
 -   Write html-vignette, i.e. present a more complex QGIS example
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64. I think they might but that would make it quite hard to set the environment under Windows since the OSGeo4W-installation already comes with various batch scripts to set up the environment. Not using the OSGeo4W-installation would mean to set up the environment manually. I don't think that this is a good idea, especially if you aim to do so in a generic way.
+-   find out how to set the paths under UNIX systems
 -   extent set\_env() so that it can be run under UNIX systems
