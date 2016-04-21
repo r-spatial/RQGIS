@@ -31,8 +31,14 @@ set_env <- function(path = NULL,
         # /b bare format (no heading, file sizes or summary)
         # /s include all subfolders
         # findstr allows you to use regular expressions
-        raw <- "C: & dir /s /b | findstr"
+        # raw <- "C: & dir /s /b | findstr"
         
+        # ok, it's better to just set the working directory and change it back
+        # to the directory when exiting the function
+        cwd <- getwd()
+        on.exit(setwd(cwd))
+        setwd("C:/")
+        raw <- "dir /s /b | findstr"
         # search QGIS on the the C: drive
         cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
         path <- shell(cmd, intern = TRUE)
