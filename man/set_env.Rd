@@ -4,7 +4,8 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(path = NULL)
+set_env(path = NULL, qgis = NULL, python27 = NULL, qt4 = NULL,
+  gdal = NULL, msys = NULL, grass = NULL, saga = NULL)
 }
 \arguments{
 \item{path}{Path to the OSGeo4W-installation (only for machines running on

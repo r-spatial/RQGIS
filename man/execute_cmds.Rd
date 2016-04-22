@@ -16,8 +16,9 @@ should be used.}
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \link{\code{set_env}}.}
 
-\item{intern}{Logical which indicates whether to capture the output of the
-command as an \code{R} character vector (see also \code{\link[base]{system}}.}
+\item{intern}{Logical which indicates whether to capture the output of the 
+command as an \code{R} character vector (see also
+\code{\link[base]{system}}.}
 }
 \description{
 This helper function constructs the batch and Python scripts
