@@ -68,6 +68,60 @@ set_env <- function(path = NULL,
     out <- list(root = path)
     # return your result
     c(out, check_apps(osgeo4w_root = path))
+    
+    
+    
+    
+    
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        
+        if (is.null(path)) {
+            message("Trying to find QGIS on your Mac.")
+            
+            # raw command
+            # change to C: drive and (&) list all subfolders of C:
+            # /b bare format (no heading, file sizes or summary)
+            # /s include all subfolders
+            # findstr allows you to use regular expressions
+            # raw <- "C: & dir /s /b | findstr"
+            
+            # ok, it's better to just set the working directory and change it back
+            # to the directory when exiting the function
+            cwd <- getwd()
+            on.exit(setwd(cwd))
+            setwd("/")
+            # search QGIS on the the /applications folder
+            cmd <- "find /applications -type f \\( ! -name '*.*' -a -name 'QGIS' \\)"
+            path <- system(cmd, intern = TRUE)
+            # # search GRASS
+            # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
+            # tmp <- shell(cmd, intern = TRUE)
+            # # look for Python27
+            # cmd <- paste(raw, shQuote("Python27$"))
+            # shell(cmd, intern = TRUE)
+            
+            if (length(path) == 0) {
+                stop("Sorry, QGIS is not installed in '/applications'",
+                     " Please specify the path to your QGIS-installation", 
+                     " manually.")
+            } else if (length(path) > 1) {
+                stop("There are several QGIS installations on your system:\n",
+                     paste(path, collapse = "\n"))
+            } else {
+                # define root, i.e. OSGeo4W-installation
+                path <-  gsub("MacOS/QGIS.*", "", path)
+            }
+        }
+        # make sure that the root path does not end with some sort of slash
+        path <- gsub("/$|//$|\\$|\\\\$", "", path)
+        out <- list(root = path)
+        # return your result
+        c(out, check_apps(osgeo4w_root = path))
+        
+        
+        
+    }
 }
 
 #' @title Find and list available QGIS algorithms
