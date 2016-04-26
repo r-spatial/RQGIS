@@ -1,8 +1,6 @@
 @echo off
-SET OSGEO4W_ROOT=/applications/QGIS.app/Contents
+export OSGEO4W_ROOT=/applications/QGIS.app/Contents
 @echo off
-path %PATH%;%OSGEO4W_ROOT%/Resources/python/qgis
-path %PATH%;%OSGEO4W_ROOT%/MacOS/grass/lib
-set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%/Resources/python;
-set /usr/local/lib/python2.7/site-packages
-set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%/MacOS/lib/qgis
+export DYLD_LIBRARY_PATH=%OSGEO4W_ROOT%/MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/
+export PYTHONPATH=%OSGEO4W_ROOT%/Resources/python/
+export QGIS_PREFIX_PATH=%OSGEO4W_ROOT%/MacOS/lib/qgis

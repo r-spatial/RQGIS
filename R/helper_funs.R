@@ -48,9 +48,8 @@ read_cmds <- function(qgis_env = set_env()) {
         # change paths if necessary
         if (qgis_env$root != "C:/OSGeo4W64") {
             py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                                 qgis_env$root, "/MacOS/lib/qgis'", ", True)")
-            py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
-                                 "/Resources/python/plugins')")
+                                 "/Applications/QGIS.app'", ", True)")
+            py_cmd[15] <- paste0("sys.path.append('", "/Applications/QGIS.app/Contents/Resources/python/plugins')")
         }
         
         # load windows batch command
@@ -74,28 +73,54 @@ read_cmds <- function(qgis_env = set_env()) {
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also \code{\link[base]{system}}.
 #' @author Jannes Muenchow
-execute_cmds <- function(processing_name = "",
+execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
-                         qgis_env = set_env(),
+                         env = qgis_env,
                          intern = FALSE) {
-
-  cwd <- getwd()
-  on.exit(setwd(cwd))
-  tmp_dir <- tempdir()
-  setwd(tmp_dir)
-  # load raw Python file (has to be called from the command line)
-  cmds <- read_cmds(qgis_env = qgis_env)
-  py_cmd <- c(cmds$py_cmd,
-              paste0(processing_name, "(", params, ")",
-                     "\n"))
-  py_cmd <- paste(py_cmd, collapse = "\n")
-  cat(py_cmd, file = "py_cmd.py")
-
-  # write batch command
-  cmd <- c(cmds$cmd, "python py_cmd.py")
-  cmd <- paste(cmd, collapse = "\n")
-  cat(cmd, file = "batch_cmd.cmd")
-  system("batch_cmd.cmd", intern = intern)
+ if (is.null(qgis_env)) {
+     qgis_env = set_env()
+ } else(env = qgis_env)
+    
+    if (Sys.info()["sysname"] == "Windows") {
+        cwd <- getwd()
+        on.exit(setwd(cwd))
+        tmp_dir <- tempdir()
+        setwd(tmp_dir)
+        # load raw Python file (has to be called from the command line)
+        cmds <- read_cmds(qgis_env = qgis_env)
+        py_cmd <- c(cmds$py_cmd,
+                    paste0(processing_name, "(", params, ")",
+                           "\n"))
+        py_cmd <- paste(py_cmd, collapse = "\n")
+        cat(py_cmd, file = "py_cmd.py")
+        
+        # write batch command
+        cmd <- c(cmds$cmd, "python py_cmd.py")
+        cmd <- paste(cmd, collapse = "\n")
+        cat(cmd, file = "batch_cmd.cmd")
+        system("batch_cmd.cmd", intern = intern)
+    }
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        cwd <- getwd()
+        on.exit(setwd(cwd))
+        tmp_dir <- tempdir()
+        setwd(tmp_dir)
+        # load raw Python file (has to be called from the command line)
+        cmds <- read_cmds(qgis_env = qgis_env)
+        py_cmd <- c(cmds$py_cmd,
+                    paste0(processing_name, "(", params, ")",
+                           "\n"))
+        py_cmd <- paste(py_cmd, collapse = "\n")
+        cat(py_cmd, file = "py_cmd.py")
+        
+        # write batch command
+        cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+        cmd <- paste(cmd, collapse = "\n")
+        cat(cmd, file = "batch_cmd.sh")
+        system("sh batch_cmd.sh", intern = T)
+    }
+    
 }
 
 #' @title Checking paths to QGIS applications on Windows
