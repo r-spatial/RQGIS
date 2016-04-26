@@ -87,124 +87,65 @@ execute_cmds <- function(processing_name = "",
 #' check_apps("C:/OSGeo4W64)
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-check_apps <- function(osgeo4w_root) {
+check_apps <- function(osgeo4w_root) { 
     
-    path_apps <- paste0(osgeo4w_root, "\\apps")
+    if (Sys.info()["sysname"] == "Windows") {
     
-    # define apps to check
-    apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
-    out <- lapply(apps, function(app) {
-        if (any(grepl(app, dir(path_apps)))) {
-            path <- paste(path_apps, app, sep = "\\")
-        }
-        else {
-            path <- NULL
-            txt <- paste0("There is no ", app, "folder in ",
-                          path_apps, ".")
-            ifelse(app %in% c("qgis", "Python27", "Qt4"),
-                   stop(txt, " Please install ", app, 
-                        " using the 'OSGEO4W' advanced installation", 
-                        " routine."),
-                   message(txt, " You might want to install ", app,
-                           " using the 'OSGEO4W' advanced installation", 
-                           " routine."))
-        }
-        gsub("//|/", "\\\\", path)
-    })
-    names(out) <- tolower(apps)
-    # return your result
-    out
-}
-
-### not functional
-check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys", 
-                           Python27 = "python2.7", qgis = "QGIS", qt4 = "qt", 
-                           saga = "saga") {
-    
+        path_apps <- paste0(osgeo4w_root, "\\apps")
+        
+        # define apps to check
+        apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
+        out <- lapply(apps, function(app) {
+            if (any(grepl(app, dir(path_apps)))) {
+                path <- paste(path_apps, app, sep = "\\")
+            }
+            else {
+                path <- NULL
+                txt <- paste0("There is no ", app, "folder in ",
+                              path_apps, ".")
+                ifelse(app %in% c("qgis", "Python27", "Qt4"),
+                       stop(txt, " Please install ", app, 
+                            " using the 'OSGEO4W' advanced installation", 
+                            " routine."),
+                       message(txt, " You might want to install ", app,
+                               " using the 'OSGEO4W' advanced installation", 
+                               " routine."))
+            }
+            gsub("//|/", "\\\\", path)
+        })
+        names(out) <- tolower(apps)
+        # return your result
+        out
+    }
+        
     if (Sys.info()["sysname"] == "Darwin") {
         
-        # check gdal
-        if (any(grepl(gdal, dir("/usr/local/Cellar")))) {
-            gdal_root <- paste0("/usr/local/Cellar/gdal/",
-                                grep('[0-9]', dir("/usr/local/Cellar/gdal"),
-                                     value = TRUE)[1], "/bin")
-            gdal_root = paste0("GDAL path: ", gdal_root)
-            print(gdal_root)
-        }
-        else {
-            stop("It seems you do not have 'GDAL' installed. Please install
-                 'it on your system!
-                 To do so, execute the following lines in a terminal and follow
-                 the instructions:
-                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
-                 2. brew install gdal")
-        }
+        path_apps <- osgeo4w_root
         
-        # check grass
-        if (any(grepl(grass, dir("/Applications")))) {
-            grass_root <- paste0("/Applications/", grep(grass, dir("/Applications/"),
-                                                        value = TRUE)[1])
-            grass_root = paste0("GRASS path: ", grass_root)
-            print(grass_root)
-        }
-        else {
-            stop("It seems you do not have 'GRASS' installed. Please install
-                 it on your system!
-                 To do so, follow the instructions on this site: 
-                 'https://grass.osgeo.org/download/software/mac-osx/'")
-        }
+        # define apps to check
+        apps <- c('qgis', "python", "gdal", "grass", "saga")
         
-        # check python
-        if (any(grepl(Python27, dir("/usr/bin")))) {
-            python_root <- paste0("/usr/bin/", grep(Python27, dir("/usr/bin"),
-                                                    value = TRUE)[1])
-            python_root = paste0("Python path: ", python_root)
-            print(python_root)
-        }
-        else {
-            stop("It seems you do not have 'Python 2.7' installed. Please install
-                 it on your system!
-                 To do so, install the latest Python 2 release from this site:
-                 'https://www.python.org/downloads/mac-osx/'")
-        }
+        cmd <- paste0("find ", path_apps, " -type d \\( ! -name '*.*' -a -name 'qgis' \\)")
+        path <- system(cmd, intern = TRUE)
+        out <- lapply(apps, function(app) {
+            cmd <- paste0("find ", path_apps, " -type d \\( ! -name '*.*' -a -name ", "'", app,"' ", "\\)")
+            path <- system(cmd, intern = TRUE)
+            
+            if (length(path) == 0) {
+                path <- NULL
+                txt <- paste0("There is no ", app, " folder in ",
+                              path_apps, ".")
+            }
+            gsub("//|/", "\\\\", path)
+        })
+        # correct path slashes
+        out = lapply(out, function(x) gsub("\\\\", "/", x))
+        names(out) <- tolower(apps)
         
-        # check QGIS
-        if (any(grepl(qgis, dir("/Applications")))) {
-            qgis_root <- paste0("/Applications/", grep(qgis, dir("/Applications/"),
-                                                       value = TRUE)[1])
-            qgis_root = paste0("QGIS path: ", qgis_root)
-            print(qgis_root)
-        }
-        else {
-            stop("It seems you do not have 'QGIS' installed. Please install
-                 it on your system!
-                 To do so, follow the instructions on this site:
-                 'https://www.qgis.org/de/site/forusers/download.html'")
-        }
-        
-        # check qt4
-        if (any(grepl(qt4, dir("/usr/local/Cellar")))) {
-            qt4_root <- paste0("/usr/local/Cellar/qt/",
-                               grep('[0-9]', dir("/usr/local/Cellar/qt"),
-                                    value = TRUE)[1], "/bin")
-            qt4_root = paste0("Qt4 path: ", qt4_root)
-            print(qt4_root)
-        }
-        else {
-            stop("It seems you do not have 'Qt4' installed. Please install
-                 it on your system!
-                 To do so, execute the following lines in a terminal and follow
-                 the instructions:
-                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
-                 2. brew install qt4")
-        }
-        
-        }
-    else {
-        stop("It seems you are not running a MAC but either Windows or Linux. 
-             Please use functions according to your system")
-        }
     }
+    # return your result
+    out 
+}
 
 
 
