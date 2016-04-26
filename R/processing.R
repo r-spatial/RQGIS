@@ -81,7 +81,7 @@ set_env <- function(path = NULL,
     if (Sys.info()["sysname"] == "Darwin") {
         
         if (is.null(path)) {
-            message("Trying to find QGIS on your Mac.")
+            message("Trying to find QGIS on your PC. This may take a moment.")
             
             # raw command
             # change to C: drive and (&) list all subfolders of C:

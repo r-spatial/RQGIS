@@ -6,37 +6,61 @@
 #' @author Jannes Muenchow
 read_cmds <- function(qgis_env = set_env()) {
   
-  # load raw Python file
-  py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
-  py_cmd <- readLines(py_cmd)
-  # change paths if necessary
-  if (qgis_env$root != "C:/OSGeo4W64") {
-    py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                         qgis_env$root, "\\apps\\qgis'", ", True)")
-    py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
-                         "\\apps\\qgis\\python\\plugins')")
-  }
-
-  # load windows batch command
-  cmd <- system.file("win", "init.cmd", package = "RQGIS")
-  cmd <- readLines(cmd)
-  # check osgewo4w_root
-
-  # check if GRASS path is correct and which version is available on the system
-  vers <- dir(paste0(qgis_env, "\\apps\\grass"))
-  # check if grass-7 is available
-  ind <- grepl("grass-7..*\\d$", vers)
-  if (any(grepl("grass-7..*[0-9]$", vers))) {
-      cmd <- gsub("grass-\\d.\\d.\\d", vers[ind], cmd)
+    if (Sys.info()["sysname"] == "Windows") {
+        # load raw Python file
+        py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
+        py_cmd <- readLines(py_cmd)
+        # change paths if necessary
+        if (qgis_env$root != "C:/OSGeo4W64") {
+            py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
+                                 qgis_env$root, "\\apps\\qgis'", ", True)")
+            py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
+                                 "\\apps\\qgis\\python\\plugins')")
+        }
+        
+        # load windows batch command
+        cmd <- system.file("win", "init.cmd", package = "RQGIS")
+        cmd <- readLines(cmd)
+        # check osgewo4w_root
+        
+        # check if GRASS path is correct and which version is available on the system
+        vers <- dir(paste0(qgis_env, "\\apps\\grass"))
+        # check if grass-7 is available
+        ind <- grepl("grass-7..*\\d$", vers)
+        if (any(grepl("grass-7..*[0-9]$", vers))) {
+            cmd <- gsub("grass-\\d.\\d.\\d", vers[ind], cmd)
+            
+        } else {
+            # if not, simply use the older version
+            cmd <- gsub("grass-\\d.\\d.\\d", vers[1], cmd)
+        }
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
     
-  } else {
-      # if not, simply use the older version
-      cmd <- gsub("grass-\\d.\\d.\\d", vers[1], cmd)
-  }
-
-  # return your result
-  list("cmd" = cmd,
-       "py_cmd" = py_cmd)
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        # load raw Python file
+        py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
+        py_cmd <- readLines(py_cmd)
+        # change paths if necessary
+        if (qgis_env$root != "C:/OSGeo4W64") {
+            py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
+                                 qgis_env$root, "/MacOS/lib/qgis'", ", True)")
+            py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
+                                 "/Resources/python/plugins')")
+        }
+        
+        # load windows batch command
+        cmd <- system.file("unix", "init.sh", package = "RQGIS")
+        cmd <- readLines(cmd)
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
 }
 
 #' @title Building and executing cmd and Python scripts
@@ -143,6 +167,7 @@ check_apps <- function(osgeo4w_root) {
         names(out) <- tolower(apps)
         
     }
+    names(out) <- tolower(apps)
     # return your result
     out 
 }
