@@ -67,8 +67,7 @@ set_env <- function(path = NULL,
     # make sure that the root path does not end with some sort of slash
     path <- gsub("/$|//$|\\$|\\\\$", "", path)
     out <- list(root = path)
-    # return your result
-    c(out, check_apps(osgeo4w_root = path))
+
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
@@ -113,9 +112,9 @@ set_env <- function(path = NULL,
     # make sure that the root path does not end with some sort of slash
     path <- gsub("/$|//$|\\$|\\\\$", "", path)
     out <- list(root = path)
-    # return your result
-    c(out, check_apps(osgeo4w_root = path))
   }
+  # return your result
+  c(out, check_apps(osgeo4w_root = path))
 }
 
 #' @title Find and list available QGIS algorithms
