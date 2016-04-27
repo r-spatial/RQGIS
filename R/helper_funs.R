@@ -103,14 +103,53 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",qgis_env,
-                   "/MacOS'", ", True)"),
+            paste0("QgsApplication.setPrefixPath('",qgis_env, "True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
             paste0("sys.path.append('", qgis_env, 
                    "/Resources/python/plugins')"),
             paste0("sys.path.append('", qgis_env, "/Resources/python/')"),
+            # import and initialize the processing framework
+            "from processing.core.Processing import Processing",
+            "Processing.initialize()",
+            "import processing")
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
+    
+    if (Sys.info()["sysname"] == "Linux") {
+        
+        # construct the batch file
+        cmd <- 
+            c(# set framework (not sure if necessary)
+                paste0("export PYTHONPATH=", qgis_env, "/share/qgis/python"),
+                # append pythonpath to import qgis.core etc. packages
+                paste0("export LD_LIBRARY_PATH=", qgis_env, "/lib"))
+        
+        # construct the Python script
+        py_cmd <- c(
+            # import all the libraries you need
+            "import os",
+            "from qgis.core import *",
+            "from osgeo import ogr",
+            "from PyQt4.QtCore import *",
+            "from PyQt4.QtGui import *",
+            "from qgis.gui import *",
+            "import sys",
+            "import os",
+            # initialize QGIS application
+            paste0("QgsApplication.setPrefixPath('",qgis_env,
+                   "/bin'", ", True)"),
+            "app = QgsApplication([], True)",
+            "QgsApplication.initQgis()",
+            # add the path to the processing framework
+            paste0("sys.path.append('", qgis_env, 
+                   "/share/qgis/resources/python/plugins')"),
+            paste0("sys.path.append('", qgis_env, 
+                   "/share/qgis/resources/python/')"),
             # import and initialize the processing framework
             "from processing.core.Processing import Processing",
             "Processing.initialize()",
@@ -159,7 +198,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
     system("batch_cmd.cmd", intern = intern)
   }
   
-  if (Sys.info()["sysname"] == "Darwin") {
+  if (Sys.info()["sysname"] == "Darwin ∣ Linux") {
     cwd <- getwd()
     on.exit(setwd(cwd))
     tmp_dir <- tempdir()
