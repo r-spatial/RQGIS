@@ -10,7 +10,7 @@
 #' @author Jannes Muenchow
 #' @examples 
 #' build_cmds()
-build_cmds <- function(qgis_env = set_env()) {
+build_cmds <- function(qgis_env = set_env()) { 
     
     if (Sys.info()["sysname"] == "Windows") {
         # check if GRASS path is correct and which version is available on
@@ -89,8 +89,8 @@ build_cmds <- function(qgis_env = set_env()) {
               paste0("export PYTHONPATH=/applications/QGIS.app/Contents/",
                      "Resources/python/"),
               # add QGIS Prefix path (not sure if necessary)
-              paste0("export QGIS_PREFIX_PATH=%OSGEO4W_ROOT%/MacOS/lib/qgis")
-              )
+              paste0("export QGIS_PREFIX_PATH=/applications/QGIS.app/Contents/MacOS/"), 
+              paste0("export PATH='/Applications/QGIS.app/Contents/MacOS/bin:$PATH'"))
         
         # construct the Python script
         py_cmd <- c(
@@ -105,11 +105,12 @@ build_cmds <- function(qgis_env = set_env()) {
             "import os",
             # initialize QGIS application
             paste0("QgsApplication.setPrefixPath('",
-                                 "/Applications/QGIS.app'", ", True)"),
+                                 "/Applications/QGIS.app/Contents/MacOS'", ", True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
             paste0("sys.path.append('", "/Applications/QGIS.app/Contents/Resources/python/plugins')"),
+            paste0("sys.path.append('/Applications/QGis.app/Contents/Resources/python/')"),
             # import and initialize the processing framework
             "from processing.core.Processing import Processing",
             "Processing.initialize()",

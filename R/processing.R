@@ -254,7 +254,7 @@ run_qgis <- function(algorithm = NULL, params = list(),
         execute_cmds(processing_name = "processing.runalg",
                      params = args,
                      qgis_env = qgis_env, 
-                     intern = TRUE)
+                     intern = FALSE)
     }
     
 }
