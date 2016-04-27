@@ -1,4 +1,6 @@
-.Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+*Rproj*
+.Rbuildignore
+.gitignore
