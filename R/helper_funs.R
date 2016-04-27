@@ -83,14 +83,13 @@ build_cmds <- function(qgis_env = set_env()) {
         # construct the batch file
         cmd <- 
             c(# set framework (not sure if necessary)
-              paste0("export DYLD_LIBRARY_PATH=/applications/QGIS.app/Contents/", 
-                     "", "MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/"),
+              paste0("export DYLD_LIBRARY_PATH=", qgis_env,
+                     "", "/MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/"),
               # append pythonpath to import qgis.core etc. packages
-              paste0("export PYTHONPATH=/applications/QGIS.app/Contents/",
-                     "Resources/python/"),
+              paste0("export PYTHONPATH=",qgis_env,"/Resources/python/"),
               # add QGIS Prefix path (not sure if necessary)
-              paste0("export QGIS_PREFIX_PATH=/applications/QGIS.app/Contents/MacOS/"), 
-              paste0("export PATH='/Applications/QGIS.app/Contents/MacOS/bin:$PATH'"))
+              paste0("export QGIS_PREFIX_PATH=", qgis_env, "/MacOS/"), 
+              paste0("export PATH='", qgis_env, "/MacOS/bin:$PATH'"))
         
         # construct the Python script
         py_cmd <- c(
@@ -104,13 +103,14 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",
-                                 "/Applications/QGIS.app/Contents/MacOS'", ", True)"),
+            paste0("QgsApplication.setPrefixPath('",qgis_env,
+                   "/MacOS'", ", True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
-            paste0("sys.path.append('", "/Applications/QGIS.app/Contents/Resources/python/plugins')"),
-            paste0("sys.path.append('/Applications/QGis.app/Contents/Resources/python/')"),
+            paste0("sys.path.append('", qgis_env, 
+                   "/Resources/python/plugins')"),
+            paste0("sys.path.append('", qgis_env, "/Resources/python/')"),
             # import and initialize the processing framework
             "from processing.core.Processing import Processing",
             "Processing.initialize()",
