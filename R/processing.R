@@ -221,17 +221,40 @@ get_options <- function(algorithm_name = "",
 run_qgis <- function(algorithm = NULL, params = list(),
                      qgis_env = set_env()) {
   
-  nm = names(params)
-  val = as.character(unlist(params))
-  # build command
-  # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
-  start <- shQuote(algorithm)
-  # mmh, processing.runalg does not accept arguments... that's unfortunate
-  # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
-  args <- paste(shQuote(val), collapse = ", ")
-  args <- paste0(paste(start, args, sep = ", "))
-  # run QGIS command
-  execute_cmds(processing_name = "processing.runalg",
-               params = args,
-               qgis_env = qgis_env)
+    if (Sys.info()["sysname"] == "Windows") {
+        nm = names(params)
+        val = as.character(unlist(params))
+        # build command
+        # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
+        start <- shQuote(algorithm)
+        # mmh, processing.runalg does not accept arguments... that's unfortunate
+        # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
+        args <- paste(shQuote(val), collapse = ", ")
+        args <- paste0(paste(start, args, sep = ", "))
+        # run QGIS command
+        execute_cmds(processing_name = "processing.runalg",
+                     params = args,
+                     qgis_env = qgis_env)
+    }
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        nm = names(params)
+        val = as.character(unlist(params))
+        # renice param paths
+        val = gsub("//", "/", val)
+        val = gsub("\\\\", "/", val)
+        # build command
+        # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
+        start <- shQuote(algorithm)
+        # mmh, processing.runalg does not accept arguments... that's unfortunate
+        # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
+        args <- paste(shQuote(val), collapse = ", ")
+        args <- paste0(paste(start, args, sep = ", "))
+        # run QGIS command
+        execute_cmds(processing_name = "processing.runalg",
+                     params = args,
+                     qgis_env = qgis_env, 
+                     intern = TRUE)
+    }
+    
 }
