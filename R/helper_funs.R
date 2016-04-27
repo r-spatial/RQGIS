@@ -164,7 +164,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
     tmp_dir <- tempdir()
     setwd(tmp_dir)
     # load raw Python file (has to be called from the command line)
-    cmds <- read_cmds(qgis_env = qgis_env)
+    cmds <- build_cmds(qgis_env = qgis_env)
     py_cmd <- c(cmds$py_cmd,
                 paste0(processing_name, "(", params, ")",
                        "\n"))
