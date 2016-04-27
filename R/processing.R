@@ -71,11 +71,6 @@ set_env <- function(path = NULL,
     c(out, check_apps(osgeo4w_root = path))
   }
   
-  
-  
-  
-  
-  
   if (Sys.info()["sysname"] == "Darwin") {
     
     if (is.null(path)) {
