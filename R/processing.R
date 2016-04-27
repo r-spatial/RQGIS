@@ -166,7 +166,7 @@ get_usage <- function(algorithm_name = "",
   
   execute_cmds(processing_name = "processing.alghelp",
                params = shQuote(algorithm_name),
-               qgis_env = qgis_env,
+               qgis_env = set_env(),
                intern = intern)
 }
 
