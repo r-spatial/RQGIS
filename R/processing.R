@@ -135,16 +135,12 @@ set_env <- function(path = NULL,
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' @export
-find_algorithms <- function(search_term = "", env = qgis_env) {
+find_algorithms <- function(search_term = "", qgis_env = set_env()) {
   
-  if (is.null(qgis_env)) {
-    qgis_env = set_env()
-  } else(env = qgis_env)
-  
-  execute_cmds(processing_name = "processing.alglist",
-               params = shQuote(search_term),
-               env = qgis_env,
-               intern = F)
+    execute_cmds(processing_name = "processing.alglist",
+                 params = shQuote(search_term),
+                 qgis_env = set_env(),
+                 intern = F)
 }
 
 #' @title Get usage of a specific GIS function
