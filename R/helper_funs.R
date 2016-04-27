@@ -11,135 +11,116 @@
 #' @examples 
 #' build_cmds()
 build_cmds <- function(qgis_env = set_env()) {
-  # check if GRASS path is correct and which version is available on
-  # the system
-  vers <- dir(paste0(qgis_env, "\\apps\\grass"))
-  # check if grass-7 is available
-  ind <- grepl("grass-7..*\\d$", vers)
-  if (any(grepl("grass-7..*[0-9]$", vers))) {
-    grass <- vers[ind]
-  } else {
-    # if not, simply use the older version
-    grass <- vers[1]
-  }
-  # construct the batch file
-  cmd <- 
-    c("@echo off",
-      # defining a root variable
-      paste0("SET OSGEO4W_ROOT=", qgis_env$root),
-      # calling batch files from with a batchfile
-      "call \"%OSGEO4W_ROOT%\"\\bin\\o4w_env.bat",
-      paste0("call \"%OSGEO4W_ROOT%\"\\apps\\grass\\", grass, 
-             "\\etc\\env.bat"),
-      "@echo off",
-      # adding QGIS and GRASS to PATH
-      "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
-      paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass, "\\lib"),
-      # setting a PYTHONPATH variable
-      "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
-      # adding a few more python paths to PYTHONPATH
-      paste0("set PYTHONPATH=%PYTHONPATH%;", 
-             "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
-      # defining QGIS prefix path (i.e. without bin)
-      "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis",
-      # finally adding Git and Vim to PATH, not sure if this is really
-      # necessary
-      paste0("set PATH=C:\\Program Files (x86)\\Git\\cmd;", 
-             "C:\\Program Files (x86)\\Vim\\vim74;%PATH%"))
-  
-  # construct the Python script
-  py_cmd <- c(
-    # import all the libraries you need
-    "import os",
-    "from qgis.core import *",
-    "from osgeo import ogr",
-    "from PyQt4.QtCore import *",
-    "from PyQt4.QtGui import *",
-    "from qgis.gui import *",
-    "import sys",
-    "import os",
-    # initialize QGIS application
-    paste0("QgsApplication.setPrefixPath('", qgis_env$root, 
-           "\\apps\\qgis', True)"),
-    "app = QgsApplication([], True)",
-    "QgsApplication.initQgis()",
-    # add the path to the processing framework
-    paste0("sys.path.append(r'", qgis_env$root, 
-           "\\apps\\qgis\\python\\plugins')"),
-    # import and initialize the processing framework
-    "from processing.core.Processing import Processing",
-    "Processing.initialize()",
-    "import processing")
-  
-  # return your result
-  list("cmd" = cmd,
-       "py_cmd" = py_cmd)
+    
+    if (Sys.info()["sysname"] == "Windows") {
+        # check if GRASS path is correct and which version is available on
+        # the system
+        vers <- dir(paste0(qgis_env, "\\apps\\grass"))
+        # check if grass-7 is available
+        ind <- grepl("grass-7..*\\d$", vers)
+        if (any(grepl("grass-7..*[0-9]$", vers))) {
+            grass <- vers[ind]
+        } else {
+            # if not, simply use the older version
+            grass <- vers[1]
+        }
+        # construct the batch file
+        cmd <- 
+            c("@echo off",
+              # defining a root variable
+              paste0("SET OSGEO4W_ROOT=", qgis_env$root),
+              # calling batch files from with a batchfile
+              "call \"%OSGEO4W_ROOT%\"\\bin\\o4w_env.bat",
+              paste0("call \"%OSGEO4W_ROOT%\"\\apps\\grass\\", grass, 
+                     "\\etc\\env.bat"),
+              "@echo off",
+              # adding QGIS and GRASS to PATH
+              "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
+              paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass, "\\lib"),
+              # setting a PYTHONPATH variable
+              "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
+              # adding a few more python paths to PYTHONPATH
+              paste0("set PYTHONPATH=%PYTHONPATH%;", 
+                     "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
+              # defining QGIS prefix path (i.e. without bin)
+              "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis",
+              # finally adding Git and Vim to PATH, not sure if this is really
+              # necessary
+              paste0("set PATH=C:\\Program Files (x86)\\Git\\cmd;", 
+                     "C:\\Program Files (x86)\\Vim\\vim74;%PATH%"))
+        
+        # construct the Python script
+        py_cmd <- c(
+            # import all the libraries you need
+            "import os",
+            "from qgis.core import *",
+            "from osgeo import ogr",
+            "from PyQt4.QtCore import *",
+            "from PyQt4.QtGui import *",
+            "from qgis.gui import *",
+            "import sys",
+            "import os",
+            # initialize QGIS application
+            paste0("QgsApplication.setPrefixPath('", qgis_env$root, 
+                   "\\apps\\qgis', True)"),
+            "app = QgsApplication([], True)",
+            "QgsApplication.initQgis()",
+            # add the path to the processing framework
+            paste0("sys.path.append(r'", qgis_env$root, 
+                   "\\apps\\qgis\\python\\plugins')"),
+            # import and initialize the processing framework
+            "from processing.core.Processing import Processing",
+            "Processing.initialize()",
+            "import processing")
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+       
+        # construct the batch file
+        cmd <- 
+            c(# set framework (not sure if necessary)
+              paste0("export DYLD_LIBRARY_PATH=/applications/QGIS.app/Contents/", 
+                     "", "MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/"),
+              # append pythonpath to import qgis.core etc. packages
+              paste0("export PYTHONPATH=/applications/QGIS.app/Contents/",
+                     "Resources/python/"),
+              # add QGIS Prefix path (not sure if necessary)
+              paste0("export QGIS_PREFIX_PATH=%OSGEO4W_ROOT%/MacOS/lib/qgis")
+              )
+        
+        # construct the Python script
+        py_cmd <- c(
+            # import all the libraries you need
+            "import os",
+            "from qgis.core import *",
+            "from osgeo import ogr",
+            "from PyQt4.QtCore import *",
+            "from PyQt4.QtGui import *",
+            "from qgis.gui import *",
+            "import sys",
+            "import os",
+            # initialize QGIS application
+            paste0("QgsApplication.setPrefixPath('",
+                                 "/Applications/QGIS.app'", ", True)"),
+            "app = QgsApplication([], True)",
+            "QgsApplication.initQgis()",
+            # add the path to the processing framework
+            paste0("sys.path.append('", "/Applications/QGIS.app/Contents/Resources/python/plugins')"),
+            # import and initialize the processing framework
+            "from processing.core.Processing import Processing",
+            "Processing.initialize()",
+            "import processing")
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
 }
 
-
-#' @title Read command skeletons
-#' @description This function simply reads prefabricated Python and batch
-#'   commands.
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
-#' @author Jannes Muenchow
-read_cmds <- function(qgis_env = set_env()) {
-  
-  if (Sys.info()["sysname"] == "Windows") {
-    # load raw Python file
-    py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
-    py_cmd <- readLines(py_cmd)
-    # change paths if necessary
-    if (qgis_env$root != "C:/OSGeo4W64") {
-      py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                           qgis_env$root, "\\apps\\qgis'", ", True)")
-      py_cmd[15] <- paste0("sys.path.append(r'", qgis_env$root,
-                           "\\apps\\qgis\\python\\plugins')")
-    }
-    
-    # load windows batch command
-    cmd <- system.file("win", "init.cmd", package = "RQGIS")
-    cmd <- readLines(cmd)
-    # check osgewo4w_root
-    
-    # check if GRASS path is correct and which version is available on the system
-    vers <- dir(paste0(qgis_env, "\\apps\\grass"))
-    # check if grass-7 is available
-    ind <- grepl("grass-7..*\\d$", vers)
-    if (any(grepl("grass-7..*[0-9]$", vers))) {
-      cmd <- gsub("grass-\\d.\\d.\\d", vers[ind], cmd)
-      
-    } else {
-      # if not, simply use the older version
-      cmd <- gsub("grass-\\d.\\d.\\d", vers[1], cmd)
-    }
-    
-    # return your result
-    list("cmd" = cmd,
-         "py_cmd" = py_cmd)
-  }
-  
-  
-  if (Sys.info()["sysname"] == "Darwin") {
-    # load raw Python file
-    py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
-    py_cmd <- readLines(py_cmd)
-    # change paths if necessary
-    if (qgis_env$root != "C:/OSGeo4W64") {
-      py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                           "/Applications/QGIS.app'", ", True)")
-      py_cmd[15] <- paste0("sys.path.append('", "/Applications/QGIS.app/Contents/Resources/python/plugins')")
-    }
-    
-    # load windows batch command
-    cmd <- system.file("unix", "init.sh", package = "RQGIS")
-    cmd <- readLines(cmd)
-    
-    # return your result
-    list("cmd" = cmd,
-         "py_cmd" = py_cmd)
-  }
-}
 
 #' @title Building and executing cmd and Python scripts
 #' @description This helper function constructs the batch and Python scripts
