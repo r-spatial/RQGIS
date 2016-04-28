@@ -67,9 +67,8 @@ set_env <- function(path = NULL,
         # make sure that the root path does not end with some sort of slash
         path <- gsub("/$|//$|\\$|\\\\$", "", path)
         out <- list(root = path)
-        
-        # return your result
-        c(out, check_apps(osgeo4w_root = path))
+        # Windows result
+        out <- c(out, check_apps(osgeo4w_root = path))
     }
     
     if (Sys.info()["sysname"] == "Darwin") {
@@ -88,6 +87,7 @@ set_env <- function(path = NULL,
         }
         # return result
         paste0("QGIS Installation path: ", qgis_env)
+        out <- qgis_env
     }
     
     if (Sys.info()["sysname"] == "Linux") {
@@ -97,7 +97,10 @@ set_env <- function(path = NULL,
         }
         # return result
         paste0("QGIS Installation path: ", qgis_env)
+        out <- qgis_env
     }
+  # return your result
+  out
 }
 
 #' @title Find and list available QGIS algorithms
@@ -117,12 +120,16 @@ set_env <- function(path = NULL,
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' @export
-find_algorithms <- function(search_term = "", qgis_env = set_env()) {
+find_algorithms <- function(search_term = "",
+                            qgis_env = set_env(),
+                            intern = 
+                              ifelse(Sys.info()["sysname"] == "Windows",
+                                     TRUE, FALSE)) {
   
     execute_cmds(processing_name = "processing.alglist",
                  params = shQuote(search_term),
-                 qgis_env = set_env(),
-                 intern = F)
+                 qgis_env = qgis_env,
+                 intern = intern)
 }
 
 #' @title Get usage of a specific GIS function
