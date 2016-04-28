@@ -69,35 +69,26 @@ set_env <- function(path = NULL,
         out <- list(root = path)
         
         # return your result
-        c(out, check_apps(osgeo4w_root = path))
+        qgis_env =c(out, check_apps(osgeo4w_root = path))
     }
     
     if (Sys.info()["sysname"] == "Darwin") {
-        
-        if (is.null(path)) {
-            message("Trying to find QGIS on your PC. This may take a moment.")
             
-            # ok, it's better to just set the working directory and change it back
-            # to the directory when exiting the function
-            cwd <- getwd()
-            on.exit(setwd(cwd))
-            setwd("/")
-            # search QGIS on the the /applications folder
-            cmd <- "find /applications -type f \\( ! -name '*.*' -a -name 'QGIS' \\)"
-            qgis_env <- gsub("/MacOS/QGIS", "", system(cmd, intern = TRUE))
+        if (is.null(path)) {
+            qgis_env = "/applications/QGIS.app/Contents"
         }
         # return result
-        paste0("QGIS Installation path: ", qgis_env)
+        qgis_env
     }
+    
     
     if (Sys.info()["sysname"] == "Linux") {
         
         if (is.null(path)) {
             qgis_env = "/usr"
         }
-        # return result
-        paste0("QGIS Installation path: ", qgis_env)
     }
+    qgis_env
 }
 
 #' @title Find and list available QGIS algorithms
