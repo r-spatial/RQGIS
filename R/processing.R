@@ -211,7 +211,7 @@ run_qgis <- function(algorithm = NULL, params = list(),
                      qgis_env = qgis_env)
     }
     
-    if (Sys.info()["sysname"] == "Darwin") {
+    if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
         nm = names(params)
         val = as.character(unlist(params))
         # renice param paths
