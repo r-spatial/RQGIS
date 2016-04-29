@@ -141,15 +141,22 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",qgis_env,
+            paste0("QgsApplication.setPrefixPath('", qgis_env,
                    "/bin'", ", True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
+            # Patrick
+            # paste0("sys.path.append('", qgis_env, 
+            #        "/share/qgis/resources/python/plugins')"),
+            # paste0("sys.path.append('", qgis_env, 
+            #        "/share/qgis/resources/python/')")
+            # Jannes
+            paste0("sys.path.append('", qgis_env,
+                   "/share/qgis/python/plugins')")
+            ,
             paste0("sys.path.append('", qgis_env, 
-                   "/share/qgis/resources/python/plugins')"),
-            paste0("sys.path.append('", qgis_env, 
-                   "/share/qgis/resources/python/')"),
+                   "/share/qgis/python/')"),
             # import and initialize the processing framework
             "from processing.core.Processing import Processing",
             "Processing.initialize()",

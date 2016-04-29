@@ -96,7 +96,7 @@ set_env <- function(path = NULL,
             qgis_env = "/usr"
         }
         # return result
-        paste0("QGIS Installation path: ", qgis_env)
+        qgis_env
     }
 }
 
@@ -121,8 +121,8 @@ find_algorithms <- function(search_term = "", qgis_env = set_env()) {
   
     execute_cmds(processing_name = "processing.alglist",
                  params = shQuote(search_term),
-                 qgis_env = set_env(),
-                 intern = F)
+                 qgis_env = qgis_env,
+                 intern = FALSE)
 }
 
 #' @title Get usage of a specific GIS function
