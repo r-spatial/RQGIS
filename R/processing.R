@@ -22,76 +22,74 @@ set_env <- function(path = NULL,
                     msys = NULL,
                     grass = NULL,
                     saga = NULL) {
-    if (Sys.info()["sysname"] == "Windows") {
-        
-        if (is.null(path)) {
-            message("Trying to find OSGeo4W on your C: drive.")
-            
-            # raw command
-            # change to C: drive and (&) list all subfolders of C:
-            # /b bare format (no heading, file sizes or summary)
-            # /s include all subfolders
-            # findstr allows you to use regular expressions
-            # raw <- "C: & dir /s /b | findstr"
-            
-            # ok, it's better to just set the working directory and change it back
-            # to the directory when exiting the function
-            cwd <- getwd()
-            on.exit(setwd(cwd))
-            setwd("C:/")
-            raw <- "dir /s /b | findstr"
-            # search QGIS on the the C: drive
-            cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
-            path <- shell(cmd, intern = TRUE)
-            # # search GRASS
-            # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
-            # tmp <- shell(cmd, intern = TRUE)
-            # # look for Python27
-            # cmd <- paste(raw, shQuote("Python27$"))
-            # shell(cmd, intern = TRUE)
-            
-            if (length(path) == 0) {
-                stop("Sorry, OSGeo4W and QGIS are not installed on the C: drive.",
-                     " Please specify the path to your OSGeo4W-installation", 
-                     " manually.")
-            } else if (length(path) > 1) {
-                stop("There are several QGIS installations on your system:\n",
-                     paste(path, collapse = "\n"))
-            } else {
-                # define root, i.e. OSGeo4W-installation
-                path <-  gsub("\\\\bin.*", "", path)
-            }
-        }
-        # harmonize path syntax
-        path <- gsub("/|//", "\\\\", path)
-        # make sure that the root path does not end with some sort of slash
-        path <- gsub("/$|//$|\\$|\\\\$", "", path)
-        out <- list(root = path)
-        # return your result
-        qgis_env <- c(out, check_apps(osgeo4w_root = path))
-    }
-    
-    if (Sys.info()["sysname"] == "Darwin") {
-            
-        if (is.null(path)) {
-            qgis_env = "/applications/QGIS.app/Contents"
-        }
-        # return results
-        paste0("QGIS Installation path: ", qgis_env)
 
+  if (Sys.info()["sysname"] == "Windows") {
+    
+    if (is.null(path)) {
+      message("Trying to find OSGeo4W on your C: drive.")
+      
+      # raw command
+      # change to C: drive and (&) list all subfolders of C:
+      # /b bare format (no heading, file sizes or summary)
+      # /s include all subfolders
+      # findstr allows you to use regular expressions
+      # raw <- "C: & dir /s /b | findstr"
+      
+      # ok, it's better to just set the working directory and change it back
+      # to the directory when exiting the function
+      cwd <- getwd()
+      on.exit(setwd(cwd))
+      setwd("C:/")
+      raw <- "dir /s /b | findstr"
+      # search QGIS on the the C: drive
+      cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
+      path <- shell(cmd, intern = TRUE)
+      # # search GRASS
+      # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
+      # tmp <- shell(cmd, intern = TRUE)
+      # # look for Python27
+      # cmd <- paste(raw, shQuote("Python27$"))
+      # shell(cmd, intern = TRUE)
+      
+      if (length(path) == 0) {
+        stop("Sorry, OSGeo4W and QGIS are not installed on the C: drive.",
+             " Please specify the path to your OSGeo4W-installation", 
+             " manually.")
+      } else if (length(path) > 1) {
+        stop("There are several QGIS installations on your system:\n",
+             paste(path, collapse = "\n"))
+      } else {
+        # define root, i.e. OSGeo4W-installation
+        path <-  gsub("\\\\bin.*", "", path)
+      }
     }
+    # harmonize path syntax
+    path <- gsub("/|//", "\\\\", path)
+    # make sure that the root path does not end with some sort of slash
+    path <- gsub("/$|//$|\\$|\\\\$", "", path)
+    out <- list(root = path)
+    # return your result
+    qgis_env = c(out, check_apps(osgeo4w_root = path))
+  }
   
+  if (Sys.info()["sysname"] == "Darwin") {
+    
+    if (is.null(path)) {
+      qgis_env = "/applications/QGIS.app/Contents"
+    }
+    # print result to the console
+    paste0("QGIS Installation path: ", qgis_env)
+  }
   
   if (Sys.info()["sysname"] == "Linux") {
-    
     if (is.null(path)) {
       qgis_env = "/usr"
     }
+    # print result to the console
+    paste0("QGIS Installation path: ", qgis_env)
   }
-  paste0("QGIS Installation path: ", qgis_env)
-  out <- qgis_env
   # return your result
-  out
+  qgis_env 
 }
 
 #' @title Find and list available QGIS algorithms
