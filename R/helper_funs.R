@@ -102,11 +102,7 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-<<<<<<< HEAD
             paste0("QgsApplication.setPrefixPath('",qgis_env, "', True)"),
-=======
-            paste0("QgsApplication.setPrefixPath('", qgis_env, "True)"),
->>>>>>> jannes-m/master
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
