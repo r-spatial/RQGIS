@@ -67,37 +67,31 @@ set_env <- function(path = NULL,
         # make sure that the root path does not end with some sort of slash
         path <- gsub("/$|//$|\\$|\\\\$", "", path)
         out <- list(root = path)
-        
         # return your result
-        c(out, check_apps(osgeo4w_root = path))
+        qgis_env <- c(out, check_apps(osgeo4w_root = path))
     }
     
     if (Sys.info()["sysname"] == "Darwin") {
-        
-        if (is.null(path)) {
-            message("Trying to find QGIS on your PC. This may take a moment.")
             
-            # ok, it's better to just set the working directory and change it back
-            # to the directory when exiting the function
-            cwd <- getwd()
-            on.exit(setwd(cwd))
-            setwd("/")
-            # search QGIS on the the /applications folder
-            cmd <- "find /applications -type f \\( ! -name '*.*' -a -name 'QGIS' \\)"
-            qgis_env <- gsub("/MacOS/QGIS", "", system(cmd, intern = TRUE))
-        }
-        # return result
-        paste0("QGIS Installation path: ", qgis_env)
-    }
-    
-    if (Sys.info()["sysname"] == "Linux") {
-        
         if (is.null(path)) {
-            qgis_env = "/usr"
+            qgis_env = "/applications/QGIS.app/Contents"
         }
-        # return result
-        qgis_env
+        # return results
+        paste0("QGIS Installation path: ", qgis_env)
+
     }
+  
+  
+  if (Sys.info()["sysname"] == "Linux") {
+    
+    if (is.null(path)) {
+      qgis_env = "/usr"
+    }
+  }
+  paste0("QGIS Installation path: ", qgis_env)
+  out <- qgis_env
+  # return your result
+  out
 }
 
 #' @title Find and list available QGIS algorithms
@@ -117,12 +111,17 @@ set_env <- function(path = NULL,
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' @export
-find_algorithms <- function(search_term = "", qgis_env = set_env()) {
+find_algorithms <- function(search_term = "",
+                            qgis_env = set_env(),
+                            intern = 
+                              ifelse(Sys.info()["sysname"] == "Windows",
+                                     TRUE, FALSE)) {
   
     execute_cmds(processing_name = "processing.alglist",
                  params = shQuote(search_term),
                  qgis_env = qgis_env,
-                 intern = FALSE)
+                 intern = intern)
+
 }
 
 #' @title Get usage of a specific GIS function
@@ -220,7 +219,7 @@ run_qgis <- function(algorithm = NULL, params = list(),
                      qgis_env = qgis_env)
     }
     
-    if (Sys.info()["sysname"] == "Darwin") {
+    if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
         nm = names(params)
         val = as.character(unlist(params))
         # renice param paths

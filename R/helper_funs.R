@@ -74,11 +74,10 @@ build_cmds <- function(qgis_env = set_env()) {
             "import processing")
         
         # return your result
-        list("cmd" = cmd,
-             "py_cmd" = py_cmd)
+        cmds <- list("cmd" = cmd, "py_cmd" = py_cmd)
     }
     
-    if (Sys.info()["sysname"] == "Darwin") {
+    else if (Sys.info()["sysname"] == "Darwin") {
        
         # construct the batch file
         cmd <- 
@@ -86,7 +85,7 @@ build_cmds <- function(qgis_env = set_env()) {
               paste0("export DYLD_LIBRARY_PATH=", qgis_env,
                      "", "/MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/"),
               # append pythonpath to import qgis.core etc. packages
-              paste0("export PYTHONPATH=",qgis_env,"/Resources/python/"),
+              paste0("export PYTHONPATH=", qgis_env, "/Resources/python/"),
               # add QGIS Prefix path (not sure if necessary)
               paste0("export QGIS_PREFIX_PATH=", qgis_env, "/MacOS/"), 
               paste0("export PATH='", qgis_env, "/MacOS/bin:$PATH'"))
@@ -103,7 +102,7 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",qgis_env, "True)"),
+            paste0("QgsApplication.setPrefixPath('",qgis_env, "', True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
@@ -116,11 +115,11 @@ build_cmds <- function(qgis_env = set_env()) {
             "import processing")
         
         # return your result
-        list("cmd" = cmd,
+        cmds <- list("cmd" = cmd,
              "py_cmd" = py_cmd)
     }
     
-    if (Sys.info()["sysname"] == "Linux") {
+    else if (Sys.info()["sysname"] == "Linux") {
         
         # construct the batch file
         cmd <- 
@@ -146,15 +145,8 @@ build_cmds <- function(qgis_env = set_env()) {
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
-            # Patrick
-            # paste0("sys.path.append('", qgis_env, 
-            #        "/share/qgis/resources/python/plugins')"),
-            # paste0("sys.path.append('", qgis_env, 
-            #        "/share/qgis/resources/python/')")
-            # Jannes
-            paste0("sys.path.append('", qgis_env,
-                   "/share/qgis/python/plugins')")
-            ,
+            paste0("sys.path.append('", qgis_env, 
+                   "/share/qgis/python/plugins')"),
             paste0("sys.path.append('", qgis_env, 
                    "/share/qgis/python/')"),
             # import and initialize the processing framework
@@ -163,10 +155,12 @@ build_cmds <- function(qgis_env = set_env()) {
             "import processing")
         
         # return your result
-        list("cmd" = cmd,
+        cmds <- list("cmd" = cmd,
              "py_cmd" = py_cmd)
     }
-}
+  # return your result
+  cmds
+  }
 
 
 #' @title Building and executing cmd and Python scripts
@@ -191,40 +185,46 @@ execute_cmds <- function(processing_name = "processing.alglist",
     tmp_dir <- tempdir()
     setwd(tmp_dir)
     # load raw Python file (has to be called from the command line)
-    cmds <- build_cmds(qgis_env = qgis_env)
+    cmds <- build_cmds(qgis_env = set_env())
     py_cmd <- c(cmds$py_cmd,
                 paste0(processing_name, "(", params, ")",
                        "\n"))
     py_cmd <- paste(py_cmd, collapse = "\n")
     cat(py_cmd, file = "py_cmd.py")
     
+    # renice path slashes
+    
+    
     # write batch command
     cmd <- c(cmds$cmd, "python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
     cat(cmd, file = "batch_cmd.cmd")
-    system("batch_cmd.cmd", intern = intern)
+    res <- system("batch_cmd.cmd", intern = intern)
   }
   
-  if (Sys.info()["sysname"] == "Darwin ∣ Linux") {
+  if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
     cwd <- getwd()
     on.exit(setwd(cwd))
     tmp_dir <- tempdir()
     setwd(tmp_dir)
     # load raw Python file (has to be called from the command line)
-    cmds <- build_cmds(qgis_env = qgis_env)
+    cmds <- build_cmds(qgis_env = set_env())
     py_cmd <- c(cmds$py_cmd,
-                paste0(processing_name, "(", params, ")",
-                       "\n"))
+                paste0(processing_name, "(", params, ")", "\n"))
     py_cmd <- paste(py_cmd, collapse = "\n")
+    # renice path slashes
+    py_cmd = gsub("\\\\", "/", py_cmd)
+    py_cmd = gsub("//", "/", py_cmd)
     cat(py_cmd, file = "py_cmd.py")
     
     # write batch command
     cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
     cat(cmd, file = "batch_cmd.sh")
-    system("sh batch_cmd.sh", intern = TRUE)
+    res <- system("sh batch_cmd.sh", intern = TRUE)
   }
-  
+  # return your result
+  res
 }
 
 #' @title Checking paths to QGIS applications on Windows
