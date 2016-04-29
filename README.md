@@ -155,3 +155,8 @@ TO DO:
 -   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64. I think they might but that would make it quite hard to set the environment under Windows since the OSGeo4W-installation already comes with various batch scripts to set up the environment. Not using the OSGeo4W-installation would mean to set up the environment manually. I don't think that this is a good idea, especially if you aim to do so in a generic way.
 -   find out how to set the paths under UNIX systems
 -   extent set\_env() so that it can be run under UNIX systems
+-   unresolved error message when running "processing.runalg" on Mac: "QSqlDatabase: QSQLITE driver not loaded
+QSqlDatabase: available drivers: 
+QSqlQuery::prepare: database not open
+  [1] "ERROR: Opening of authentication db FAILED"
+  [2] "WARNING: Auth db query exec() FAILED". Processes executing as expected though. 

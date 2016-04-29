@@ -67,40 +67,47 @@ set_env <- function(path = NULL,
         # make sure that the root path does not end with some sort of slash
         path <- gsub("/$|//$|\\$|\\\\$", "", path)
         out <- list(root = path)
+<<<<<<< HEAD
+        
+        # return your result
+        qgis_env =c(out, check_apps(osgeo4w_root = path))
+=======
         # Windows result
         out <- c(out, check_apps(osgeo4w_root = path))
+>>>>>>> jannes-m/master
     }
     
     if (Sys.info()["sysname"] == "Darwin") {
-        
-        if (is.null(path)) {
-            message("Trying to find QGIS on your PC. This may take a moment.")
             
-            # ok, it's better to just set the working directory and change it back
-            # to the directory when exiting the function
-            cwd <- getwd()
-            on.exit(setwd(cwd))
-            setwd("/")
-            # search QGIS on the the /applications folder
-            cmd <- "find /applications -type f \\( ! -name '*.*' -a -name 'QGIS' \\)"
-            qgis_env <- gsub("/MacOS/QGIS", "", system(cmd, intern = TRUE))
+        if (is.null(path)) {
+            qgis_env = "/applications/QGIS.app/Contents"
         }
         # return result
+<<<<<<< HEAD
+        qgis_env
+=======
         paste0("QGIS Installation path: ", qgis_env)
         out <- qgis_env
+>>>>>>> jannes-m/master
     }
+    
     
     if (Sys.info()["sysname"] == "Linux") {
         
         if (is.null(path)) {
             qgis_env = "/usr"
         }
+<<<<<<< HEAD
+    }
+    qgis_env
+=======
         # return result
         paste0("QGIS Installation path: ", qgis_env)
         out <- qgis_env
     }
   # return your result
   out
+>>>>>>> jannes-m/master
 }
 
 #' @title Find and list available QGIS algorithms
@@ -227,7 +234,7 @@ run_qgis <- function(algorithm = NULL, params = list(),
                      qgis_env = qgis_env)
     }
     
-    if (Sys.info()["sysname"] == "Darwin") {
+    if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
         nm = names(params)
         val = as.character(unlist(params))
         # renice param paths
