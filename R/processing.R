@@ -89,7 +89,7 @@ set_env <- function(path = NULL,
     paste0("QGIS Installation path: ", qgis_env)
   }
   # return your result
-  qgis_env 
+  qgis_env
 }
 
 #' @title Find and list available QGIS algorithms
