@@ -140,7 +140,7 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",qgis_env,
+            paste0("QgsApplication.setPrefixPath('", qgis_env,
                    "/bin'", ", True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",

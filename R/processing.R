@@ -22,6 +22,7 @@ set_env <- function(path = NULL,
                     msys = NULL,
                     grass = NULL,
                     saga = NULL) {
+
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(path)) {
@@ -88,7 +89,7 @@ set_env <- function(path = NULL,
     paste0("QGIS Installation path: ", qgis_env)
   }
   # return your result
-  qgis_env 
+  qgis_env
 }
 
 #' @title Find and list available QGIS algorithms
@@ -118,6 +119,7 @@ find_algorithms <- function(search_term = "",
                  params = shQuote(search_term),
                  qgis_env = qgis_env,
                  intern = intern)
+
 }
 
 #' @title Get usage of a specific GIS function
