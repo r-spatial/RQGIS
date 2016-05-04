@@ -25,6 +25,8 @@ build_cmds <- function(qgis_env = set_env()) {
             grass <- vers[1]
         }
         # construct the batch file
+        # = wrapper to set up the required environment variables before running
+        # Python
         cmd <- 
             c("@echo off",
               # defining a root variable
@@ -36,42 +38,18 @@ build_cmds <- function(qgis_env = set_env()) {
               "@echo off",
               # adding QGIS and GRASS to PATH
               "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
-              paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass, "\\lib"),
+              paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
+                     "\\lib"),
               # setting a PYTHONPATH variable
               "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
               # adding a few more python paths to PYTHONPATH
               paste0("set PYTHONPATH=%PYTHONPATH%;", 
                      "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
               # defining QGIS prefix path (i.e. without bin)
-              "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis",
-              # finally adding Git and Vim to PATH, not sure if this is really
-              # necessary
-              paste0("set PATH=C:\\Program Files (x86)\\Git\\cmd;", 
-                     "C:\\Program Files (x86)\\Vim\\vim74;%PATH%"))
+              "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis")
         
         # construct the Python script
-        py_cmd <- c(
-            # import all the libraries you need
-            "import os",
-            "from qgis.core import *",
-            "from osgeo import ogr",
-            "from PyQt4.QtCore import *",
-            "from PyQt4.QtGui import *",
-            "from qgis.gui import *",
-            "import sys",
-            "import os",
-            # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('", qgis_env$root, 
-                   "\\apps\\qgis', True)"),
-            "app = QgsApplication([], True)",
-            "QgsApplication.initQgis()",
-            # add the path to the processing framework
-            paste0("sys.path.append(r'", qgis_env$root, 
-                   "\\apps\\qgis\\python\\plugins')"),
-            # import and initialize the processing framework
-            "from processing.core.Processing import Processing",
-            "Processing.initialize()",
-            "import processing")
+        py_cmd <- build_py(qgis_env)
         
         # return your result
         cmds <- list("cmd" = cmd, "py_cmd" = py_cmd)
@@ -102,7 +80,7 @@ build_cmds <- function(qgis_env = set_env()) {
             "import sys",
             "import os",
             # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('",qgis_env, "', True)"),
+            paste0("QgsApplication.setPrefixPath('", qgis_env, "', True)"),
             "app = QgsApplication([], True)",
             "QgsApplication.initQgis()",
             # add the path to the processing framework
@@ -123,10 +101,11 @@ build_cmds <- function(qgis_env = set_env()) {
         
         # construct the batch file
         cmd <- 
-            c(# set framework (not sure if necessary)
-                paste0("export PYTHONPATH=", qgis_env, "/share/qgis/python"),
-                # append pythonpath to import qgis.core etc. packages
-                paste0("export LD_LIBRARY_PATH=", qgis_env, "/lib"))
+            c(# append pythonpath to import qgis.core etc. packages
+              paste0("export PYTHONPATH=", qgis_env, "/share/qgis/python"),
+              # define path where QGIS libraries reside to search path of the
+              # dynamic linker
+              paste0("export LD_LIBRARY_PATH=", qgis_env, "/lib"))
         
         # construct the Python script
         py_cmd <- c(
@@ -147,8 +126,10 @@ build_cmds <- function(qgis_env = set_env()) {
             # add the path to the processing framework
             paste0("sys.path.append('", qgis_env, 
                    "/share/qgis/python/plugins')"),
-            paste0("sys.path.append('", qgis_env, 
-                   "/share/qgis/python/')"),
+            # I don't think the next 2 lines are needed since we've already 
+            # added the python path to PATH in cmd
+            # paste0("sys.path.append('", qgis_env, 
+            #        "/share/qgis/python/')"),
             # import and initialize the processing framework
             "from processing.core.Processing import Processing",
             "Processing.initialize()",
@@ -185,7 +166,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
     tmp_dir <- tempdir()
     setwd(tmp_dir)
     # load raw Python file (has to be called from the command line)
-    cmds <- build_cmds(qgis_env = set_env())
+    cmds <- build_cmds(qgis_env = qgis_env)
     py_cmd <- c(cmds$py_cmd,
                 paste0(processing_name, "(", params, ")",
                        "\n"))
@@ -247,29 +228,35 @@ check_apps <- function(osgeo4w_root) {
     path_apps <- paste0(osgeo4w_root, "\\apps")
     
     # define apps to check
-    apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
+    # \\apps\\qgis\\bin
+    # apps\\qgis\\python
+    # apps\\Python27\\Lib\\site-packages
+    # \\apps\\qgis
+    # \apps\\qgis\\python\\plugins
+    # \\apps\\grass\\
+    
+    # qgis_prefix_path = C:\\OSGeo4W64\\apps\\qgis & usr/bin
+    # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & usr/bin/share/qgis/python/plugins
+    apps <- c("qgis", "qgis\\python\\plugins", "Python27",
+              "Qt4", "msys", "grass")
     out <- lapply(apps, function(app) {
-      if (any(grepl(app, dir(path_apps)))) {
+      if (dir.exists(paste(path_apps, app, sep = "\\"))) {
         path <- paste(path_apps, app, sep = "\\")
       }
       else {
         path <- NULL
-        txt <- paste0("There is no ", app, "folder in ",
-                      path_apps, ".")
-        ifelse(app %in% c("qgis", "Python27", "Qt4"),
-               stop(txt, " Please install ", app, 
-                    " using the 'OSGEO4W' advanced installation", 
-                    " routine."),
-               message(txt, " You might want to install ", app,
-                       " using the 'OSGEO4W' advanced installation", 
-                       " routine."))
+        # Aside from msys and grass all apps are necessary to run the QGIS-API
+        if (!app %in% c("msys", "grass")) {
+          stop(txt, " Please install ", app, 
+               " using the 'OSGEO4W' advanced installation", 
+               " routine.")
+        }
       }
       gsub("//|/", "\\\\", path)
     })
-    names(out) <- tolower(apps)
-    # return your result
-    out
-  }
+    names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4",
+                    "msys", "grass")
+    }
   
   if (Sys.info()["sysname"] == "Darwin") {
     
@@ -295,11 +282,35 @@ check_apps <- function(osgeo4w_root) {
       gsub("//|/", "\\\\", path)
     })
     # correct path slashes
-    out = lapply(out, function(x) gsub("\\\\", "/", x))
+    out <- lapply(out, function(x) gsub("\\\\", "/", x))
     names(out) <- tolower(apps)
-    
-  }
-  names(out) <- tolower(apps)
+    }
   # return your result
   out 
+}
+
+
+build_py <- function(qgis_env) {
+  py_cmd <- c(
+    # import all the libraries you need
+    "import os",
+    "from qgis.core import *",
+    "from osgeo import ogr",
+    "from PyQt4.QtCore import *",
+    "from PyQt4.QtGui import *",
+    "from qgis.gui import *",
+    "import sys",
+    "import os",
+    # initialize QGIS application
+    # alter prefix path used by 3rd party apps
+    paste0("QgsApplication.setPrefixPath('", my_env$qgis_prefix_path, 
+           "', True)"),
+    "app = QgsApplication([], True)",
+    "QgsApplication.initQgis()",
+    # add the path to the processing framework
+    paste0("sys.path.append(r'", qgis_env$python_plugins, "')"),
+    # import and initialize the processing framework
+    "from processing.core.Processing import Processing",
+    "Processing.initialize()",
+    "import processing")
 }
