@@ -26,17 +26,6 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 3. R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`. Besides, both RSAGA and spgrass let you specify specific GIS function arguments while retrieving automatically the default values for unspecified GIS function arguments. So far, this is not possible using RQGIS, i.e. you need to specify each single function argument. This can be tedious and we hope that we will take care of this in future releases.
 
 # Installation 
-Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/), and make sure that following components will be installed on your system using the advanced settings during the installation process:
-
-- gdal
-- grass
-- msys
-- Python27
-- qgis
-- Qt4
-- saga
-
-After the installation of OSGeo4W these programs should be found in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
 
 You can install the latest RQGIS development version from Github with
 
@@ -52,7 +41,30 @@ devtools::install_github("jannes-m/RQGIS")
 
 **Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
 
-# Usage
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation manual in the following subsections.
+
+## Windows
+Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/), and make sure that following components will be installed on your system using the advanced settings during the installation process:
+
+- Python27
+- qgis
+- Qt4
+- gdal (optional)
+- grass (optional)
+- msys (necessary, if you want to run GRASS)
+- saga (optional)
+
+After the installation of OSGeo4W these programs should be found in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
+
+## Linux
+Please follow the installation instructions found here. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
+
+How to install SAGA on Ubuntu?
+
+## MAC
+
+
+# RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to retrieve the centroid coordinates of a spatial polygon object. 
 Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
@@ -69,7 +81,8 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us. The only thing we need to do is: specify the path to the OSGeo4W-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive. So far `set_env` only works on Windows-systems, but we are working hard to make it availabe for UNIX-systems as well. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the output list containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. 
+If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows). If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 ```{r, warning = FALSE, error = FALSE}
 # attach RQGIS
@@ -77,7 +90,7 @@ library("RQGIS")
 
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
-my_env <- set_env(path = "C:/OSGeo4W64")
+my_env <- set_env()
 # have a look at the paths necessary to run QGIS from within R
 my_env
 ```
