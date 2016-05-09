@@ -24,7 +24,7 @@ more information, refer to \link{\code{set_env}}.}
 }
 \details{
 This workhorse function calls QGIS via Python (QGIS API) using the
-  command line.
+  command line. Specifically, it calls \code{processing.runalg}.
 }
 \examples{
 \dontrun{
@@ -35,8 +35,8 @@ find_algorithms(search_term = "add", qgis_env = my_env)
 # find out how it works
 get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
 # specify the parameters in the exact same order as listed by get_usage
-params <- list(INPUT = "C:/Users/pi37pat/Desktop/test/random_squares.shp",
-     OUTPUT = "C:/Users/pi37pat/Desktop/test/qgis_testi2.shp")
+params <- list(INPUT = "random_squares.shp",
+               OUTPUT = "output.shp")
 run_qgis(algorithm = "saga:addcoordinatestopoints",
          params = params,
          qgis_env = my_env)

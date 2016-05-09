@@ -17,6 +17,10 @@ more information, refer to \link{\code{set_env}}.}
 \code{get_options} lists all available parameter options for
   the required GIS function.
 }
+\details{
+Function \code{get_options} simply calls
+  \code{processing.algoptions} using Python.
+}
 \examples{
 get_options(algorithm_name = "saga:slopeaspectcurvature")
 }
