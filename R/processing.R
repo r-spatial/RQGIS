@@ -67,9 +67,8 @@ set_env <- function(path = NULL,
     path <- gsub("/|//", "\\\\", path)
     # make sure that the root path does not end with some sort of slash
     path <- gsub("/$|//$|\\$|\\\\$", "", path)
-    out <- list(root = path)
-    # return your result
-    qgis_env = c(out, check_apps(osgeo4w_root = path))
+    qgis_env <- list(root = path)
+    qgis_env <- c(qgis_env, check_apps(root = path))
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
@@ -83,10 +82,11 @@ set_env <- function(path = NULL,
   
   if (Sys.info()["sysname"] == "Linux") {
     if (is.null(path)) {
-      qgis_env = "/usr"
+      cat("Assuming that your root path is '/usr'!")
+      root <- "/usr"
     }
-    # print result to the console
-    paste0("QGIS Installation path: ", qgis_env)
+    qgis_env <- list(root = path)
+    qgis_env <- c(qgis_env, check_apps(root = path))
   }
   # return your result
   qgis_env
