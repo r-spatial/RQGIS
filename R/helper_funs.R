@@ -248,34 +248,21 @@ check_apps <- function(root) {
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
-    
-    path_apps <- root
-    
-    # define apps to check
-    apps <- c('qgis', "python", "gdal", "grass", "saga")
-    
-    cmd <- paste0("find ", path_apps,
-                  " -type d \\( ! -name '*.*' -a -name 'qgis' \\)")
-    path <- system(cmd, intern = TRUE)
-    out <- lapply(apps, function(app) {
-      cmd <- 
-        paste0("find ", path_apps,
-               " -type d \\( ! -name '*.*' -a -name ", "'", app,"' ", "\\)")
-      path <- system(cmd, intern = TRUE)
-      
-      if (length(path) == 0) {
-        path <- NULL
-        txt <- paste0("There is no ", app, " folder in ",
-                      path_apps, ".")
+    # paths to check
+    root <- gsub("/$", "", root)  # make sure root doesn't end with a slash
+    paths <- paste0(root, c("/Contents/MacOS", "/Contents/Resources/python/plugins"))
+    out <- lapply(paths, function(x) {
+      if (file.exists(x)) {
+        x
+      } else {
+        stop("I could not find: '", x, "' on your system. 
+             Please specify all necessary paths yourself")
       }
-      gsub("//|/", "\\\\", path)
-    })
-    # correct path slashes
-    out <- lapply(out, function(x) gsub("\\\\", "/", x))
-    names(out) <- tolower(apps)
-    }
-  # return your result
-  out 
+      })
+    names(out) <- c("qgis_prefix_path", "python_plugins")
+    return(out)
+  }
+  
 }
 
 #' @title Little helper function to construct the python-skeleton
