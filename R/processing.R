@@ -82,8 +82,8 @@ set_env <- function(path = NULL,
   
   if (Sys.info()["sysname"] == "Linux") {
     if (is.null(path)) {
-      cat("Assuming that your root path is '/usr'!")
-      root <- "/usr"
+      message("Assuming that your root path is '/usr'!")
+      path <- "/usr"
     }
     qgis_env <- list(root = path)
     qgis_env <- c(qgis_env, check_apps(root = path))
@@ -104,7 +104,7 @@ set_env <- function(path = NULL,
 #' @return Python console output will be captured as an R character vector.
 #' @author Jannes Muenchow, QGIS developer team
 #' @examples
-#' # list all available QGIS algorithms
+#' # list all available QGIS algorithms on your system
 #' find_algorithms()
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
@@ -132,6 +132,8 @@ find_algorithms <- function(search_term = "",
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also
 #'   \code{\link[base]{system}}.
+#' @details Function \code{get_usage} simply calls
+#'   \code{processing.alghelp} using Python.
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
@@ -145,7 +147,7 @@ get_usage <- function(algorithm_name = "",
   
   execute_cmds(processing_name = "processing.alghelp",
                params = shQuote(algorithm_name),
-               qgis_env = set_env(),
+               qgis_env = qgis_env,
                intern = intern)
 }
 
@@ -156,12 +158,13 @@ get_usage <- function(algorithm_name = "",
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \link{\code{set_env}}.
+#' @details Function \code{get_options} simply calls
+#'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
 #' get_options(algorithm_name = "saga:slopeaspectcurvature")
 get_options <- function(algorithm_name = "",
                         qgis_env = set_env()) {
-  
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(algorithm_name),
                qgis_env = qgis_env)
@@ -180,7 +183,7 @@ get_options <- function(algorithm_name = "",
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \link{\code{set_env}}.
 #' @details This workhorse function calls QGIS via Python (QGIS API) using the
-#'   command line.
+#'   command line. Specifically, it calls \code{processing.runalg}.
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
@@ -192,49 +195,29 @@ get_options <- function(algorithm_name = "",
 #' # find out how it works
 #' get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
 #' # specify the parameters in the exact same order as listed by get_usage
-#' params <- list(INPUT = "C:/Users/pi37pat/Desktop/test/random_squares.shp",
-#'      OUTPUT = "C:/Users/pi37pat/Desktop/test/qgis_testi2.shp")
+#' params <- list(INPUT = "random_squares.shp",
+#'                OUTPUT = "output.shp")
 #' run_qgis(algorithm = "saga:addcoordinatestopoints",
 #'          params = params,
 #'          qgis_env = my_env)
 #' }
 run_qgis <- function(algorithm = NULL, params = list(),
                      qgis_env = set_env()) {
+  nm <- names(params)
+  val <- as.character(unlist(params))
+  # adjust param paths
+  # val <- gsub("//|\\\\", "/", val)  # really necessary???
+  # build command
+  # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
+  start <- shQuote(algorithm)
+  # mmh, processing.runalg does not accept arguments... that's unfortunate
+  # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
+  args <- paste(shQuote(val), collapse = ", ")
+  args <- paste0(paste(start, args, sep = ", "))
+  # run QGIS command
+  execute_cmds(processing_name = "processing.runalg",
+               params = args,
+               qgis_env = qgis_env,
+               intern = ifelse(Sys.info()["sysname"] == "Darwin", FALSE, TRUE))
   
-    if (Sys.info()["sysname"] == "Windows") {
-        nm = names(params)
-        val = as.character(unlist(params))
-        # build command
-        # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
-        start <- shQuote(algorithm)
-        # mmh, processing.runalg does not accept arguments... that's unfortunate
-        # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
-        args <- paste(shQuote(val), collapse = ", ")
-        args <- paste0(paste(start, args, sep = ", "))
-        # run QGIS command
-        execute_cmds(processing_name = "processing.runalg",
-                     params = args,
-                     qgis_env = qgis_env)
-    }
-    
-    if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
-        nm = names(params)
-        val = as.character(unlist(params))
-        # renice param paths
-        val = gsub("//", "/", val)
-        val = gsub("\\\\", "/", val)
-        # build command
-        # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
-        start <- shQuote(algorithm)
-        # mmh, processing.runalg does not accept arguments... that's unfortunate
-        # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
-        args <- paste(shQuote(val), collapse = ", ")
-        args <- paste0(paste(start, args, sep = ", "))
-        # run QGIS command
-        execute_cmds(processing_name = "processing.runalg",
-                     params = args,
-                     qgis_env = qgis_env, 
-                     intern = FALSE)
-    }
-    
 }
