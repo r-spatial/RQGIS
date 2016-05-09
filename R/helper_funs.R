@@ -1,11 +1,11 @@
 #' @title Build command skeletons
 #' @description This function simply builds the raw Python and batch commands 
 #'   needed to acces the Python QGIS API.
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to \link{\code{set_env}}.
 #' @return The function returns a list with two elements. The first contains a 
 #'   raw batch file and the second the python raw command both of which are 
-#'   later on needed to access QGIS from within R via Python (see
+#'   later on needed to access QGIS from within R via Python (see 
 #'   \code{\link{execute_cmds}}.
 #' @author Jannes Muenchow
 #' @examples 
@@ -102,42 +102,16 @@ build_cmds <- function(qgis_env = set_env()) {
         # construct the batch file
         cmd <- 
             c(# append pythonpath to import qgis.core etc. packages
-              paste0("export PYTHONPATH=", qgis_env, "/share/qgis/python"),
+              paste0("export PYTHONPATH=", qgis_env$root, "/share/qgis/python"),
               # define path where QGIS libraries reside to search path of the
               # dynamic linker
-              paste0("export LD_LIBRARY_PATH=", qgis_env, "/lib"))
+              paste0("export LD_LIBRARY_PATH=", qgis_env$root, "/lib"))
         
         # construct the Python script
-        py_cmd <- c(
-            # import all the libraries you need
-            "import os",
-            "from qgis.core import *",
-            "from osgeo import ogr",
-            "from PyQt4.QtCore import *",
-            "from PyQt4.QtGui import *",
-            "from qgis.gui import *",
-            "import sys",
-            "import os",
-            # initialize QGIS application
-            paste0("QgsApplication.setPrefixPath('", qgis_env,
-                   "/bin'", ", True)"),
-            "app = QgsApplication([], True)",
-            "QgsApplication.initQgis()",
-            # add the path to the processing framework
-            paste0("sys.path.append('", qgis_env, 
-                   "/share/qgis/python/plugins')"),
-            # I don't think the next 2 lines are needed since we've already 
-            # added the python path to PATH in cmd
-            # paste0("sys.path.append('", qgis_env, 
-            #        "/share/qgis/python/')"),
-            # import and initialize the processing framework
-            "from processing.core.Processing import Processing",
-            "Processing.initialize()",
-            "import processing")
-        
+        py_cmd <- build_py(qgis_env)
         # return your result
         cmds <- list("cmd" = cmd,
-             "py_cmd" = py_cmd)
+                     "py_cmd" = py_cmd)
     }
   # return your result
   cmds
@@ -209,23 +183,24 @@ execute_cmds <- function(processing_name = "processing.alglist",
 }
 
 #' @title Checking paths to QGIS applications on Windows
-#' @details \code{check_apps} checks if all the necessary applications (QGIS,
-#'   Python27, Qt4, GDAL, GRASS, msys, SAGA) are installed in the correct
+#' @details \code{check_apps} checks if all the necessary applications (QGIS, 
+#'   Python27, Qt4, GDAL, GRASS, msys, SAGA) are installed in the correct 
 #'   locations.
-#' @param osgeo4w_root Path to the root directory of the OSGeo4W-installation,
-#'   usually C:/OSGeo4W64 or C:/OSGeo4w32.
-#' @return The function returns a list with the paths to all the necessary
+#' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
+#'   ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different
+#'   platforms.
+#' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #'  @examples 
 #' \dontrun{
-#' check_apps("C:/OSGeo4W64)
+#' check_apps("C:/OSGeo4W64")
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-check_apps <- function(osgeo4w_root) { 
+check_apps <- function(root) { 
   
   if (Sys.info()["sysname"] == "Windows") {
     
-    path_apps <- paste0(osgeo4w_root, "\\apps")
+    path_apps <- paste0(root, "\\apps")
     
     # define apps to check
     # \\apps\\qgis\\bin
@@ -236,7 +211,7 @@ check_apps <- function(osgeo4w_root) {
     # \\apps\\grass\\
     
     # qgis_prefix_path = C:\\OSGeo4W64\\apps\\qgis & usr/bin
-    # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & usr/bin/share/qgis/python/plugins
+    # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
     apps <- c("qgis", "qgis\\python\\plugins", "Python27",
               "Qt4", "msys", "grass")
     out <- lapply(apps, function(app) {
@@ -256,11 +231,13 @@ check_apps <- function(osgeo4w_root) {
     })
     names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4",
                     "msys", "grass")
-    }
+  }
+  
+  
   
   if (Sys.info()["sysname"] == "Darwin") {
     
-    path_apps <- osgeo4w_root
+    path_apps <- root
     
     # define apps to check
     apps <- c('qgis', "python", "gdal", "grass", "saga")
@@ -289,21 +266,30 @@ check_apps <- function(osgeo4w_root) {
   out 
 }
 
-
+#' @title Little helper function to construct the python-ske
+#' @description This helper function simply constructs the python-skeleton 
+#'   necessary to run the QGIS-Python API.
+#' @param qgis_env #' @param qgis_env Environment settings containing all the
+#'   paths to run the QGIS API. For more information, refer to
+#'   \link{\code{set_env}}.
+#' @author Jannes Muenchow
+#' @examples 
+#' build_py(qgis_env = set_env())
 build_py <- function(qgis_env) {
   py_cmd <- c(
     # import all the libraries you need
     "import os",
+    "import sys",
     "from qgis.core import *",
     "from osgeo import ogr",
     "from PyQt4.QtCore import *",
     "from PyQt4.QtGui import *",
     "from qgis.gui import *",
-    "import sys",
-    "import os",
+    # "import sys",
+    # "import os",
     # initialize QGIS application
     # alter prefix path used by 3rd party apps
-    paste0("QgsApplication.setPrefixPath('", my_env$qgis_prefix_path, 
+    paste0("QgsApplication.setPrefixPath('", qgis_env$qgis_prefix_path, 
            "', True)"),
     "app = QgsApplication([], True)",
     "QgsApplication.initQgis()",
