@@ -21,6 +21,10 @@ command as an \code{R} character vector (see also
 \code{get_usage} lists all function parameters of a specific GIS
   function.
 }
+\details{
+Function \code{get_usage} simply calls
+  \code{processing.alghelp} using Python.
+}
 \examples{
 # find a function which adds coordinates
 find_algorithms(search_term = "add")

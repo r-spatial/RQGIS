@@ -4,7 +4,8 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "", qgis_env = set_env())
+find_algorithms(search_term = "", qgis_env = set_env(),
+  intern = ifelse(Sys.info()["sysname"] == "Windows", TRUE, FALSE))
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only
@@ -25,7 +26,7 @@ Function \code{find_algorithms} simply calls
   \code{processing.alglist} using Python.
 }
 \examples{
-# list all available QGIS algorithms
+# list all available QGIS algorithms on your system
 find_algorithms()
 # find a function which adds coordinates
 find_algorithms(search_term = "add")

@@ -2,25 +2,26 @@
 % Please edit documentation in R/helper_funs.R
 \name{check_apps}
 \alias{check_apps}
-\title{Checking paths to QGIS applications on Windows}
+\title{Checking paths to QGIS applications}
 \usage{
-check_apps(osgeo4w_root)
+check_apps(root)
 }
 \arguments{
-\item{osgeo4w_root}{Path to the root directory of the OSGeo4W-installation,
-usually C:/OSGeo4W64 or C:/OSGeo4w32.}
+\item{root}{Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
+('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
+platforms.}
 }
 \value{
-The function returns a list with the paths to all the necessary
+The function returns a list with the paths to all the necessary 
   QGIS-applications.
  @examples 
 \dontrun{
-check_apps("C:/OSGeo4W64)
+check_apps("C:/OSGeo4W64")
 }
 }
 \details{
-\code{check_apps} checks if all the necessary applications (QGIS,
-  Python27, Qt4, GDAL, GRASS, msys, SAGA) are installed in the correct
+\code{check_apps} checks if platform-dependent applications (e.g,
+  QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
   locations.
 }
 \author{
