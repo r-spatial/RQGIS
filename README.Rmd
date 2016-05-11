@@ -62,7 +62,7 @@ For Debian/Ubuntu, please follow the installation instructions found [https://ww
 How to install SAGA on Ubuntu?
 
 ## MAC
-
+For Mac, please follow this [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to retrieve the centroid coordinates of a spatial polygon object. 
