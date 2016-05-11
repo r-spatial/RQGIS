@@ -1,31 +1,31 @@
 #' @title Retrieve the environment settings to run QGIS from within R
 #' @description \code{set_env} tries to find all the paths necessary to run QGIS
 #'   from within R.
-#' @param path Path to the OSGeo4W-installation (only for machines running on
-#'   Windows). 
+#' @param root Root path to the QGIS-installation.
 #' @details If you do not specify function parameter \code{path}, the function 
 #'   looks for \code{qgis.bat}-file on your C: drive. However, this only works 
-#'   if you have used the OSGeo4W-installation. That means, if you installed
-#'   QGIS on your system without using the OSGeo4W-routine, the function might
-#'   still be able to find the QGIS-installation. However, RQGIS will throw an
-#'   error message since \code{check_apps} will not find the dependencies
-#'   necessary to use the Python QGIS API.
+#'   if you have used the OSGeo4W-installation. That means, if you installed 
+#'   QGIS on your system without using the OSGeo4W-routine, the function might 
+#'   still be able to find the QGIS-installation. However, RQGIS will throw an 
+#'   error message since \code{check_apps} will not find the dependencies 
+#'   necessary to use the Python QGIS API. If you are running RQGIS under Linux
+#'   or on a Mac, \code{set_env} assumes that your root path is "/usr" and
+#'   "/applications/QGIS.app/Contents", respectively.
 #' @examples 
 #' set_env()
 #' @export
 #' @author Jannes Muenchow
-set_env <- function(path = NULL,
-                    qgis = NULL,
+set_env <- function(root = NULL,
+                    qgis_prefix_path = NULL,
+                    python_plugins = NULL,
                     python27 = NULL,
                     qt4 = NULL,
-                    gdal = NULL,
                     msys = NULL,
-                    grass = NULL,
-                    saga = NULL) {
+                    grass = NULL) {
 
   if (Sys.info()["sysname"] == "Windows") {
     
-    if (is.null(path)) {
+    if (is.null(root)) {
       message("Trying to find OSGeo4W on your C: drive.")
       
       # raw command
@@ -43,7 +43,7 @@ set_env <- function(path = NULL,
       raw <- "dir /s /b | findstr"
       # search QGIS on the the C: drive
       cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
-      path <- shell(cmd, intern = TRUE)
+      root <- shell(cmd, intern = TRUE)
       # # search GRASS
       # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
       # tmp <- shell(cmd, intern = TRUE)
@@ -51,42 +51,42 @@ set_env <- function(path = NULL,
       # cmd <- paste(raw, shQuote("Python27$"))
       # shell(cmd, intern = TRUE)
       
-      if (length(path) == 0) {
+      if (length(root) == 0) {
         stop("Sorry, OSGeo4W and QGIS are not installed on the C: drive.",
-             " Please specify the path to your OSGeo4W-installation", 
+             " Please specify the root to your OSGeo4W-installation", 
              " manually.")
-      } else if (length(path) > 1) {
+      } else if (length(root) > 1) {
         stop("There are several QGIS installations on your system:\n",
-             paste(path, collapse = "\n"))
+             paste(root, collapse = "\n"))
       } else {
         # define root, i.e. OSGeo4W-installation
-        path <-  gsub("\\\\bin.*", "", path)
+        root <-  gsub("\\\\bin.*", "", root)
       }
     }
-    # harmonize path syntax
-    path <- gsub("/|//", "\\\\", path)
+    # harmonize root syntax
+    root <- gsub("/|//", "\\\\", root)
     # make sure that the root path does not end with some sort of slash
-    path <- gsub("/$|//$|\\$|\\\\$", "", path)
-    qgis_env <- list(root = path)
-    qgis_env <- c(qgis_env, check_apps(root = path))
+    root <- gsub("/$|//$|\\$|\\\\$", "", root)
+    qgis_env <- list(root = root)
+    qgis_env <- c(qgis_env, check_apps(root = root))
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
     
-    if (is.null(path)) {
+    if (is.null(root)) {
       qgis_env = "/applications/QGIS.app/Contents"
     }
     # print result to the console
-    paste0("QGIS Installation path: ", qgis_env)
+    paste0("QGIS Installation root: ", qgis_env)
   }
   
   if (Sys.info()["sysname"] == "Linux") {
-    if (is.null(path)) {
+    if (is.null(root)) {
       message("Assuming that your root path is '/usr'!")
-      path <- "/usr"
+      root <- "/usr"
     }
-    qgis_env <- list(root = path)
-    qgis_env <- c(qgis_env, check_apps(root = path))
+    qgis_env <- list(root = root)
+    qgis_env <- c(qgis_env, check_apps(root = root))
   }
   # return your result
   qgis_env
@@ -105,7 +105,10 @@ set_env <- function(path = NULL,
 #' @author Jannes Muenchow, QGIS developer team
 #' @examples
 #' # list all available QGIS algorithms on your system
-#' find_algorithms()
+#' algs <- find_algorithms()
+#' algs[1:15]
+#' # just find all native, i.e. QGIS-algorithms
+#' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' @export
@@ -168,6 +171,44 @@ get_options <- function(algorithm_name = "",
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(algorithm_name),
                qgis_env = qgis_env)
+}
+
+
+get_args <- function(alg, qgis_env = set_env()) {
+  # get the usage of a function
+  tmp <- get_usage(algorithm_name = alg, qgis_env = qgis_env, intern = TRUE)
+  # check if algorithm could be found
+  if (any(grepl("Algorithm not found", tmp))) {
+    stop("Specified algorithm was not found!")
+  }
+  
+  # dismiss everything prior to ALGORITHM
+  tmp <- tmp[grep("ALGORITHM: ", tmp):length(tmp)]
+  # extract the arguments
+  ind <- which(tmp == "")
+  my_diff <- c(0, diff(ind))
+  # extract the arguments
+  if (any(my_diff == 1)) {
+    ind <- ind[(my_diff == 1)] - 1
+    # okay, for now let's hardcode it assuming that only the first double space
+    # indicates the break between function arguments and options...
+    args <- tmp[1:ind[1]]
+    # extract the options
+    # opts <- tmp[ind:length(tmp)]
+  } else {
+    args <- tmp
+  }
+  args <- grep("\t", args, value = TRUE)
+  # extract the domain
+  # domain <- gsub(".*<|>", "", args)
+  # dismiss the tab and everything following a space
+  args <- gsub(" .*|\t", "", args)
+  
+  # return your result, in this case just the arguments
+  # in the future, we might want to return the options and the domains as well
+  arg_list <- vector(mode = "list", length = length(args))
+  names(arg_list) <- args
+  lapply(arg_list, function(x) x <- "")
 }
 
 

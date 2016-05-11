@@ -220,7 +220,7 @@ check_apps <- function(root) {
         path <- NULL
         # Aside from msys and grass all apps are necessary to run the QGIS-API
         if (!app %in% c("msys", "grass")) {
-          stop(txt, " Please install ", app, 
+          stop("Please install ", app, 
                " using the 'OSGEO4W' advanced installation", 
                " routine.")
         }
