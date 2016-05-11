@@ -54,7 +54,7 @@ Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org
 - msys (necessary, if you want to run GRASS)
 - saga (optional)
 
-After the installation of OSGeo4W these programs should be found in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
+After the installation of OSGeo4W these programs should be found in `../OSGEO4~1/apps`. Soon, we will also provide you with a detailed installation manual.
 
 ## Linux
 Please follow the installation instructions found here. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
@@ -141,15 +141,13 @@ Of course, this is a very simple example. We could have achieved the same using 
 
 # TO DO:
 
-- OSGeo4w installation guide/manual with screenshots
-- processing.runalg -> user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way
-- Check if run_qgis in fact is able to run all QGIS, SAGA, GRASS, GDAL functions (Sextante). It could be a problem that one needs to specify function arguments as characters.
+- test the implemented functions, especially `run_qgis`, by running numerous QGIS, SAGA and GRASS functions. Is's more than likely that we still need to make `run_qgis` more generic. For instance, it could be a problem that all function arguments are submitted as characters.
+- processing.runalg -> user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way. Maybe we could try to write a function that returns all QGIS function arguments in the form of a list arguments while also capturing the corresponding default values. Have a look if it is possible to get the formal function out of the function .dll.
+- platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA 2.1 manually...)
+- build_cmds: py_cmd could be a one liner for all platforms
 - Take care of the error message:
   ERROR 1: Can't load requested DLL: C:\OSGEO4~1\bin\gdalplugins\ogr_FileGDB.dll
   193: %1 ist keine zulässige Win32-Anwendung.
-- Write find_root for Linux and Apple
+- Rewrite check_apps and set_env in such a way that the user might specify root, qgis_prefix_path, python_plugins himself (at least for UNIX)
 - Write html-vignette, i.e. present a more complex QGIS example
-- find out if SAGA and GRASS can be located somewhere else on the system,
-    i.e. if they can be located outside of C:/OSGeo4W64. I think they might but that would make it quite hard to set the environment under Windows since the OSGeo4W-installation already comes with various batch scripts to set up the environment. Not using the OSGeo4W-installation would mean to set up the environment manually. I don't think that this is a good idea, especially if you aim to do so in a generic way.
-- find out how to set the paths under UNIX systems
-- extent set\_env() so that it can be run under UNIX systems
+

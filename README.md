@@ -41,7 +41,7 @@ Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org
 -   msys (necessary, if you want to run GRASS)
 -   saga (optional)
 
-After the installation of OSGeo4W these programs should be found in `../OSGeo4W64/apps`. Soon, we will also provide you with a detailed OSGeo4W installation manual.
+After the installation of OSGeo4W these programs should be found in `../OSGEO4~1/apps`. Soon, we will also provide you with a detailed installation manual.
 
 Linux
 -----
@@ -80,17 +80,32 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env()
-#> Assuming that your root path is '/usr'!
+#> Trying to find OSGeo4W on your C: drive.
 # have a look at the paths necessary to run QGIS from within R
 my_env
 #> $root
-#> [1] "/usr"
+#> [1] "C:\\OSGeo4W64"
 #> 
-#> $qgis_prefix_path
-#> [1] "/usr/bin/qgis"
+#> $qgis
+#> [1] "C:\\OSGeo4W64\\apps\\qgis"
 #> 
-#> $python_plugins
-#> [1] "/usr/share/qgis/python/plugins"
+#> $Python27
+#> [1] "C:\\OSGeo4W64\\apps\\Python27"
+#> 
+#> $Qt4
+#> [1] "C:\\OSGeo4W64\\apps\\Qt4"
+#> 
+#> $gdal
+#> [1] "C:\\OSGeo4W64\\apps\\gdal"
+#> 
+#> $msys
+#> [1] "C:\\OSGeo4W64\\apps\\msys"
+#> 
+#> $grass
+#> [1] "C:\\OSGeo4W64\\apps\\grass"
+#> 
+#> $saga
+#> [1] "C:\\OSGeo4W64\\apps\\saga"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -100,7 +115,8 @@ Secondly, we would like to find out how the function in QGIS is called which giv
 find_algorithms(search_term = "polygon centroid", 
                 qgis_env = my_env)
 #> [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
-#> [2] ""
+#> [2] "Polygon centroids------------------------------------>saga:polygoncentroids"
+#> [3] ""
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
@@ -109,9 +125,9 @@ This gives us two functions we could use. Here, we'll choose the QGIS function n
 get_usage(algorithm_name = "qgis:polygoncentroids",
           qgis_env = my_env,
           intern = TRUE)
-#> [1] "ALGORITHM: Polygon centroids"    "\tINPUT_LAYER <ParameterVector>"
-#> [3] "\tOUTPUT_LAYER <OutputVector>"   ""                               
-#> [5] ""                                ""
+#> [1] "ALGORITHM: Polygon centroids"   "\tINPUT_LAYER <ParameterVector>"
+#> [3] "\tOUTPUT_LAYER <OutputVector>"   ""                              
+#> [5] ""                               ""
 ```
 
 All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
@@ -126,7 +142,6 @@ params <- list(
 run_qgis(algorithm = "qgis:polygoncentroids", 
          qgis_env = my_env,
          params = params)
-#> character(0)
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
@@ -140,19 +155,17 @@ plot(ger)
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-7-1.png)<!-- -->
+![](README-unnamed-chunk-7-1.png)
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
 TO DO:
 ======
 
--   OSGeo4w installation guide/manual with screenshots
--   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way
--   Check if run\_qgis in fact is able to run all QGIS, SAGA, GRASS, GDAL functions (Sextante). It could be a problem that one needs to specify function arguments as characters.
+-   test the implemented functions, especially `run_qgis`, by running numerous QGIS, SAGA and GRASS functions. Is's more than likely that we still need to make `run_qgis` more generic. For instance, it could be a problem that all function arguments are submitted as characters.
+-   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way. Maybe we could try to write a function that returns all QGIS function arguments in the form of a list arguments while also capturing the corresponding default values. Have a look if it is possible to get the formal function out of the function .dll.
+-   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA 2.1 manually...)
+-   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
--   Write find\_root for Linux and Apple
+-   Rewrite check\_apps and set\_env in such a way that the user might specify root, qgis\_prefix\_path, python\_plugins himself (at least for UNIX)
 -   Write html-vignette, i.e. present a more complex QGIS example
--   find out if SAGA and GRASS can be located somewhere else on the system, i.e. if they can be located outside of C:/OSGeo4W64. I think they might but that would make it quite hard to set the environment under Windows since the OSGeo4W-installation already comes with various batch scripts to set up the environment. Not using the OSGeo4W-installation would mean to set up the environment manually. I don't think that this is a good idea, especially if you aim to do so in a generic way.
--   find out how to set the paths under UNIX systems
--   extent set\_env() so that it can be run under UNIX systems
