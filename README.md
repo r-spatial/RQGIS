@@ -46,12 +46,17 @@ After the installation of OSGeo4W these programs should be found in `../OSGeo4W6
 Linux
 -----
 
-Please follow the installation instructions found here. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
+For Debian/Ubuntu, please follow the installation instructions found [https://www.qgis.org/de/site/forusers/alldownloads.html](here). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
 
-How to install SAGA on Ubuntu?
+### How to install SAGA on Ubuntu?
+
+To use SAGA functions within QGIS and in turn RQGIS, you need to install SAGA GIS first. This is done by adding the following repository to your list of ppa´s and installing SAGA GIS afterwards. Simply execute the following lines of code in a terminal window:
+`sudo add-apt-repository ppa:johanvdw/saga-gis` `sudo apt-get update` `sudo apt-get install saga`
 
 MAC
 ---
+
+For Mac, please follow this [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
 
 RQGIS usage
 ===========
@@ -80,17 +85,9 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env()
-#> Assuming that your root path is '/usr'!
 # have a look at the paths necessary to run QGIS from within R
 my_env
-#> $root
-#> [1] "/usr"
-#> 
-#> $qgis_prefix_path
-#> [1] "/usr/bin/qgis"
-#> 
-#> $python_plugins
-#> [1] "/usr/share/qgis/python/plugins"
+#> [1] "/applications/QGIS.app/Contents"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -99,8 +96,11 @@ Secondly, we would like to find out how the function in QGIS is called which giv
 # look for a function that contains the words "polygon" and "centroid"
 find_algorithms(search_term = "polygon centroid", 
                 qgis_env = my_env)
-#> [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
-#> [2] ""
+#> [1] "ERROR: Opening of authentication db FAILED"                                 
+#> [2] "WARNING: Auth db query exec() FAILED"                                       
+#> [3] "Polygon centroids------------------------------------>qgis:polygoncentroids"
+#> [4] "Polygon centroids------------------------------------>saga:polygoncentroids"
+#> [5] ""
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
@@ -109,9 +109,14 @@ This gives us two functions we could use. Here, we'll choose the QGIS function n
 get_usage(algorithm_name = "qgis:polygoncentroids",
           qgis_env = my_env,
           intern = TRUE)
-#> [1] "ALGORITHM: Polygon centroids"    "\tINPUT_LAYER <ParameterVector>"
-#> [3] "\tOUTPUT_LAYER <OutputVector>"   ""                               
-#> [5] ""                                ""
+#> [1] "ERROR: Opening of authentication db FAILED"
+#> [2] "WARNING: Auth db query exec() FAILED"      
+#> [3] "ALGORITHM: Polygon centroids"              
+#> [4] "\tINPUT_LAYER <ParameterVector>"           
+#> [5] "\tOUTPUT_LAYER <OutputVector>"             
+#> [6] ""                                          
+#> [7] ""                                          
+#> [8] ""
 ```
 
 All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
@@ -126,7 +131,8 @@ params <- list(
 run_qgis(algorithm = "qgis:polygoncentroids", 
          qgis_env = my_env,
          params = params)
-#> character(0)
+#> [1] "ERROR: Opening of authentication db FAILED"
+#> [2] "WARNING: Auth db query exec() FAILED"
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
