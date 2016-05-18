@@ -72,12 +72,16 @@ set_env <- function(root = NULL,
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
-    
     if (is.null(root)) {
-      qgis_env = "/applications/QGIS.app/Contents"
+      qgis_env <- "/applications/QGIS.app/Contents"
     }
     # print result to the console
     paste0("QGIS Installation root: ", qgis_env)
+
+    qgis_env <- list(root = root)
+    qgis_env <- c(qgis_env, qgis_prefix_path = check_apps(root = root) [[1]], 
+                  python_plugins = check_apps(root = path) [[2]])
+    paste0("QGIS Installation path: ", qgis_env)
   }
   
   if (Sys.info()["sysname"] == "Linux") {
