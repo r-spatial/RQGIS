@@ -15,7 +15,7 @@ with the selected GIS function (see \code{\link{get_usage}} and
 \code{\link{get_options}}).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \link{\code{set_env}}.}
+more information, refer to \code{\link{set_env}}.}
 }
 \description{
 \code{run_qgis} is the workhorse of the R-QGIS interface: It

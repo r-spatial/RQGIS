@@ -14,15 +14,16 @@ platforms.}
 \value{
 The function returns a list with the paths to all the necessary 
   QGIS-applications.
- @examples 
-\dontrun{
-check_apps("C:/OSGeo4W64")
 }
-}
-\details{
+\description{
 \code{check_apps} checks if platform-dependent applications (e.g,
   QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
   locations.
+}
+\examples{
+\dontrun{
+check_apps("C:/OSGeo4W64")
+}
 }
 \author{
 Jannes Muenchow, Patrick Schratz

@@ -11,7 +11,7 @@ get_options(algorithm_name = "", qgis_env = set_env())
 returned.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \link{\code{set_env}}.}
+more information, refer to \code{\link{set_env}}.}
 }
 \description{
 \code{get_options} lists all available parameter options for

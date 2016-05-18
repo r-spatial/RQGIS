@@ -12,7 +12,11 @@ find_algorithms(search_term = "", qgis_env = set_env(),
 functions which contain the indicated string.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \link{\code{set_env}}.}
+more information, refer to \code{\link{set_env}}.}
+
+\item{intern}{Logical which indicates whether to capture the output of the
+command as an \code{R} character vector (see also
+\code{\link[base]{system}}.}
 }
 \value{
 Python console output will be captured as an R character vector.
@@ -27,7 +31,10 @@ Function \code{find_algorithms} simply calls
 }
 \examples{
 # list all available QGIS algorithms on your system
-find_algorithms()
+algs <- find_algorithms()
+algs[1:15]
+# just find all native, i.e. QGIS-algorithms
+grep("qgis:", algs, value = TRUE)
 # find a function which adds coordinates
 find_algorithms(search_term = "add")
 }
