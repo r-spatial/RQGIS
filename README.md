@@ -50,9 +50,13 @@ For Debian/Ubuntu, please follow the installation instructions found under this 
 
 ### How to install SAGA on Ubuntu?
 
-To use SAGA functions within QGIS and in turn RQGIS, you need to install SAGA GIS first. This is done by adding the following repository to your list of ppa´s and installing SAGA GIS afterwards. Simply execute the following lines of code in a terminal window: `sudo add-apt-repository ppa:johanvdw/saga-gis`
-`sudo apt-get update`
-`sudo apt-get install saga`
+To use SAGA functions within QGIS and in turn RQGIS, you need to install SAGA GIS first. This is done by adding the following repository to your list of ppa´s and installing SAGA GIS afterwards. Simply execute the following lines of code in a terminal window:
+
+``` bash
+sudo add-apt-repository ppa:johanvdw/saga-gis  
+sudo apt-get update
+sudo apt-get install saga
+```
 
 MAC
 ---
@@ -62,7 +66,7 @@ For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download
 RQGIS usage
 ===========
 
-Subsequently, we will show you a typical workflow of how to use RQGIS. Let's start with a very simple example and assume that we simply wanted to retrieve the centroid coordinates of a spatial polygon object. Using the raster package, we download administrative areas of Germany. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
 
 ``` r
 # attach packages
@@ -86,7 +90,6 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env()
-<<<<<<< HEAD
 #> Trying to find OSGeo4W on your C: drive.
 # have a look at the paths necessary to run QGIS from within R
 my_env
@@ -113,13 +116,7 @@ my_env
 #> 
 #> $saga
 #> [1] "C:\\OSGeo4W64\\apps\\saga"
-=======
-# have a look at the paths necessary to run QGIS from within R
-my_env
->>>>>>> e94484d729878e8387fac55b05b640ff6a43dc4c
 ```
-
-    ## [1] "/applications/QGIS.app/Contents"
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
 
@@ -127,19 +124,10 @@ Secondly, we would like to find out how the function in QGIS is called which giv
 # look for a function that contains the words "polygon" and "centroid"
 find_algorithms(search_term = "polygon centroid", 
                 qgis_env = my_env)
-<<<<<<< HEAD
 #> [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
 #> [2] "Polygon centroids------------------------------------>saga:polygoncentroids"
 #> [3] ""
-=======
->>>>>>> e94484d729878e8387fac55b05b640ff6a43dc4c
 ```
-
-    ## [1] "ERROR: Opening of authentication db FAILED"                                 
-    ## [2] "WARNING: Auth db query exec() FAILED"                                       
-    ## [3] "Polygon centroids------------------------------------>qgis:polygoncentroids"
-    ## [4] "Polygon centroids------------------------------------>saga:polygoncentroids"
-    ## [5] ""
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
@@ -147,22 +135,10 @@ This gives us two functions we could use. Here, we'll choose the QGIS function n
 get_usage(algorithm_name = "qgis:polygoncentroids",
           qgis_env = my_env,
           intern = TRUE)
-<<<<<<< HEAD
 #> [1] "ALGORITHM: Polygon centroids"   "\tINPUT_LAYER <ParameterVector>"
 #> [3] "\tOUTPUT_LAYER <OutputVector>"   ""                              
 #> [5] ""                               ""
-=======
->>>>>>> e94484d729878e8387fac55b05b640ff6a43dc4c
 ```
-
-    ## [1] "ERROR: Opening of authentication db FAILED"
-    ## [2] "WARNING: Auth db query exec() FAILED"      
-    ## [3] "ALGORITHM: Polygon centroids"              
-    ## [4] "\tINPUT_LAYER <ParameterVector>"           
-    ## [5] "\tOUTPUT_LAYER <OutputVector>"             
-    ## [6] ""                                          
-    ## [7] ""                                          
-    ## [8] ""
 
 All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
 
@@ -178,9 +154,6 @@ run_qgis(algorithm = "qgis:polygoncentroids",
          params = params)
 ```
 
-    ## [1] "ERROR: Opening of authentication db FAILED"
-    ## [2] "WARNING: Auth db query exec() FAILED"
-
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
 
 ``` r
@@ -192,11 +165,7 @@ plot(ger)
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-<<<<<<< HEAD
-![](README-unnamed-chunk-7-1.png)
-=======
-![](README_files/figure-markdown_github/unnamed-chunk-7-1.png)<!-- -->
->>>>>>> e94484d729878e8387fac55b05b640ff6a43dc4c
+![](README-unnamed-chunk-8-1.png)
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
@@ -204,7 +173,7 @@ TO DO:
 ======
 
 -   test the implemented functions, especially `run_qgis`, by running numerous QGIS, SAGA and GRASS functions. Is's more than likely that we still need to make `run_qgis` more generic. For instance, it could be a problem that all function arguments are submitted as characters.
--   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way. Maybe we could try to write a function that returns all QGIS function arguments in the form of a list arguments while also capturing the corresponding default values. Have a look if it is possible to get the formal function out of the function .dll.
+-   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way. Maybe we could try to write a function that returns all QGIS function arguments in the form of a list arguments while also capturing the corresponding default values. Have a look if it is possible to get the formal function definition out of the function .dll. On the other hand, we could also wait for user feedback and input, respectively.
 -   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA 2.1 manually...)
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.

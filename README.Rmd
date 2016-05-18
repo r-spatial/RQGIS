@@ -61,9 +61,12 @@ For Debian/Ubuntu, please follow the installation instructions found under this 
 
 ### How to install SAGA on Ubuntu?
 To use SAGA functions within QGIS and in turn RQGIS, you need to install SAGA GIS first. This is done by adding the following repository to your list of ppa´s and installing SAGA GIS afterwards. Simply execute the following lines of code in a terminal window: 
-`sudo add-apt-repository ppa:johanvdw/saga-gis`  
-`sudo apt-get update`  
-`sudo apt-get install saga`  
+
+```{bash, eval = FALSE}
+sudo add-apt-repository ppa:johanvdw/saga-gis  
+sudo apt-get update
+sudo apt-get install saga
+```
 
 ## MAC
 For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
