@@ -304,10 +304,14 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   # build the batch/shell command
   cmd <- c(cmds$cmd, "python py_cmd.py")
   cmd <- paste(cmd, collapse = "\n")
-  batch <- ifelse(Sys.info()["sysname"] == "Windows", ".cmd", ".sh")
-  batch <- paste0("batch_cmd", batch)
-  cat(cmd, file = batch)
-  res <- system(paste("sh", batch), intern = TRUE)
+  # retrieve the filename extension depending on the OS
+  ext <- ifelse(Sys.info()["sysname"] == "Windows", "cmd", "sh")
+  f_name <- paste0("batch_cmd.", ext)
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  batch_call <- 
+    ifelse(Sys.info()["sysname"] == "Windows", f_name, paste("sh", f_name))
+  res <- system(batch_call, intern = TRUE)
   # retrieve the Python output
   tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = FALSE, 
                   stringsAsFactors = FALSE)
