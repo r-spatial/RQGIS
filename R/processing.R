@@ -254,7 +254,10 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   layers.
 #' @export
 #' @author Jannes Muenchow
+
 get_args_man <- function(alg, qgis_env = set_env()) {
+  # find out if it's necessary to obtain default values for
+  # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
   cmds <- build_cmds(qgis_env)
   cwd <- getwd()
   on.exit(setwd(cwd))
@@ -294,7 +297,8 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   # build the batch/shell command
   cmd <- c(cmds$cmd, "python py_cmd.py")
   cmd <- paste(cmd, collapse = "\n")
-  cat(cmd, file = "batch_cmd.cmd")
+  batch <- ifelse(Sys.info()["sysname"] == "Windows", ".cmd", ".sh")
+  cat(cmd, file = paste0("batch_cmd", batch))
   res <- system("batch_cmd.cmd", intern = TRUE)
   tmp <- read.csv(paste0(tmp_dir, "\\output.csv"), header = FALSE, 
                   stringsAsFactors = FALSE)

@@ -140,8 +140,8 @@ execute_cmds <- function(processing_name = "processing.alglist",
                 paste0(processing_name, "(", params, ")", "\n"))
     py_cmd <- paste(py_cmd, collapse = "\n")
     # harmonize path slashes
-    py_cmd = gsub("\\\\", "/", py_cmd)
-    py_cmd = gsub("//", "/", py_cmd)
+    py_cmd <- gsub("\\\\", "/", py_cmd)
+    py_cmd <- gsub("//", "/", py_cmd)
     cat(py_cmd, file = "py_cmd.py")
     
     # write batch command
