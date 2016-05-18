@@ -254,16 +254,23 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   layers.
 #' @export
 #' @author Jannes Muenchow
-
+#' @examples 
+#' get_args_man(alg = "qgis:addfieldtoattributestable")
 get_args_man <- function(alg, qgis_env = set_env()) {
+  
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
-  cmds <- build_cmds(qgis_env)
+  
+  # set the paths
   cwd <- getwd()
   on.exit(setwd(cwd))
   tmp_dir <- tempdir()
   setwd(tmp_dir)
-  # build python command
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env)
+  
+  # extend the python command
   py_cmd <- c(cmds$py_cmd,
               "from processing.core.Processing import Processing",
               "from itertools import izip",
@@ -298,10 +305,13 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   cmd <- c(cmds$cmd, "python py_cmd.py")
   cmd <- paste(cmd, collapse = "\n")
   batch <- ifelse(Sys.info()["sysname"] == "Windows", ".cmd", ".sh")
-  cat(cmd, file = paste0("batch_cmd", batch))
-  res <- system("batch_cmd.cmd", intern = TRUE)
-  tmp <- read.csv(paste0(tmp_dir, "\\output.csv"), header = FALSE, 
+  batch <- paste0("batch_cmd", batch)
+  cat(cmd, file = batch)
+  res <- system(paste("sh", batch), intern = TRUE)
+  # retrieve the Python output
+  tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = FALSE, 
                   stringsAsFactors = FALSE)
+  # ... and convert it into a list
   args <- as.list(tmp$V2)
   names(args) <- tmp$V1
   # return your result
