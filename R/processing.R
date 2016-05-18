@@ -96,9 +96,12 @@ set_env <- function(root = NULL,
 #' @description \code{find_algorithms} lists or queries all algorithms which
 #'   can be used via the command line and the QGIS API.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @param search_term A character to query QGIS functions, i.e. to list only
 #'   functions which contain the indicated string.
+#' @param intern Logical which indicates whether to capture the output of the
+#'   command as an \code{R} character vector (see also
+#'   \code{\link[base]{system}}.
 #' @details Function \code{find_algorithms} simply calls
 #'   \code{processing.alglist} using Python.
 #' @return Python console output will be captured as an R character vector.
@@ -131,7 +134,7 @@ find_algorithms <- function(search_term = "",
 #' @param algorithm_name Name of the function whose parameters are being
 #'   searched for.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also
 #'   \code{\link[base]{system}}.
@@ -160,7 +163,7 @@ get_usage <- function(algorithm_name = "",
 #' @param algorithm_name Name of the GIS function for which options should be
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @details Function \code{get_options} simply calls
 #'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
@@ -173,7 +176,23 @@ get_options <- function(algorithm_name = "",
                qgis_env = qgis_env)
 }
 
+# here, you might be able to retrieve the function arguments and default values
+# (check!): C:\OSGeo4W64\apps\qgis\python\plugins\processing\algs\qgis
 
+#' @title Automatically retrieve GIS function arguments
+#' @description \code{get_args} uses \code{\link{get_usage}} to retrieve 
+#'   function arguments of a GIS function.
+#' @param alg A character specifying the GIS algorithm whose arguments you want
+#'   to retrieve.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \code{\link{set_env}}.
+#' @return The function returns a list whose names correspond to the function 
+#'   arguments you need to specify. Later on, the specified function arguments 
+#'   can serve as input for \code{\link{run_qgis}}'s params argument.
+#' @author Jannes Muenchow
+#' @export
+#' @examples
+#' get_args(alg = "qgis:addfieldtoattributestable")
 get_args <- function(alg, qgis_env = set_env()) {
   # get the usage of a function
   tmp <- get_usage(algorithm_name = alg, qgis_env = qgis_env, intern = TRUE)
@@ -208,7 +227,77 @@ get_args <- function(alg, qgis_env = set_env()) {
   # in the future, we might want to return the options and the domains as well
   arg_list <- vector(mode = "list", length = length(args))
   names(arg_list) <- args
-  lapply(arg_list, function(x) x <- "")
+  # define the default values: If you have an instance of a QGIS object 
+  # representing the layer, you can also pass it as parameter. If the input is 
+  # optional and you do not want to use any data object, use None (see also
+  # https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html).
+  lapply(arg_list, function(x) x <- "None")
+}
+
+#' @title Get GIS arguments and respective default values
+#' @description\code{get_args_man} retrieves automatically function arguments 
+#' and respective default values for a given GIS algorithm.
+#' @param alg The algorithm for which you wish to retrieve arguments and default
+#'   values.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \code{\link{set_env}}.
+#' @return The function returns a list whose names correspond to the function 
+#'   arguments you need to specify. The list elements correspond to the argument
+#'   specifications. The specified function arguments can serve as input for 
+#'   \code{\link{run_qgis}}'s params argument. Please note that although
+#'   \code{get_args_man} tries to retrieve default values, you still need to
+#'   specify some function arguments by your own such as input and output
+#'   layers.
+#' @export
+#' @author Jannes Muenchow
+get_args_man <- function(alg, qgis_env = set_env()) {
+  cmds <- build_cmds(qgis_env)
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  # build python command
+  py_cmd <- c(cmds$py_cmd,
+              "from processing.core.Processing import Processing",
+              "from itertools import izip",
+              "import csv",
+              # retrieve the algorithm
+              paste0("alg = Processing.getAlgorithm('", alg, "')"),
+              "alg = alg.getCopy()",
+              "vals = []",
+              "params = []",
+              # retrieve function arguments and defaults
+              "for param in alg.parameters:",
+              "    params.append(param.name)",
+              "    vals.append(param.getValueAsCommandLineParameter())",
+              "",
+              "for out in alg.outputs:",
+              "    params.append(out.name)",
+              "    vals.append(out.getValueAsCommandLineParameter())",
+              "",
+              # write the two lists (arguments and defaults) to a csv-file
+              paste0("with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+              "    writer = csv.writer(f)",
+              "    writer.writerows(izip(params, vals))",
+              "",
+              "f.close()"
+  )
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  cat(py_cmd, file = "py_cmd.py")
+  # build the batch/shell command
+  cmd <- c(cmds$cmd, "python py_cmd.py")
+  cmd <- paste(cmd, collapse = "\n")
+  cat(cmd, file = "batch_cmd.cmd")
+  res <- system("batch_cmd.cmd", intern = TRUE)
+  tmp <- read.csv(paste0(tmp_dir, "\\output.csv"), header = FALSE, 
+                  stringsAsFactors = FALSE)
+  args <- as.list(tmp$V2)
+  names(args) <- tmp$V1
+  # return your result
+  args
 }
 
 
@@ -222,7 +311,7 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   with the selected GIS function (see \code{\link{get_usage}} and
 #'   \code{\link{get_options}}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @details This workhorse function calls QGIS via Python (QGIS API) using the
 #'   command line. Specifically, it calls \code{processing.runalg}.
 #' @author Jannes Muenchow, QGIS developer team
