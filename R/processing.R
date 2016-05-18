@@ -257,7 +257,7 @@ get_args <- function(alg, qgis_env = set_env()) {
 #' @examples 
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
 get_args_man <- function(alg, qgis_env = set_env()) {
-  
+
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
   
@@ -277,24 +277,28 @@ get_args_man <- function(alg, qgis_env = set_env()) {
               "import csv",
               # retrieve the algorithm
               paste0("alg = Processing.getAlgorithm('", alg, "')"),
-              "alg = alg.getCopy()",
               "vals = []",
               "params = []",
+              "try:",
+              "  alg = alg.getCopy()",
               # retrieve function arguments and defaults
-              "for param in alg.parameters:",
+              "  for param in alg.parameters:",
               "    params.append(param.name)",
               "    vals.append(param.getValueAsCommandLineParameter())",
-              "",
-              "for out in alg.outputs:",
+              "  for out in alg.outputs:",
               "    params.append(out.name)",
               "    vals.append(out.getValueAsCommandLineParameter())",
-              "",
               # write the two lists (arguments and defaults) to a csv-file
-              paste0("with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
               "    writer = csv.writer(f)",
               "    writer.writerows(izip(params, vals))",
-              "",
-              "f.close()"
+              "    f.close()",
+              "except:",
+              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+              "    writer = csv.writer(f)",
+              "    writer.writerow(['Specified algorithm does not exist!'])",
+              "    f.close()",
+              ""
   )
   py_cmd <- paste(py_cmd, collapse = "\n")
   # harmonize slashes
@@ -306,6 +310,7 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   cmd <- paste(cmd, collapse = "\n")
   # retrieve the filename extension depending on the OS
   ext <- ifelse(Sys.info()["sysname"] == "Windows", "cmd", "sh")
+  # complete filename
   f_name <- paste0("batch_cmd.", ext)
   # save the batch file to the temporary location
   cat(cmd, file = f_name)
@@ -315,9 +320,14 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   # retrieve the Python output
   tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = FALSE, 
                   stringsAsFactors = FALSE)
+  if (tmp$V1[1] == "Specified algorithm does not exist!") {
+    stop("Algorithm '", alg, "' does not exist")
+  }
   # ... and convert it into a list
   args <- as.list(tmp$V2)
   names(args) <- tmp$V1
+  # clean up after yourself
+  unlink(paste0(tmp_dir, "/output.csv"))
   # return your result
   args
 }
