@@ -2,7 +2,7 @@
 #' @description This function simply builds the raw Python and batch commands 
 #'   needed to acces the Python QGIS API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to \link{\code{set_env}}.
+#'   API. For more information, refer to \code{\link{set_env}}.
 #' @return The function returns a list with two elements. The first contains a 
 #'   raw batch file and the second the python raw command both of which are 
 #'   later on needed to access QGIS from within R via Python (see 
@@ -124,7 +124,7 @@ build_cmds <- function(qgis_env = set_env()) {
 #'   should be used.
 #' @param params Parameter to be used with the processing function.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also \code{\link[base]{system}}.
 #' @author Jannes Muenchow
@@ -182,7 +182,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 }
 
 #' @title Checking paths to QGIS applications
-#' @details \code{check_apps} checks if platform-dependent applications (e.g,
+#' @description \code{check_apps} checks if platform-dependent applications (e.g,
 #'   QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
 #'   locations.
 #' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
@@ -190,7 +190,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #'   platforms.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
-#'  @examples 
+#' @examples 
 #' \dontrun{
 #' check_apps("C:/OSGeo4W64")
 #' }
@@ -282,7 +282,7 @@ check_apps <- function(root) {
 #' @description This helper function simply constructs the python-skeleton 
 #'   necessary to run the QGIS-Python API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to \link{\code{set_env}}.
+#'   API. For more information, refer to \code{\link{set_env}}.
 #' @author Jannes Muenchow
 #' @examples 
 #' build_py()
