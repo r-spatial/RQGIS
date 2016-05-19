@@ -8,7 +8,7 @@ build_cmds(qgis_env = set_env())
 }
 \arguments{
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS
-API. For more information, refer to \link{\code{set_env}}.}
+API. For more information, refer to \code{\link{set_env}}.}
 }
 \value{
 The function returns a list with two elements. The first contains a 

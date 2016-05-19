@@ -4,12 +4,11 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(path = NULL, qgis = NULL, python27 = NULL, qt4 = NULL,
-  gdal = NULL, msys = NULL, grass = NULL, saga = NULL)
+set_env(root = NULL, qgis_prefix_path = NULL, python_plugins = NULL,
+  python27 = NULL, qt4 = NULL, msys = NULL, grass = NULL)
 }
 \arguments{
-\item{path}{Path to the OSGeo4W-installation (only for machines running on
-Windows).}
+\item{root}{Root path to the QGIS-installation.}
 }
 \description{
 \code{set_env} tries to find all the paths necessary to run QGIS
@@ -18,11 +17,13 @@ Windows).}
 \details{
 If you do not specify function parameter \code{path}, the function 
   looks for \code{qgis.bat}-file on your C: drive. However, this only works 
-  if you have used the OSGeo4W-installation. That means, if you installed
-  QGIS on your system without using the OSGeo4W-routine, the function might
-  still be able to find the QGIS-installation. However, RQGIS will throw an
-  error message since \code{check_apps} will not find the dependencies
-  necessary to use the Python QGIS API.
+  if you have used the OSGeo4W-installation. That means, if you installed 
+  QGIS on your system without using the OSGeo4W-routine, the function might 
+  still be able to find the QGIS-installation. However, RQGIS will throw an 
+  error message since \code{check_apps} will not find the dependencies 
+  necessary to use the Python QGIS API. If you are running RQGIS under Linux
+  or on a Mac, \code{set_env} assumes that your root path is "/usr" and
+  "/applications/QGIS.app/Contents", respectively.
 }
 \examples{
 set_env()

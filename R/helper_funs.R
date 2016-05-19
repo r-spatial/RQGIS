@@ -2,7 +2,7 @@
 #' @description This function simply builds the raw Python and batch commands 
 #'   needed to acces the Python QGIS API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to \link{\code{set_env}}.
+#'   API. For more information, refer to \code{\link{set_env}}.
 #' @return The function returns a list with two elements. The first contains a 
 #'   raw batch file and the second the python raw command both of which are 
 #'   later on needed to access QGIS from within R via Python (see 
@@ -52,8 +52,7 @@ build_cmds <- function(qgis_env = set_env()) {
     py_cmd <- build_py(qgis_env)
     # return your result
     cmds <- list("cmd" = cmd, "py_cmd" = py_cmd)
-  }
-  else if (Sys.info()["sysname"] == "Darwin") {
+  } else if (Sys.info()["sysname"] == "Darwin") {
     # construct the batch file
     cmd <- 
       c(# set framework (not sure if necessary)
@@ -71,8 +70,7 @@ build_cmds <- function(qgis_env = set_env()) {
     # return your result
     cmds <- list("cmd" = cmd,
                  "py_cmd" = py_cmd)
-  } 
-  else if (Sys.info()["sysname"] == "Linux") {
+  } else if (Sys.info()["sysname"] == "Linux") {
     # construct the batch file
     cmd <- 
       c(# append pythonpath to import qgis.core etc. packages
@@ -88,11 +86,11 @@ build_cmds <- function(qgis_env = set_env()) {
                  "py_cmd" = py_cmd)
   } else {
     stop("Sorry, you can use RQGIS only under Windows and UNIX-based
-           operating systems.")
+         operating systems.")
   }
   # return your result
   cmds
-}
+  }
 
 
 #' @title Building and executing cmd and Python scripts
@@ -102,7 +100,7 @@ build_cmds <- function(qgis_env = set_env()) {
 #'   should be used.
 #' @param params Parameter to be used with the processing function.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to \link{\code{set_env}}.
+#'   more information, refer to \code{\link{set_env}}.
 #' @param intern Logical which indicates whether to capture the output of the
 #'   command as an \code{R} character vector (see also \code{\link[base]{system}}.
 #' @author Jannes Muenchow
@@ -124,9 +122,6 @@ execute_cmds <- function(processing_name = "processing.alglist",
     py_cmd <- paste(py_cmd, collapse = "\n")
     cat(py_cmd, file = "py_cmd.py")
     
-    # renice path slashes
-    
-    
     # write batch command
     cmd <- c(cmds$cmd, "python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
@@ -144,9 +139,9 @@ execute_cmds <- function(processing_name = "processing.alglist",
     py_cmd <- c(cmds$py_cmd,
                 paste0(processing_name, "(", params, ")", "\n"))
     py_cmd <- paste(py_cmd, collapse = "\n")
-    # renice path slashes
-    py_cmd = gsub("\\\\", "/", py_cmd)
-    py_cmd = gsub("//", "/", py_cmd)
+    # harmonize path slashes
+    py_cmd <- gsub("\\\\", "/", py_cmd)
+    py_cmd <- gsub("//", "/", py_cmd)
     cat(py_cmd, file = "py_cmd.py")
     
     # write batch command
@@ -160,15 +155,15 @@ execute_cmds <- function(processing_name = "processing.alglist",
 }
 
 #' @title Checking paths to QGIS applications
-#' @details \code{check_apps} checks if platform-dependent applications (e.g,
-#'   QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
+#' @description \code{check_apps} checks if platform-dependent applications
+#'   (e.g, QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
 #'   locations.
 #' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
 #'   ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
 #'   platforms.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
-#'  @examples 
+#' @examples 
 #' \dontrun{
 #' check_apps("C:/OSGeo4W64")
 #' }
@@ -198,7 +193,7 @@ check_apps <- function(root) {
         path <- NULL
         # Aside from msys and grass all apps are necessary to run the QGIS-API
         if (!app %in% c("msys", "grass")) {
-          stop(txt, " Please install ", app, 
+          stop("Please install ", app, 
                " using the 'OSGEO4W' advanced installation", 
                " routine.")
         }
@@ -238,16 +233,16 @@ check_apps <- function(root) {
       }
     })
     names(out) <- c("qgis_prefix_path", "python_plugins")
-    return(out)
   }
-  
+  # return your result
+  out
 }
 
 #' @title Little helper function to construct the python-skeleton
 #' @description This helper function simply constructs the python-skeleton 
 #'   necessary to run the QGIS-Python API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to \link{\code{set_env}}.
+#'   API. For more information, refer to \code{\link{set_env}}.
 #' @author Jannes Muenchow
 #' @examples 
 #' build_py()

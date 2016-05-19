@@ -11,7 +11,7 @@ get_usage(algorithm_name = "", qgis_env = set_env(), intern = FALSE)
 searched for.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \link{\code{set_env}}.}
+more information, refer to \code{\link{set_env}}.}
 
 \item{intern}{Logical which indicates whether to capture the output of the
 command as an \code{R} character vector (see also
