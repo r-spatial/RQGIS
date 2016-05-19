@@ -322,9 +322,9 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   # harmonize slashes
   py_cmd <- gsub("\\\\", "/", py_cmd)
   py_cmd <- gsub("//", "/", py_cmd)
-  # save the Python script
+
+    # save the Python script
   cat(py_cmd, file = "py_cmd.py")
-  
   # build the batch/shell command to run the Python script
   if (Sys.info()["sysname"] == "Windows") {
     cmd <- c(cmds$cmd, "python py_cmd.py")
