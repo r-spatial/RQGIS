@@ -185,9 +185,6 @@ get_options <- function(algorithm_name = "",
                intern = intern)
 }
 
-# here, you might be able to retrieve the function arguments and default values
-# (check!): C:\OSGeo4W64\apps\qgis\python\plugins\processing\algs\qgis
-
 #' @title Automatically retrieve GIS function arguments
 #' @description \code{get_args} uses \code{\link{get_usage}} to retrieve 
 #'   function arguments of a GIS function.
