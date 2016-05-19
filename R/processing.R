@@ -250,11 +250,11 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   you wish to use the first option (default: \code{FALSE}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @details \code{get_args_man} basically mimicks the behaviour of the QGIS GUI,
-#'   i.e. it tries to automatically capture all necessary function arguments 
-#'   while setting the corresponding default values. Addtionally, you can also
-#'   specify that you want to use the first option if there are multiple options
-#'   for a function argument.
+#' @details \code{get_args_man} basically mimicks the behaviour of the QGIS GUI.
+#'   That means, for a given GIS algorithm, it captures automatically all 
+#'   arguments and default values. Additionally, you can indicate that you want 
+#'   to use the first option if a function argument has several options (see
+#'   also \code{\link{get_options}}), which is the QGIS GUI default behaviour.
 #' @return The function returns a list whose names correspond to the function 
 #'   arguments you need to specify. The list elements correspond to the argument
 #'   specifications. The specified function arguments can serve as input for 
@@ -355,7 +355,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   }
   
   # If desired, choose the first option if a function argument has several
-  # options
+  # options to choose from
   if (options) {
     tmp[tmp$opts == "True", "vals"] <- "0"
   }
