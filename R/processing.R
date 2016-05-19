@@ -283,41 +283,43 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   cmds <- build_cmds(qgis_env)
   
   # extend the python command
-  py_cmd <- c(cmds$py_cmd,
-              "from processing.core.Processing import Processing",
-              "from processing.core.parameters import ParameterSelection",
-              "from itertools import izip",
-              "import csv",
-              # retrieve the algorithm
-              paste0("alg = Processing.getAlgorithm('", alg, "')"),
-              "vals = []",
-              "params = []",
-              "opts = list()",
-              "if alg is None:",
-              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
-              "    writer = csv.writer(f)",
-              "    writer.writerow(['params'])",
-              "    writer.writerow(['Specified algorithm does not exist!'])",
-              "    f.close()",
-              "else:",
-              "  alg = alg.getCopy()",
-              # retrieve function arguments and defaults
-              "  for param in alg.parameters:",
-              "    params.append(param.name)",
-              "    vals.append(param.getValueAsCommandLineParameter())",
-              "    opts.append(isinstance(param, ParameterSelection))",
-              "  for out in alg.outputs:",
-              "    params.append(out.name)",
-              "    vals.append(out.getValueAsCommandLineParameter())",
-              "    opts.append(isinstance(out, ParameterSelection))",
-              # write the two lists (arguments and defaults) to a csv-file
-              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
-              "    writer = csv.writer(f)",
-              "    writer.writerow(['params', 'vals', 'opts'])",
-              "    writer.writerows(izip(params, vals, opts))",
-              "    f.close()",
-              ""
-  )
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "from processing.core.Processing import Processing",
+      "from processing.core.parameters import ParameterSelection",
+      "from itertools import izip",
+      "import csv",
+      # retrieve the algorithm
+      paste0("alg = Processing.getAlgorithm('", alg, "')"),
+      "vals = []",
+      "params = []",
+      "opts = list()",
+      "if alg is None:",
+      paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+      "    writer = csv.writer(f)",
+      "    writer.writerow(['params'])",
+      "    writer.writerow(['Specified algorithm does not exist!'])",
+      "    f.close()",
+      "else:",
+      "  alg = alg.getCopy()",
+      # retrieve function arguments and defaults
+      "  for param in alg.parameters:",
+      "    params.append(param.name)",
+      "    vals.append(param.getValueAsCommandLineParameter())",
+      "    opts.append(isinstance(param, ParameterSelection))",
+      "  for out in alg.outputs:",
+      "    params.append(out.name)",
+      "    vals.append(out.getValueAsCommandLineParameter())",
+      "    opts.append(isinstance(out, ParameterSelection))",
+      # write the two lists (arguments and defaults) to a csv-file
+      paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+      "    writer = csv.writer(f)",
+      "    writer.writerow(['params', 'vals', 'opts'])",
+      "    writer.writerows(izip(params, vals, opts))",
+      "    f.close()",
+      ""
+    )
+  # each py_cmd element should go on its own line
   py_cmd <- paste(py_cmd, collapse = "\n")
   # harmonize slashes
   py_cmd <- gsub("\\\\", "/", py_cmd)
@@ -347,12 +349,13 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   # retrieve the Python output
   tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = TRUE, 
                   stringsAsFactors = FALSE)
+  # If a wrong algorithm (-> alg is None) name was provided, stop the function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
   }
   
-  # if desired, choose the first option if there are various options for an
-  # argument
+  # If desired, choose the first option if a function argument has several
+  # options
   if (options) {
     tmp[tmp$opts == "True", "vals"] <- "0"
   }
@@ -367,7 +370,6 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   # return your result
   args
 }
-
 
 #' @title Interface to QGIS commands
 #' @description \code{run_qgis} is the workhorse of the R-QGIS interface: It
