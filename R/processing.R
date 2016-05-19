@@ -168,16 +168,21 @@ get_usage <- function(algorithm_name = "",
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
+#' @param intern Logical which indicates whether to capture the output of the
+#'   command as an \code{R} character vector (see also
+#'   \code{\link[base]{system}}.
 #' @details Function \code{get_options} simply calls
 #'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
 #' get_options(algorithm_name = "saga:slopeaspectcurvature")
 get_options <- function(algorithm_name = "",
-                        qgis_env = set_env()) {
+                        qgis_env = set_env(),
+                        intern = FALSE) {
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(algorithm_name),
-               qgis_env = qgis_env)
+               qgis_env = qgis_env,
+               intern = intern)
 }
 
 # here, you might be able to retrieve the function arguments and default values
@@ -243,20 +248,30 @@ get_args <- function(alg, qgis_env = set_env()) {
 #' and respective default values for a given GIS algorithm.
 #' @param alg The algorithm for which you wish to retrieve arguments and default
 #'   values.
+#' @param options Sometimes you can choose between various options for a 
+#'   function argument. Setting option to \code{TRUE} will automatically assume 
+#'   you wish to use the first option (default: \code{FALSE}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
+#' @details \code{get_args_man} basically mimicks the behaviour of the QGIS GUI,
+#'   i.e. it tries to automatically capture all necessary function arguments 
+#'   while setting the corresponding default values. Addtionally, you can also
+#'   specify that you want to use the first option if there are multiple options
+#'   for a function argument.
 #' @return The function returns a list whose names correspond to the function 
 #'   arguments you need to specify. The list elements correspond to the argument
 #'   specifications. The specified function arguments can serve as input for 
-#'   \code{\link{run_qgis}}'s params argument. Please note that although
-#'   \code{get_args_man} tries to retrieve default values, you still need to
-#'   specify some function arguments by your own such as input and output
+#'   \code{\link{run_qgis}}'s params argument. Please note that although 
+#'   \code{get_args_man} tries to retrieve default values, you still need to 
+#'   specify some function arguments by your own such as input and output 
 #'   layers.
 #' @export
 #' @author Jannes Muenchow
 #' @examples 
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
-get_args_man <- function(alg, qgis_env = set_env()) {
+#' # and using the option argument
+#' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
+get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
 
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
@@ -273,30 +288,36 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   # extend the python command
   py_cmd <- c(cmds$py_cmd,
               "from processing.core.Processing import Processing",
+              "from processing.core.parameters import ParameterSelection",
               "from itertools import izip",
               "import csv",
               # retrieve the algorithm
               paste0("alg = Processing.getAlgorithm('", alg, "')"),
               "vals = []",
               "params = []",
-              "try:",
+              "opts = list()",
+              "if alg is None:",
+              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+              "    writer = csv.writer(f)",
+              "    writer.writerow(['params'])",
+              "    writer.writerow(['Specified algorithm does not exist!'])",
+              "    f.close()",
+              "else:",
               "  alg = alg.getCopy()",
               # retrieve function arguments and defaults
               "  for param in alg.parameters:",
               "    params.append(param.name)",
               "    vals.append(param.getValueAsCommandLineParameter())",
+              "    opts.append(isinstance(param, ParameterSelection))",
               "  for out in alg.outputs:",
               "    params.append(out.name)",
               "    vals.append(out.getValueAsCommandLineParameter())",
+              "    opts.append(isinstance(out, ParameterSelection))",
               # write the two lists (arguments and defaults) to a csv-file
               paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
               "    writer = csv.writer(f)",
-              "    writer.writerows(izip(params, vals))",
-              "    f.close()",
-              "except:",
-              paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
-              "    writer = csv.writer(f)",
-              "    writer.writerow(['Specified algorithm does not exist!'])",
+              "    writer.writerow(['params', 'vals', 'opts'])",
+              "    writer.writerows(izip(params, vals, opts))",
               "    f.close()",
               ""
   )
@@ -304,8 +325,9 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   # harmonize slashes
   py_cmd <- gsub("\\\\", "/", py_cmd)
   py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
   cat(py_cmd, file = "py_cmd.py")
-  # build the batch/shell command
+  # build the batch/shell command to run the Python script
   cmd <- c(cmds$cmd, "python py_cmd.py")
   cmd <- paste(cmd, collapse = "\n")
   # retrieve the filename extension depending on the OS
@@ -316,18 +338,29 @@ get_args_man <- function(alg, qgis_env = set_env()) {
   cat(cmd, file = f_name)
   batch_call <- 
     ifelse(Sys.info()["sysname"] == "Windows", f_name, paste("sh", f_name))
-  res <- system(batch_call, intern = TRUE)
+  # run Python via the command line
+  system(batch_call, intern = TRUE)
+  
   # retrieve the Python output
-  tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = FALSE, 
+  tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = TRUE, 
                   stringsAsFactors = FALSE)
-  if (tmp$V1[1] == "Specified algorithm does not exist!") {
+  if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
   }
-  # ... and convert it into a list
-  args <- as.list(tmp$V2)
-  names(args) <- tmp$V1
+  
+  # if desired, choose the first option if there are various options for an
+  # argument
+  if (options) {
+    tmp[tmp$opts == "True", "vals"] <- "0"
+  }
+  
+  # convert the dataframe into a list
+  args <- as.list(tmp$vals)
+  names(args) <- tmp$params
+  
   # clean up after yourself
   unlink(paste0(tmp_dir, "/output.csv"))
+  
   # return your result
   args
 }
