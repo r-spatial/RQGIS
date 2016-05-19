@@ -324,22 +324,34 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   py_cmd <- gsub("//", "/", py_cmd)
   # save the Python script
   cat(py_cmd, file = "py_cmd.py")
-  # build the batch/shell command to run the Python script
-  if (Sys.info()["sysname"] == "Windows") {
+ 
+   if (Sys.info()["sysname"] == "Windows") {
     cmd <- c(cmds$cmd, "python py_cmd.py")
-  } else if (Sys.info()["sysname"] == "Darwin") {
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
     cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
   }
   
+  # # build the batch/shell command to run the Python script
+  # if (Sys.info()["sysname"] == "Windows") {
+  #   cmd <- c(cmds$cmd, "python py_cmd.py")
+  # } else if (Sys.info()["sysname"] == "Darwin") {
+  #   cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+  # }
+  
   cmd <- paste(cmd, collapse = "\n")
-  # retrieve the filename extension depending on the OS
-  ext <- ifelse(Sys.info()["sysname"] == "Windows", "cmd", "sh")
+  # # retrieve the filename extension depending on the OS
+  # ext <- ifelse(Sys.info()["sysname"] == "Windows", "cmd", "sh")
   # complete filename
-  f_name <- paste0("batch_cmd.", ext)
+  # f_name <- paste0("batch_cmd.", ext)
   # save the batch file to the temporary location
   cat(cmd, file = f_name)
-  batch_call <- 
-    ifelse(Sys.info()["sysname"] == "Windows", f_name, paste("sh", f_name))
+  # batch_call <- 
+  #   ifelse(Sys.info()["sysname"] == "Windows", f_name, paste("sh", f_name))
   # run Python via the command line
   system(batch_call, intern = TRUE)
   
