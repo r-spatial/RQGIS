@@ -73,14 +73,14 @@ set_env <- function(root = NULL,
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
-      qgis_env <- "/applications/QGIS.app/Contents"
+      root <- "/applications/QGIS.app"
     }
     # print result to the console
-    paste0("QGIS Installation root: ", qgis_env)
+    paste0("QGIS Installation root: ", root)
 
     qgis_env <- list(root = root)
     qgis_env <- c(qgis_env, qgis_prefix_path = check_apps(root = root) [[1]], 
-                  python_plugins = check_apps(root = path) [[2]])
+                  python_plugins = check_apps(root = root) [[2]])
     paste0("QGIS Installation path: ", qgis_env)
   }
   
@@ -328,7 +328,12 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
   # save the Python script
   cat(py_cmd, file = "py_cmd.py")
   # build the batch/shell command to run the Python script
-  cmd <- c(cmds$cmd, "python py_cmd.py")
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+  }
+  
   cmd <- paste(cmd, collapse = "\n")
   # retrieve the filename extension depending on the OS
   ext <- ifelse(Sys.info()["sysname"] == "Windows", "cmd", "sh")
