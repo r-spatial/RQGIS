@@ -3,11 +3,11 @@
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
-3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`. Besides, both RSAGA and spgrass let you specify specific GIS function arguments while retrieving automatically the default values for unspecified GIS function arguments. So far, this is not possible using RQGIS, i.e. you need to specify each single function argument. This can be tedious and we hope that we will take care of this in future releases.
+3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 Installation
 ============
@@ -50,7 +50,7 @@ For Debian/Ubuntu, please follow the installation instructions found under this 
 
 ### How to install SAGA on Ubuntu?
 
-To use SAGA functions within QGIS and in turn RQGIS, you need to install SAGA GIS first. This is done by adding the following repository to your list of ppa´s and installing SAGA GIS afterwards. Simply execute the following lines of code in a terminal window:
+To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, you need to specify an additional repository. To do so and to subsequently install SAGA, simply execute the following lines in a terminal window:
 
 ``` bash
 sudo add-apt-repository ppa:johanvdw/saga-gis  
@@ -81,7 +81,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows). If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `get_usage`, `get_options` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows). If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -96,26 +96,23 @@ my_env
 #> $root
 #> [1] "C:\\OSGeo4W64"
 #> 
-#> $qgis
+#> $qgis_prefix_path
 #> [1] "C:\\OSGeo4W64\\apps\\qgis"
 #> 
-#> $Python27
+#> $python_plugins
+#> [1] "C:\\OSGeo4W64\\apps\\qgis\\python\\plugins"
+#> 
+#> $python27
 #> [1] "C:\\OSGeo4W64\\apps\\Python27"
 #> 
-#> $Qt4
+#> $qt4
 #> [1] "C:\\OSGeo4W64\\apps\\Qt4"
-#> 
-#> $gdal
-#> [1] "C:\\OSGeo4W64\\apps\\gdal"
 #> 
 #> $msys
 #> [1] "C:\\OSGeo4W64\\apps\\msys"
 #> 
 #> $grass
 #> [1] "C:\\OSGeo4W64\\apps\\grass"
-#> 
-#> $saga
-#> [1] "C:\\OSGeo4W64\\apps\\saga"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -140,18 +137,30 @@ get_usage(algorithm_name = "qgis:polygoncentroids",
 #> [5] ""                               ""
 ```
 
-All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list.
+All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list. Since it would be tedious to specify each and every function argument manually, especially if a function has more than two or three arguments, we have written the convenience function named `get_args_man`. This function basically mimicks the behaviour of the QGIS GUI, i.e. it retrieves all function arguments and default values. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis`. If you set the argument options to `TRUE`, the function automatically uses the first option if a function argument has several options. For example, "qgis:addfieldtoattributestable" has three options for the FIELD\_TYPE, namely integer, float and string. Setting options to `TRUE` means that your FIELD\_TYPE will become an integer.
 
 ``` r
-# construct a list with our function parameters
-params <- list(
-  # path to the input shapefile
-  INPUT_LAYER = paste(dir_tmp, "ger.shp", sep = "\\"),
-  # path to the output shapefile
-  OUTPUT_LAYER = paste(dir_tmp, "ger_coords.shp", sep = "\\"))
-run_qgis(algorithm = "qgis:polygoncentroids", 
-         qgis_env = my_env,
-         params = params)
+params <- get_args_man(alg = "qgis:polygoncentroids", 
+                       qgis_env = my_env)
+params
+#> $INPUT_LAYER
+#> [1] "None"
+#> 
+#> $OUTPUT_LAYER
+#> [1] "None"
+```
+
+In our case, "qgis:polygoncentroids" has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion greatly fascilitates the task as provided with the wonderful IDE RStudio, for example.
+
+``` r
+# path to the input shapefile
+params$INPUT_LAYER  <- paste(dir_tmp, "ger.shp", sep = "\\")
+# path to the output shapefile
+params$OUTPUT_LAYER <- paste(dir_tmp, "ger_coords.shp", sep = "\\")
+run_qgis(algorithm = "qgis:polygoncentroids",
+         params = params,
+         qgis_env = my_env)
+#> character(0)
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
@@ -165,7 +174,7 @@ plot(ger)
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-8-1.png)
+![](README-unnamed-chunk-9-1.png)
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
 
@@ -173,8 +182,7 @@ TO DO:
 ======
 
 -   test the implemented functions, especially `run_qgis`, by running numerous QGIS, SAGA and GRASS functions. Is's more than likely that we still need to make `run_qgis` more generic. For instance, it could be a problem that all function arguments are submitted as characters.
--   processing.runalg -&gt; user has to provide each argument and cannot call single arguments, find out if there is a more user-friendly way. Maybe we could try to write a function that returns all QGIS function arguments in the form of a list arguments while also capturing the corresponding default values. Have a look if it is possible to get the formal function definition out of the function .dll. On the other hand, we could also wait for user feedback and input, respectively.
--   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA 2.1 manually...)
+-   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA manually...)
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   Rewrite check\_apps and set\_env in such a way that the user might specify root, qgis\_prefix\_path, python\_plugins himself (at least for UNIX)
