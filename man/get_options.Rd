@@ -4,7 +4,7 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(algorithm_name = "", qgis_env = set_env())
+get_options(algorithm_name = "", qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
 \item{algorithm_name}{Name of the GIS function for which options should be
@@ -12,6 +12,10 @@ returned.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
+
+\item{intern}{Logical which indicates whether to capture the output of the
+command as an \code{R} character vector (see also
+\code{\link[base]{system}}.}
 }
 \description{
 \code{get_options} lists all available parameter options for

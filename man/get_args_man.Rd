@@ -4,11 +4,15 @@
 \alias{get_args_man}
 \title{Get GIS arguments and respective default values}
 \usage{
-get_args_man(alg, qgis_env = set_env())
+get_args_man(alg, options = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The algorithm for which you wish to retrieve arguments and default
 values.}
+
+\item{options}{Sometimes you can choose between various options for a 
+function argument. Setting option to \code{TRUE} will automatically assume 
+you wish to use the first option (default: \code{FALSE}).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
@@ -17,14 +21,26 @@ more information, refer to \code{\link{set_env}}.}
 The function returns a list whose names correspond to the function 
   arguments you need to specify. The list elements correspond to the argument
   specifications. The specified function arguments can serve as input for 
-  \code{\link{run_qgis}}'s params argument. Please note that although
-  \code{get_args_man} tries to retrieve default values, you still need to
-  specify some function arguments by your own such as input and output
+  \code{\link{run_qgis}}'s params argument. Please note that although 
+  \code{get_args_man} tries to retrieve default values, you still need to 
+  specify some function arguments by your own such as input and output 
   layers.
 }
 \description{
 \code{get_args_man} retrieves automatically function arguments 
 and respective default values for a given GIS algorithm.
+}
+\details{
+\code{get_args_man} basically mimicks the behaviour of the QGIS GUI.
+  That means, for a given GIS algorithm, it captures automatically all 
+  arguments and default values. Additionally, you can indicate that you want 
+  to use the first option if a function argument has several options (see
+  also \code{\link{get_options}}), which is the QGIS GUI default behaviour.
+}
+\examples{
+get_args_man(alg = "qgis:addfieldtoattributestable")
+# and using the option argument
+get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 }
 \author{
 Jannes Muenchow
