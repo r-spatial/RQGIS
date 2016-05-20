@@ -50,7 +50,7 @@ For Debian/Ubuntu, please follow the installation instructions found under this 
 
 ### How to install SAGA on Ubuntu?
 
-To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, you need to specify an additional repository. To do so and to subsequently install SAGA, simply execute the following lines in a terminal window:
+To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window:
 
 ``` bash
 sudo add-apt-repository ppa:johanvdw/saga-gis  
@@ -137,7 +137,7 @@ get_usage(algorithm_name = "qgis:polygoncentroids",
 #> [5] ""                               ""
 ```
 
-All the function expects, is a parameter called INPUT\_LAYER, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called OUTPUT\_Layer, i.e. the path to the output shapefile. `run_qgis` expects exactly these function parameters as a list. Since it would be tedious to specify each and every function argument manually, especially if a function has more than two or three arguments, we have written the convenience function named `get_args_man`. This function basically mimicks the behaviour of the QGIS GUI, i.e. it retrieves all function arguments and default values. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis`. If you set the argument options to `TRUE`, the function automatically uses the first option if a function argument has several options. For example, "qgis:addfieldtoattributestable" has three options for the FIELD\_TYPE, namely integer, float and string. Setting options to `TRUE` means that your FIELD\_TYPE will become an integer.
+Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimicks the behaviour of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If you additionally set the argument `options` to `TRUE`, the function automatically uses the first option if a function argument has several options. For example, `qgis:addfieldtoattributestable` has three options for the `FIELD\_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
 
 ``` r
 params <- get_args_man(alg = "qgis:polygoncentroids", 
@@ -150,7 +150,7 @@ params
 #> [1] "None"
 ```
 
-In our case, "qgis:polygoncentroids" has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion greatly fascilitates the task as provided with the wonderful IDE RStudio, for example.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task.
 
 ``` r
 # path to the input shapefile
@@ -176,7 +176,7 @@ plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 
 ![](README-unnamed-chunk-9-1.png)
 
-Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette...
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
 
 TO DO:
 ======
