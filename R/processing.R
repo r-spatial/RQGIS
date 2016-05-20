@@ -97,16 +97,19 @@ set_env <- function(root = NULL,
 }
 
 #' @title Find and list available QGIS algorithms
-#' @description \code{find_algorithms} lists or queries all algorithms which
-#'   can be used via the command line and the QGIS API.
+#' @description \code{find_algorithms} lists or queries all algorithms which can
+#'   be used via the command line and the QGIS API.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @param search_term A character to query QGIS functions, i.e. to list only
+#' @param search_term A character to query QGIS functions, i.e. to list only 
 #'   functions which contain the indicated string.
-#' @param intern Logical which indicates whether to capture the output of the
-#'   command as an \code{R} character vector (see also
+#' @param name_only If \code{TRUE}, the function returns only the name(s) of the
+#'   found algorithms. Otherwise, a short function description will be returned
+#'   as well (default).
+#' @param intern Logical which indicates whether to capture the output of the 
+#'   command as an \code{R} character vector (see also 
 #'   \code{\link[base]{system}}.
-#' @details Function \code{find_algorithms} simply calls
+#' @details Function \code{find_algorithms} simply calls 
 #'   \code{processing.alglist} using Python.
 #' @return Python console output will be captured as an R character vector.
 #' @author Jannes Muenchow, QGIS developer team
@@ -121,16 +124,22 @@ set_env <- function(root = NULL,
 #' @export
 find_algorithms <- function(search_term = "",
                             qgis_env = set_env(),
+                            name_only = FALSE,
                             intern = 
                               ifelse(Sys.info()["sysname"] == "Windows",
                                      TRUE, FALSE)) {
   
-    execute_cmds(processing_name = "processing.alglist",
-                 params = shQuote(search_term),
-                 qgis_env = qgis_env,
-                 intern = intern)
-
+    algs <- execute_cmds(processing_name = "processing.alglist",
+                         params = shQuote(search_term),
+                         qgis_env = qgis_env,
+                         intern = intern)
+    if (name_only) {
+      algs <- gsub(".*>", "", algs)
+    }
+    # return your result
+    algs
 }
+
 
 #' @title Get usage of a specific GIS function
 #' @description \code{get_usage} lists all function parameters of a specific GIS
