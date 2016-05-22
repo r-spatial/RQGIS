@@ -1,0 +1,60 @@
+---
+title: "RQGIS install instructions for Windows, Mac, Linux"
+author: "Jannes Münchow, Patrick Schratz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{"Install instructions for Windows/Mac/Linux"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Vignette Info
+
+This Vignette shows how to set up your local QGIS, SAGA and GRASS environments 
+on your local PC to get RQGIS running smoothly. We present example combinations 
+of different software versions for each operating system (Windows, Mac, Linux) 
+that will interact nicely with each other and RQGIS. Other combinations of 
+software version combination of QGIS, SAGA and GRASS than the ones presented 
+here might also work without problems. However, for time reasons we can not test
+all possible combinations and if you encounter problems it is recommended to use
+the newest stable version of all softwares.  
+
+
+
+## Windows
+
+## Mac
+
+
+## Linux
+
+## Figures
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plot(1:10)
+plot(10:1)
+```
+
+You can enable figure captions by `fig_caption: yes` in YAML:
+
+    output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+
+Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+
+## More Examples
+
+You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+
+```{r, echo=FALSE, results='asis'}
+knitr::kable(head(mtcars, 10))
+```
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))
