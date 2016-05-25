@@ -8,9 +8,8 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-libcurl
-expat
-freexl
+
+
 ## Vignette Info
 
 This Vignette shows how to set up your local QGIS, SAGA and GRASS environments 
@@ -59,7 +58,7 @@ Click on "Continue" and install all selected items. Be patient, it may take
 some time depending on the number of new installation/updates. 
 
 
-**Option 2** )# working with 840 algs)  
+**Option 2** (# working with 840 algs)  
 
 1. Select "Express Installation" 
 2. Check "QGIS, GRASS and GDAL"
@@ -69,9 +68,9 @@ some time depending on the number of new installation/updates.
 #### Troubleshooting
 If you encounter the following error when trying to execute `find_algorithms()`:  
 
-**Error:**   
+**Error 1:**   
 
-```
+``` {r, eval = FALSE}
 find_algorithms()
 Trying to find OSGeo4W on your C: drive.
  Error in set_env() : There are several QGIS installations on your system:
@@ -84,9 +83,9 @@ under "C:\OSGEO4W"
 ----
 This error appears when there´s something wrong with your local QGIS installation.  
 
-**Error:**  (advanced installation)
+**Error 2:**  (advanced installation)
 
-```
+```{r, eval = FALSE}
 find_algorithms()
 Trying to find OSGeo4W on your C: drive.
 [1] "Traceback (most recent call last):"                                                        
@@ -111,3 +110,29 @@ install the latest
 
 ## Linux
 
+For Debian/Ubuntu, please follow the installation instructions found under this
+[link](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if 
+you install QGIS from the built-in Software managers of your OS, you will most 
+likely get a rather old QGIS version as these repositories only getting updated 
+quite sparsely. For other Linux builds, please see respective tutorials for 
+yourself.
+
+To help you with the instructions provided at the QGIS website, here is 
+an example for Ubuntu 16.04:
+
+1. Open a terminal window
+2. Type `sudo gedit /etc/apt/sources.list`
+3. Move to the end of the document and add the following lines:   
+  `#QGIS`  
+  `deb https://www.qgis.org/debian xenial main` "Xenial" here refers to 
+  Ubuntu build name which is "Xenial Xerus" for Version 16.04. Save it and
+  exit. 
+4. In the terminal window: 
+add `wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import` 
+followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
+5. Terminal: `sudo apt-get update` 
+6. Terminal: `sudo apt-get install qgis python-qgis qgis-plugin-grass`
+
+You basically added the most recent stable QGIS repository to your list of
+repositories. Everytime you are running `sudo apt-get update` Ubuntu checks for
+new QGIS updates. 
