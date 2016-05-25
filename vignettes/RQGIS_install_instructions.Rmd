@@ -1,10 +1,10 @@
 ---
-title: "RQGIS install instructions for Windows, Mac, Linux"
+title: "RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"
 author: "Jannes Münchow, Patrick Schratz"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{"Install instructions for Windows/Mac/Linux"}
+  %\VignetteIndexEntry{RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,38 +23,77 @@ the newest stable version of all softwares.
 
 
 ## Windows
+### OSGEO4W
+For Windows, a convenient installer is available, provided by the 
+['Open Source Geospatial Foundation'](http://www.osgeo.org/). This installer
+installs QGIS, GRASS, SAGA and all required libraries for you in a way that 
+enables you to run QGIS and RQGIS with full power, meaning with all algorithms
+QGIS provided.It also takes care of all required bindings. Please download the 
+specific installer for your system architecture 
+[under this link](http://trac.osgeo.org/osgeo4w/).  
+
+1. Select "Advanced" Installation 
+2. Check "Download from the Internet"  
+3. Optionally select "All Users" oder "Just me"  
+4. Leave install directory default  
+5. Search for "GDAL" and install all entries 
+6. Search for "QGIS"
+6.1 Under "Desktop" install "qgis:QGIS Desktop"  
+6.2 Under "Libs" install all entries  
+7. Search for "GRASS"  
+7.1 Under "Desktop" install "grass: GRASS GIS - stable release"  
+7.2 Under "Libs" install all entries  
+8. Search for "SAGA" and install it  
+9. Search for "msys" and install it  
+10. Search for "qt4" and install all entries having "qt4" in their name  
+11. Search for "python"   
+11.1 Under "Commandline_Utilities" install "python-core" and "python-tools"  
+11.2 Under "Libs" makes sure that "gdal-dev-python" is installed  
+
+Click on "Continue" and install all selected items. Be patient, it may take 
+some time depending on the number of new installation/updates. 
+
+#### Troubleshooting
+If you encounter the following error when trying to execute `find_algorithms()`:  
+
+*Error:*
+```
+find_algorithms()
+Trying to find OSGeo4W on your C: drive.
+ Error in set_env() : There are several QGIS installations on your system:
+C:\OSGeo4W64\bin\qgis.bat
+C:\Program Files\QGIS Essen\bin\qgis.bat 
+```
+Solution: Make sure to delete the QGIS installation which is !NOT! installed 
+under "C:\OSGEO4W"
+
+----
+This error appears when there´s something wrong with your local QGIS installation.  
+
+*Error:* 
+
+```
+find_algorithms()
+Trying to find OSGeo4W on your C: drive.
+[1] "Traceback (most recent call last):"                                                        
+[2] "  File \"py_cmd.py\", line 3, in <module>"                                                 
+[3] "    from qgis.core import *"                                                               
+[4] "  File \"C:\\OSGEO4~1\\apps\\qgis\\python\\qgis\\__init__.py\", line 36, in <module>"      
+[5] "    from qgis.core import QgsFeature, QgsGeometry"                                         
+[6] "  File \"C:\\OSGEO4~1\\apps\\qgis\\python\\qgis\\core\\__init__.py\", line 34, in <module>"
+[7] "    from qgis._core import *"                                                              
+[8] "ImportError: DLL load failed: Das angegebene Modul wurde nicht gefunden."                  
+attr(,"status")
+[1] 1
+Warning message:
+running command 'batch_cmd.cmd' had status 1 
+```
 
 ## Mac
-
+### QGIS
+Please follow the instructions provided 
+[here](https://www.qgis.org/de/site/forusers/download.html). We recommend to 
+install the latest
 
 ## Linux
 
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
-```
-
-You can enable figure captions by `fig_caption: yes` in YAML:
-
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
-
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
-
-## More Examples
-
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
-
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
-```
-
-Also a quote using `>`:
-
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
