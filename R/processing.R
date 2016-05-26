@@ -320,7 +320,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
       "    params.append(out.name)",
       "    vals.append(out.getValueAsCommandLineParameter())",
       "    opts.append(isinstance(out, ParameterSelection))",
-      # write the two lists (arguments and defaults) to a csv-file
+      # write the three lists (arguments, defaults, options) to a csv-file
       paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
       "    writer = csv.writer(f)",
       "    writer.writerow(['params', 'vals', 'opts'])",
@@ -363,7 +363,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
     stop("Algorithm '", alg, "' does not exist")
   }
   
-  # If desired, choose the first option if a function argument has several
+  # If desired, select the first option if a function argument has several
   # options to choose from
   if (options) {
     tmp[tmp$opts == "True", "vals"] <- "0"
