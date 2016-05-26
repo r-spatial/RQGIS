@@ -1,0 +1,138 @@
+---
+title: "RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"
+author: "Jannes Münchow, Patrick Schratz"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## Vignette Info
+
+This Vignette shows how to set up your local QGIS, SAGA and GRASS environments 
+on your local PC to get RQGIS running smoothly. We present example combinations 
+of different software versions for each operating system (Windows, Mac, Linux) 
+that will interact nicely with each other and RQGIS. Other combinations of 
+software version combination of QGIS, SAGA and GRASS than the ones presented 
+here might also work without problems. However, for time reasons we can not test
+all possible combinations and if you encounter problems it is recommended to use
+the newest stable version of all softwares.  
+
+
+
+## Windows
+### OSGEO4W
+
+For Windows, a convenient installer is available, provided by the 
+['Open Source Geospatial Foundation'](http://www.osgeo.org/). This installer
+installs QGIS, GRASS, SAGA and all required libraries for you in a way that 
+enables you to run QGIS and RQGIS with full power, meaning with all algorithms
+QGIS provided. It also takes care of all required bindings. Please download the 
+specific installer for your system architecture 
+[under this link](http://trac.osgeo.org/osgeo4w/).  
+
+**Option 1:** (# )not working right now - various erros pointing to missing .dll´s)  
+
+1. Select "Advanced" Installation 
+2. Check "Download from the Internet"  
+3. Optionally select "All Users" oder "Just me"  
+4. Leave install directory default  
+5. Search for "GDAL" and install all entries 
+6. Search for "QGIS"
+6.1 Under "Desktop" install "qgis:QGIS Desktop"  
+6.2 Under "Libs" install all entries  
+7. Search for "GRASS"  
+7.1 Under "Desktop" install "grass: GRASS GIS - stable release"  
+7.2 Under "Libs" install all entries  
+8. Search for "SAGA" and install it  
+9. Search for "msys" and install it  
+10. Search for "qt4" and install all entries having "qt4" in their name  
+11. Search for "python"   
+11.1 Under "Commandline_Utilities" install "python-core" and "python-tools"  
+11.2 Under "Libs" makes sure that "gdal-dev-python" is installed  
+
+Click on "Continue" and install all selected items. Be patient, it may take 
+some time depending on the number of new installation/updates. 
+
+
+**Option 2** (# working with 840 algs)  
+
+1. Select "Express Installation" 
+2. Check "QGIS, GRASS and GDAL"
+3. Run!
+
+
+#### Troubleshooting
+If you encounter the following error when trying to execute `find_algorithms()`:  
+
+**Error 1:**   
+
+``` {r, eval = FALSE}
+find_algorithms()
+Trying to find OSGeo4W on your C: drive.
+ Error in set_env() : There are several QGIS installations on your system:
+C:\OSGeo4W64\bin\qgis.bat
+C:\Program Files\QGIS Essen\bin\qgis.bat 
+```
+Solution: Make sure to delete the QGIS installation which is !NOT! installed 
+under "C:\OSGEO4W"
+
+----
+This error appears when there´s something wrong with your local QGIS installation.  
+
+**Error 2:**  (advanced installation)
+
+```{r, eval = FALSE}
+find_algorithms()
+Trying to find OSGeo4W on your C: drive.
+[1] "Traceback (most recent call last):"                                                        
+[2] "  File \"py_cmd.py\", line 3, in <module>"                                                 
+[3] "    from qgis.core import *"                                                               
+[4] "  File \"C:\\OSGEO4~1\\apps\\qgis\\python\\qgis\\__init__.py\", line 36, in <module>"      
+[5] "    from qgis.core import QgsFeature, QgsGeometry"                                         
+[6] "  File \"C:\\OSGEO4~1\\apps\\qgis\\python\\qgis\\core\\__init__.py\", line 34, in <module>"
+[7] "    from qgis._core import *"                                                              
+[8] "ImportError: DLL load failed: Das angegebene Modul wurde nicht gefunden."                  
+attr(,"status")
+[1] 1
+Warning message:
+running command 'batch_cmd.cmd' had status 1 
+```
+
+## Mac
+### QGIS
+Please follow the instructions provided 
+[here](https://www.qgis.org/de/site/forusers/download.html). We recommend to 
+install the latest
+
+## Linux
+
+For Debian/Ubuntu, please follow the installation instructions found under this
+[link](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if 
+you install QGIS from the built-in Software managers of your OS, you will most 
+likely get a rather old QGIS version as these repositories only getting updated 
+quite sparsely. For other Linux builds, please see respective tutorials for 
+yourself.
+
+To help you with the instructions provided at the QGIS website, here is 
+an example for Ubuntu 16.04:
+
+1. Open a terminal window
+2. Type `sudo gedit /etc/apt/sources.list`
+3. Move to the end of the document and add the following lines:   
+  `#QGIS`  
+  `deb https://www.qgis.org/debian xenial main` "Xenial" here refers to 
+  Ubuntu build name which is "Xenial Xerus" for Version 16.04. Save it and
+  exit. 
+4. In the terminal window: 
+add `wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import` 
+followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
+5. Terminal: `sudo apt-get update` 
+6. Terminal: `sudo apt-get install qgis python-qgis qgis-plugin-grass`
+
+You basically added the most recent stable QGIS repository to your list of
+repositories. Everytime you are running `sudo apt-get update` Ubuntu checks for
+new QGIS updates. 
