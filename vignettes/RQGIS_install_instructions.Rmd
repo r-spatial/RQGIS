@@ -34,7 +34,13 @@ QGIS provided. It also takes care of all required bindings. Please download the
 specific installer for your system architecture 
 [under this link](http://trac.osgeo.org/osgeo4w/).  
 
-**Option 1:** (# )not working right now - various erros pointing to missing .dll´s)  
+**Option 1** (# working with 840 algs)  
+
+1. Select "Express Installation" 
+2. Check "QGIS, GRASS and GDAL"
+3. Run!
+
+<span style="color:red">**Option 2:** (not working right now - various erros pointing to missing .dll´s)
 
 1. Select "Advanced" Installation 
 2. Check "Download from the Internet"  
@@ -55,20 +61,13 @@ specific installer for your system architecture
 11.2 Under "Libs" makes sure that "gdal-dev-python" is installed  
 
 Click on "Continue" and install all selected items. Be patient, it may take 
-some time depending on the number of new installation/updates. 
-
-
-**Option 2** (# working with 840 algs)  
-
-1. Select "Express Installation" 
-2. Check "QGIS, GRASS and GDAL"
-3. Run!
+some time depending on the number of new installation/updates. </span>
 
 
 #### Troubleshooting
 If you encounter the following error when trying to execute `find_algorithms()`:  
 
-**Error 1:**   
+**Error #1:**   
 
 ``` {r, eval = FALSE}
 find_algorithms()
@@ -77,13 +76,12 @@ Trying to find OSGeo4W on your C: drive.
 C:\OSGeo4W64\bin\qgis.bat
 C:\Program Files\QGIS Essen\bin\qgis.bat 
 ```
-Solution: Make sure to delete the QGIS installation which is !NOT! installed 
-under "C:\OSGEO4W"
+*Solution: Make sure to delete the QGIS installation which is !NOT! installed* 
+*under "C:\\OSGEO4W\\"*
 
 ----
-This error appears when there´s something wrong with your local QGIS installation.  
 
-**Error 2:**  (advanced installation)
+**Error #2:**  (advanced installation)
 
 ```{r, eval = FALSE}
 find_algorithms()
@@ -102,31 +100,44 @@ Warning message:
 running command 'batch_cmd.cmd' had status 1 
 ```
 
+*Solution: This error appears when there´s something wrong with your local QGIS installation.*
+*It is recommended to uninstall all QGIS installations on your PC and install* 
+*QGIS using 'Option #1'.*  
+
+
 ## Mac
 ### QGIS
 Please follow the instructions provided 
 [here](https://www.qgis.org/de/site/forusers/download.html). We recommend to 
-install the latest
+install the latest 'current' version. 
+
+#### Troubleshooting
+Warnings appeare when running any RQGIS command. Does not affect usage.  
+<span style="color:red">!Unresolved!
+```{r, eval = FALSE}
+QSqlDatabase: QSQLITE driver not loaded
+QSqlDatabase: available drivers: 
+QSqlQuery::prepare: database not open
+```
 
 ## Linux
 
 For Debian/Ubuntu, please follow the installation instructions found under this
 [link](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if 
-you install QGIS from the built-in Software managers of your OS, you will most 
+you install QGIS from the built-in Software managers/repositories, you will most 
 likely get a rather old QGIS version as these repositories only getting updated 
-quite sparsely. For other Linux builds, please see respective tutorials for 
-yourself.
+quite sparsely (especially if your running older Ubuntu builds like 14.04). 
+We did not test other Linux derivates at the moment.
 
-To help you with the instructions provided at the QGIS website, here is 
-an example for Ubuntu 16.04:
+You can also just use this simplified guide:
 
 1. Open a terminal window
 2. Type `sudo gedit /etc/apt/sources.list`
 3. Move to the end of the document and add the following lines:   
   `#QGIS`  
-  `deb https://www.qgis.org/debian xenial main` "Xenial" here refers to 
-  Ubuntu build name which is "Xenial Xerus" for Version 16.04. Save it and
-  exit. 
+  `deb https://www.qgis.org/debian xenial main` "xenial" here refers to 
+  Ubuntu build name which is "Xenial Xerus" for Version 16.04. For Ubuntu 14.04
+  replace "xenial" with "trusty". Save it and exit. 
 4. In the terminal window: 
 add `wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import` 
 followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
@@ -134,5 +145,5 @@ followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
 6. Terminal: `sudo apt-get install qgis python-qgis qgis-plugin-grass`
 
 You basically added the most recent stable QGIS repository to your list of
-repositories. Everytime you are running `sudo apt-get update` Ubuntu checks for
+repositories. Everytime you are running `sudo apt-get update` now, Ubuntu checks for
 new QGIS updates. 
