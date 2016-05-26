@@ -126,7 +126,7 @@ params <- get_args_man(alg = "qgis:polygoncentroids",
 params
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Finally, `run_qgis` calls the QGIS API to run a the specified geoalgorithm with the corresponding function arguments.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
 
 ```{r, error = FALSE, message = FALSE, warning = FALSE, fig.width = 5, fig.height = 5, fig.align = "center"}
 # path to the input shapefile
