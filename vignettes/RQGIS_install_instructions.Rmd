@@ -24,7 +24,8 @@ the newest stable version of all softwares.
 
 
 ## Windows
-### OSGEO4W
+
+### QGIS (OSGEO4W)
 
 For Windows, a convenient installer is available, provided by the 
 ['Open Source Geospatial Foundation'](http://www.osgeo.org/). This installer
@@ -113,7 +114,7 @@ install the latest 'current' version.
 
 #### Troubleshooting
 Warnings appeare when running any RQGIS command. Does not affect usage.  
-<span style="color:red">!Unresolved!
+<span style="color:red">!Unresolved! (!appears also under Linux after OTB configuration!)
 ```{r, eval = FALSE}
 QSqlDatabase: QSQLITE driver not loaded
 QSqlDatabase: available drivers: 
@@ -121,7 +122,13 @@ QSqlQuery::prepare: database not open
 ```
 
 ## Linux
+Number of algorithms: 
 
+- 781 (QGIS + SAGA)
+- 882 (+ Orfeo Toolbox)
+
+
+### QGIS
 For Debian/Ubuntu, please follow the installation instructions found under this
 [link](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if 
 you install QGIS from the built-in Software managers/repositories, you will most 
@@ -147,3 +154,38 @@ followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
 You basically added the most recent stable QGIS repository to your list of
 repositories. Everytime you are running `sudo apt-get update` now, Ubuntu checks for
 new QGIS updates. 
+
+### RQGIS
+**Compiling RQGIS on a fresh Linux installation:**
+
+After installing R, you can install RQGIS using the `devtools` package. This packages
+depends on several libraries which you should install a priori.
+We recommend to use the "Synaptic" package manager for this. To install synaptic, please 
+use the built-in "Ubuntu Software" app or any other built-in program of your Linux installation.
+Search for "libssl-dev","libcurl4-openssl-dev" "libssh2-1-dev" and install all dependencies. Afterwards install the R-package "roxygen2" and then "devtools". If that succeeded, you can install RQGIS
+using `devtools::install_github("jannes-m/RQGIS")` and load it with `library("RQGIS")`.
+
+### Enabling additional providers and their algorithms
+
+#### SAGA
+To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
+
+```{bash, eval = FALSE}
+sudo add-apt-repository ppa:johanvdw/saga-gis  
+sudo apt-get update
+sudo apt-get install saga
+```
+
+#### Orfeo Toolbox
+Orfeo Toolbox has to be installed on your own on Linux systems. To do so, visit [this site](https://www.orfeo-toolbox.org/download/) and save the .run script on your Desktop. 
+OTB needs to be installed in the first place in a folder where you have access to. Later on we will the important folders to their desired location. 
+
+We recommend to create a folder called "Applications" under `/home/<YourUserName>/`. To do so, simply execute `mkdir /home/<YourUserName/Applications/`. Then move your .run script to this location by `mv /home/<YourUserName>/Desktop/<filename> /home/<YourUserName>/Applications`. Now run the script from the terminal using `sh /usr/<NameOfScript>`. To ensure that (R)QGIS can find the algorithms we have to move the contents of your installation to the specfic directories. Afterwards you can delete the first installation under [...]/Applications.
+
+(R)QGIS assumes the "OTB applications folder" to be located at "/usr/lib/otb/applications". Call `sudo mv /home/<YourUserName>/Applications/<YourOTBInstallation>/lib/otb /usr/lib/`. This command will move our applications folder (located under [...]/otb) to the desired location. We need "sudo" rights to move a folder there. 
+
+Last, we need to move the "OTB command line tools" contents to their desired place. Call `cp -a /home/<YourUserName>/Applications/<YourOTBInstallation>/bin/. /usr/bin`. 
+
+Now QGIS should list the OTB tools under "Processing Toolbox" and RQGIS should list them when calling `find_algorithms()`. 
+
+For further reading please see the official [QGIS manual](/home/<YourUserName>/Applications/<YourOTBInstallation>/) for OTB installation under Linux. 
