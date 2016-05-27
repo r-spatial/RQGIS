@@ -1,8 +1,10 @@
 ---
-title: "RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"
-author: "Jannes Münchow, Patrick Schratz"
+title: "RQGIS installation manual and troubleshooting for Windows, Mac, Linux"
+author: "Patrick Schratz, Jannes Münchow"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
+output: 
+  rmarkdown::html_vignette:
+    toc: true
 vignette: >
   %\VignetteIndexEntry{RQGIS installation instructions and troubleshooting for Windows, Mac, Linux"}
   %\VignetteEngine{knitr::rmarkdown}
@@ -107,13 +109,26 @@ running command 'batch_cmd.cmd' had status 1
 
 
 ## Mac
+Number of algorithms: 
+
+- 875 (QGIS + SAGA installation)
+
 ### QGIS
 Please follow the instructions provided 
 [here](https://www.qgis.org/de/site/forusers/download.html). We recommend to 
 install the latest 'current' version. 
 
+### SAGA
+First, download Fink from Fink Project and [install it](http://www.finkproject.org/doc/bundled/install-first.php).
+Then download the following .info file for SAGA:   [http://fink.cvs.sourceforge.net/viewvc/fink/experimental/babayoshihiko/finkinfo/saga.info](http://fink.cvs.sourceforge.net/viewvc/fink/experimental/babayoshihiko/finkinfo/saga.info)  
+Copy this file in /sw/fink/dists/local/main/finkinfo. You will need root access. Finally, run
+fink install saga
+This will automatically download and install necessary libraries as well.
+
+Source: [https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Mac%20OS%20X/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Mac%20OS%20X/)
+
 #### Troubleshooting
-Warnings appeare when running any RQGIS command. Does not affect usage.  
+Warnings appears when running any RQGIS command. Does not affect usage.  
 <span style="color:red">!Unresolved! (!appears also under Linux after OTB configuration!)
 ```{r, eval = FALSE}
 QSqlDatabase: QSQLITE driver not loaded
@@ -124,7 +139,7 @@ QSqlQuery::prepare: database not open
 ## Linux
 Number of algorithms: 
 
-- 781 (QGIS + SAGA)
+- 781 (QGIS + SAGA installation)
 - 882 (+ Orfeo Toolbox)
 
 
