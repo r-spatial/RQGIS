@@ -7,8 +7,8 @@
 get_args_man(alg, options = FALSE, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{The algorithm for which you wish to retrieve arguments and default
-values.}
+\item{alg}{The name of the algorithm for which you wish to retrieve arguments
+and default values.}
 
 \item{options}{Sometimes you can choose between various options for a 
 function argument. Setting option to \code{TRUE} will automatically assume 
@@ -31,11 +31,11 @@ The function returns a list whose names correspond to the function
 and respective default values for a given GIS algorithm.
 }
 \details{
-\code{get_args_man} basically mimicks the behaviour of the QGIS GUI.
+\code{get_args_man} basically mimicks the behavior of the QGIS GUI. 
   That means, for a given GIS algorithm, it captures automatically all 
   arguments and default values. Additionally, you can indicate that you want 
-  to use the first option if a function argument has several options (see
-  also \code{\link{get_options}}), which is the QGIS GUI default behaviour.
+  to use the first option if a function argument has several options (see 
+  also \code{\link{get_options}}), which is the QGIS GUI default behavior.
 }
 \examples{
 get_args_man(alg = "qgis:addfieldtoattributestable")
