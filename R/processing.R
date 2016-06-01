@@ -185,6 +185,7 @@ get_usage <- function(algorithm_name = "",
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
 #' get_options(algorithm_name = "saga:slopeaspectcurvature")
+#' @export
 get_options <- function(algorithm_name = "",
                         qgis_env = set_env(),
                         intern = FALSE) {
@@ -192,6 +193,103 @@ get_options <- function(algorithm_name = "",
                params = shQuote(algorithm_name),
                qgis_env = qgis_env,
                intern = intern)
+}
+
+#' @title Access the QGIS/GRASS online help for a specific function
+#' @description \code{get_html_help} opens the online help for a specific function.
+#'   This is the help you also encounter in the QGIS GUI. Please note that you
+#'   are referred to the GRASS documentation in the case of GRASS algorithms.
+#' @param alg The name of the algorithm for which you wish to retrieve arguments
+#'   and default values.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to \code{\link{set_env}}.
+#' @return The function opens your default web browser and displays the help for
+#'   the specified algorithm.
+#' @note \code{get_html_help} only works with a working Internet connection.
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @examples 
+#' # QGIS example
+#' get_html_help(alg = "qgis:addfieldtoattributestable")
+#' # GRASS example
+#' get_html_help(alg = "grass:v.overlay")
+get_html_help <- function(alg, qgis_env = set_env()) {
+  
+  if (grepl("grass", alg)) {
+    grass_name <- gsub(".*:", "", alg)
+    url <- ifelse(grepl(7, alg),
+                  paste0("http://grass.osgeo.org/grass70/manuals/", 
+                         grass_name, ".html"),
+                  paste0("http://grass.osgeo.org/grass64/manuals/", 
+                         grass_name, ".html"))
+    browseURL(url)
+  } else {
+    algName <- alg
+    
+    # set the paths
+    cwd <- getwd()
+    on.exit(setwd(cwd))
+    tmp_dir <- tempdir()
+    setwd(tmp_dir)
+    
+    cmds <- build_cmds(qgis_env = qgis_env)
+    py_cmd <- 
+      c(cmds$py_cmd,
+        "from processing.core.Processing import Processing",
+        "from processing.gui.Help2Html import *",
+        "from processing.tools.help import createAlgorithmHelp",
+        "import webbrowser",
+        # from processing.tools.help import *
+        paste0("alg = Processing.getAlgorithm('", algName, "')"), 
+        # copied from baseHelpForAlgorithm in processing\tools\help.py
+        # find the provider (qgis, saga, grass, etc.)
+        "provider = alg.provider.getName().lower()",
+        # to which group does the algorithm belong (e.g., vector_table_tools)
+        "groupName = alg.group.lower()",
+        # format the groupName in the QGIS way
+        "groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')",
+        "groupName = groupName.replace(' ', '_')",
+        # retrive the command line name
+        "cmdLineName = alg.commandLineName()",
+        "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
+        # just use valid characters
+        "validChars = ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS' +
+        'TUVWXYZ0123456789_')",
+        "safeGroupName = ''.join(c for c in groupName if c in validChars)",
+        "safeAlgName = ''.join(c for c in algName if c in validChars)",
+        # which QGIS version are we using
+        "version = '.'.join(QGis.QGIS_VERSION.split('.')[0:2])",
+        # build the html to the help file
+        "url = ('https://docs.qgis.org/%s/en/docs/user_manual/' +
+        'processing_algs/%s/%s/%s.html') % (version, provider,
+        safeGroupName, safeAlgName)",
+        "webbrowser.open_new(url)")
+    # each py_cmd element should go on its own line
+    py_cmd <- paste(py_cmd, collapse = "\n")
+    # harmonize slashes
+    py_cmd <- gsub("\\\\", "/", py_cmd)
+    py_cmd <- gsub("//", "/", py_cmd)
+    # save the Python script
+    cat(py_cmd, file = "py_cmd.py")
+    # build the batch/shell command to run the Python script
+    if (Sys.info()["sysname"] == "Windows") {
+      cmd <- c(cmds$cmd, "python py_cmd.py")
+      # filename
+      f_name <- "batch_cmd.cmd"
+      batch_call <- f_name
+    } else {
+      cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+      # filename
+      f_name <- "batch_cmd.sh"
+      batch_call <- "sh batch_cmd.sh"
+    }
+    # put each element on its own line
+    cmd <- paste(cmd, collapse = "\n")
+    # save the batch file to the temporary location
+    cat(cmd, file = f_name)
+    # run Python via the command line
+    system(batch_call, intern = TRUE)
+  }
 }
 
 #' @title Automatically retrieve GIS function arguments
@@ -252,17 +350,17 @@ get_args <- function(alg, qgis_env = set_env()) {
 #' @title Get GIS arguments and respective default values
 #' @description\code{get_args_man} retrieves automatically function arguments 
 #' and respective default values for a given GIS algorithm.
-#' @param alg The algorithm for which you wish to retrieve arguments and default
-#'   values.
+#' @param alg The name of the algorithm for which you wish to retrieve arguments
+#'   and default values.
 #' @param options Sometimes you can choose between various options for a 
 #'   function argument. Setting option to \code{TRUE} will automatically assume 
 #'   you wish to use the first option (default: \code{FALSE}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @details \code{get_args_man} basically mimicks the behavior of the QGIS GUI.
+#' @details \code{get_args_man} basically mimicks the behavior of the QGIS GUI. 
 #'   That means, for a given GIS algorithm, it captures automatically all 
 #'   arguments and default values. Additionally, you can indicate that you want 
-#'   to use the first option if a function argument has several options (see
+#'   to use the first option if a function argument has several options (see 
 #'   also \code{\link{get_options}}), which is the QGIS GUI default behavior.
 #' @return The function returns a list whose names correspond to the function 
 #'   arguments you need to specify. The list elements correspond to the argument
@@ -320,7 +418,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
       "    params.append(out.name)",
       "    vals.append(out.getValueAsCommandLineParameter())",
       "    opts.append(isinstance(out, ParameterSelection))",
-      # write the two lists (arguments and defaults) to a csv-file
+      # write the three lists (arguments, defaults, options) to a csv-file
       paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
       "    writer = csv.writer(f)",
       "    writer.writerow(['params', 'vals', 'opts'])",
@@ -363,7 +461,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
     stop("Algorithm '", alg, "' does not exist")
   }
   
-  # If desired, choose the first option if a function argument has several
+  # If desired, select the first option if a function argument has several
   # options to choose from
   if (options) {
     tmp[tmp$opts == "True", "vals"] <- "0"

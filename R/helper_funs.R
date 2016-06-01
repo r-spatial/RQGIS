@@ -15,7 +15,7 @@ build_cmds <- function(qgis_env = set_env()) {
   if (Sys.info()["sysname"] == "Windows") {
     # check if GRASS path is correct and which version is available on
     # the system
-    vers <- dir(paste0(qgis_env, "\\apps\\grass"))
+    vers <- dir(paste0(qgis_env$root, "\\apps\\grass"))
     # check if grass-7 is available
     ind <- grepl("grass-7..*\\d$", vers)
     if (any(grepl("grass-7..*[0-9]$", vers))) {
