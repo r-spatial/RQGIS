@@ -4,10 +4,10 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(algorithm = NULL, params = list(), qgis_env = set_env())
+run_qgis(alg = NULL, params = list(), qgis_env = set_env())
 }
 \arguments{
-\item{algorithm}{Name of the GIS function to be used (see
+\item{alg}{Name of the GIS function to be used (see
 \code{\link{find_algorithms}}).}
 
 \item{params}{A list of function arguments that should be used in conjunction
@@ -33,11 +33,11 @@ my_env <- set_env()
 # find out how a function is called
 find_algorithms(search_term = "add", qgis_env = my_env)
 # find out how it works
-get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
+get_usage(alg = "saga:addcoordinatestopoints", qgis_env = my_env)
 # specify the parameters in the exact same order as listed by get_usage
 params <- list(INPUT = "random_squares.shp",
                OUTPUT = "output.shp")
-run_qgis(algorithm = "saga:addcoordinatestopoints",
+run_qgis(alg = "saga:addcoordinatestopoints",
          params = params,
          qgis_env = my_env)
 }

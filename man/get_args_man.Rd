@@ -31,7 +31,7 @@ The function returns a list whose names correspond to the function
 and respective default values for a given GIS algorithm.
 }
 \details{
-\code{get_args_man} basically mimicks the behavior of the QGIS GUI. 
+\code{get_args_man} basically mimics the behavior of the QGIS GUI. 
   That means, for a given GIS algorithm, it captures automatically all 
   arguments and default values. Additionally, you can indicate that you want 
   to use the first option if a function argument has several options (see 

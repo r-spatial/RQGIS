@@ -144,7 +144,7 @@ find_algorithms <- function(search_term = "",
 #' @title Get usage of a specific GIS function
 #' @description \code{get_usage} lists all function parameters of a specific GIS
 #'   function.
-#' @param algorithm_name Name of the function whose parameters are being
+#' @param alg Name of the function whose parameters are being
 #'   searched for.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
@@ -159,13 +159,14 @@ find_algorithms <- function(search_term = "",
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' # find function arguments of saga:addcoordinatestopoints
-#' get_usage(algorithm_name = "saga:addcoordinatestopoints")
-get_usage <- function(algorithm_name = "",
+#' get_usage(alg = "saga:addcoordinatestopoints")
+
+get_usage <- function(alg = "",
                       qgis_env = set_env(),
                       intern = FALSE) {
   
   execute_cmds(processing_name = "processing.alghelp",
-               params = shQuote(algorithm_name),
+               params = shQuote(alg),
                qgis_env = qgis_env,
                intern = intern)
 }
@@ -173,7 +174,7 @@ get_usage <- function(algorithm_name = "",
 #' @title Get options of parameters for a specific GIS option
 #' @description \code{get_options} lists all available parameter options for
 #'   the required GIS function.
-#' @param algorithm_name Name of the GIS function for which options should be
+#' @param alg Name of the GIS function for which options should be
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
@@ -184,19 +185,19 @@ get_usage <- function(algorithm_name = "",
 #'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
-#' get_options(algorithm_name = "saga:slopeaspectcurvature")
+#' get_options(alg = "saga:slopeaspectcurvature")
 #' @export
-get_options <- function(algorithm_name = "",
+get_options <- function(alg = "",
                         qgis_env = set_env(),
                         intern = FALSE) {
   execute_cmds(processing_name = "processing.algoptions",
-               params = shQuote(algorithm_name),
+               params = shQuote(alg),
                qgis_env = qgis_env,
                intern = intern)
 }
 
 #' @title Access the QGIS/GRASS online help for a specific function
-#' @description \code{get_html_help} opens the online help for a specific function.
+#' @description \code{open_help} opens the online help for a specific function.
 #'   This is the help you also encounter in the QGIS GUI. Please note that you
 #'   are referred to the GRASS documentation in the case of GRASS algorithms.
 #' @param alg The name of the algorithm for which you wish to retrieve arguments
@@ -205,15 +206,15 @@ get_options <- function(algorithm_name = "",
 #'   more information, refer to \code{\link{set_env}}.
 #' @return The function opens your default web browser and displays the help for
 #'   the specified algorithm.
-#' @note \code{get_html_help} only works with a working Internet connection.
+#' @note \code{open_help} only works with a working Internet connection.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples 
 #' # QGIS example
-#' get_html_help(alg = "qgis:addfieldtoattributestable")
+#' open_help(alg = "qgis:addfieldtoattributestable")
 #' # GRASS example
-#' get_html_help(alg = "grass:v.overlay")
-get_html_help <- function(alg, qgis_env = set_env()) {
+#' open_help(alg = "grass:v.overlay")
+open_help <- function(alg, qgis_env = set_env()) {
   
   if (grepl("grass", alg)) {
     grass_name <- gsub(".*:", "", alg)
@@ -235,7 +236,6 @@ get_html_help <- function(alg, qgis_env = set_env()) {
     cmds <- build_cmds(qgis_env = qgis_env)
     py_cmd <- 
       c(cmds$py_cmd,
-        "from processing.core.Processing import Processing",
         "from processing.gui.Help2Html import *",
         "from processing.tools.help import createAlgorithmHelp",
         "import webbrowser",
@@ -249,6 +249,10 @@ get_html_help <- function(alg, qgis_env = set_env()) {
         # format the groupName in the QGIS way
         "groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')",
         "groupName = groupName.replace(' ', '_')",
+        "if provider == 'saga':",
+        "  alg2 = alg.getCopy()",
+        "  groupName = alg2.undecoratedGroup",
+        "  groupName = groupName.replace('ta_', 'terrain_analysis_')",
         # retrive the command line name
         "cmdLineName = alg.commandLineName()",
         "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
@@ -308,7 +312,7 @@ get_html_help <- function(alg, qgis_env = set_env()) {
 #' get_args(alg = "qgis:addfieldtoattributestable")
 get_args <- function(alg, qgis_env = set_env()) {
   # get the usage of a function
-  tmp <- get_usage(algorithm_name = alg, qgis_env = qgis_env, intern = TRUE)
+  tmp <- get_usage(alg = alg, qgis_env = qgis_env, intern = TRUE)
   # check if algorithm could be found
   if (any(grepl("Algorithm not found", tmp))) {
     stop("Specified algorithm was not found!")
@@ -357,7 +361,7 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   you wish to use the first option (default: \code{FALSE}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @details \code{get_args_man} basically mimicks the behavior of the QGIS GUI. 
+#' @details \code{get_args_man} basically mimics the behavior of the QGIS GUI. 
 #'   That means, for a given GIS algorithm, it captures automatically all 
 #'   arguments and default values. Additionally, you can indicate that you want 
 #'   to use the first option if a function argument has several options (see 
@@ -379,6 +383,9 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
 
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
+  # GRASS_REGION_PARAMETER: input, inputa, inputb, from, to
+  # or just consider the first three elements of the list and see if they have
+  # an extent...
   
   # set the paths
   cwd <- getwd()
@@ -482,7 +489,7 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
 #' @description \code{run_qgis} is the workhorse of the R-QGIS interface: It
 #'   calls the QGIS API from within R to run QGIS algorithms while passing the
 #'   corresponding function arguments.
-#' @param algorithm Name of the GIS function to be used (see
+#' @param alg Name of the GIS function to be used (see
 #'   \code{\link{find_algorithms}}).
 #' @param params A list of function arguments that should be used in conjunction
 #'   with the selected GIS function (see \code{\link{get_usage}} and
@@ -500,23 +507,23 @@ get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
 #' # find out how a function is called
 #' find_algorithms(search_term = "add", qgis_env = my_env)
 #' # find out how it works
-#' get_usage(algorithm_name = "saga:addcoordinatestopoints", qgis_env = my_env)
+#' get_usage(alg = "saga:addcoordinatestopoints", qgis_env = my_env)
 #' # specify the parameters in the exact same order as listed by get_usage
 #' params <- list(INPUT = "random_squares.shp",
 #'                OUTPUT = "output.shp")
-#' run_qgis(algorithm = "saga:addcoordinatestopoints",
+#' run_qgis(alg = "saga:addcoordinatestopoints",
 #'          params = params,
 #'          qgis_env = my_env)
 #' }
-run_qgis <- function(algorithm = NULL, params = list(),
+run_qgis <- function(alg = NULL, params = list(),
                      qgis_env = set_env()) {
   nm <- names(params)
   val <- as.character(unlist(params))
   # adjust param paths
   # val <- gsub("//|\\\\", "/", val)  # really necessary???
   # build command
-  # start <- paste0("processing.runalg('algOrName' = ", shQuote(algorithm))
-  start <- shQuote(algorithm)
+  # start <- paste0("processing.runalg('algOrName' = ", shQuote(alg))
+  start <- shQuote(alg)
   # mmh, processing.runalg does not accept arguments... that's unfortunate
   # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
   args <- paste(shQuote(val), collapse = ", ")

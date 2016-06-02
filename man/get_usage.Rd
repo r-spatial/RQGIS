@@ -4,10 +4,10 @@
 \alias{get_usage}
 \title{Get usage of a specific GIS function}
 \usage{
-get_usage(algorithm_name = "", qgis_env = set_env(), intern = FALSE)
+get_usage(alg = "", qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
-\item{algorithm_name}{Name of the function whose parameters are being
+\item{alg}{Name of the function whose parameters are being
 searched for.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
@@ -29,7 +29,7 @@ Function \code{get_usage} simply calls
 # find a function which adds coordinates
 find_algorithms(search_term = "add")
 # find function arguments of saga:addcoordinatestopoints
-get_usage(algorithm_name = "saga:addcoordinatestopoints")
+get_usage(alg = "saga:addcoordinatestopoints")
 }
 \author{
 Jannes Muenchow, QGIS developer team
