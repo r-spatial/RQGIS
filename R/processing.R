@@ -249,6 +249,10 @@ open_help <- function(alg, qgis_env = set_env()) {
         # format the groupName in the QGIS way
         "groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')",
         "groupName = groupName.replace(' ', '_')",
+        "if provider == 'saga':",
+        "  alg2 = alg.getCopy()",
+        "  groupName = alg2.undecoratedGroup",
+        "  groupName = groupName.replace('ta_', 'terrain_analysis_')",
         # retrive the command line name
         "cmdLineName = alg.commandLineName()",
         "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
