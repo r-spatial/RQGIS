@@ -43,6 +43,8 @@ Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org
 
 After the installation of OSGeo4W these programs should be found in `../OSGEO4~1/apps`. Soon, we will also provide you with a detailed installation manual.
 
+If you want to use the LiDAR processing tools, please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
+
 Linux
 -----
 
@@ -58,8 +60,8 @@ sudo apt-get update
 sudo apt-get install saga
 ```
 
-MAC
----
+Mac OS X
+--------
 
 For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
 
@@ -129,7 +131,7 @@ find_algorithms(search_term = "polygon centroid",
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
-get_usage(algorithm_name = "qgis:polygoncentroids",
+get_usage(alg = "qgis:polygoncentroids",
           qgis_env = my_env,
           intern = TRUE)
 #> [1] "ALGORITHM: Polygon centroids"   "\tINPUT_LAYER <ParameterVector>"
@@ -137,7 +139,7 @@ get_usage(algorithm_name = "qgis:polygoncentroids",
 #> [5] ""                               ""
 ```
 
-Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimicks the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
+Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
 
 ``` r
 params <- get_args_man(alg = "qgis:polygoncentroids", 
@@ -150,14 +152,14 @@ params
 #> [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Finally, `run_qgis` calls the QGIS API to run a the specified geoalgorithm with the corresponding function arguments.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
 
 ``` r
 # path to the input shapefile
 params$INPUT_LAYER  <- paste(dir_tmp, "ger.shp", sep = "\\")
 # path to the output shapefile
 params$OUTPUT_LAYER <- paste(dir_tmp, "ger_coords.shp", sep = "\\")
-run_qgis(algorithm = "qgis:polygoncentroids",
+run_qgis(alg = "qgis:polygoncentroids",
          params = params,
          qgis_env = my_env)
 #> character(0)
