@@ -4,10 +4,10 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(algorithm_name = "", qgis_env = set_env(), intern = FALSE)
+get_options(alg = "", qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
-\item{algorithm_name}{Name of the GIS function for which options should be
+\item{alg}{Name of the GIS function for which options should be
 returned.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
@@ -26,7 +26,7 @@ Function \code{get_options} simply calls
   \code{processing.algoptions} using Python.
 }
 \examples{
-get_options(algorithm_name = "saga:slopeaspectcurvature")
+get_options(alg = "saga:slopeaspectcurvature")
 }
 \author{
 Jannes Muenchow, QGIS devleoper team
