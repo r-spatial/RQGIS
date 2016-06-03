@@ -31,7 +31,7 @@ In order to run RQGIS properly, you need to download various third-party softwar
 Windows
 -------
 
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>. If you are unsure, what to install, simply select the express installation. This, however, has the disadvantage that SAGA will not be installed. If you want also to install SAGA, the easiest way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed, though everything else what you might not want to use as well. In any case, this should get you started and soon we will provide you with a detailed installation manual.
+Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>. If you are unsure, what to install, simply select the express installation. This automatically also installs SAGA and GRASS, but not all other available third-party providers. If you wish to do install other providers (OTB, TauDEM, etc.), the best way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed (though everything else what you might not plan to use as well). In any case, this should get you started and soon we will provide you with a detailed installation manual.
 
 Linux
 -----
