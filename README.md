@@ -31,19 +31,7 @@ In order to run RQGIS properly, you need to download various third-party softwar
 Windows
 -------
 
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>, and make sure that following components will be installed on your system using the advanced settings during the installation process:
-
--   Python27
--   qgis
--   Qt4
--   gdal (optional)
--   grass (optional)
--   msys (necessary, if you want to run GRASS)
--   saga (optional)
-
-After the installation of OSGeo4W these programs should be found in `../OSGEO4~1/apps`. Soon, we will also provide you with a detailed installation manual.
-
-If you want to use the LiDAR processing tools, please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
+Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>. If you are unsure, what to install, simply select the express installation. This, however, has the disadvantage that SAGA will not be installed. If you want also to install SAGA, the easiest way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed, though everything else what you might not want to use as well. In any case, this should get you started and soon we will provide you with a detailed installation manual.
 
 Linux
 -----
@@ -94,7 +82,7 @@ library("RQGIS")
 my_env <- set_env()
 #> Trying to find OSGeo4W on your C: drive.
 # have a look at the paths necessary to run QGIS from within R
-my_env
+head(my_env, 4)
 #> $root
 #> [1] "C:\\OSGeo4W64"
 #> 
@@ -106,15 +94,6 @@ my_env
 #> 
 #> $python27
 #> [1] "C:\\OSGeo4W64\\apps\\Python27"
-#> 
-#> $qt4
-#> [1] "C:\\OSGeo4W64\\apps\\Qt4"
-#> 
-#> $msys
-#> [1] "C:\\OSGeo4W64\\apps\\msys"
-#> 
-#> $grass
-#> [1] "C:\\OSGeo4W64\\apps\\grass"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -152,13 +131,18 @@ params
 #> [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task.
 
 ``` r
 # path to the input shapefile
 params$INPUT_LAYER  <- paste(dir_tmp, "ger.shp", sep = "\\")
 # path to the output shapefile
 params$OUTPUT_LAYER <- paste(dir_tmp, "ger_coords.shp", sep = "\\")
+```
+
+Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
+
+``` r
 run_qgis(alg = "qgis:polygoncentroids",
          params = params,
          qgis_env = my_env)
@@ -176,7 +160,7 @@ plot(ger)
 plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-9-1.png)
+![](README-unnamed-chunk-10-1.png)
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
 

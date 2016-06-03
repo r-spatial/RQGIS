@@ -107,6 +107,7 @@ running command 'batch_cmd.cmd' had status 1
 *It is recommended to uninstall all QGIS installations on your PC and install* 
 *QGIS using 'Option #1'.*  
 
+If you want to use the LiDAR processing tools, please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
 
 ## Mac
 Number of algorithms: 
