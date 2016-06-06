@@ -382,11 +382,8 @@ get_args <- function(alg, qgis_env = set_env()) {
 get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
 
   # find out if it's necessary to obtain default values for
-  # GRASS_REGION_PARAMETER, GRASS_REGION_CELLSIZE_PARAMETER, etc.
-  # GRASS_REGION_PARAMETER: input, inputa, inputb, from, to
-  # or just consider the first three elements of the list and see if they have
-  # an extent...
-  
+  # GRASS_REGION_CELLSIZE_PARAMETER, etc.
+
   # set the paths
   cwd <- getwd()
   on.exit(setwd(cwd))
@@ -524,9 +521,11 @@ run_qgis <- function(alg = NULL, params = NULL,
     stop("Please specify: ", paste(args[ind], collapse = ", "))
   }
 
-  # set the bbox in the case of GRASS functions (if there are more of these
-  # 3rd-party based specifics, put them in a new function)
-  if ("GRASS_REGION_PARAMETER" %in% names(params)) {
+  # set the bbox in the case of GRASS functions if it hasn't already been
+  # provided (if there are more of these 3rd-party based specifics, put them in
+  # a new function)
+  if ("GRASS_REGION_PARAMETER" %in% names(params) && 
+      grepl("None", params$GRASS_REGION_PARAMETER)) {
     # dismiss the last argument since it frequently corresponds to the output
     # if the output was created before using another CRS, the function might
     # crash
