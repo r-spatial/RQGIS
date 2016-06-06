@@ -2,13 +2,20 @@ Package: RQGIS
 Type: Package
 Title: RQGIS - integrating R with QGIS
 Version: 0.1.0
-Author: Jannes Muenchow
-Maintainer: <jannes.muenchow@uni-jena.de>
+Authors@R: c(
+    person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
+    person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut")
 Description: RQGIS establishes an interface between R and QGIS, i.e. it allows
   the user to access QGIS functionalities from within R. It achieves this
   by using the QGIS API via the command line. This gives the user an extensive
   suite of GIS functions, Since QGIS combines the functionalities of various GIS -
-  QGIS, SAGA, GRASS and GDAL.
+  QGIS, SAGA, GRASS and GDAL among others.
+URL: https://github.com/jannes-m/RQGIS
+BugReports: https://github.com/jannes-m/RQGIS/issues
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 5.0.1
+Depends:
+    R (>= 3.1.2)
+Imports: rgdal, 
+         raster
