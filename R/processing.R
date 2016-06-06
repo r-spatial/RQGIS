@@ -522,8 +522,9 @@ run_qgis <- function(alg = NULL, params = NULL,
   }
 
   # set the bbox in the case of GRASS functions if it hasn't already been
-  # provided (if there are more of these 3rd-party based specifics, put them in
-  # a new function)
+  # provided 
+  # (if there are more of these 3rd-party based specifics, put them in a new
+  # function)
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
     # dismiss the last argument since it frequently corresponds to the output
@@ -549,8 +550,10 @@ run_qgis <- function(alg = NULL, params = NULL,
         # check if it is still an error
         if (!inherits(ext, "try-error")) {
           # xmin, xmax, ymin, ymax
-          raster::extent(c(ext["ll.x"], ext["ll.x"] + ext["columns"],
-                           ext["ll.y"], ext["ll.y"] + ext["rows"]))
+          raster::extent(c(ext["ll.x"], 
+                           ext["ll.x"] + ext["columns"] * ext["res.x"],
+                           ext["ll.y"],
+                           ext["ll.y"] + ext["rows"] * ext["res.y"]))
         } else {
           NA
         }
