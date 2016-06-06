@@ -173,4 +173,5 @@ TO DO:
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   Rewrite check\_apps and set\_env in such a way that the user might specify root, qgis\_prefix\_path, python\_plugins himself (at least for UNIX)
 -   rewrite run\_qgis documentation
--   Write html-vignette, i.e. present a more complex QGIS example
+-   set GRASS\_REGION\_CELLSIZE\_PARAMETER automatically
+-   test open\_help and iron out bugs. Additionally, automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" == TRUE, construct html file)

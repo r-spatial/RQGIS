@@ -157,5 +157,6 @@ Of course, this is a very simple example. We could have achieved the same using 
   193: %1 ist keine zulässige Win32-Anwendung.
 - Rewrite check_apps and set_env in such a way that the user might specify root, qgis_prefix_path, python_plugins himself (at least for UNIX)
 - rewrite run_qgis documentation
-- Write html-vignette, i.e. present a more complex QGIS example
+- set GRASS_REGION_CELLSIZE_PARAMETER automatically
+- test open_help and iron out bugs. Additionally, automatically construct a helpfile if no documentation is availabe on the Internet (-> if Python web scraping "Error" == TRUE, construct html file)
 
