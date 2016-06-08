@@ -161,7 +161,7 @@ find_algorithms <- function(search_term = "",
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(alg = "saga:addcoordinatestopoints")
 
-get_usage <- function(alg = "",
+get_usage <- function(alg = NULL,
                       qgis_env = set_env(),
                       intern = FALSE) {
   
@@ -187,9 +187,13 @@ get_usage <- function(alg = "",
 #' @examples
 #' get_options(alg = "saga:slopeaspectcurvature")
 #' @export
-get_options <- function(alg = "",
+get_options <- function(alg = NULL,
                         qgis_env = set_env(),
                         intern = FALSE) {
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
+  
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(alg),
                qgis_env = qgis_env,
@@ -214,7 +218,11 @@ get_options <- function(alg = "",
 #' open_help(alg = "qgis:addfieldtoattributestable")
 #' # GRASS example
 #' open_help(alg = "grass:v.overlay")
-open_help <- function(alg, qgis_env = set_env()) {
+open_help <- function(alg = NULL, qgis_env = set_env()) {
+  
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
   
   if (grepl("grass", alg)) {
     grass_name <- gsub(".*:", "", alg)
@@ -239,6 +247,7 @@ open_help <- function(alg, qgis_env = set_env()) {
         "from processing.gui.Help2Html import *",
         "from processing.tools.help import createAlgorithmHelp",
         "import webbrowser",
+        "import re",
         # from processing.tools.help import *
         paste0("alg = Processing.getAlgorithm('", algName, "')"), 
         # copied from baseHelpForAlgorithm in processing\tools\help.py
@@ -253,6 +262,11 @@ open_help <- function(alg, qgis_env = set_env()) {
         "  alg2 = alg.getCopy()",
         "  groupName = alg2.undecoratedGroup",
         "  groupName = groupName.replace('ta_', 'terrain_analysis_')",
+        "  groupName = groupName.replace('statistics_kriging', 'kriging')",
+        "  groupName = re.sub('^statistics_.*', 'geostatistics', groupName)",
+        "  groupName = re.sub('visualisation', 'visualization', groupName)",
+        "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
+        "  groupName = groupName.replace('sim_', 'simulation_')",
         # retrive the command line name
         "cmdLineName = alg.commandLineName()",
         "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
@@ -310,7 +324,12 @@ open_help <- function(alg, qgis_env = set_env()) {
 #' @export
 #' @examples
 #' get_args(alg = "qgis:addfieldtoattributestable")
-get_args <- function(alg, qgis_env = set_env()) {
+get_args <- function(alg = NULL, qgis_env = set_env()) {
+  
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
+  
   # get the usage of a function
   tmp <- get_usage(alg = alg, qgis_env = qgis_env, intern = TRUE)
   # check if algorithm could be found
@@ -373,14 +392,20 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   \code{get_args_man} tries to retrieve default values, you still need to 
 #'   specify some function arguments by your own such as input and output 
 #'   layers.
+#' @note Please note that some default values can only be set after the user's
+#'   input. For instance, the GRASS region extent will be determined
+#'   automatically in \code{\link{run_qgis}} if left blank.
 #' @export
 #' @author Jannes Muenchow
 #' @examples 
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
-get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
+get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_CELLSIZE_PARAMETER, etc.
 
@@ -532,7 +557,7 @@ run_qgis <- function(alg = NULL, params = NULL,
     # crash
     ext <- params[-length(params)]
     # run through the arguments and check if we can extract a bbox
-    ext <- lapply (ext, function(x) {
+    ext <- lapply(ext, function(x) {
       
       # determine bbox in the case of a vector layer
       tmp <- try(expr = 
@@ -559,7 +584,7 @@ run_qgis <- function(alg = NULL, params = NULL,
         }
       }
     })
-    # now that we have possibly several extents, merge (or better union) them
+    # now that we have possibly several extents, union them
     ext <- ext[!is.na(ext)]
     ext <- Reduce(raster::merge, ext)
     # final bounding box in GRASS notation
