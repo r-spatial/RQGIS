@@ -37,6 +37,11 @@ and respective default values for a given GIS algorithm.
   to use the first option if a function argument has several options (see 
   also \code{\link{get_options}}), which is the QGIS GUI default behavior.
 }
+\note{
+Please note that some default values can only be set after the user's
+  input. For instance, the GRASS region extent will be determined
+  automatically in \code{\link{run_qgis}} if left blank.
+}
 \examples{
 get_args_man(alg = "qgis:addfieldtoattributestable")
 # and using the option argument

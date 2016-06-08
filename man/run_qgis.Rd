@@ -4,7 +4,7 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(alg = NULL, params = list(), qgis_env = set_env())
+run_qgis(alg = NULL, params = NULL, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see
