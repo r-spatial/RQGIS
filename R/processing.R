@@ -281,7 +281,21 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
         "url = ('https://docs.qgis.org/%s/en/docs/user_manual/' +
         'processing_algs/%s/%s/%s.html') % (version, provider,
         safeGroupName, safeAlgName)",
-        "webbrowser.open_new(url)")
+        # suppress error messages raised by the browser, e.g.,
+        # console.error: CustomizableUI: 
+        # TypeError: aNode.previousSibling is null -- 
+        #  resource://app/modules/CustomizableUI.jsm:4294
+        # Solution was found here:
+        # paste0("http://stackoverflow.com/questions/2323080/",
+        #        "how-can-i-disable-the-webbrowser-message-in-python")
+        "savout = os.dup(1)",
+        "os.close(1)",
+        "os.open(os.devnull, os.O_RDWR)",
+        "try:",
+        "  webbrowser.open(url)",
+        "finally:",
+        "  os.dup2(savout, 1)"
+        )
     # each py_cmd element should go on its own line
     py_cmd <- paste(py_cmd, collapse = "\n")
     # harmonize slashes
