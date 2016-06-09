@@ -4,7 +4,7 @@
 \alias{get_args}
 \title{Automatically retrieve GIS function arguments}
 \usage{
-get_args(alg, qgis_env = set_env())
+get_args(alg = NULL, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{A character specifying the GIS algorithm whose arguments you want

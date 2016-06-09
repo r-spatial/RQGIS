@@ -4,7 +4,7 @@
 \alias{get_usage}
 \title{Get usage of a specific GIS function}
 \usage{
-get_usage(alg = "", qgis_env = set_env(), intern = FALSE)
+get_usage(alg = NULL, qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
 \item{alg}{Name of the function whose parameters are being
