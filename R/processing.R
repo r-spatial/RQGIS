@@ -201,16 +201,21 @@ get_options <- function(alg = NULL,
 }
 
 #' @title Access the QGIS/GRASS online help for a specific function
-#' @description \code{open_help} opens the online help for a specific function.
-#'   This is the help you also encounter in the QGIS GUI. Please note that you
+#' @description \code{open_help} opens the online help for a specific function. 
+#'   This is the help you also encounter in the QGIS GUI. Please note that you 
 #'   are referred to the GRASS documentation in the case of GRASS algorithms.
 #' @param alg The name of the algorithm for which you wish to retrieve arguments
 #'   and default values.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
+#' @details \code{open_help} is still under development. Bar a few exceptions 
+#'   you might access the online help for all QGIS, GRASS and SAGA 
+#'   geoalgorithms. The online help of other third-party providers, however, has
+#'   not been tested so far.
 #' @return The function opens your default web browser and displays the help for
 #'   the specified algorithm.
-#' @note \code{open_help} only works with a working Internet connection.
+#' @note Please note that \code{open_help} requires a \strong{working Internet 
+#'   connection}.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples 
@@ -225,13 +230,7 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
   }
   
   if (grepl("grass", alg)) {
-    grass_name <- gsub(".*:", "", alg)
-    url <- ifelse(grepl(7, alg),
-                  paste0("http://grass.osgeo.org/grass70/manuals/", 
-                         grass_name, ".html"),
-                  paste0("http://grass.osgeo.org/grass64/manuals/", 
-                         grass_name, ".html"))
-    browseURL(url)
+    open_grass_help(alg)
   } else {
     algName <- alg
     

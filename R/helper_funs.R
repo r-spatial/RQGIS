@@ -269,3 +269,41 @@ build_py <- function(qgis_env = set_env()) {
     "Processing.initialize()",
     "import processing")
 }
+
+#' @title Open the GRASS online help
+#' @description \code{open_grass_help} opens the GRASS online help for a
+#'   specified GRASS geoalgorithm.
+#' @param alg The name of the algorithm for which you wish to retrieve arguments
+#'   and default values.
+#' @examples 
+#' open_grass_help("grass7:r.sunmask")
+#' @author Jannes Muenchow 
+open_grass_help <- function(alg) {
+  grass_name <- gsub(".*:", "", alg)
+  url <- ifelse(grepl(7, alg),
+                "http://grass.osgeo.org/grass72/manuals/",
+                "http://grass.osgeo.org/grass64/manuals/")
+  url_ind <- paste0(url, "full_index.html")
+  doc <- RCurl::getURL(url_ind)
+  doc2 <- XML::htmlParse(doc)
+  root <- XML::xmlRoot(doc2)
+  grass_funs <- XML::xpathSApply(root[["body"]], "//a/@href")
+  grass_funs <- gsub(".html", "", grass_funs)
+  # grass_funs <- grep(".*\\..*", grass_funs, value = TRUE)
+  # grass_funs <- grass_funs[!grepl("^http:", grass_funs)]
+  # grep("^(d.|db.|g\\.|i.|m.|ps.|r.|r3.|t.|v.)", grass_funs, value = TRUE)
+  
+  # ind <- paste0(c("d", "db", "g", "i", "m", "ps", "r", "r3", "t", "v"), "\\.")
+  # ind <- paste(ind, collapse = "|")
+  # ind <- paste0("^(", ind, ")")
+  # grass_funs <- grep(ind, grass_funs, value = TRUE)
+  if (!grass_name %in% grass_funs) {
+    grass_name <- gsub("(.*?*)\\..*", "\\1", grass_name)
+  }
+  # if the name can still not be found, terminate
+  if (!grass_name %in% grass_funs) {
+    stop(gsub(".*:", "", alg), " could not be found in the online help!")
+  }
+  url <- paste0(url, grass_name, ".html")
+  browseURL(url)
+}
