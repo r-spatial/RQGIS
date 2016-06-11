@@ -4,7 +4,7 @@
 \alias{get_args_man}
 \title{Get GIS arguments and respective default values}
 \usage{
-get_args_man(alg, options = FALSE, qgis_env = set_env())
+get_args_man(alg = NULL, options = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the algorithm for which you wish to retrieve arguments
@@ -36,6 +36,11 @@ and respective default values for a given GIS algorithm.
   arguments and default values. Additionally, you can indicate that you want 
   to use the first option if a function argument has several options (see 
   also \code{\link{get_options}}), which is the QGIS GUI default behavior.
+}
+\note{
+Please note that some default values can only be set after the user's
+  input. For instance, the GRASS region extent will be determined
+  automatically in \code{\link{run_qgis}} if left blank.
 }
 \examples{
 get_args_man(alg = "qgis:addfieldtoattributestable")

@@ -4,7 +4,7 @@
 \alias{open_help}
 \title{Access the QGIS/GRASS online help for a specific function}
 \usage{
-open_help(alg, qgis_env = set_env())
+open_help(alg = NULL, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the algorithm for which you wish to retrieve arguments
@@ -18,12 +18,19 @@ The function opens your default web browser and displays the help for
   the specified algorithm.
 }
 \description{
-\code{open_help} opens the online help for a specific function.
-  This is the help you also encounter in the QGIS GUI. Please note that you
+\code{open_help} opens the online help for a specific function. 
+  This is the help you also encounter in the QGIS GUI. Please note that you 
   are referred to the GRASS documentation in the case of GRASS algorithms.
 }
+\details{
+\code{open_help} is still under development. Bar a few exceptions 
+  you might access the online help for all QGIS, GRASS and SAGA 
+  geoalgorithms. The online help of other third-party providers, however, has
+  not been tested so far.
+}
 \note{
-\code{open_help} only works with a working Internet connection.
+Please note that \code{open_help} requires a \strong{working Internet 
+  connection}.
 }
 \examples{
 # QGIS example

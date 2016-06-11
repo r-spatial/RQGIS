@@ -4,7 +4,7 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(alg = "", qgis_env = set_env(), intern = FALSE)
+get_options(alg = NULL, qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
 \item{alg}{Name of the GIS function for which options should be

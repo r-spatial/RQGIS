@@ -161,7 +161,7 @@ find_algorithms <- function(search_term = "",
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(alg = "saga:addcoordinatestopoints")
 
-get_usage <- function(alg = "",
+get_usage <- function(alg = NULL,
                       qgis_env = set_env(),
                       intern = FALSE) {
   
@@ -187,9 +187,13 @@ get_usage <- function(alg = "",
 #' @examples
 #' get_options(alg = "saga:slopeaspectcurvature")
 #' @export
-get_options <- function(alg = "",
+get_options <- function(alg = NULL,
                         qgis_env = set_env(),
                         intern = FALSE) {
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
+  
   execute_cmds(processing_name = "processing.algoptions",
                params = shQuote(alg),
                qgis_env = qgis_env,
@@ -197,16 +201,21 @@ get_options <- function(alg = "",
 }
 
 #' @title Access the QGIS/GRASS online help for a specific function
-#' @description \code{open_help} opens the online help for a specific function.
-#'   This is the help you also encounter in the QGIS GUI. Please note that you
+#' @description \code{open_help} opens the online help for a specific function. 
+#'   This is the help you also encounter in the QGIS GUI. Please note that you 
 #'   are referred to the GRASS documentation in the case of GRASS algorithms.
 #' @param alg The name of the algorithm for which you wish to retrieve arguments
 #'   and default values.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
+#' @details \code{open_help} is still under development. Bar a few exceptions 
+#'   you might access the online help for all QGIS, GRASS and SAGA 
+#'   geoalgorithms. The online help of other third-party providers, however, has
+#'   not been tested so far.
 #' @return The function opens your default web browser and displays the help for
 #'   the specified algorithm.
-#' @note \code{open_help} only works with a working Internet connection.
+#' @note Please note that \code{open_help} requires a \strong{working Internet 
+#'   connection}.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples 
@@ -214,16 +223,14 @@ get_options <- function(alg = "",
 #' open_help(alg = "qgis:addfieldtoattributestable")
 #' # GRASS example
 #' open_help(alg = "grass:v.overlay")
-open_help <- function(alg, qgis_env = set_env()) {
+open_help <- function(alg = NULL, qgis_env = set_env()) {
+  
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
   
   if (grepl("grass", alg)) {
-    grass_name <- gsub(".*:", "", alg)
-    url <- ifelse(grepl(7, alg),
-                  paste0("http://grass.osgeo.org/grass70/manuals/", 
-                         grass_name, ".html"),
-                  paste0("http://grass.osgeo.org/grass64/manuals/", 
-                         grass_name, ".html"))
-    browseURL(url)
+    open_grass_help(alg)
   } else {
     algName <- alg
     
@@ -239,6 +246,7 @@ open_help <- function(alg, qgis_env = set_env()) {
         "from processing.gui.Help2Html import *",
         "from processing.tools.help import createAlgorithmHelp",
         "import webbrowser",
+        "import re",
         # from processing.tools.help import *
         paste0("alg = Processing.getAlgorithm('", algName, "')"), 
         # copied from baseHelpForAlgorithm in processing\tools\help.py
@@ -253,6 +261,11 @@ open_help <- function(alg, qgis_env = set_env()) {
         "  alg2 = alg.getCopy()",
         "  groupName = alg2.undecoratedGroup",
         "  groupName = groupName.replace('ta_', 'terrain_analysis_')",
+        "  groupName = groupName.replace('statistics_kriging', 'kriging')",
+        "  groupName = re.sub('^statistics_.*', 'geostatistics', groupName)",
+        "  groupName = re.sub('visualisation', 'visualization', groupName)",
+        "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
+        "  groupName = groupName.replace('sim_', 'simulation_')",
         # retrive the command line name
         "cmdLineName = alg.commandLineName()",
         "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
@@ -267,7 +280,21 @@ open_help <- function(alg, qgis_env = set_env()) {
         "url = ('https://docs.qgis.org/%s/en/docs/user_manual/' +
         'processing_algs/%s/%s/%s.html') % (version, provider,
         safeGroupName, safeAlgName)",
-        "webbrowser.open_new(url)")
+        # suppress error messages raised by the browser, e.g.,
+        # console.error: CustomizableUI: 
+        # TypeError: aNode.previousSibling is null -- 
+        #  resource://app/modules/CustomizableUI.jsm:4294
+        # Solution was found here:
+        # paste0("http://stackoverflow.com/questions/2323080/",
+        #        "how-can-i-disable-the-webbrowser-message-in-python")
+        "savout = os.dup(1)",
+        "os.close(1)",
+        "os.open(os.devnull, os.O_RDWR)",
+        "try:",
+        "  webbrowser.open(url)",
+        "finally:",
+        "  os.dup2(savout, 1)"
+        )
     # each py_cmd element should go on its own line
     py_cmd <- paste(py_cmd, collapse = "\n")
     # harmonize slashes
@@ -310,7 +337,12 @@ open_help <- function(alg, qgis_env = set_env()) {
 #' @export
 #' @examples
 #' get_args(alg = "qgis:addfieldtoattributestable")
-get_args <- function(alg, qgis_env = set_env()) {
+get_args <- function(alg = NULL, qgis_env = set_env()) {
+  
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
+  
   # get the usage of a function
   tmp <- get_usage(alg = alg, qgis_env = qgis_env, intern = TRUE)
   # check if algorithm could be found
@@ -373,14 +405,20 @@ get_args <- function(alg, qgis_env = set_env()) {
 #'   \code{get_args_man} tries to retrieve default values, you still need to 
 #'   specify some function arguments by your own such as input and output 
 #'   layers.
+#' @note Please note that some default values can only be set after the user's
+#'   input. For instance, the GRASS region extent will be determined
+#'   automatically in \code{\link{run_qgis}} if left blank.
 #' @export
 #' @author Jannes Muenchow
 #' @examples 
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
-get_args_man <- function(alg, options = FALSE, qgis_env = set_env()) {
+get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 
+  if (is.null(alg)) {
+    stop("Please specify an algorithm!")
+  }
   # find out if it's necessary to obtain default values for
   # GRASS_REGION_CELLSIZE_PARAMETER, etc.
 
@@ -532,7 +570,7 @@ run_qgis <- function(alg = NULL, params = NULL,
     # crash
     ext <- params[-length(params)]
     # run through the arguments and check if we can extract a bbox
-    ext <- lapply (ext, function(x) {
+    ext <- lapply(ext, function(x) {
       
       # determine bbox in the case of a vector layer
       tmp <- try(expr = 
@@ -559,7 +597,7 @@ run_qgis <- function(alg = NULL, params = NULL,
         }
       }
     })
-    # now that we have possibly several extents, merge (or better union) them
+    # now that we have possibly several extents, union them
     ext <- ext[!is.na(ext)]
     ext <- Reduce(raster::merge, ext)
     # final bounding box in GRASS notation
