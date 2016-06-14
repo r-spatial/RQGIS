@@ -511,8 +511,11 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   
   # convert the dataframe into a list
   args <- as.list(tmp$vals)
-  names(args) <- tmp$params
+  names(args) <- trimws(tmp$params)
   
+  # sometime None, True or False might be 'shellquoted'
+  # we have to take care of this
+  args <- lapply(args, function(x) as.character(noquote(x)))
   # clean up after yourself
   unlink(paste0(tmp_dir, "/output.csv"))
   # return your result
@@ -607,14 +610,15 @@ run_qgis <- function(alg = NULL, params = NULL,
   
   nm <- names(params)
   val <- as.character(unlist(params))
-  # adjust param paths
-  # val <- gsub("//|\\\\", "/", val)  # really necessary???
+  # harmonize paths
+  # val <- gsub("//|\\\\", "/", val)  # not necessary
   # build command
   # start <- paste0("processing.runalg('algOrName' = ", shQuote(alg))
   start <- shQuote(alg)
-  # mmh, processing.runalg does not accept arguments... that's unfortunate
-  # args <- paste(shQuote(nm), shQuote(val),  sep = " = ", collapse = ", ")
-  args <- paste(shQuote(val), collapse = ", ")
+  # True, False and None should not be put among parentheses!!
+  ind <- !grepl("True|False|None", val)
+  val[ind] <- shQuote(val[ind])
+  args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
   # run QGIS command
   execute_cmds(processing_name = "processing.runalg",

@@ -174,4 +174,4 @@ TO DO:
 -   Rewrite check\_apps and set\_env in such a way that the user might specify root, qgis\_prefix\_path, python\_plugins himself (at least for UNIX)
 -   rewrite run\_qgis documentation
 -   set GRASS\_REGION\_CELLSIZE\_PARAMETER automatically
--   test open\_help and iron out bugs. Additionally, automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" == TRUE, construct html file)
+-   test open\_help and iron out bugs of third-party providers (Taudem, OTB, etc.). Additionally, automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" == TRUE, construct html file)
