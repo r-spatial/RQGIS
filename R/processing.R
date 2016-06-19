@@ -208,10 +208,9 @@ get_options <- function(alg = NULL,
 #'   and default values.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @details \code{open_help} is still under development. Bar a few exceptions 
-#'   you might access the online help for all QGIS, GRASS and SAGA 
-#'   geoalgorithms. The online help of other third-party providers, however, has
-#'   not been tested so far.
+#' @details Bar a few exceptions \code{open_help} works for all QGIS, GRASS and
+#'   SAGA geoalgorithms. The online help of other third-party providers,
+#'   however, has not been tested so far.
 #' @return The function opens your default web browser and displays the help for
 #'   the specified algorithm.
 #' @note Please note that \code{open_help} requires a \strong{working Internet 
@@ -515,7 +514,9 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   
   # sometime None, True or False might be 'shellquoted'
   # we have to take care of this
-  args <- lapply(args, function(x) as.character(noquote(x)))
+  # well, maybe not necessary:
+  # http://stackoverflow.com/questions/28204507/remove-backslashes-from-character-string
+  # args <- lapply(args, function(x) as.character(noquote(x)))
   # clean up after yourself
   unlink(paste0(tmp_dir, "/output.csv"))
   # return your result
@@ -610,14 +611,14 @@ run_qgis <- function(alg = NULL, params = NULL,
   
   nm <- names(params)
   val <- as.character(unlist(params))
-  # harmonize paths
-  # val <- gsub("//|\\\\", "/", val)  # not necessary
-  # build command
-  # start <- paste0("processing.runalg('algOrName' = ", shQuote(alg))
+  # shellquote algorithm name
   start <- shQuote(alg)
   # True, False and None should not be put among parentheses!!
   ind <- !grepl("True|False|None", val)
+  # shellquote paths and numeric input (the latter is not necessary but doen't
+  # harm either)
   val[ind] <- shQuote(val[ind])
+  # build the Python command
   args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
   # run QGIS command
