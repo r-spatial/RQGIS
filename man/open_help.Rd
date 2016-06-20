@@ -23,10 +23,9 @@ The function opens your default web browser and displays the help for
   are referred to the GRASS documentation in the case of GRASS algorithms.
 }
 \details{
-\code{open_help} is still under development. Bar a few exceptions 
-  you might access the online help for all QGIS, GRASS and SAGA 
-  geoalgorithms. The online help of other third-party providers, however, has
-  not been tested so far.
+Bar a few exceptions \code{open_help} works for all QGIS, GRASS and
+  SAGA geoalgorithms. The online help of other third-party providers,
+  however, has not been tested so far.
 }
 \note{
 Please note that \code{open_help} requires a \strong{working Internet 

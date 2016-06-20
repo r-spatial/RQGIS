@@ -4,27 +4,37 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(alg = NULL, params = NULL, qgis_env = set_env())
+run_qgis(alg = NULL, params = NULL, check_params = TRUE,
+  qgis_env = set_env())
 }
 \arguments{
-\item{alg}{Name of the GIS function to be used (see
+\item{alg}{Name of the GIS function to be used (see 
 \code{\link{find_algorithms}}).}
 
-\item{params}{A list of function arguments that should be used in conjunction
-with the selected GIS function (see \code{\link{get_usage}} and
-\code{\link{get_options}}).}
+\item{params}{A list of geoalgorithm function arguments that should be used 
+in conjunction with the selected (Q)GIS function (see 
+\code{\link{get_args_man}}). Please make sure that you provide all function
+arguments in the correct order. To make sure this is the case, it is 
+recommended to use the convenience function \code{\link{get_args_man}}.}
+
+\item{check_params}{If \code{TRUE} (default), it will be checked if all 
+geoalgorithm function arguments were provided in the correct order.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
 }
 \description{
-\code{run_qgis} is the workhorse of the R-QGIS interface: It
-  calls the QGIS API from within R to run QGIS algorithms while passing the
-  corresponding function arguments.
+\code{run_qgis} calls QGIS algorithms from within R while 
+  passing the corresponding function arguments.
 }
 \details{
-This workhorse function calls QGIS via Python (QGIS API) using the
+This workhorse function calls QGIS via Python (QGIS API) using the 
   command line. Specifically, it calls \code{processing.runalg}.
+}
+\note{
+GRASS users do not have to specify manually the GRASS region extent
+  (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
+  automatically retrieve the region extent based on the input layers.
 }
 \examples{
 \dontrun{
@@ -32,11 +42,10 @@ This workhorse function calls QGIS via Python (QGIS API) using the
 my_env <- set_env()
 # find out how a function is called
 find_algorithms(search_term = "add", qgis_env = my_env)
-# find out how it works
-get_usage(alg = "saga:addcoordinatestopoints", qgis_env = my_env)
-# specify the parameters in the exact same order as listed by get_usage
-params <- list(INPUT = "random_squares.shp",
-               OUTPUT = "output.shp")
+# specify parameters
+params <- get_args_man("saga:addcoordinatestopoints", qgis_env = qgis_env)
+params$INPUT <- "random_squares.shp"
+params$OUTPUT <- "output.shp"
 run_qgis(alg = "saga:addcoordinatestopoints",
          params = params,
          qgis_env = my_env)
