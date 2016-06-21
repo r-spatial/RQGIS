@@ -93,18 +93,6 @@ my_env
 #> 
 #> $python_plugins
 #> [1] "C:\\OSGeo4W64\\apps\\qgis\\python\\plugins"
-#> 
-#> $python27
-#> [1] "C:\\OSGeo4W64\\apps\\Python27"
-#> 
-#> $qt4
-#> [1] "C:\\OSGeo4W64\\apps\\Qt4"
-#> 
-#> $msys
-#> [1] "C:\\OSGeo4W64\\apps\\msys"
-#> 
-#> $grass
-#> [1] "C:\\OSGeo4W64\\apps\\grass"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
