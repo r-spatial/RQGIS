@@ -71,7 +71,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows). If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -81,8 +81,10 @@ library("RQGIS")
 # within R
 my_env <- set_env()
 #> Trying to find OSGeo4W on your C: drive.
+# under Windows set_env would be much faster if you specify the root path:
+# my_env <- set_env("C:/OSGeo4W~1")
 # have a look at the paths necessary to run QGIS from within R
-head(my_env, 4)
+my_env
 #> $root
 #> [1] "C:\\OSGeo4W64"
 #> 
@@ -94,6 +96,15 @@ head(my_env, 4)
 #> 
 #> $python27
 #> [1] "C:\\OSGeo4W64\\apps\\Python27"
+#> 
+#> $qt4
+#> [1] "C:\\OSGeo4W64\\apps\\Qt4"
+#> 
+#> $msys
+#> [1] "C:\\OSGeo4W64\\apps\\msys"
+#> 
+#> $grass
+#> [1] "C:\\OSGeo4W64\\apps\\grass"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -135,9 +146,9 @@ In our case, `qgis:polygoncentroids` has only two function arguments and no defa
 
 ``` r
 # path to the input shapefile
-params$INPUT_LAYER  <- paste(dir_tmp, "ger.shp", sep = "\\")
+params$INPUT_LAYER  <- file.path(dir_tmp, "ger.shp")
 # path to the output shapefile
-params$OUTPUT_LAYER <- paste(dir_tmp, "ger_coords.shp", sep = "\\")
+params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
 
 Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
@@ -167,11 +178,7 @@ Of course, this is a very simple example. We could have achieved the same using 
 TO DO:
 ======
 
--   test the implemented functions, especially `run_qgis`, by running numerous QGIS, SAGA and GRASS functions. Is's more than likely that we still need to make `run_qgis` more generic. For instance, it could be a problem that all function arguments are submitted as characters.
--   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04 (I assume we need to install SAGA manually...)
+-   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
--   Rewrite check\_apps and set\_env in such a way that the user might specify root, qgis\_prefix\_path, python\_plugins himself (at least for UNIX)
--   rewrite run\_qgis documentation
--   set GRASS\_REGION\_CELLSIZE\_PARAMETER automatically
--   test open\_help and iron out bugs of third-party providers (Taudem, OTB, etc.). Additionally, automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" == TRUE, construct html file)
+-   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
