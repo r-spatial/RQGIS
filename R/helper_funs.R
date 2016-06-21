@@ -172,7 +172,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 check_apps <- function(root) { 
   
   if (Sys.info()["sysname"] == "Windows") {
-    path_apps <- paste0(root, "\\apps")
+    path_apps <- file.path(root, "apps")
 
     # qgis_prefix_path = C:\\OSGeo4W64\\apps\\qgis & usr/bin
     # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
@@ -182,14 +182,13 @@ check_apps <- function(root) {
               "Qt4")
     
     out <- lapply(apps, function(app) {
-      if (dir.exists(paste(path_apps, app, sep = "\\"))) {
-        path <- paste(path_apps, app, sep = "\\")
+      if (dir.exists(file.path(path_apps, app))) {
+        path <- file.path(path_apps, app)
       } else {
         path <- NULL
         # apps necessary to run the QGIS-API
-        stop("Please install ", app, 
-               " using the 'OSGEO4W' advanced installation", 
-               " routine.")
+        stop("Folder ", app, " could not be found under ", file.path(path_apps), 
+               " Please install it.")
         }
       gsub("//|/", "\\\\", path)
     })

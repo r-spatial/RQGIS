@@ -15,8 +15,8 @@
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
 #' @examples 
-#' # Not specifying a root path under Windows will take set_env 10-15 sec to
-#' # find the QGIS installation on the C: drive of your machine
+#' # Letting set_env look for the QGIS installation might take a while depending
+#' # on how full your C: drive is (Windows)
 #' set_env()
 #' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 #' # installation on your machine
@@ -497,7 +497,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   system(batch_call, intern = TRUE)
   
   # retrieve the Python output
-  tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = TRUE, 
+  tmp <- read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
                   stringsAsFactors = FALSE)
   # If a wrong algorithm (-> alg is None) name was provided, stop the function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
@@ -520,7 +520,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   # http://stackoverflow.com/questions/28204507/remove-backslashes-from-character-string
   # args <- lapply(args, function(x) as.character(noquote(x)))
   # clean up after yourself
-  unlink(paste0(tmp_dir, "/output.csv"))
+  unlink(file.path(tmp_dir, "output.csv"))
   # return your result
   args
 }
