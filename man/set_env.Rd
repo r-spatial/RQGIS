@@ -28,8 +28,8 @@ The function returns a list containing all the path necessary to run
   from within R.
 }
 \examples{
-# Not specifying a root path under Windows will take set_env 10-15 sec to
-# find the QGIS installation on the C: drive of your machine
+# Letting set_env look for the QGIS installation might take a while depending
+# on how full your C: drive is (Windows)
 set_env()
 # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 # installation on your machine
