@@ -4,29 +4,36 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, qgis_prefix_path = NULL, python_plugins = NULL,
-  python27 = NULL, qt4 = NULL, msys = NULL, grass = NULL)
+set_env(root = NULL)
 }
 \arguments{
-\item{root}{Root path to the QGIS-installation.}
+\item{root}{Root path to the QGIS-installation. If you do not specify 
+function parameter \code{root}, the function looks for \code{qgis.bat} on 
+your C: drive. However, this only works if you have used the 
+OSGeo4W-installation. That means, if you installed QGIS on your system 
+without using the OSGeo4W-routine, the function might still be able to find
+the QGIS-installation. However, RQGIS will throw an error message since it 
+is quite unlikely that \code{check_apps} will find the dependencies 
+necessary to use the Python QGIS API. If you are running RQGIS under Linux 
+or on a Mac, \code{set_env} assumes that your root path is "/usr" and 
+"/Applications/QGIS.app/Contents", respectively.}
+}
+\value{
+The function returns a list containing all the path necessary to run 
+  QGIS from within R. This is the root path, the QGIS prefix path and the 
+  path to the Python plugins.
 }
 \description{
 \code{set_env} tries to find all the paths necessary to run QGIS
   from within R.
 }
-\details{
-If you do not specify function parameter \code{path}, the function 
-  looks for \code{qgis.bat}-file on your C: drive. However, this only works 
-  if you have used the OSGeo4W-installation. That means, if you installed 
-  QGIS on your system without using the OSGeo4W-routine, the function might 
-  still be able to find the QGIS-installation. However, RQGIS will throw an 
-  error message since \code{check_apps} will not find the dependencies 
-  necessary to use the Python QGIS API. If you are running RQGIS under Linux
-  or on a Mac, \code{set_env} assumes that your root path is "/usr" and
-  "/applications/QGIS.app/Contents", respectively.
-}
 \examples{
+# Not specifying a root path under Windows will take set_env 10-15 sec to
+# find the QGIS installation on the C: drive of your machine
 set_env()
+# It is much faster (0 sec) to explicitly state the root path to the QGIS 
+# installation on your machine
+set_env("C:/OSGEO4~1")  # Windows example
 }
 \author{
 Jannes Muenchow

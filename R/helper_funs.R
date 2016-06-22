@@ -172,37 +172,29 @@ execute_cmds <- function(processing_name = "processing.alglist",
 check_apps <- function(root) { 
   
   if (Sys.info()["sysname"] == "Windows") {
-    path_apps <- paste0(root, "\\apps")
-    
-    # define apps to check
-    # \\apps\\qgis\\bin
-    # apps\\qgis\\python
-    # apps\\Python27\\Lib\\site-packages
-    # \\apps\\qgis
-    # \apps\\qgis\\python\\plugins
-    # \\apps\\grass\\
-    
+    path_apps <- file.path(root, "apps")
+
     # qgis_prefix_path = C:\\OSGeo4W64\\apps\\qgis & usr/bin
     # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
+    # apps <- c("qgis", "qgis\\python\\plugins", "Python27",
+    #           "Qt4", "msys", "grass")
     apps <- c("qgis", "qgis\\python\\plugins", "Python27",
-              "Qt4", "msys", "grass")
+              "Qt4")
+    
     out <- lapply(apps, function(app) {
-      if (dir.exists(paste(path_apps, app, sep = "\\"))) {
-        path <- paste(path_apps, app, sep = "\\")
-      }
-      else {
+      if (dir.exists(file.path(path_apps, app))) {
+        path <- file.path(path_apps, app)
+      } else {
         path <- NULL
-        # Aside from msys and grass all apps are necessary to run the QGIS-API
-        if (!app %in% c("msys", "grass")) {
-          stop("Please install ", app, 
-               " using the 'OSGEO4W' advanced installation", 
-               " routine.")
+        # apps necessary to run the QGIS-API
+        stop("Folder ", app, " could not be found under ", file.path(path_apps), 
+               " Please install it.")
         }
-      }
       gsub("//|/", "\\\\", path)
     })
-    names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4",
-                    "msys", "grass")
+    names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4")
+    # actually, we only need the first two elements...
+    out <- out[1:2]
   }
   
   if (Sys.info()["sysname"] == "Linux") {

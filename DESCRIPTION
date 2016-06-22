@@ -8,7 +8,7 @@ Authors@R: c(
 Description: RQGIS establishes an interface between R and QGIS, i.e. it allows
   the user to access QGIS functionalities from within R. It achieves this
   by using the QGIS API via the command line. This gives the user an extensive
-  suite of GIS functions, Since QGIS combines the functionalities of various GIS -
+  suite of GIS functions, since QGIS combines the functionalities of various GIS -
   QGIS, SAGA, GRASS and GDAL among others.
 URL: https://github.com/jannes-m/RQGIS
 BugReports: https://github.com/jannes-m/RQGIS/issues
@@ -21,3 +21,4 @@ Imports: rgdal,
          raster,
          XML,
          RCurl
+SystemRequirements: Python (>= 2.7), QGIS (>= 2.8)

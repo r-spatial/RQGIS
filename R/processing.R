@@ -1,27 +1,29 @@
 #' @title Retrieve the environment settings to run QGIS from within R
 #' @description \code{set_env} tries to find all the paths necessary to run QGIS
 #'   from within R.
-#' @param root Root path to the QGIS-installation.
-#' @details If you do not specify function parameter \code{path}, the function 
-#'   looks for \code{qgis.bat}-file on your C: drive. However, this only works 
-#'   if you have used the OSGeo4W-installation. That means, if you installed 
-#'   QGIS on your system without using the OSGeo4W-routine, the function might 
-#'   still be able to find the QGIS-installation. However, RQGIS will throw an 
-#'   error message since \code{check_apps} will not find the dependencies 
-#'   necessary to use the Python QGIS API. If you are running RQGIS under Linux
-#'   or on a Mac, \code{set_env} assumes that your root path is "/usr" and
-#'   "/applications/QGIS.app/Contents", respectively.
+#' @param root Root path to the QGIS-installation. If you do not specify 
+#'   function parameter \code{root}, the function looks for \code{qgis.bat} on 
+#'   your C: drive. However, this only works if you have used the 
+#'   OSGeo4W-installation. That means, if you installed QGIS on your system 
+#'   without using the OSGeo4W-routine, the function might still be able to find
+#'   the QGIS-installation. However, RQGIS will throw an error message since it 
+#'   is quite unlikely that \code{check_apps} will find the dependencies 
+#'   necessary to use the Python QGIS API. If you are running RQGIS under Linux 
+#'   or on a Mac, \code{set_env} assumes that your root path is "/usr" and 
+#'   "/Applications/QGIS.app/Contents", respectively.
+#' @return The function returns a list containing all the path necessary to run 
+#'   QGIS from within R. This is the root path, the QGIS prefix path and the 
+#'   path to the Python plugins.
 #' @examples 
+#' # Letting set_env look for the QGIS installation might take a while depending
+#' # on how full your C: drive is (Windows)
 #' set_env()
+#' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
+#' # installation on your machine
+#' set_env("C:/OSGEO4~1")  # Windows example
 #' @export
 #' @author Jannes Muenchow
-set_env <- function(root = NULL,
-                    qgis_prefix_path = NULL,
-                    python_plugins = NULL,
-                    python27 = NULL,
-                    qt4 = NULL,
-                    msys = NULL,
-                    grass = NULL) {
+set_env <- function(root = NULL) {
 
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -52,7 +54,7 @@ set_env <- function(root = NULL,
       # shell(cmd, intern = TRUE)
       
       if (length(root) == 0) {
-        stop("Sorry, OSGeo4W and QGIS are not installed on the C: drive.",
+        stop("Sorry, OSGeo4W and QGIS are not installed on your C: drive.",
              " Please specify the root to your OSGeo4W-installation", 
              " manually.")
       } else if (length(root) > 1) {
@@ -495,7 +497,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   system(batch_call, intern = TRUE)
   
   # retrieve the Python output
-  tmp <- read.csv(paste0(tmp_dir, "/output.csv"), header = TRUE, 
+  tmp <- read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
                   stringsAsFactors = FALSE)
   # If a wrong algorithm (-> alg is None) name was provided, stop the function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
@@ -518,24 +520,30 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   # http://stackoverflow.com/questions/28204507/remove-backslashes-from-character-string
   # args <- lapply(args, function(x) as.character(noquote(x)))
   # clean up after yourself
-  unlink(paste0(tmp_dir, "/output.csv"))
+  unlink(file.path(tmp_dir, "output.csv"))
   # return your result
   args
 }
 
 #' @title Interface to QGIS commands
-#' @description \code{run_qgis} is the workhorse of the R-QGIS interface: It
-#'   calls the QGIS API from within R to run QGIS algorithms while passing the
-#'   corresponding function arguments.
-#' @param alg Name of the GIS function to be used (see
+#' @description \code{run_qgis} calls QGIS algorithms from within R while 
+#'   passing the corresponding function arguments.
+#' @param alg Name of the GIS function to be used (see 
 #'   \code{\link{find_algorithms}}).
-#' @param params A list of function arguments that should be used in conjunction
-#'   with the selected GIS function (see \code{\link{get_usage}} and
-#'   \code{\link{get_options}}).
+#' @param params A list of geoalgorithm function arguments that should be used 
+#'   in conjunction with the selected (Q)GIS function (see 
+#'   \code{\link{get_args_man}}). Please make sure that you provide all function
+#'   arguments in the correct order. To make sure this is the case, it is 
+#'   recommended to use the convenience function \code{\link{get_args_man}}.
+#' @param check_params If \code{TRUE} (default), it will be checked if all 
+#'   geoalgorithm function arguments were provided in the correct order.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @details This workhorse function calls QGIS via Python (QGIS API) using the
+#' @details This workhorse function calls QGIS via Python (QGIS API) using the 
 #'   command line. Specifically, it calls \code{processing.runalg}.
+#' @note GRASS users do not have to specify manually the GRASS region extent
+#'   (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
+#'   automatically retrieve the region extent based on the input layers.
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
@@ -544,16 +552,15 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' my_env <- set_env()
 #' # find out how a function is called
 #' find_algorithms(search_term = "add", qgis_env = my_env)
-#' # find out how it works
-#' get_usage(alg = "saga:addcoordinatestopoints", qgis_env = my_env)
-#' # specify the parameters in the exact same order as listed by get_usage
-#' params <- list(INPUT = "random_squares.shp",
-#'                OUTPUT = "output.shp")
+#' # specify parameters
+#' params <- get_args_man("saga:addcoordinatestopoints", qgis_env = qgis_env)
+#' params$INPUT <- "random_squares.shp"
+#' params$OUTPUT <- "output.shp"
 #' run_qgis(alg = "saga:addcoordinatestopoints",
 #'          params = params,
 #'          qgis_env = my_env)
 #' }
-run_qgis <- function(alg = NULL, params = NULL,
+run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                      qgis_env = set_env()) {
   
   # check if all necessary function arguments were supplied
@@ -562,7 +569,31 @@ run_qgis <- function(alg = NULL, params = NULL,
   if (any(ind)) {
     stop("Please specify: ", paste(args[ind], collapse = ", "))
   }
-
+  
+  # check if all arguments were specified in the correct order
+  if (check_params) {
+    test <- get_args_man(alg, qgis_env = qgis_env)  
+    
+    # check if there are too few/many function arguments
+    if (length(params) != length(test)) {
+      ifelse(length(params) > length(test),
+             stop("Unknown function argument(s): ", 
+                  paste(setdiff(names(test), names(params)), collapse = ", ")),
+             stop("Function argument(s) ", 
+                  paste(setdiff(names(params), names(test)), collapse = ", "),
+                  "are missing"))
+    }
+    
+    # check if all function arguments are in the correct order
+    ind <- names(test) != names(params)
+    if (any(ind)) {
+      stop("Function argument(s) ", 
+           paste(names(params)[ind], collapse = ", "),
+           " should be ",
+           paste(names(test)[ind], collapse = ", "))
+    }
+  }
+  
   # set the bbox in the case of GRASS functions if it hasn't already been
   # provided 
   # (if there are more of these 3rd-party based specifics, put them in a new
