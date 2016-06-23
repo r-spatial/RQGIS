@@ -5,7 +5,7 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, params = NULL, check_params = TRUE,
-  qgis_env = set_env())
+  load_output = NULL, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see 
@@ -20,8 +20,19 @@ recommended to use the convenience function \code{\link{get_args_man}}.}
 \item{check_params}{If \code{TRUE} (default), it will be checked if all 
 geoalgorithm function arguments were provided in the correct order.}
 
+\item{load_output}{Character vector containing paths to (an) output file(s) 
+to load the QGIS output directly into R (optional). If \code{load_output} 
+consists of more than one element, a list will be returned. See the example
+section for more details.}
+
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
+}
+\value{
+If not otherwiese specified, the function saves the QGIS generated 
+  output files in a temporary folder. Optionally, function parameter 
+  \code{load_output} loads spatial QGIS output (vector and raster data) into
+  R.
 }
 \description{
 \code{run_qgis} calls QGIS algorithms from within R while 
@@ -32,24 +43,36 @@ This workhorse function calls QGIS via Python (QGIS API) using the
   command line. Specifically, it calls \code{processing.runalg}.
 }
 \note{
-GRASS users do not have to specify manually the GRASS region extent
+Please note that you can also pass spatial R objects as input 
+  parameters where suitable (e.g., input layer, input raster). Supported 
+  formats are \code{\link[sp]{SpatialPointsDataFrame}}, 
+  \code{\link[sp]{SpatialLinesDataFrame}}, 
+  \code{\link[sp]{SpatialPolygonsDataFrame}} and 
+  \code{\link[raster]{raster}}. See the example section for more details.
+  
+  GRASS users do not have to specify manually the GRASS region extent 
   (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
   automatically retrieve the region extent based on the input layers.
 }
 \examples{
-\dontrun{
 # set the environment
 my_env <- set_env()
 # find out how a function is called
 find_algorithms(search_term = "add", qgis_env = my_env)
 # specify parameters
-params <- get_args_man("saga:addcoordinatestopoints", qgis_env = qgis_env)
-params$INPUT <- "random_squares.shp"
+params <- get_args_man("saga:addcoordinatestopoints", qgis_env = my_env)
+# load random_points - a SpatialPointsDataFrame
+data(random_points, package = "RQGIS")
+params$INPUT <- random_points
+# Here I specify a SpatialPointsDataFrame as input, but you could also
+# specify the path to a spatial object file (e.g., shapefile), e.g.;
+# params$INPUT <- "random_points.shp"
 params$OUTPUT <- "output.shp"
+# Run the QGIS API and load its output into R
 run_qgis(alg = "saga:addcoordinatestopoints",
          params = params,
+         load_output = params$OUTPUT,
          qgis_env = my_env)
-}
 }
 \author{
 Jannes Muenchow, QGIS developer team

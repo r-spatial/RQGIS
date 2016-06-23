@@ -9,7 +9,9 @@
 #'   \code{\link{execute_cmds}}.
 #' @author Jannes Muenchow
 #' @examples 
+#' \dontrun{
 #' build_cmds()
+#' }
 build_cmds <- function(qgis_env = set_env()) { 
   
   if (Sys.info()["sysname"] == "Windows") {
