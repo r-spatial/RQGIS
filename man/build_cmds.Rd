@@ -21,7 +21,9 @@ This function simply builds the raw Python and batch commands
   needed to acces the Python QGIS API.
 }
 \examples{
+\dontrun{
 build_cmds()
+}
 }
 \author{
 Jannes Muenchow
