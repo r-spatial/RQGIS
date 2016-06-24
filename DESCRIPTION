@@ -14,11 +14,14 @@ URL: https://github.com/jannes-m/RQGIS
 BugReports: https://github.com/jannes-m/RQGIS/issues
 License: GPL-2
 LazyData: TRUE
+Encoding: UTF-8
 RoxygenNote: 5.0.1
 Depends:
     R (>= 3.2.0)
-Imports: rgdal, 
+Imports: 
          raster,
-         XML,
-         RCurl
+         RCurl,
+         rgdal, 
+         sp,
+         XML
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.8)

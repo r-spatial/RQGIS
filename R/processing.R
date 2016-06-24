@@ -537,30 +537,54 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'   recommended to use the convenience function \code{\link{get_args_man}}.
 #' @param check_params If \code{TRUE} (default), it will be checked if all 
 #'   geoalgorithm function arguments were provided in the correct order.
+#' @param load_output Character vector containing paths to (an) output file(s) 
+#'   to load the QGIS output directly into R (optional). If \code{load_output} 
+#'   consists of more than one element, a list will be returned. See the example
+#'   section for more details.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
 #' @details This workhorse function calls QGIS via Python (QGIS API) using the 
 #'   command line. Specifically, it calls \code{processing.runalg}.
-#' @note GRASS users do not have to specify manually the GRASS region extent
+#' @return If not otherwiese specified, the function saves the QGIS generated 
+#'   output files in a temporary folder. Optionally, function parameter 
+#'   \code{load_output} loads spatial QGIS output (vector and raster data) into
+#'   R.
+#' @note Please note that you can also pass spatial R objects as input 
+#'   parameters where suitable (e.g., input layer, input raster). Supported 
+#'   formats are \code{\link[sp]{SpatialPointsDataFrame}}, 
+#'   \code{\link[sp]{SpatialLinesDataFrame}}, 
+#'   \code{\link[sp]{SpatialPolygonsDataFrame}} and 
+#'   \code{\link[raster]{raster}}. See the example section for more details.
+#'   
+#'   GRASS users do not have to specify manually the GRASS region extent 
 #'   (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
 #'   automatically retrieve the region extent based on the input layers.
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
+#' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
+#' @importFrom sp SpatialLinesDataFrame
+#' @importFrom raster raster
 #' @examples
-#' \dontrun{
 #' # set the environment
 #' my_env <- set_env()
 #' # find out how a function is called
 #' find_algorithms(search_term = "add", qgis_env = my_env)
 #' # specify parameters
-#' params <- get_args_man("saga:addcoordinatestopoints", qgis_env = qgis_env)
-#' params$INPUT <- "random_squares.shp"
+#' params <- get_args_man("saga:addcoordinatestopoints", qgis_env = my_env)
+#' # load random_points - a SpatialPointsDataFrame
+#' data(random_points, package = "RQGIS")
+#' params$INPUT <- random_points
+#' # Here I specify a SpatialPointsDataFrame as input, but you could also
+#' # specify the path to a spatial object file (e.g., shapefile), e.g.;
+#' # params$INPUT <- "random_points.shp"
 #' params$OUTPUT <- "output.shp"
+#' # Run the QGIS API and load its output into R
 #' run_qgis(alg = "saga:addcoordinatestopoints",
 #'          params = params,
+#'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
-#' }
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
+                     load_output = NULL,
                      qgis_env = set_env()) {
   
   # check if all necessary function arguments were supplied
@@ -593,6 +617,31 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
            paste(names(test)[ind], collapse = ", "))
     }
   }
+  
+  # save Spatial-Objects (sp and raster)
+  # define temporary folder
+  tmp_dir <- tempdir()
+  params[] <- lapply(seq_along(params), function(i) {
+    tmp <- class(params[[i]])
+    # check if the function argument is a SpatialObject
+    if (grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp) && 
+        attr(tmp, "package") == "sp") {
+      rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
+                      layer = names(params)[[i]],
+                      driver = "ESRI Shapefile",
+                      overwrite_layer = TRUE)
+      # return your result
+      file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
+    } else if (tmp == "RasterLayer") {
+      fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
+      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
+                          prj = TRUE, overwrite = TRUE)
+      # return your result
+      fname
+    } else {
+      params[[i]]
+    }
+  })
   
   # set the bbox in the case of GRASS functions if it hasn't already been
   # provided 
@@ -657,5 +706,30 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                params = args,
                qgis_env = qgis_env,
                intern = ifelse(Sys.info()["sysname"] == "Darwin", FALSE, TRUE))
-  
+  # load output
+  if (!is.null(load_output)) {
+    ls_1 <- lapply(load_output, function(x) {
+      fname <- ifelse(dirname(load_output) == ".", 
+                      file.path(tmp_dir, load_output),
+                      load_output)
+      test <- try(expr = 
+                    rgdal::readOGR(dsn = dirname(fname),
+                                   layer = gsub("\\..*", "", basename(fname))),
+                  silent = TRUE
+      )
+      if (inherits(test, "try-error")) {
+        raster::raster(fname)
+      } else {
+        test
+      }   
+    })
+    # only return a list if the list contains several elements
+    if (length(ls_1) == 1) {
+      ls_1[[1]]
+    } else {
+      ls_1
+    }
+  }
 }
+
+
