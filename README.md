@@ -146,10 +146,6 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
                 params = params,
                 load_output = params$OUTPUT_LAYER,
                 qgis_env = my_env)
-#> OGR data source with driver: ESRI Shapefile 
-#> Source: "C:/Users/pi37pat/AppData/Local/Temp/Rtmp6jth2L", layer: "ger_coords"
-#> with 16 features
-#> It has 13 fields
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.
