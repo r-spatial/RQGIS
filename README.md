@@ -51,7 +51,7 @@ sudo apt-get install saga
 Mac OS X
 --------
 
-For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
+For Mac, please follow this link <https://www.qgis.org/en/site/forusers/download.html> to install QGIS. We recommend to download the latest stable release.
 
 RQGIS usage
 ===========
@@ -139,24 +139,26 @@ params$INPUT_LAYER  <- file.path(dir_tmp, "ger.shp")
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
 
-Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
+Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Please note that function argument lets you specify QGIS output files you want to directly load into R.
 
 ``` r
-run_qgis(alg = "qgis:polygoncentroids",
-         params = params,
-         qgis_env = my_env)
-#> character(0)
+out <- run_qgis(alg = "qgis:polygoncentroids",
+                params = params,
+                load_output = params$OUTPUT_LAYER,
+                qgis_env = my_env)
+#> OGR data source with driver: ESRI Shapefile 
+#> Source: "C:/Users/pi37pat/AppData/Local/Temp/Rtmp6jth2L", layer: "ger_coords"
+#> with 16 features
+#> It has 13 fields
 ```
 
-Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.
 
 ``` r
-# load the point shapefile QGIS has created for us
-ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
-plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
 ![](README-unnamed-chunk-10-1.png)
