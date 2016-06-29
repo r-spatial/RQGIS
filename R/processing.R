@@ -714,7 +714,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                       load_output)
       test <- try(expr = 
                     rgdal::readOGR(dsn = dirname(fname),
-                                   layer = gsub("\\..*", "", basename(fname))),
+                                   layer = gsub("\\..*", "", basename(fname)),
+                                   verbose = FALSE),
                   silent = TRUE
       )
       if (inherits(test, "try-error")) {

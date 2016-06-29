@@ -59,7 +59,7 @@ sudo apt-get install saga
 ```
 
 ## Mac OS X
-For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
+For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. We recommend to download the latest stable release.
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
@@ -127,23 +127,22 @@ params$INPUT_LAYER  <- file.path(dir_tmp, "ger.shp")
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
 
-Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
+Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Please note that function argument \code{load_output} lets you specify QGIS output files you want to directly load into R. 
 
 ```{r, error = FALSE, message = FALSE, warning = FALSE}
-run_qgis(alg = "qgis:polygoncentroids",
-         params = params,
-         qgis_env = my_env)
+out <- run_qgis(alg = "qgis:polygoncentroids",
+                params = params,
+                load_output = params$OUTPUT_LAYER,
+                qgis_env = my_env)
 ```
 
-Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. 
 
 ```{r, fig.width = 5, fig.height = 5, align = "center"}
-# load the point shapefile QGIS has created for us
-ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
-plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
