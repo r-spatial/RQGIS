@@ -47,7 +47,7 @@ In order to run RQGIS properly, you need to download various third-party softwar
 Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/). If you are unsure, what to install, simply select the express installation. This automatically also installs SAGA and GRASS, but not all other available third-party providers. If you wish to do install other providers (OTB, TauDEM, etc.), the best way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed (though everything else what you might not plan to use as well). In any case, this should get you started and soon we will  provide you with a detailed installation manual. 
 
 ## Linux
-For Debian/Ubuntu, please follow the installation instructions found under this link [https://www.qgis.org/de/site/forusers/alldownloads.html](here). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
+For Debian/Ubuntu, please follow the installation instructions found under this link: [https://www.qgis.org/de/site/forusers/alldownloads.html](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
 
 ### How to install SAGA on Ubuntu?
 To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
@@ -60,6 +60,7 @@ sudo apt-get install saga
 
 ## Mac OS X
 For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. We recommend to download the latest stable release.
+Please make sure to also install GDAL seperately following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). 
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
