@@ -75,15 +75,22 @@ set_env <- function(root = NULL) {
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
-      root <- "/applications/QGIS.app"
-    }
-    # print result to the console
-    paste0("QGIS Installation root: ", root)
-
+      # check for homebrew QGIS installation
+      path <- system("find /usr/local/Cellar/ -name 'QGIS.app'", intern = TRUE)
+      if(length(path) > 0) {
+        root <- path
+      }
+      if (is.null(root)) {
+        # check for binary QGIS installation
+        path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
+        if(length(path) > 0) {
+          root <- path
+        }
+      }
     qgis_env <- list(root = root)
     qgis_env <- c(qgis_env, qgis_prefix_path = check_apps(root = root) [[1]], 
                   python_plugins = check_apps(root = root) [[2]])
-    paste0("QGIS Installation path: ", qgis_env)
+    }
   }
   
   if (Sys.info()["sysname"] == "Linux") {
@@ -95,6 +102,10 @@ set_env <- function(root = NULL) {
     qgis_env <- c(qgis_env, check_apps(root = root))
   }
   # return your result
+  if(is.null(root)) {
+    print("Could not find QGIS on your system. Please install it or set 'root' 
+          for yourself")
+  }
   qgis_env
 }
 
