@@ -709,9 +709,9 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
-      fname <- ifelse(dirname(load_output) == ".", 
-                      file.path(tmp_dir, load_output),
-                      load_output)
+      fname <- ifelse(dirname(x) == ".", 
+                      file.path(tmp_dir, x),
+                      x)
       test <- try(expr = 
                     rgdal::readOGR(dsn = dirname(fname),
                                    layer = gsub("\\..*", "", basename(fname)),
