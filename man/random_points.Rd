@@ -4,17 +4,14 @@
 \name{random_points}
 \alias{random_points}
 \title{Random points.}
-\format{A \code{\link[sp]{SpatialPointsDataFrame}} object with 100 rows and 5
+\format{A \code{\link[sp]{SpatialPointsDataFrame}} object with 100 rows and 4
   variables:
 \describe{
   \item{id}{Plot ID.}
   \item{spri}{No of vascular plants per plot (species richness).}
-  \item{alt}{Altitude in km.}
-  \item{alt_2}{Orthogonal polynomial of the second order of alt}
-  \item{ndvi}{Normalized difference vegetation index. The NDVI was computed
-  from a Landsat scene (path 9, row 67, acquisition date: 09/22/2000; USGS
-  2013).}
-}}
+  \item{x}{Longitude.}
+  \item{y}{Latitude.}
+  }}
 \usage{
 random_points
 }
@@ -28,9 +25,6 @@ Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013):
 Predictive mapping of species richness and plant species' distributions of a
 Peruvian fog oasis along an altitudinal gradient. Biotropica 45, 5, 557-566,
 doi: 10.1111/btp.12049.
-  
-USGS (2013): U.S. Geological Survey. Earth Explorer. Available at: 
-http://earthexplorer.usgs.gov/ (last accessed 1 March 2013).
 }
 \keyword{datasets}
 

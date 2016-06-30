@@ -116,7 +116,7 @@ Number of algorithms:
 
 ### QGIS
 Please follow the instructions provided 
-[here](https://www.qgis.org/de/site/forusers/download.html). We recommend to 
+[here](https://www.qgis.org/en/site/forusers/download.html). We recommend to 
 install the latest 'current' version. 
 
 ### SAGA
