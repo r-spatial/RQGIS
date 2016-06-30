@@ -36,7 +36,7 @@ Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org
 Linux
 -----
 
-For Debian/Ubuntu, please follow the installation instructions found under this link [https://www.qgis.org/de/site/forusers/alldownloads.html](here). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
+For Debian/Ubuntu, please follow the installation instructions found under this link: <https://www.qgis.org/de/site/forusers/alldownloads.html>. Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
 
 ### How to install SAGA on Ubuntu?
 
@@ -51,7 +51,17 @@ sudo apt-get install saga
 Mac OS X
 --------
 
-For Mac, please follow this link <https://www.qgis.org/en/site/forusers/download.html> to install QGIS. We recommend to download the latest stable release.
+### Binary installation
+
+For Mac, please follow this link <https://www.qgis.org/en/site/forusers/download.html> to install QGIS. Both LTR and current release will work. Please make sure to also install GDAL seperately, preferably following this link <http://www.kyngchaos.com/software/frameworks> or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers.
+
+### Using package management systems
+
+Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
+
+-   Homebrew: If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path.
+-   Fink: <untested>
+-   MacPorts: <untested>
 
 RQGIS usage
 ===========

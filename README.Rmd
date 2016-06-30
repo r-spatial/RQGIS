@@ -64,16 +64,11 @@ For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download
 Please make sure to also install GDAL seperately, preferably following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
 
 ### Using package management systems
-Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work! 
+Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
 
-#### Homebrew
-If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path. 
-
-#### Fink
-<untested>
-
-#### MacPorts
-<untested>
+- Homebrew: If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path. 
+- Fink: <untested>
+- MacPorts: <untested>
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
