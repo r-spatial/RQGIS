@@ -4,7 +4,7 @@
 \name{dem}
 \alias{dem}
 \title{Digital elevation model (DEM) of the Mongón study area.}
-\format{A \code{\link[raster]{raster}} with 98 rows and 99 columns:
+\format{A \code{\link[raster]{raster}} with 117 rows and 117 columns:
 \describe{
   \item{dem}{Altitude in m asl.}
 }}
