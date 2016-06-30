@@ -3,14 +3,9 @@
 #'   from within R.
 #' @param root Root path to the QGIS-installation. If you do not specify 
 #'   function parameter \code{root}, the function looks for \code{qgis.bat} on 
-#'   your C: drive. However, this only works if you have used the 
-#'   OSGeo4W-installation. That means, if you installed QGIS on your system 
-#'   without using the OSGeo4W-routine, the function might still be able to find
-#'   the QGIS-installation. However, RQGIS will throw an error message since it 
-#'   is quite unlikely that \code{check_apps} will find the dependencies 
-#'   necessary to use the Python QGIS API. If you are running RQGIS under Linux 
-#'   or on a Mac, \code{set_env} assumes that your root path is "/usr" and 
-#'   "/Applications/QGIS.app/Contents", respectively.
+#'   your C: drive under Windows. If you are on a Mac, it looks for 
+#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
+#'   \code{set_env} assumes that your root path is "/usr".
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -54,11 +49,12 @@ set_env <- function(root = NULL) {
       # shell(cmd, intern = TRUE)
       
       if (length(root) == 0) {
-        stop("Sorry, OSGeo4W and QGIS are not installed on your C: drive.",
-             " Please specify the root to your OSGeo4W-installation", 
+        stop("Sorry, I could not find QGIS on your C: drive.",
+             " Please specify the root to your QGIS-installation", 
              " manually.")
       } else if (length(root) > 1) {
-        stop("There are several QGIS installations on your system:\n",
+        stop("There are several QGIS installations on your system.", 
+             "Please choose one of them:\n",
              paste(root, collapse = "\n"))
       } else {
         # define root, i.e. OSGeo4W-installation
@@ -69,15 +65,13 @@ set_env <- function(root = NULL) {
     root <- gsub("/|//", "\\\\", root)
     # make sure that the root path does not end with some sort of slash
     root <- gsub("/$|//$|\\$|\\\\$", "", root)
-    qgis_env <- list(root = root)
-    qgis_env <- c(qgis_env, check_apps(root = root))
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
       # check for homebrew QGIS installation
       path <- system("find /usr/local/Cellar/ -name 'QGIS.app'", intern = TRUE)
-      if(length(path) > 0) {
+      if (length(path) > 0) {
         root <- path
       }
       if (is.null(root)) {
@@ -87,9 +81,6 @@ set_env <- function(root = NULL) {
           root <- path
         }
       }
-    qgis_env <- list(root = root)
-    qgis_env <- c(qgis_env, qgis_prefix_path = check_apps(root = root) [[1]], 
-                  python_plugins = check_apps(root = root) [[2]])
     }
   }
   
@@ -98,15 +89,10 @@ set_env <- function(root = NULL) {
       message("Assuming that your root path is '/usr'!")
       root <- "/usr"
     }
-    qgis_env <- list(root = root)
-    qgis_env <- c(qgis_env, check_apps(root = root))
   }
+  qgis_env <- list(root = root)
   # return your result
-  if(is.null(root)) {
-    print("Could not find QGIS on your system. Please install it or set 'root' 
-          for yourself")
-  }
-  qgis_env
+  c(qgis_env, check_apps(root = root))
 }
 
 #' @title Find and list available QGIS algorithms
