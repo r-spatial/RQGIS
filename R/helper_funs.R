@@ -240,7 +240,9 @@ check_apps <- function(root) {
 #'   API. For more information, refer to \code{\link{set_env}}.
 #' @author Jannes Muenchow
 #' @examples 
+#' \dontrun{
 #' build_py()
+#' }
 build_py <- function(qgis_env = set_env()) {
   c(# import all the libraries you need
     "import os",
@@ -270,7 +272,9 @@ build_py <- function(qgis_env = set_env()) {
 #' @param alg The name of the algorithm for which you wish to retrieve arguments
 #'   and default values.
 #' @examples 
+#' \dontrun{
 #' open_grass_help("grass7:r.sunmask")
+#' }
 #' @author Jannes Muenchow 
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
@@ -299,5 +303,5 @@ open_grass_help <- function(alg) {
     stop(gsub(".*:", "", alg), " could not be found in the online help!")
   }
   url <- paste0(url, grass_name, ".html")
-  browseURL(url)
+  utils::browseURL(url)
 }

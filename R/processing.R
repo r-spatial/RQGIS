@@ -264,11 +264,11 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
         "  groupName = re.sub('visualisation', 'visualization', groupName)",
         "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
         "  groupName = groupName.replace('sim_', 'simulation_')",
-        # retrive the command line name
+        # retrieve the command line name (worked for 2.8...)
         # "cmdLineName = alg.commandLineName()",
         # "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
-        
-        # for 2.14 use something like
+        # for 2.14 we cannot use the algorithm name 
+        # (now you have to test all SAGA and QGIS functions again...)
         "algName = alg.name.lower().replace(' ', '-')",
         
         # just use valid characters

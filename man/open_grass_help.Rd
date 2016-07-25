@@ -15,7 +15,9 @@ and default values.}
   specified GRASS geoalgorithm.
 }
 \examples{
+\dontrun{
 open_grass_help("grass7:r.sunmask")
+}
 }
 \author{
 Jannes Muenchow
