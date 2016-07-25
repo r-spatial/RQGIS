@@ -34,6 +34,7 @@ Function \code{find_algorithms} simply calls
   \code{processing.alglist} using Python.
 }
 \examples{
+\dontrun{
 # list all available QGIS algorithms on your system
 algs <- find_algorithms()
 algs[1:15]
@@ -41,6 +42,7 @@ algs[1:15]
 grep("qgis:", algs, value = TRUE)
 # find a function which adds coordinates
 find_algorithms(search_term = "add")
+}
 }
 \author{
 Jannes Muenchow, QGIS developer team

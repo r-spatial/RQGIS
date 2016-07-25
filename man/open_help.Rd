@@ -32,10 +32,12 @@ Please note that \code{open_help} requires a \strong{working Internet
   connection}.
 }
 \examples{
+\dontrun{
 # QGIS example
 open_help(alg = "qgis:addfieldtoattributestable")
 # GRASS example
 open_help(alg = "grass:v.overlay")
+}
 }
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team

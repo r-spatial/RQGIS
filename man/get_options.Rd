@@ -26,7 +26,9 @@ Function \code{get_options} simply calls
   \code{processing.algoptions} using Python.
 }
 \examples{
+\dontrun{
 get_options(alg = "saga:slopeaspectcurvature")
+}
 }
 \author{
 Jannes Muenchow, QGIS devleoper team

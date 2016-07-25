@@ -23,7 +23,9 @@ The function returns a list whose names correspond to the function
   function arguments of a GIS function.
 }
 \examples{
+\dontrun{
 get_args(alg = "qgis:addfieldtoattributestable")
+}
 }
 \author{
 Jannes Muenchow
