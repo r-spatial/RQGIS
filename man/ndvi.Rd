@@ -12,9 +12,9 @@
 ndvi
 }
 \description{
-NDVI \code{\link[raster]{raster}} computed from a Landsat scene 
-  (path 9, row 67, acquisition date: 09/22/2000; USGS 2013). For more
-  details, please refer to Muenchow et al. (2013).
+NDVI \code{\link[raster]{raster}} (EPSG:32717) computed from a
+  Landsat scene (path 9, row 67, acquisition date: 09/22/2000; USGS 2013).
+  For more details, please refer to Muenchow et al. (2013).
 }
 \references{
 Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013): 

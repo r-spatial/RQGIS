@@ -35,20 +35,21 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("SET OSGEO4W_ROOT=", qgis_env$root),
         # calling batch files from with a batchfile
         "call \"%OSGEO4W_ROOT%\"\\bin\\o4w_env.bat",
-        paste0("call \"%OSGEO4W_ROOT%\"\\apps\\grass\\", grass, 
-               "\\etc\\env.bat"),
+        # paste0("call \"%OSGEO4W_ROOT%\"\\apps\\grass\\", grass, 
+        #        "\\etc\\env.bat"),
         "@echo off",
         # adding QGIS and GRASS to PATH
         "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
-        paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
-               "\\lib"),
+        # paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
+        #        "\\lib"),
         # setting a PYTHONPATH variable
         "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
         # adding a few more python paths to PYTHONPATH
-        paste0("set PYTHONPATH=%PYTHONPATH%;", 
-               "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
+        # paste0("set PYTHONPATH=%PYTHONPATH%;", 
+        #       "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
         # defining QGIS prefix path (i.e. without bin)
-        "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis")
+        "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis"
+        )
     
     # construct the Python script
     py_cmd <- build_py(qgis_env)
@@ -59,9 +60,11 @@ build_cmds <- function(qgis_env = set_env()) {
     cmd <- 
       c(# set framework (not sure if necessary)
         paste0("export DYLD_LIBRARY_PATH=", qgis_env$root,
-               "", "/Contents/MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/"),
+               "/Contents/MacOS/lib/:/Applications/QGIS.app/Contents/",
+               "Frameworks/"),
         # append pythonpath to import qgis.core etc. packages
-        paste0("export PYTHONPATH=", qgis_env$root, "/Contents/Resources/python/"),
+        paste0("export PYTHONPATH=", qgis_env$root, 
+               "/Contents/Resources/python/"),
         # add QGIS Prefix path (not sure if necessary)
         paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/"), 
         paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))

@@ -12,9 +12,9 @@
 dem
 }
 \description{
-A \code{\link[raster]{raster}} object representing altitude
-  (ASTER GDEM, LP DAAC 2012).  For more details, please refer to Muenchow et
-  al. (2013).
+A \code{\link[raster]{raster}} object (EPSG:32717) representing
+  altitude (ASTER GDEM, LP DAAC 2012).  For more details, please refer to
+  Muenchow et al. (2013).
 }
 \references{
 Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013): 

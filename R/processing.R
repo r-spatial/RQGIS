@@ -15,7 +15,10 @@
 #' set_env()
 #' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 #' # installation on your machine
+#' \dontrun{
 #' set_env("C:/OSGEO4~1")  # Windows example
+#' }
+#' 
 #' @export
 #' @author Jannes Muenchow
 set_env <- function(root = NULL) {
