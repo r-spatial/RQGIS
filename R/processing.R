@@ -116,6 +116,7 @@ set_env <- function(root = NULL) {
 #' @return Python console output will be captured as an R character vector.
 #' @author Jannes Muenchow, QGIS developer team
 #' @examples
+#' \dontrun{
 #' # list all available QGIS algorithms on your system
 #' algs <- find_algorithms()
 #' algs[1:15]
@@ -123,6 +124,8 @@ set_env <- function(root = NULL) {
 #' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
+#' }
+
 #' @export
 find_algorithms <- function(search_term = "",
                             qgis_env = set_env(),
@@ -158,10 +161,12 @@ find_algorithms <- function(search_term = "",
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
+#' \dontrun{
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(alg = "saga:addcoordinatestopoints")
+#' }
 
 get_usage <- function(alg = NULL,
                       qgis_env = set_env(),
@@ -187,7 +192,9 @@ get_usage <- function(alg = NULL,
 #'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
+#' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
+#' }
 #' @export
 get_options <- function(alg = NULL,
                         qgis_env = set_env(),
@@ -220,10 +227,12 @@ get_options <- function(alg = NULL,
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples 
+#' \dontrun{
 #' # QGIS example
 #' open_help(alg = "qgis:addfieldtoattributestable")
 #' # GRASS example
 #' open_help(alg = "grass:v.overlay")
+#' }
 open_help <- function(alg = NULL, qgis_env = set_env()) {
   
   if (is.null(alg)) {
@@ -344,7 +353,9 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
 #' @author Jannes Muenchow
 #' @export
 #' @examples
+#' \dontrun{
 #' get_args(alg = "qgis:addfieldtoattributestable")
+#' }
 get_args <- function(alg = NULL, qgis_env = set_env()) {
   
   if (is.null(alg)) {
@@ -419,9 +430,11 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' @export
 #' @author Jannes Muenchow
 #' @examples 
+#' \dontrun{
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
+#' }
 get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 
   if (is.null(alg)) {
@@ -572,6 +585,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' @importFrom sp SpatialLinesDataFrame
 #' @importFrom raster raster
 #' @examples
+#' \dontrun{
 #' # set the environment
 #' my_env <- set_env()
 #' # find out how a function is called
@@ -590,6 +604,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          params = params,
 #'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
+#'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                      load_output = NULL,
                      qgis_env = set_env()) {
