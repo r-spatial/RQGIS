@@ -14,9 +14,14 @@ before_install:
   - sudo ldconfig
   - cd $CURWD
 
-language: R
+language: r
+
 sudo: required
-cache: packages
+
+warnings_are_errors: false
+
+r_packages: roxygen2
+
 
 
 

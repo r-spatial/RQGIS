@@ -1,5 +1,7 @@
 ## Test environments
 * local Windows installation, R 3.3.1
+* local Ubuntu 14.04 installation, 
+* local OS X install, R 3.3.1
 
 ## R CMD check results
 There were no ERRORs, WARNINGs or NOTEs”
