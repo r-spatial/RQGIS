@@ -265,19 +265,26 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
         "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
         "  groupName = groupName.replace('sim_', 'simulation_')",
         # retrive the command line name
-        "cmdLineName = alg.commandLineName()",
-        "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
+        # "cmdLineName = alg.commandLineName()",
+        # "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
+        
+        # for 2.14 use something like
+        "algName = alg.name.lower().replace(' ', '-')",
+        
         # just use valid characters
         "validChars = ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS' +
         'TUVWXYZ0123456789_')",
         "safeGroupName = ''.join(c for c in groupName if c in validChars)",
+        "validChars = validChars + '-'",
         "safeAlgName = ''.join(c for c in algName if c in validChars)",
         # which QGIS version are we using
         "version = '.'.join(QGis.QGIS_VERSION.split('.')[0:2])",
         # build the html to the help file
-        "url = ('https://docs.qgis.org/%s/en/docs/user_manual/' +
-        'processing_algs/%s/%s/%s.html') % (version, provider,
+        "url = ('https:///docs.qgis.org/%s/en/docs/user_manual/' +
+        'processing_algs/%s/%s.html#%s') % (version, provider,
         safeGroupName, safeAlgName)",
+        
+        
         # suppress error messages raised by the browser, e.g.,
         # console.error: CustomizableUI: 
         # TypeError: aNode.previousSibling is null -- 
@@ -494,8 +501,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   system(batch_call, intern = TRUE)
   
   # retrieve the Python output
-  tmp <- read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
-                  stringsAsFactors = FALSE)
+  tmp <- utils::read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
+                         stringsAsFactors = FALSE)
   # If a wrong algorithm (-> alg is None) name was provided, stop the function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
