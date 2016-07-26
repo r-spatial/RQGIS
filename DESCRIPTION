@@ -20,10 +20,13 @@ Encoding: UTF-8
 RoxygenNote: 5.0.1
 Depends:
     R (>= 3.2.0)
-Imports: 
+Imports:
          raster,
          RCurl,
          rgdal, 
          sp,
          XML
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.8)
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr
