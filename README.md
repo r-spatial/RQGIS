@@ -12,7 +12,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 <center>
-&lt;img src="r\_gis\_puzzle.png", width="50%" height="50%"&gt;
+&lt;img src="figures/r\_gis\_puzzle.png", width="50%" height="50%"&gt;
 </center>
 Installation
 ============
