@@ -5,15 +5,16 @@
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+
+<img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
+
+The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
 3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
-<center>
-&lt;img src="figures/r\_gis\_puzzle.png", width="50%" height="50%"&gt;
-</center>
 Installation
 ============
 
@@ -26,12 +27,10 @@ if (packageVersion("devtools") < 1.6) {
 if (!"lazyeval" %in% installed.packages()[, "Package"]) {
 devtools::install_github("hadley/lazyeval")  
 }
-devtools::install_github("jannes-m/RQGIS")
+devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-**Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
-
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation guide in the following subsections.
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures for each platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`.
 
 RQGIS usage
 ===========
