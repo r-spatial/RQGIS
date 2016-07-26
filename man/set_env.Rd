@@ -23,12 +23,12 @@ The function returns a list containing all the path necessary to run
   from within R.
 }
 \examples{
+\dontrun{
 # Letting set_env look for the QGIS installation might take a while depending
 # on how full your C: drive is (Windows)
 set_env()
 # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 # installation on your machine
-\dontrun{
 set_env("C:/OSGEO4~1")  # Windows example
 }
 
