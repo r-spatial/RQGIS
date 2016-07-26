@@ -11,6 +11,9 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
 3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
+<center>
+&lt;img src="r\_gis\_puzzle.png", width="50%" height="50%"&gt;
+</center>
 Installation
 ============
 
@@ -28,42 +31,7 @@ devtools::install_github("jannes-m/RQGIS")
 
 **Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation manual in the following subsections.
-
-Windows
--------
-
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>. If you are unsure, what to install, simply select the express installation. This automatically also installs SAGA and GRASS, but not all other available third-party providers. If you wish to do install other providers (OTB, TauDEM, etc.), the best way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed (though everything else what you might not plan to use as well). In any case, this should get you started and soon we will provide you with a detailed installation manual.
-
-Linux
------
-
-For Debian/Ubuntu, please follow the installation instructions found under this link: <https://www.qgis.org/de/site/forusers/alldownloads.html>. Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
-
-### How to install SAGA on Ubuntu?
-
-To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window:
-
-``` bash
-sudo add-apt-repository ppa:johanvdw/saga-gis  
-sudo apt-get update
-sudo apt-get install saga
-```
-
-Mac OS X
---------
-
-### Binary installation
-
-For Mac, please follow this link <https://www.qgis.org/en/site/forusers/download.html> to install QGIS. Both LTR and current release will work. Please make sure to also install GDAL seperately, preferably following this link <http://www.kyngchaos.com/software/frameworks> or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers.
-
-### Using package management systems
-
-Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
-
--   Homebrew: If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path.
--   Fink: <untested>
--   MacPorts: <untested>
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation guide in the following subsections.
 
 RQGIS usage
 ===========
@@ -169,7 +137,7 @@ plot(ger)
 plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-10-1.png)
+<img src="figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
 
