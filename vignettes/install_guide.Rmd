@@ -67,7 +67,7 @@ Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the late
 
 Clicking "Next" once more will start the download and installation process which might take a while.
 
-If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running "..\OSGeo4W\bin\osgeo4w-setup.exe". Or you download and run the latest [OSGeo4W-executable](http://trac.osgeo.org/osgeo4w/)
+If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running `../OSGeo4W/bin/osgeo4w-setup.exe`. Alternatively, you can download and run again the latest [OSGeo4W-executable](http://trac.osgeo.org/osgeo4w/).
 
 If you additionally want to use the **LiDAR processing tools** (LAStools), please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
 
@@ -105,34 +105,40 @@ QSqlQuery::prepare: database not open
 
 # Linux
 
-## QGIS
-For Debian/Ubuntu, please follow the installation instructions found under this [link](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if you install QGIS from the built-in Software managers/repositories, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely (especially if your running older Ubuntu builds like 14.04). We did not test other Linux derivates at the moment.
+## QGIS (and GRASS)
+If you install QGIS from the built-in Software managers/repositories, you will most likely get an outdated QGIS version since these repositories are seldomly updated (especially if your using Ubuntu older than 14.04). To install the latest QGIS release, we recommend to follow the installation instructions from the [QGIS installers website](https://www.qgis.org/en/site/forusers/alldownloads.html). 
 
-You can also just use this simplified guide:
+Here, we just describe exemplarily the QGIS installation for Debian/Ubuntu following the description found [here] (https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu). RQGIS should work as well with Linux derivatives other than Ubuntu. However, we did not test this.
 
-1. Open a terminal window
-2. Type `sudo gedit /etc/apt/sources.list`
-3. Move to the end of the document and add the following lines:   
-  `#QGIS`  
-  `deb https://www.qgis.org/debian xenial main` "xenial" here refers to 
-  Ubuntu build name which is "Xenial Xerus" for Version 16.04. For Ubuntu 14.04
-  replace "xenial" with "trusty". Save it and exit. 
-4. In the terminal window: 
-add `wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import` 
-followed by `gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -`
-5. Terminal: `sudo apt-get update` 
-6. Terminal: `sudo apt-get install qgis python-qgis qgis-plugin-grass`
+Open a terminal window. Make sure to remove all the QGIS and GRASS packages you may have installed before from other repositories. Then execute:
 
-You basically added the most recent stable QGIS repository to your list of
-repositories. Everytime you are running `sudo apt-get update` now, Ubuntu checks for
-new QGIS updates. 
 
-## GRASS
+```{r, engine = "shell"}
+# add QGIS repository for Ubuntu 16.04 to sources.list
+sudo sh -c 'echo "deb https://www.qgis.org/debian xenial main" >> /etc/apt/sources.list'
+# QGIS repository for Ubuntu 14.04
+# sudo sh -c 'echo "deb https://www.qgis.org/debian trusty main" >> /etc/apt/sources.list'
+sudo apt-get update
+sudo apt-get install qgis python-qgis qgis-plugin-grass
+```
+
+If this results in keyserver errors, add the qgis.org repository public key to your apt keyring.
+
+```sh
+wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import
+# to verify, run:
+# gpg --fingerprint 3FF5FFCAD71472C4
+gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -
+sudo apt-get update
+sudo apt-get install qgis python-qgis qgis-plugin-grass
+```
+
+This will install the latest and most stable QGIS release as well as GRASS-GIS as third-party provider. Additionally, everytime you now run `sudo apt-get update`, Ubuntu will check for QGIS updates. 
 
 ## SAGA
 To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
 
-```{bash, eval = FALSE}
+```{r, engine = "shell"}
 sudo add-apt-repository ppa:johanvdw/saga-gis  
 sudo apt-get update
 sudo apt-get install saga
@@ -153,7 +159,19 @@ Now QGIS should list the OTB tools under "Processing Toolbox" and RQGIS should l
 For further reading please see the official [QGIS manual](/home/<YourUserName>/Applications/<YourOTBInstallation>/) for OTB installation under Linux. 
 
 ## RQGIS
-**Compiling RQGIS on a fresh Linux installation:**
+If you want to install the developer version of RQGIS, you will need the `devtools` package. To install it along with its dependencies, run following lines in the terminal:
 
-After installing R, you can install RQGIS using the `devtools` package. This package depends on several libraries which you should install a priori. We recommend to use the "Synaptic" package manager for this. To install synaptic, please 
-use the built-in "Ubuntu Software" app or any other built-in program of your Linux installation. Search for "libssl-dev","libcurl4-openssl-dev" "libssh2-1-dev" and install all dependencies. Afterwards install the R-package "roxygen2" and then "devtools". If that succeeded, you can install RQGIS using `devtools::install_github("jannes-m/RQGIS")` and load it with `library("RQGIS")`.
+```sh
+sudo apt-get install libssl-dev
+# add curl repository to sources.list
+sudo sh -c 'echo "deb http://security.ubuntu.com/ubuntu precise-security main" >> /etc/apt/sources.list'
+sudo apt-get update
+# finally you can install libcurl
+sudo apt-get install libcurl4-gnutls-dev
+```
+And in the R console you can now install `devtools` as well as `RQGIS`:
+
+```r
+install.packages("devtools")
+devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
+```
