@@ -47,13 +47,13 @@ Using the advanced settings is slightly more complicated but will give you the a
   <img src="D:\programming\R\RQGIS\RQGIS\figures\04_select_packages.PNG" width="50%" height="50%">
 </center>
 
-3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core:
+3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):
 
 <center>
   <img src="D:\programming\R\RQGIS\RQGIS\figures\05_command_line_utilties.PNG" width="50%" height="50%">
 </center>
 
-Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the latest QGIS release and SAGA.
+Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the latest QGIS release and SAGA. We also installed gvSIG, though so far it is not accessible from QGIS.
 
 <center>
   <img src="D:\programming\R\RQGIS\RQGIS\figures\06_Desktop_install.PNG" width="50%" height="50%">
@@ -67,6 +67,7 @@ Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the late
 
 Clicking "Next" once more will start the download and installation process which might take a while.
 
+If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running "..\OSGeo4W\bin\osgeo4w-setup.exe". Or you download and run the latest [OSGeo4W-executable](http://trac.osgeo.org/osgeo4w/)
 
 If you additionally want to use the **LiDAR processing tools** (LAStools), please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
 
