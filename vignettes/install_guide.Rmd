@@ -23,9 +23,11 @@ There are at least two options to install QGIS on Windows in such a way that it 
 
 To install OSGeo4W, the easiest way is to to use the Express installation:
 
+
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\00_express.PNG" width="50%" height="50%">
+  <img src="..\figures\00_express.PNG" width="50%" height="50%">
 </center>
+
 
 We are sorry, that our installer uses a German dialog. It appears that OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be simple enough to follow our steps.
 
@@ -44,25 +46,25 @@ Using the advanced settings is slightly more complicated but will give you the a
 2. Subsequently, accept the default settings until you reach the “Select Packages” window.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\04_select_packages.PNG" width="50%" height="50%">
+  <img src="..\figures\04_select_packages.PNG" width="50%" height="50%">
 </center>
 
 3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\05_command_line_utilties.PNG" width="50%" height="50%">
+  <img src="..\figures\05_command_line_utilties.PNG" width="50%" height="50%">
 </center>
 
 Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the latest QGIS release and SAGA. We also installed gvSIG, though so far it is not accessible from within QGIS.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\06_Desktop_install.PNG" width="50%" height="50%">
+  <img src="..\figures\06_Desktop_install.PNG" width="50%" height="50%">
 </center>
 
 4. The rest we leave as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\08_suggestions.PNG" width="50%" height="50%">
+  <img src="..\figures\08_suggestions.PNG" width="50%" height="50%">
 </center>
 
 Clicking "Next" once more will start the download and installation process which might take a while.
