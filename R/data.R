@@ -1,8 +1,8 @@
 #' @title Random points.
-#'
-#' @description A \code{\link[sp]{SpatialPointsDataFrame}} object with 100
-#'   randomly sampled points (stratified by altitude). For more details, please
-#'   refer to Muenchow et al. (2013).
+#' 
+#' @description A \code{\link[sp]{SpatialPointsDataFrame}} (EPSG:32717) object
+#'   with 100 randomly sampled points (stratified by altitude). For more
+#'   details, please refer to Muenchow et al. (2013).
 #' 
 #' @format A \code{\link[sp]{SpatialPointsDataFrame}} object with 100 rows and 4
 #'   variables:
@@ -24,9 +24,9 @@
 
 #' @title Digital elevation model (DEM) of the Mongón study area.
 #'
-#' @description A \code{\link[raster]{raster}} object representing altitude
-#'   (ASTER GDEM, LP DAAC 2012).  For more details, please refer to Muenchow et
-#'   al. (2013).
+#' @description A \code{\link[raster]{raster}} object (EPSG:32717) representing
+#'   altitude (ASTER GDEM, LP DAAC 2012).  For more details, please refer to
+#'   Muenchow et al. (2013).
 #' 
 #' @format A \code{\link[raster]{raster}} with 117 rows and 117 columns:
 #' \describe{
@@ -47,10 +47,10 @@
 
 #' @title Normalized difference vegetation index for the Mongón study area.
 #'
-#' @description NDVI \code{\link[raster]{raster}} computed from a Landsat scene 
-#'   (path 9, row 67, acquisition date: 09/22/2000; USGS 2013). For more
-#'   details, please refer to Muenchow et al. (2013).
-#' 
+#' @description NDVI \code{\link[raster]{raster}} (EPSG:32717) computed from a
+#'   Landsat scene (path 9, row 67, acquisition date: 09/22/2000; USGS 2013).
+#'   For more details, please refer to Muenchow et al. (2013).
+#'   
 #' @format A \code{\link[raster]{raster}} with 117 rows and 117 columns:
 #' \describe{
 #'   \item{ndvi}{Normalized difference vegetation index.}

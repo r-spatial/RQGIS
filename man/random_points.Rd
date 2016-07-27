@@ -16,9 +16,9 @@
 random_points
 }
 \description{
-A \code{\link[sp]{SpatialPointsDataFrame}} object with 100
-  randomly sampled points (stratified by altitude). For more details, please
-  refer to Muenchow et al. (2013).
+A \code{\link[sp]{SpatialPointsDataFrame}} (EPSG:32717) object
+  with 100 randomly sampled points (stratified by altitude). For more
+  details, please refer to Muenchow et al. (2013).
 }
 \references{
 Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013): 

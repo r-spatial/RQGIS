@@ -15,7 +15,9 @@ This helper function simply constructs the python-skeleton
   necessary to run the QGIS-Python API.
 }
 \examples{
+\dontrun{
 build_py()
+}
 }
 \author{
 Jannes Muenchow

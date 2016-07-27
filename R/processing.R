@@ -10,12 +10,15 @@
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
 #' @examples 
+#' \dontrun{
 #' # Letting set_env look for the QGIS installation might take a while depending
 #' # on how full your C: drive is (Windows)
 #' set_env()
 #' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 #' # installation on your machine
 #' set_env("C:/OSGEO4~1")  # Windows example
+#' }
+#' 
 #' @export
 #' @author Jannes Muenchow
 set_env <- function(root = NULL) {
@@ -113,6 +116,7 @@ set_env <- function(root = NULL) {
 #' @return Python console output will be captured as an R character vector.
 #' @author Jannes Muenchow, QGIS developer team
 #' @examples
+#' \dontrun{
 #' # list all available QGIS algorithms on your system
 #' algs <- find_algorithms()
 #' algs[1:15]
@@ -120,6 +124,8 @@ set_env <- function(root = NULL) {
 #' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
+#' }
+
 #' @export
 find_algorithms <- function(search_term = "",
                             qgis_env = set_env(),
@@ -155,10 +161,12 @@ find_algorithms <- function(search_term = "",
 #' @author Jannes Muenchow, QGIS developer team
 #' @export
 #' @examples
+#' \dontrun{
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' # find function arguments of saga:addcoordinatestopoints
 #' get_usage(alg = "saga:addcoordinatestopoints")
+#' }
 
 get_usage <- function(alg = NULL,
                       qgis_env = set_env(),
@@ -184,7 +192,9 @@ get_usage <- function(alg = NULL,
 #'   \code{processing.algoptions} using Python.
 #' @author Jannes Muenchow, QGIS devleoper team
 #' @examples
+#' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
+#' }
 #' @export
 get_options <- function(alg = NULL,
                         qgis_env = set_env(),
@@ -217,10 +227,12 @@ get_options <- function(alg = NULL,
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples 
+#' \dontrun{
 #' # QGIS example
 #' open_help(alg = "qgis:addfieldtoattributestable")
 #' # GRASS example
 #' open_help(alg = "grass:v.overlay")
+#' }
 open_help <- function(alg = NULL, qgis_env = set_env()) {
   
   if (is.null(alg)) {
@@ -264,20 +276,27 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
         "  groupName = re.sub('visualisation', 'visualization', groupName)",
         "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
         "  groupName = groupName.replace('sim_', 'simulation_')",
-        # retrive the command line name
-        "cmdLineName = alg.commandLineName()",
-        "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
+        # retrieve the command line name (worked for 2.8...)
+        # "cmdLineName = alg.commandLineName()",
+        # "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
+        # for 2.14 we cannot use the algorithm name 
+        # (now you have to test all SAGA and QGIS functions again...)
+        "algName = alg.name.lower().replace(' ', '-')",
+        
         # just use valid characters
         "validChars = ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS' +
         'TUVWXYZ0123456789_')",
         "safeGroupName = ''.join(c for c in groupName if c in validChars)",
+        "validChars = validChars + '-'",
         "safeAlgName = ''.join(c for c in algName if c in validChars)",
         # which QGIS version are we using
         "version = '.'.join(QGis.QGIS_VERSION.split('.')[0:2])",
         # build the html to the help file
-        "url = ('https://docs.qgis.org/%s/en/docs/user_manual/' +
-        'processing_algs/%s/%s/%s.html') % (version, provider,
+        "url = ('https:///docs.qgis.org/%s/en/docs/user_manual/' +
+        'processing_algs/%s/%s.html#%s') % (version, provider,
         safeGroupName, safeAlgName)",
+        
+        
         # suppress error messages raised by the browser, e.g.,
         # console.error: CustomizableUI: 
         # TypeError: aNode.previousSibling is null -- 
@@ -334,7 +353,9 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
 #' @author Jannes Muenchow
 #' @export
 #' @examples
+#' \dontrun{
 #' get_args(alg = "qgis:addfieldtoattributestable")
+#' }
 get_args <- function(alg = NULL, qgis_env = set_env()) {
   
   if (is.null(alg)) {
@@ -409,9 +430,11 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' @export
 #' @author Jannes Muenchow
 #' @examples 
+#' \dontrun{
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
+#' }
 get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 
   if (is.null(alg)) {
@@ -494,8 +517,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   system(batch_call, intern = TRUE)
   
   # retrieve the Python output
-  tmp <- read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
-                  stringsAsFactors = FALSE)
+  tmp <- utils::read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
+                         stringsAsFactors = FALSE)
   # If a wrong algorithm (-> alg is None) name was provided, stop the function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
@@ -562,6 +585,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' @importFrom sp SpatialLinesDataFrame
 #' @importFrom raster raster
 #' @examples
+#' \dontrun{
 #' # set the environment
 #' my_env <- set_env()
 #' # find out how a function is called
@@ -580,6 +604,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          params = params,
 #'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
+#'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                      load_output = NULL,
                      qgis_env = set_env()) {

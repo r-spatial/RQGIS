@@ -55,6 +55,7 @@ Please note that you can also pass spatial R objects as input
   automatically retrieve the region extent based on the input layers.
 }
 \examples{
+\dontrun{
 # set the environment
 my_env <- set_env()
 # find out how a function is called
@@ -73,6 +74,7 @@ run_qgis(alg = "saga:addcoordinatestopoints",
          params = params,
          load_output = params$OUTPUT,
          qgis_env = my_env)
+}
 }
 \author{
 Jannes Muenchow, QGIS developer team

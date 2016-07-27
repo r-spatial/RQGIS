@@ -8,22 +8,30 @@ output:
 
 ```{r, echo = FALSE}
 knitr::opts_chunk$set(
+  fig.path = "figures/README-",
+  fig.align = "center",
   collapse = TRUE,
-  comment = "#>",
-  fig.path = "README-"
+  comment = "#>"
 )
 ```
 
-
+[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
 
 # RQGIS
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+
+
+<img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
+
+
+The main advantages of RQGIS are:
 
 1. It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2. It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem. 
 3. R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
+
 
 # Installation 
 
@@ -36,39 +44,11 @@ if (packageVersion("devtools") < 1.6) {
 if (!"lazyeval" %in% installed.packages()[, "Package"]) {
 devtools::install_github("hadley/lazyeval")  
 }
-devtools::install_github("jannes-m/RQGIS")
+devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-**Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures for each platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. 
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation manual in the following subsections.
-
-## Windows
-Before installing RQGIS, download the latest OSGeo4W from [http://trac.osgeo.org/osgeo4w/](http://trac.osgeo.org/osgeo4w/). If you are unsure, what to install, simply select the express installation. This automatically also installs SAGA and GRASS, but not all other available third-party providers. If you wish to do install other providers (OTB, TauDEM, etc.), the best way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed (though everything else what you might not plan to use as well). In any case, this should get you started and soon we will  provide you with a detailed installation manual. 
-
-## Linux
-For Debian/Ubuntu, please follow the installation instructions found under this link: [https://www.qgis.org/de/site/forusers/alldownloads.html](https://www.qgis.org/de/site/forusers/alldownloads.html). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
-
-### How to install SAGA on Ubuntu?
-To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
-
-```{bash, eval = FALSE}
-sudo add-apt-repository ppa:johanvdw/saga-gis  
-sudo apt-get update
-sudo apt-get install saga
-```
-
-## Mac OS X
-### Binary installation
-For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. Both LTR and current release will work. 
-Please make sure to also install GDAL seperately, preferably following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
-
-### Using package management systems
-Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
-
-- Homebrew: If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path. 
-- Fink: <untested>
-- MacPorts: <untested>
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
