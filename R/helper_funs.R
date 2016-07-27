@@ -39,9 +39,9 @@ build_cmds <- function(qgis_env = set_env()) {
         #        "\\etc\\env.bat"),
         "@echo off",
         # adding QGIS and GRASS to PATH
-        "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
+        # "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
         # paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
-        #        "\\lib"),
+        #       "\\lib"),
         # setting a PYTHONPATH variable
         "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
         # adding a few more python paths to PYTHONPATH
