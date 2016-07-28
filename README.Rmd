@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
 
 # RQGIS
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 
 <img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
@@ -35,7 +35,9 @@ The main advantages of RQGIS are:
 
 # Installation 
 
-You can install the latest RQGIS development version from Github with
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures for each platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
+
+You can install the latest RQGIS development version from Github with:
 
 ```{r, eval = FALSE}
 if (packageVersion("devtools") < 1.6) {
@@ -47,8 +49,16 @@ devtools::install_github("hadley/lazyeval")
 devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures for each platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. 
+To install the `devtools` package along with its dependencies under **Linux** (Ubuntu), run following lines in the terminal:
 
+```sh
+sudo apt-get install libssl-dev
+# add curl repository to sources.list
+sudo sh -c 'echo "deb http://security.ubuntu.com/ubuntu precise-security main" >> /etc/apt/sources.list'
+sudo apt-get update
+# finally you can install libcurl
+sudo apt-get install libcurl4-gnutls-dev
+```
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
