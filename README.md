@@ -5,7 +5,7 @@
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.6/en/docs/user\_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 <img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
 
@@ -18,7 +18,7 @@ The main advantages of RQGIS are:
 Installation
 ============
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures on various platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
+In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
 
 You can install the latest RQGIS development version from Github with:
 
@@ -32,7 +32,7 @@ devtools::install_github("hadley/lazyeval")
 devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-Before running these lines under **Linux** (Ubuntu), you need to install some devtools dependencies in the terminal:
+Before running these lines under **Linux** (Ubuntu), you need to install some `devtools` dependencies in the terminal:
 
 ``` sh
 sudo apt-get install libssl-dev
@@ -46,7 +46,7 @@ sudo apt-get install libcurl4-gnutls-dev
 RQGIS usage
 ===========
 
-Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package.
 
 ``` r
 # attach packages
@@ -55,13 +55,12 @@ library("rgdal")
 
 # define path to a temporary folder
 dir_tmp <- tempdir()
-# download German administrative areas
+# download German administrative areas 
 ger <- getData(name = "GADM", country = "DEU", level = 1)
-# save ger as a shapefile in our temporary folder
-writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
+# ger is of class "SpatialPolygonsDataFrame"
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -120,11 +119,11 @@ params
 #> [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying paths to an object outside of R (e.g., a shapefile) you can also use spatial object that resides in the global environment of R. `run_qgis` will save the spatial object to a temporary location for you later on (see below). Here, we use ger as input layer
 
 ``` r
-# path to the input shapefile
-params$INPUT_LAYER  <- file.path(dir_tmp, "ger.shp")
+# specify input layer
+params$INPUT_LAYER  <- ger
 # path to the output shapefile
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
