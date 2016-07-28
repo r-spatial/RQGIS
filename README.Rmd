@@ -35,7 +35,7 @@ The main advantages of RQGIS are:
 
 # Installation 
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures for each platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
+In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures on various platform (Windows, Linux, Mac OSX), we wrote a vignette. To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
 
 You can install the latest RQGIS development version from Github with:
 
@@ -49,7 +49,7 @@ devtools::install_github("hadley/lazyeval")
 devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-To install the `devtools` package along with its dependencies under **Linux** (Ubuntu), run following lines in the terminal:
+Before running these lines under **Linux** (Ubuntu), you need to install some devtools dependencies in the terminal:
 
 ```sh
 sudo apt-get install libssl-dev
