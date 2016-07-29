@@ -177,12 +177,12 @@ sudo add-apt-repository --remove ppa:johanvdw/saga-gis
 
 Unfortunately, QGIS does not support the latest SAGA versions. To find out which SAGA versions are supported by your QGIS installation, run:
 
-```{r saga, eval = TRUE, echo = TRUE, message = FALSE, cache = TRUE}
+```{r saga, eval = TRUE, echo = TRUE, message = FALSE}
 library("RQGIS")
 saga_support()
 ```
 
-This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions, QGIS supports. Using one of those versions, automatically will add SAGA to the processing toolbox of QGIS. Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to [https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
+This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions, QGIS supports. Using one of those versions, automatically will add SAGA to the processing toolbox of QGIS (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to [https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
 
 First of all, install all necessary SAGA dependencies:
 
@@ -210,13 +210,13 @@ saga_cmd
 ```
 --->
 
-Secondly, create a folder named `saga-svn` (e.g., in your home directory) to which you would like to download SAGA. Next, change to this folder and specifiy the SAGA release you would like to install (here: 2.1.4) by checking the corresponding branch. Changing the directory again to ~/saga-svn/release-2-1-4/saga-gis, finally sets you up for the SAGA compilation. The compilation installs SAGA to `/usr/local/lib`. 
+Secondly, create a folder named `saga-svn` (e.g., in your home directory) to which you would like to download SAGA. Next, change to this folder and specifiy the SAGA release you would like to install (here: 2.2.0) by checking the corresponding branch. Changing the directory again to ~/saga-svn/release-2-2-0/saga-gis, finally sets you up for the SAGA compilation. The compilation installs SAGA to `/usr/local/lib`. 
 
 ```sh
 mkdir ~/saga-svn
 cd ~/saga-svn
-svn checkout svn://svn.code.sf.net/p/saga-gis/code-0/branches/release-2-1-4
-cd ~/saga-svn/release-2-1-4/saga-gis
+svn checkout svn://svn.code.sf.net/p/saga-gis/code-0/branches/release-2-2-0
+cd ~/saga-svn/release-2-2-0/saga-gis
 sudo autoreconf -i
 sudo ./configure
 sudo make
@@ -233,17 +233,20 @@ saga_gui
 Sometimes `saga_gui` produces following error message:
 
 ```sh
-saga_gui: error while loading shared libraries: libsaga_gdi-2.1.4.so: cannot open shared object file: No such file or directory
+saga_gui: error while loading shared libraries: libsaga_gdi-2.2.0.so: cannot open shared object file: No such file or directory
 ```
-In this case, you have to enable the SAGA GUI by specifying the path where `libsaga_gdi-2.1.4.so` is located:
+In this case, you have to enable the SAGA GUI by specifying the path where `libsaga_gdi-2.2.0.so` is located:
 ```sh
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 saga_gui
 ```
+
+Using SAGA >= 2.2.1 you might encounter following message in the Processing log when opening QGIS: `Problem with SAGA installation: installed SAGA version (2.2.1) is not supported`. Though in this case SAGA is not available in the processing toolbox, you are still able to use it via the QGIS Python API and therefore also with RQGIS.
+
 In case you would like to uninstall SAGA, type:
 
 ```sh
-cd ~/saga-svn/release-2-1-4/saga-gis
+cd ~/saga-svn/release-2-2-0/saga-gis
 sudo make uninstall
 ```
 
