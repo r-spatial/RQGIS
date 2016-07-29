@@ -119,7 +119,7 @@ params
 #> [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT\_LAYER (e.g. ger.shp) you can also use a spatial object that resides in the global environment of R. Conveniently, `run_qgis` will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame `ger` as input layer.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT\_LAYER (e.g. "ger.shp") you can also use a spatial object that resides in the global environment of R. Conveniently, `run_qgis` will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame `ger` as input layer.
 
 ``` r
 # specify input layer
@@ -128,7 +128,7 @@ params$INPUT_LAYER  <- ger
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
 
-Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Aside from accepting spatial objects living in R as input, `run_qgis` also loads the result directly into R, if desired. Here, we would like to load the OUTPUT\_LAYER into R. To do so, we simply specify the desired file(s) in function argument while assigning it/them to an object called `out`.
+Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Aside from accepting spatial objects living in R as input, `run_qgis` also loads the result directly into R, if desired. Here, we would like to load the OUTPUT\_LAYER into R. To do so, we simply specify the desired file(s) in function argument `load_output` while assigning it/them to an object called `out`.
 
 ``` r
 out <- run_qgis(alg = "qgis:polygoncentroids",
