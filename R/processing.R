@@ -605,9 +605,10 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
 #'}
-run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     load_output = NULL,
-                     qgis_env = set_env()) {
+run_qgis <- 
+  function(alg = NULL, params = NULL, check_params = TRUE,
+           load_output = NULL,
+           qgis_env = set_env()) {
   
   # check if all necessary function arguments were supplied
   args <- list(alg, params)

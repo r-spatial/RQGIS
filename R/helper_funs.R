@@ -32,6 +32,8 @@ build_cmds <- function(qgis_env = set_env()) {
     # more or less copied from:
     # browseURL(paste0("http://spatialgalaxy.net/2014/10/09/a-quick-guide-to", 
     #                  "-getting-started-with-pyqgis-on-windows/"))
+    # we need to make sure that qgis-ltr can also be used...
+    my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
     cmd <- 
       c("@echo off",
         # defining a root variable
@@ -42,16 +44,17 @@ build_cmds <- function(qgis_env = set_env()) {
         #        "\\etc\\env.bat"),
         "@echo off",
         # adding QGIS and GRASS to PATH
-        "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
+        paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\", my_qgis, "\\bin"),
         # paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
         #       "\\lib"),
         # setting a PYTHONPATH variable
-        "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
+        paste0("set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\", 
+               my_qgis, "\\python;"),
         # adding a few more python paths to PYTHONPATH
         # paste0("set PYTHONPATH=%PYTHONPATH%;", 
         #       "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
         # defining QGIS prefix path (i.e. without bin)
-        "set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\qgis"
+        paste0("set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\", my_qgis)
         )
     
     # construct the Python script
@@ -186,20 +189,29 @@ check_apps <- function(root) {
     # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
     # apps <- c("qgis", "qgis\\python\\plugins", "Python27",
     #           "Qt4", "msys", "grass")
-    apps <- c("qgis", "qgis\\python\\plugins", "Python27",
+    my_qgis <- grep("qgis", dir(path_apps), value = TRUE)[1]
+    if (is.na(my_qgis)) {
+      stop("Could not find any qgis-Folder in ", path_apps, 
+           " Please install it.")
+    }
+    out <- file.path(path_apps, my_qgis)
+    out <- gsub("//|/", "\\\\", out)
+    apps <- c(file.path(my_qgis, "python\\plugins"), "Python27",
               "Qt4")
     
-    out <- lapply(apps, function(app) {
-      if (dir.exists(file.path(path_apps, app))) {
-        path <- file.path(path_apps, app)
-      } else {
-        path <- NULL
-        # apps necessary to run the QGIS-API
-        stop("Folder ", app, " could not be found under ", file.path(path_apps), 
-               " Please install it.")
-        }
-      gsub("//|/", "\\\\", path)
-    })
+    out <- 
+      c(out, 
+        lapply(apps, function(app) {
+          if (dir.exists(file.path(path_apps, app))) {
+            path <- file.path(path_apps, app)
+          } else {
+            path <- NULL
+            # apps necessary to run the QGIS-API
+            stop("Folder ", app, " could not be found under ", path_apps, 
+                 " Please install it.")
+          }
+          gsub("//|/", "\\\\", path)
+        }))
     names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4")
     # actually, we only need the first two elements...
     out <- out[1:2]
@@ -311,3 +323,76 @@ open_grass_help <- function(alg) {
   url <- paste0(url, grass_name, ".html")
   utils::browseURL(url)
 }
+
+#' @title Find the SAGA versions QGIS supports
+#' @description  \code{saga_support} calls via the QGIS Python API the
+#'   \code{SagaAlgorithmProvider} to figure out with which SAGA versions QGIS
+#'   currently is compatible.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to \code{\link{set_env}}.
+#' @return The function returns a character vector representing the SAGA version 
+#'   numbers QGIS currently supports.
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @examples 
+#' \dontrun{
+#' saga_support()
+#' }
+saga_support <- function(qgis_env = set_env()) {
+  
+  # set the paths
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env)
+  
+  # extend the python command
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "import csv",
+      paste0("from processing.algs.saga.SagaAlgorithmProvider",
+             " import SagaAlgorithmProvider"),
+      "my_dict = SagaAlgorithmProvider.supportedVersions",
+      "versions = my_dict.keys()",
+      "versions.sort()",
+      paste0("with open('", tmp_dir, "\\saga.csv'", ", 'wb') as f:"),
+      "  writer = csv.writer(f)",
+      "  writer.writerows(versions)",
+      "  f.close()")
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
+  cat(py_cmd, file = "py_cmd.py")
+  
+  # build the batch/shell command to run the Python script
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
+  }
+  # put each element on its own line
+  cmd <- paste(cmd, collapse = "\n")
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  # run Python via the command line
+  system(batch_call, intern = TRUE)
+  
+  # retrieve the output
+  out <- utils::read.csv2(file.path(tmp_dir, "saga.csv"), header = FALSE)
+  # clean up after yourself
+  unlink(file.path(tmp_dir, "saga.csv"))
+  # return the output
+  gsub(",", "", out$V1)
+}
+
