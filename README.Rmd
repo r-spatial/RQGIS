@@ -17,7 +17,8 @@ knitr::opts_chunk$set(
 
 [![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
 
-<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
+<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
+/usr/share/qgis/python/plugins/processing-->
 
 # RQGIS
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
@@ -148,7 +149,10 @@ Of course, this is a very simple example. We could have achieved the same using 
 
 # TO DO:
 
-- platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04
+- extend `support_saga`
+- ltr version should always be the preferred choice
+- rewrite vignette and README since RQGIS will work now also with QGIS 2.16!!!
+- check package and upload it to CRAN!!!
 - build_cmds: py_cmd could be a one liner for all platforms
 - Take care of the error message:
   ERROR 1: Can't load requested DLL: C:\OSGEO4~1\bin\gdalplugins\ogr_FileGDB.dll

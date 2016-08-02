@@ -1,7 +1,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
 
-<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
+<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
+/usr/share/qgis/python/plugins/processing-->
 RQGIS
 =====
 
@@ -46,7 +47,7 @@ sudo apt-get install libcurl4-gnutls-dev
 RQGIS usage
 ===========
 
-Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.14/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package.
 
 ``` r
 # attach packages
@@ -148,12 +149,15 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 
 <img src="figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
-Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
 TO DO:
 ======
 
--   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04
+-   extend `support_saga`
+-   ltr version should always be the preferred choice
+-   rewrite vignette and README since RQGIS will work now also with QGIS 2.16!!!
+-   check package and upload it to CRAN!!!
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
