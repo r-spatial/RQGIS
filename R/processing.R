@@ -98,6 +98,132 @@ set_env <- function(root = NULL) {
   c(qgis_env, check_apps(root = root))
 }
 
+#' @title QGIS session info
+#' @description \code{qgis_session_info} reports the version of QGIS and
+#'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
+#'   Additionally, it figures out with which SAGA versions the QGIS installation
+#'   is compatible.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to \code{\link{set_env}}.
+#' @return The function returns a list with following elements:
+#' \enumerate{
+#'  \item{qgis_version: Name and version of QGIS used by RQGIS.}
+#'  \item{grass6: GRASS 6 version number. Under Linux, the function only checks if
+#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+#'  a version number.}
+#'  \item{grass7: GRASS 7 version number. Under Linux, the function only checks if
+#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+#'  a version number}
+#'  \item{saga: The installed SAGA version used by QGIS.}
+#'  \item{supported_saga_versions: character vector representing the SAGA
+#'  versions supported by the QGIS installation.}
+#' }
+
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @examples 
+#' \dontrun{
+#' qgis_session_info()
+#' }
+qgis_session_info <- function(qgis_env = set_env()) {
+  
+  # set the paths
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env)
+  
+  # extend the python command
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "import csv",
+      "import re",
+      paste0("from processing.algs.saga.SagaAlgorithmProvider",
+             " import SagaAlgorithmProvider"),
+      "from processing.algs.saga import SagaUtils",
+      "from processing.algs.grass.GrassUtils import GrassUtils",
+      "from processing.algs.grass7.Grass7Utils import Grass7Utils",
+      # QGIS version
+      "qgis = QGis.QGIS_VERSION",
+      # GRASS versions
+      # grassPath returns "" if called under Linux and if there is no GRASS 
+      # installation
+      "g6 = GrassUtils.grassPath()",
+      "g6 = re.findall('(grass-.*)', g6)",
+      "g7 = Grass7Utils.grassPath()",
+      "g7 = re.findall('(grass-.*)', g7)",
+      # regular expression returns a list. If the input was '',
+      # findall returns an empty list, i.e. a list of length 0
+      "if len(g6) == 0:",
+      "  GrassUtils.checkGrassIsInstalled()",
+      "  g6 = GrassUtils.isGrassInstalled",
+      "if len(g7) == 0:",
+      "  Grass7Utils.checkGrassIsInstalled()",
+      "  g7 = Grass7Utils.isGrass7Installed",
+      # installed SAGA version usable with QGIS
+      "saga = SagaUtils.getSagaInstalledVersion()",
+      # supported SAGA versions
+      "my_dict = SagaAlgorithmProvider.supportedVersions",
+      "saga_versions = my_dict.keys()",
+      "saga_versions.sort()",
+      "ls = []",
+      "ls.append(qgis)",
+      "ls.append(g6)",
+      "ls.append(g7)",
+      "ls.append(saga)",
+      "ls.append(saga_versions)",
+      paste0("with open('", tmp_dir, "/out.csv', 'w') as f:"),
+      "  writer = csv.writer(f)",
+      "  for item in ls:",
+      "    writer.writerow([unicode(item).encode('utf-8')])",
+      "",
+      "",
+      "f.close()",
+      "")
+  
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
+  cat(py_cmd, file = "py_cmd.py")
+  
+  # build the batch/shell command to run the Python script
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
+  }
+  # put each element on its own line
+  cmd <- paste(cmd, collapse = "\n")
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  # run Python via the command line
+  system(batch_call, intern = TRUE)
+  
+  # retrieve the output
+  out <- read.csv(file.path(tempdir(), "out.csv"), header = FALSE)  
+  out$V1 <- gsub("False", FALSE, out$V1)
+  out$V1 <- gsub("True", TRUE, out$V1)
+  out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
+  out[[5]] <- unlist(strsplit(out[[5]], split = ", "))
+  names(out) <- c("qgis_version", "grass6", "grass7", "saga", 
+                  "supported_saga_versions")
+  # clean up after yourself
+  # unlink(file.path(tmp_dir, "out.csv"))
+  # return the output
+  out
+}
+
 #' @title Find and list available QGIS algorithms
 #' @description \code{find_algorithms} lists or queries all algorithms which can
 #'   be used via the command line and the QGIS API.
@@ -625,9 +751,9 @@ run_qgis <-
     if (length(params) != length(test)) {
       ifelse(length(params) > length(test),
              stop("Unknown function argument(s): ", 
-                  paste(setdiff(names(test), names(params)), collapse = ", ")),
+                  paste(setdiff(names(params), names(test)), collapse = ", ")),
              stop("Function argument(s) ", 
-                  paste(setdiff(names(params), names(test)), collapse = ", "),
+                  paste(setdiff(names(test), names(params)), collapse = ", "),
                   "are missing"))
     }
     
