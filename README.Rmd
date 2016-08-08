@@ -63,9 +63,9 @@ sudo apt-get install libcurl4-gnutls-dev
 ```
 
 ## QGIS 2.16 modifications
-If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. You need to add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py` and you need to replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
-<img src="figures/rewrite_algexecutor.PNG", width="70%" height="70%" style="display: block; margin: auto;" />
+<img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
 The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). Hence, with the next minor release the manual adjustment is hopefully no longer required. 
 
@@ -159,9 +159,6 @@ Of course, this is a very simple example. We could have achieved the same using 
 
 # TO DO:
 
-- extend `support_saga`, i.e. a list containing qgis_version, supported_saga_versions, grass6, grass7 (and in the future also OTB, lidartools, etc.)
-- ltr version should always be the preferred choice
-- rewrite vignette and README since RQGIS will work now also with QGIS 2.16!!!
 - check package and upload it to CRAN!!!
 - build_cmds: py_cmd could be a one liner for all platforms
 - Take care of the error message:
