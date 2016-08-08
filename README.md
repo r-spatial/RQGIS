@@ -19,7 +19,10 @@ The main advantages of RQGIS are:
 Installation
 ============
 
-In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS. Please note that RQGIS so far does **not support** the latest QGIS release, **QGIS 2.16** Nødebo.
+Package installation
+--------------------
+
+In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
 
 You can install the latest RQGIS development version from Github with:
 
@@ -43,6 +46,17 @@ sudo apt-get update
 # finally you can install libcurl
 sudo apt-get install libcurl4-gnutls-dev
 ```
+
+QGIS 2.16 modifications
+-----------------------
+
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. You need to add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py` and you need to replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`
+
+<img src="figures/rewrite_algexecutor.png", width="80%" height="80%" style="display: block; margin: auto;" />
+
+The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, with the next minor release the manual adjustment is hopefully no longer required.
+
+For Windows users: If you installed both the LTR and the most recent QGIS version, you don't need to adjust anything since RQGIS will use by default the LTR (2.14).
 
 RQGIS usage
 ===========
@@ -154,10 +168,12 @@ Of course, this is a very simple example. We could have achieved the same using 
 TO DO:
 ======
 
--   extend `support_saga`
+-   extend `support_saga`, i.e. a list containing qgis\_version, supported\_saga\_versions, grass6, grass7 (and in the future also OTB, lidartools, etc.)
 -   ltr version should always be the preferred choice
 -   rewrite vignette and README since RQGIS will work now also with QGIS 2.16!!!
 -   check package and upload it to CRAN!!!
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
+-   does it make sense to create a RQGIS-class?
+-   qgis\_session\_info -&gt; add OTB and Lidar to the list
