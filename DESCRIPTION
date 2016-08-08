@@ -27,7 +27,7 @@ Imports:
          rgdal, 
          sp,
          XML
-SystemRequirements: Python (>= 2.7), QGIS (<= 2.14)
+SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
