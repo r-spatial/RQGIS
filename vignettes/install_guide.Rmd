@@ -22,30 +22,27 @@ knitr::opts_chunk$set(
 
 
 # Vignette info
-
 This vignette guides you through the installation process of QGIS, GRASS- and SAGA-GIS on three different platforms (Windows, Mac, Linux). Following our instructions should ensure that RQGIS will work properly. With the exception of SAGA, we recommend to use the latest stable version of all software packages. Though other versions might also work with RQGIS, we did not test this.
 
 Overall, RQGIS allows access to more than 1000 geoalgorithms. However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party providers and software package versions.
 
 # Windows
-<!---
-There are at least two options to install QGIS on Windows in such a way that it can be accessed from RQGIS. The first option is the Standalone Installer from the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html). This will install QGIS along with the third-party providers GRASS and SAGA. However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, POSTGis, etc.), we recommend to use the OSGeo4W Network installer. This installer is available on the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html) as well as on the [OSGeo4W-website](http://trac.osgeo.org/osgeo4w/). 
+
+There are at least two options to install QGIS on Windows in such a way that RQGIS can access QGIS. The first option is the Standalone Installer from the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html). This will install QGIS along with the third-party providers GRASS and SAGA. However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, PostGIS, etc.), we recommend to use the OSGeo4W Network installer. This installer is available on the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html) as well as on the [OSGeo4W-website](http://trac.osgeo.org/osgeo4w/). 
 
 To install OSGeo4W, the easiest way is to to use the Express installation:
-
 
 <center>
   <img src="00_express.PNG" width="50%" height="50%">
 </center>
 
-
-We are sorry, that our installer uses a German dialog. It appears that OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
+We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
 
 1. Select "Express Installation" 
 2. Next check "QGIS, GRASS and GDAL"
 3. Start the installation.
---->
-To install QGIS, we recommend to use the OSGeo4W Network installer. This installer is available on the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html) as well as on the [OSGeo4W-website](http://trac.osgeo.org/osgeo4w/). Prior to the release of QGIS 2.16, one could have simply used the "Express Installation". Unfortunately, so far RQGIS does not support QGIS 2.16. Therefore, we need to install QGIS using the advanced settings. This is slightly more complicated compared to the "Express Installation" but will give you the advantage of being able to select the third-party providers you would like to use.
+
+This installation is more or less equivalent to the standalone QGIS-installation. However, to have the full choice of available geoalgorithms provided by QGIS, we recommend to use the  advanced settings of the OSGeo4W Network installer:
 
 1. Run the OSGeo4W setup and choose the advanced installation. 
 
@@ -53,7 +50,6 @@ To install QGIS, we recommend to use the OSGeo4W Network installer. This install
   <img src="01_initial_setup.PNG" width="50%" height="50%">
 </center>
 
-We are sorry, that our installer uses a German dialog. It appears that OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
 
 2. Subsequently, accept the default settings until you reach the “Select Packages” window.
 
@@ -67,13 +63,13 @@ We are sorry, that our installer uses a German dialog. It appears that OSGeo4w a
   <img src="05_command_line_utilties.PNG" width="50%" height="50%">
 </center>
 
-Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, and of course QGIS. Please make sure to **install QGIS 2.14** since QGIS 2.16 is so far not supported by RQGIS.
+Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).
 
 <center>
   <img src="06_desktop_gis.PNG" width="50%" height="50%">
 </center>
 
-4. The rest we leave as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
+4. We leave the rest as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
 <center>
   <img src="08_suggestions.PNG" width="50%" height="50%">
@@ -88,7 +84,7 @@ If you additionally want to use the **LiDAR processing tools** (LAStools), pleas
 # Mac OS X
 
 ## Binary installation
-For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. Both LTR and current release will work. Please make sure to also install GDAL seperately, preferably following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
+For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. Both LTR and current release will work. Please make sure to also install GDAL separately, preferably following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
 
 ## Using package management systems
 Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
@@ -134,7 +130,7 @@ sudo apt autoremove
 sudo apt-get update
 ```
 
-Next add the correct repository to sources.list. Make sure to use the QGIS long-term release since RQGIS so far does not support QGIS 2.16 (for Ubuntu 14.04 replace xenial by trusty):
+Next add the correct repository to sources.list. Here, we use the QGIS long-term release (2.14) (for QGIS 2.16, we would have to use http://qgis.org/ubuntugis instead of http://qgis.org/ubuntugis-ltr):
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -142,6 +138,7 @@ sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sou
 sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
 ```
+For Ubuntu 14.04 simply replace xenial by trusty. 
 
 After that, we can install QGIS and GRASS as follows:
 
@@ -179,7 +176,8 @@ Unfortunately, QGIS does not support the latest SAGA versions. To find out which
 
 ```{r saga, eval = TRUE, echo = TRUE, message = FALSE}
 library("RQGIS")
-saga_support()
+info <- qgis_session_info()
+info$supported_saga_versions
 ```
 
 This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions, QGIS supports. Using one of those versions, automatically will add SAGA to the processing toolbox of QGIS (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to [https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
