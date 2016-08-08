@@ -4,8 +4,10 @@
 #' @param root Root path to the QGIS-installation. If you do not specify 
 #'   function parameter \code{root}, the function looks for \code{qgis.bat} on 
 #'   your C: drive under Windows. If you are on a Mac, it looks for 
-#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
+#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux, 
 #'   \code{set_env} assumes that your root path is "/usr".
+#' @param ltr If \code{TRUE}, \code{set_env} will use the long term release of
+#'   QGIS, if available (only for Windows).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -21,7 +23,7 @@
 #' 
 #' @export
 #' @author Jannes Muenchow
-set_env <- function(root = NULL) {
+set_env <- function(root = NULL, ltr = TRUE) {
 
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -95,7 +97,7 @@ set_env <- function(root = NULL) {
   }
   qgis_env <- list(root = root)
   # return your result
-  c(qgis_env, check_apps(root = root))
+  c(qgis_env, check_apps(root = root, ltr = ltr))
 }
 
 #' @title QGIS session info
@@ -146,23 +148,22 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "from processing.algs.saga import SagaUtils",
       "from processing.algs.grass.GrassUtils import GrassUtils",
       "from processing.algs.grass7.Grass7Utils import Grass7Utils",
+      "from processing.tools.system import isWindows",
       # QGIS version
       "qgis = QGis.QGIS_VERSION",
       # GRASS versions
       # grassPath returns "" if called under Linux and if there is no GRASS 
       # installation
-      "g6 = GrassUtils.grassPath()",
-      "g6 = re.findall('(grass-.*)', g6)",
-      "g7 = Grass7Utils.grassPath()",
-      "g7 = re.findall('(grass-.*)', g7)",
-      # regular expression returns a list. If the input was '',
-      # findall returns an empty list, i.e. a list of length 0
-      "if len(g6) == 0:",
-      "  GrassUtils.checkGrassIsInstalled()",
-      "  g6 = GrassUtils.isGrassInstalled",
-      "if len(g7) == 0:",
-      "  Grass7Utils.checkGrassIsInstalled()",
-      "  g7 = Grass7Utils.isGrass7Installed",
+      "GrassUtils.checkGrassIsInstalled()",
+      "g6 = GrassUtils.isGrassInstalled",
+      "if g6 is True and isWindows():",
+      "  g6 = GrassUtils.grassPath()",
+      "  g6 = re.findall('(grass-.*)', g6)",
+      "Grass7Utils.checkGrass7IsInstalled()",
+      "g7 = Grass7Utils.isGrass7Installed",
+      "if g7 is True and isWindows():",
+      "  g7 = Grass7Utils.grassPath()",
+      "  g7 = re.findall('(grass-.*)', g7)",
       # installed SAGA version usable with QGIS
       "saga = SagaUtils.getSagaInstalledVersion()",
       # supported SAGA versions
@@ -179,8 +180,6 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "  writer = csv.writer(f)",
       "  for item in ls:",
       "    writer.writerow([unicode(item).encode('utf-8')])",
-      "",
-      "",
       "f.close()",
       "")
   

@@ -185,7 +185,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' check_apps("C:/OSGeo4W64")
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-check_apps <- function(root) { 
+check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
     path_apps <- file.path(root, "apps")
@@ -194,7 +194,16 @@ check_apps <- function(root) {
     # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
     # apps <- c("qgis", "qgis\\python\\plugins", "Python27",
     #           "Qt4", "msys", "grass")
-    my_qgis <- grep("qgis", dir(path_apps), value = TRUE)[1]
+    my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
+    # use the LTR (default), if available
+    dots <- list(...)
+    if (length(dots) > 0 && isTRUE(dots$ltr)) {
+      my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
+    } else {
+      # use ../apps/qgis, i.e. most likely the most recent QGIS version
+      my_qgis <- my_qgis[1]
+    }
+    
     if (is.na(my_qgis)) {
       stop("Could not find any qgis-Folder in ", path_apps, 
            " Please install it.")
