@@ -65,7 +65,7 @@ sudo apt-get install libcurl4-gnutls-dev
 ## QGIS 2.16 modifications
 If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. You need to add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py` and you need to replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`
 
-<img src="figures/rewrite_algexecutor.png", width="70%" height="70%" style="display: block; margin: auto;" />
+<img src="figures/rewrite_algexecutor.PNG", width="70%" height="70%" style="display: block; margin: auto;" />
 
 The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). Hence, with the next minor release the manual adjustment is hopefully no longer required. 
 
