@@ -4,19 +4,22 @@
 \alias{check_apps}
 \title{Checking paths to QGIS applications}
 \usage{
-check_apps(root)
+check_apps(root, ...)
 }
 \arguments{
 \item{root}{Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
 ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
 platforms.}
+
+\item{...}{Optional arguments used in \code{check_apps}. Here, \code{set_env}
+passes \code{ltr} to \code{check_apps}.}
 }
 \value{
 The function returns a list with the paths to all the necessary 
   QGIS-applications.
 }
 \description{
-\code{check_apps} checks if platform-dependent applications
+\code{check_apps} checks if platform-dependent applications 
   (e.g, QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
   locations.
 }

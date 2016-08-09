@@ -1,4 +1,5 @@
 Package: RQGIS
+Date: 2016-08-15
 Type: Package
 Title: RQGIS: Integrating R with QGIS
 Version: 0.1.0
@@ -26,7 +27,7 @@ Imports:
          rgdal, 
          sp,
          XML
-SystemRequirements: Python (>= 2.7), QGIS (>= 2.8)
+SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr

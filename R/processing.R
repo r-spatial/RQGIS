@@ -4,8 +4,10 @@
 #' @param root Root path to the QGIS-installation. If you do not specify 
 #'   function parameter \code{root}, the function looks for \code{qgis.bat} on 
 #'   your C: drive under Windows. If you are on a Mac, it looks for 
-#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
+#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux, 
 #'   \code{set_env} assumes that your root path is "/usr".
+#' @param ltr If \code{TRUE}, \code{set_env} will use the long term release of
+#'   QGIS, if available (only for Windows).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -21,7 +23,7 @@
 #' 
 #' @export
 #' @author Jannes Muenchow
-set_env <- function(root = NULL) {
+set_env <- function(root = NULL, ltr = TRUE) {
 
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -95,7 +97,130 @@ set_env <- function(root = NULL) {
   }
   qgis_env <- list(root = root)
   # return your result
-  c(qgis_env, check_apps(root = root))
+  c(qgis_env, check_apps(root = root, ltr = ltr))
+}
+
+#' @title QGIS session info
+#' @description \code{qgis_session_info} reports the version of QGIS and
+#'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
+#'   Additionally, it figures out with which SAGA versions the QGIS installation
+#'   is compatible.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to \code{\link{set_env}}.
+#' @return The function returns a list with following elements:
+#' \enumerate{
+#'  \item{qgis_version: Name and version of QGIS used by RQGIS.}
+#'  \item{grass6: GRASS 6 version number. Under Linux, the function only checks if
+#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+#'  a version number.}
+#'  \item{grass7: GRASS 7 version number. Under Linux, the function only checks if
+#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+#'  a version number}
+#'  \item{saga: The installed SAGA version used by QGIS.}
+#'  \item{supported_saga_versions: character vector representing the SAGA
+#'  versions supported by the QGIS installation.}
+#' }
+
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @examples 
+#' \dontrun{
+#' qgis_session_info()
+#' }
+qgis_session_info <- function(qgis_env = set_env()) {
+  
+  # set the paths
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env)
+  
+  # extend the python command
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "import csv",
+      "import re",
+      paste0("from processing.algs.saga.SagaAlgorithmProvider",
+             " import SagaAlgorithmProvider"),
+      "from processing.algs.saga import SagaUtils",
+      "from processing.algs.grass.GrassUtils import GrassUtils",
+      "from processing.algs.grass7.Grass7Utils import Grass7Utils",
+      "from processing.tools.system import isWindows, isMac",
+      # QGIS version
+      "qgis = QGis.QGIS_VERSION",
+      # GRASS versions
+      # grassPath returns "" if called under Linux and if there is no GRASS 
+      # installation
+      "GrassUtils.checkGrassIsInstalled()",
+      "g6 = GrassUtils.isGrassInstalled",
+      "if g6 is True and isWindows() or isMac():",
+      "  g6 = GrassUtils.grassPath()",
+      "  g6 = re.findall('(grass-.*)', g6)",
+      "Grass7Utils.checkGrass7IsInstalled()",
+      "g7 = Grass7Utils.isGrass7Installed",
+      "if g7 is True and isWindows() or isMac():",
+      "  g7 = Grass7Utils.grassPath()",
+      "  g7 = re.findall('(grass-.*)', g7)",
+      # installed SAGA version usable with QGIS
+      "saga = SagaUtils.getSagaInstalledVersion()",
+      # supported SAGA versions
+      "my_dict = SagaAlgorithmProvider.supportedVersions",
+      "saga_versions = my_dict.keys()",
+      "saga_versions.sort()",
+      "ls = []",
+      "ls.append(qgis)",
+      "ls.append(g6)",
+      "ls.append(g7)",
+      "ls.append(saga)",
+      "ls.append(saga_versions)",
+      paste0("with open('", tmp_dir, "/out.csv', 'w') as f:"),
+      "  writer = csv.writer(f)",
+      "  for item in ls:",
+      "    writer.writerow([unicode(item).encode('utf-8')])",
+      "f.close()",
+      "")
+  
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
+  cat(py_cmd, file = "py_cmd.py")
+  
+  # build the batch/shell command to run the Python script
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
+  }
+  # put each element on its own line
+  cmd <- paste(cmd, collapse = "\n")
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  # run Python via the command line
+  system(batch_call, intern = TRUE)
+  
+  # retrieve the output
+  out <- utils::read.csv(file.path(tempdir(), "out.csv"), header = FALSE)  
+  out$V1 <- gsub("False", FALSE, out$V1)
+  out$V1 <- gsub("True", TRUE, out$V1)
+  out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
+  out[[5]] <- unlist(strsplit(out[[5]], split = ", "))
+  names(out) <- c("qgis_version", "grass6", "grass7", "saga", 
+                  "supported_saga_versions")
+  # clean up after yourself
+  # unlink(file.path(tmp_dir, "out.csv"))
+  # return the output
+  out
 }
 
 #' @title Find and list available QGIS algorithms
@@ -605,9 +730,10 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
 #'}
-run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     load_output = NULL,
-                     qgis_env = set_env()) {
+run_qgis <- 
+  function(alg = NULL, params = NULL, check_params = TRUE,
+           load_output = NULL,
+           qgis_env = set_env()) {
   
   # check if all necessary function arguments were supplied
   args <- list(alg, params)
@@ -624,9 +750,9 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     if (length(params) != length(test)) {
       ifelse(length(params) > length(test),
              stop("Unknown function argument(s): ", 
-                  paste(setdiff(names(test), names(params)), collapse = ", ")),
+                  paste(setdiff(names(params), names(test)), collapse = ", ")),
              stop("Function argument(s) ", 
-                  paste(setdiff(names(params), names(test)), collapse = ", "),
+                  paste(setdiff(names(test), names(params)), collapse = ", "),
                   "are missing"))
     }
     
