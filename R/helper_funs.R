@@ -172,12 +172,14 @@ execute_cmds <- function(processing_name = "processing.alglist",
 }
 
 #' @title Checking paths to QGIS applications
-#' @description \code{check_apps} checks if platform-dependent applications
+#' @description \code{check_apps} checks if platform-dependent applications 
 #'   (e.g, QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
 #'   locations.
 #' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
 #'   ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
 #'   platforms.
+#' @param ... Optional arguments used in \code{check_apps}. Here, \code{set_env}
+#'   passes \code{ltr} to \code{check_apps}.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #' @examples 
