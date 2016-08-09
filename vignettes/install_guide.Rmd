@@ -1,6 +1,6 @@
 ---
 title: "(R)QGIS installation guide for Windows, Mac & Linux"
-author: "Patrick Schratz, Jannes Muenchow"
+author: "Jannes Muenchow, Patrick Schratz"
 date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
@@ -11,11 +11,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-# Vignette Info
+# Vignette info
 
-This vignette shows how to set up your local QGIS, SAGA and GRASS environments on your local PC to get RQGIS running smoothly. We present example combinations of different software versions for each operating system (Windows, Mac, Linux) that will interact nicely with each other and RQGIS. Other combinations of software version combination of QGIS, SAGA and GRASS than the ones presented here might also work without problems. However, for time reasons we can not test all possible combinations and if you encounter problems it is recommended to use the latest stable version of all software packages.  
+This vignette guides you through the installation process of QGIS, GRASS- and SAGA-GIS on three different platforms (Windows, Mac, Linux). Following our instructions should ensure that RQGIS will work properly. We recommend to use the latest stable version of all software packages. Though other versions might also work with RQGIS, we did not test this.
 
-Overall, RQGIS allows access to more than 1000 geoalgorithms. However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party provides and software package versions.
+Overall, RQGIS allows access to more than 1000 geoalgorithms. However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party providers and software package versions.
 
 # Windows
 
@@ -23,9 +23,11 @@ There are at least two options to install QGIS on Windows in such a way that it 
 
 To install OSGeo4W, the easiest way is to to use the Express installation:
 
+
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\00_express.PNG" width="50%" height="50%">
+  <img src="00_express.PNG" width="50%" height="50%">
 </center>
+
 
 We are sorry, that our installer uses a German dialog. It appears that OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be simple enough to follow our steps.
 
@@ -38,31 +40,31 @@ Using the advanced settings is slightly more complicated but will give you the a
 1. Run the OSGeo4W setup and choose the advanced installation. 
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\01_initial_setup.PNG" width="50%" height="50%">
+  <img src="01_initial_setup.PNG" width="50%" height="50%">
 </center>
 
 2. Subsequently, accept the default settings until you reach the “Select Packages” window.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\04_select_packages.PNG" width="50%" height="50%">
+  <img src="04_select_packages.PNG" width="50%" height="50%">
 </center>
 
 3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\05_command_line_utilties.PNG" width="50%" height="50%">
+  <img src="05_command_line_utilties.PNG" width="50%" height="50%">
 </center>
 
-Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the latest QGIS release and SAGA. We also installed gvSIG, though so far it is not accessible from QGIS.
+Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, the latest QGIS release and SAGA. We also installed gvSIG, though so far it is not accessible from within QGIS.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\06_Desktop_install.PNG" width="50%" height="50%">
+  <img src="06_Desktop_install.PNG" width="50%" height="50%">
 </center>
 
 4. The rest we leave as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
 <center>
-  <img src="D:\programming\R\RQGIS\RQGIS\figures\08_suggestions.PNG" width="50%" height="50%">
+  <img src="08_suggestions.PNG" width="50%" height="50%">
 </center>
 
 Clicking "Next" once more will start the download and installation process which might take a while.
@@ -113,7 +115,7 @@ Here, we just describe exemplarily the QGIS installation for Debian/Ubuntu follo
 Open a terminal window. Make sure to remove all the QGIS and GRASS packages you may have installed before from other repositories. Then execute:
 
 
-```{r, engine = "shell"}
+```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
 sudo sh -c 'echo "deb https://www.qgis.org/debian xenial main" >> /etc/apt/sources.list'
 # QGIS repository for Ubuntu 14.04
@@ -138,40 +140,30 @@ This will install the latest and most stable QGIS release as well as GRASS-GIS a
 ## SAGA
 To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
 
-```{r, engine = "shell"}
+```sh
 sudo add-apt-repository ppa:johanvdw/saga-gis  
 sudo apt-get update
 sudo apt-get install saga
 ```
 
-## Orfeo Toolbox
-Orfeo Toolbox has to be installed on your own on Linux systems. To do so, visit [this site](https://www.orfeo-toolbox.org/download/) and save the .run script on your Desktop. 
-OTB needs to be installed in the first place in a folder where you have access to. Later on we will the important folders to their desired location. 
-
-We recommend to create a folder called "Applications" under `/home/<YourUserName>/`. To do so, simply execute `mkdir /home/<YourUserName/Applications/`. Then move your .run script to this location by `mv /home/<YourUserName>/Desktop/<filename> /home/<YourUserName>/Applications`. Now run the script from the terminal using `sh /usr/<NameOfScript>`. To ensure that (R)QGIS can find the algorithms we have to move the contents of your installation to the specfic directories. Afterwards you can delete the first installation under [...]/Applications.
-
-(R)QGIS assumes the "OTB applications folder" to be located at "/usr/lib/otb/applications". Call `sudo mv /home/<YourUserName>/Applications/<YourOTBInstallation>/lib/otb /usr/lib/`. This command will move our applications folder (located under [...]/otb) to the desired location. We need "sudo" rights to move a folder there. 
-
-Last, we need to move the "OTB command line tools" contents to their desired place. Call `cp -a /home/<YourUserName>/Applications/<YourOTBInstallation>/bin/. /usr/bin`. 
-
-Now QGIS should list the OTB tools under "Processing Toolbox" and RQGIS should list them when calling `find_algorithms()`. 
-
-For further reading please see the official [QGIS manual](/home/<YourUserName>/Applications/<YourOTBInstallation>/) for OTB installation under Linux. 
-
-## RQGIS
-If you want to install the developer version of RQGIS, you will need the `devtools` package. To install it along with its dependencies, run following lines in the terminal:
+## Orfeo Toolbox (OTB)
+You can download the Orfeo Toolbox from [here](https://www.orfeo-toolbox.org/download/). We save the .run-script to the Desktop. Of course, you might select any other accesible folder. Next, we create a folder named "Applications" to which we move the .run script. Finally, we install OTB. Please note that so far there is only a **64-bit** OTB version available. This version does not work on 32-bit machines!
 
 ```sh
-sudo apt-get install libssl-dev
-# add curl repository to sources.list
-sudo sh -c 'echo "deb http://security.ubuntu.com/ubuntu precise-security main" >> /etc/apt/sources.list'
-sudo apt-get update
-# finally you can install libcurl
-sudo apt-get install libcurl4-gnutls-dev
+mkdir /home/<YourUserName>/Applications/
+mv /home/<YourUserName>/Desktop/<filename> /home/<YourUserName>/Applications
+sh /home/<YourUserName>/Applications/<NameOfScript>
 ```
-And in the R console you can now install `devtools` as well as `RQGIS`:
+(R)QGIS assumes that the "OTB applications folder" is located at "/usr/lib/otb/applications" (see also [QGIS manual](https://docs.qgis.org/2.14/en/docs/user_manual/processing/3rdParty.html#orfeo-toolbox)). Therefore, we need to move the OTB installation to the corresponding folder: 
 
-```r
-install.packages("devtools")
-devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
+```sh
+# move applications folder
+sudo mv /home/<YourUserName>/Applications/<YourOTBInstallation>/lib/otb /usr/lib/
+# commandline tools
+cp -a /home/<YourUserName>/Applications/<YourOTBInstallation>/bin/. /usr/bin
+```
+OTB algorithms should be now availabe in the "Processing Toolbox" and in RQGIS (use `find_algorithms()` to check). Finally, we clean up after ourselves by deleting the previously created Applications folder:
+
+```sh
+rmdir /home/<YourUserName>/Applications/
 ```

@@ -29,6 +29,9 @@ build_cmds <- function(qgis_env = set_env()) {
     # construct the batch file
     # = wrapper to set up the required environment variables before running
     # Python
+    # more or less copied from:
+    # browseURL(paste0("http://spatialgalaxy.net/2014/10/09/a-quick-guide-to", 
+    #                  "-getting-started-with-pyqgis-on-windows/"))
     cmd <- 
       c("@echo off",
         # defining a root variable
@@ -41,7 +44,7 @@ build_cmds <- function(qgis_env = set_env()) {
         # adding QGIS and GRASS to PATH
         "path %PATH%;%OSGEO4W_ROOT%\\apps\\qgis\\bin",
         # paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass,
-        #        "\\lib"),
+        #       "\\lib"),
         # setting a PYTHONPATH variable
         "set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\qgis\\python;",
         # adding a few more python paths to PYTHONPATH
