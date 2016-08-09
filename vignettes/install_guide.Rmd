@@ -176,8 +176,7 @@ Unfortunately, QGIS does not support the latest SAGA versions. To find out which
 
 ```{r saga, eval = TRUE, echo = TRUE, message = FALSE}
 library("RQGIS")
-qgis_env <- set_env("D:/osgeo4w_qgis16/")
-info <- qgis_session_info(qgis_env)
+info <- qgis_session_info()
 info$supported_saga_versions
 ```
 
