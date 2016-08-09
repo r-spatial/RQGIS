@@ -4,14 +4,17 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL)
+set_env(root = NULL, ltr = TRUE)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If you do not specify 
 function parameter \code{root}, the function looks for \code{qgis.bat} on 
 your C: drive under Windows. If you are on a Mac, it looks for 
-\code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
+\code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux, 
 \code{set_env} assumes that your root path is "/usr".}
+
+\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of
+QGIS, if available (only for Windows).}
 }
 \value{
 The function returns a list containing all the path necessary to run 

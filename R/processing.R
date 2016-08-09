@@ -210,7 +210,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
   system(batch_call, intern = TRUE)
   
   # retrieve the output
-  out <- read.csv(file.path(tempdir(), "out.csv"), header = FALSE)  
+  out <- utils::read.csv(file.path(tempdir(), "out.csv"), header = FALSE)  
   out$V1 <- gsub("False", FALSE, out$V1)
   out$V1 <- gsub("True", TRUE, out$V1)
   out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
