@@ -148,7 +148,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "from processing.algs.saga import SagaUtils",
       "from processing.algs.grass.GrassUtils import GrassUtils",
       "from processing.algs.grass7.Grass7Utils import Grass7Utils",
-      "from processing.tools.system import isWindows",
+      "from processing.tools.system import isWindows, isMac",
       # QGIS version
       "qgis = QGis.QGIS_VERSION",
       # GRASS versions
@@ -156,12 +156,12 @@ qgis_session_info <- function(qgis_env = set_env()) {
       # installation
       "GrassUtils.checkGrassIsInstalled()",
       "g6 = GrassUtils.isGrassInstalled",
-      "if g6 is True and isWindows():",
+      "if g6 is True and isWindows() or isMac():",
       "  g6 = GrassUtils.grassPath()",
       "  g6 = re.findall('(grass-.*)', g6)",
       "Grass7Utils.checkGrass7IsInstalled()",
       "g7 = Grass7Utils.isGrass7Installed",
-      "if g7 is True and isWindows():",
+      "if g7 is True and isWindows() or isMac():",
       "  g7 = Grass7Utils.grassPath()",
       "  g7 = re.findall('(grass-.*)', g7)",
       # installed SAGA version usable with QGIS
