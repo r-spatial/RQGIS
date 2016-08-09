@@ -50,7 +50,7 @@ sudo apt-get install libcurl4-gnutls-dev
 QGIS 2.16 modifications
 -----------------------
 
-If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. You need to add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py` and you need to replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
@@ -93,10 +93,10 @@ my_env
 #> [1] "C:\\OSGeo4W64"
 #> 
 #> $qgis_prefix_path
-#> [1] "C:\\OSGeo4W64\\apps\\qgis"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
 #> 
 #> $python_plugins
-#> [1] "C:\\OSGeo4W64\\apps\\qgis\\python\\plugins"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
