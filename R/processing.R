@@ -849,11 +849,15 @@ run_qgis <-
   # build the Python command
   args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
-  # run QGIS command
-  execute_cmds(processing_name = "processing.runalg",
-               params = args,
-               qgis_env = qgis_env,
-               intern = ifelse(Sys.info()["sysname"] == "Darwin", FALSE, TRUE))
+  # run QGIS command (while catching possible error messages)
+  msg <- execute_cmds(processing_name = "processing.runalg",
+                      params = args,
+                      qgis_env = qgis_env,
+                      intern = ifelse(Sys.info()["sysname"] == "Darwin",
+                                      FALSE, TRUE))
+  if (grepl("Error", msg)) {
+    stop(msg)
+  }
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
