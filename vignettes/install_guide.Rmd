@@ -83,35 +83,43 @@ If you additionally want to use the **LiDAR processing tools** (LAStools), pleas
 
 # Mac OS X
 
-## Binary installation
-For Mac, please follow this link [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html) to install QGIS. Both LTR and current release will work. Please make sure to also install GDAL separately, preferably following this link [http://www.kyngchaos.com/software/frameworks](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
+## QGIS
+[Follow this link](https://www.qgis.org/en/site/forusers/download.html) for the binary installation. Please make sure to also install GDAL separately, preferably following [this link](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
 
-## Using package management systems
-Since several problems occur when trying to install QGIS with package managers (e.g. [this Stackexchange question](http://gis.stackexchange.com/questions/182472/installing-qgis-using-homebrew)), it is recommended to use the binary QGIS installation. Otherwise it can not be guaranteed that all dependencies will work:
-
-- Homebrew: If you have already QGIS running and correctly configured via Homebrew, RQGIS should work and `set_env()` should find your root path. 
-- Fink: <untested>
-- MacPorts: <untested>
+Recently, Homebrew also supports [GUI installations](https://caskroom.github.io/). QGIS can be installed using `brew cask install qgis` from the command line if homebrew is installed and configured correctly. 
 
 ## GRASS
+The binary installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
+
+If you use homebrew, please see [this guide](https://grasswiki.osgeo.org/wiki/Compiling_on_MacOSX_using_homebrew) to install GRASS 7x on your system. Right now, some problems might occur trying to link GRASS 7 installations and QGIS.
+
+A guide how to compile seperately installed GRASS version with QGIS will follow soon. 
 
 ## SAGA
-First, download Fink from Fink Project and [install it](http://www.finkproject.org/doc/bundled/install-first.php).
-Then download the following .info file for SAGA:   [http://fink.cvs.sourceforge.net/viewvc/fink/experimental/babayoshihiko/finkinfo/saga.info](http://fink.cvs.sourceforge.net/viewvc/fink/experimental/babayoshihiko/finkinfo/saga.info)  
-Copy this file in /sw/fink/dists/local/main/finkinfo. You will need root access. Finally, run
-fink install saga
-This will automatically download and install necessary libraries as well.
+QGIS for Mac comes with a preconfigured SAGA installation and should work out of the box.  
 
-Source: [https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Mac%20OS%20X/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Mac%20OS%20X/)
+Custom SAGA installations: Using homebrew, SAGA can be installed via `brew install saga-gis`.  
+There is no binary install of SAGA for Mac. Therefore the "homebrew-way" is recommended. Alternatively you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do this using `qgis_session_info()` in RQGIS.
 
-## Troubleshooting
-Warnings appears when running any RQGIS command. Does not affect usage.  
-<span style="color:red">!Unresolved! (!appears also under Linux after OTB configuration!)
-```{r, eval = FALSE}
-QSqlDatabase: QSQLITE driver not loaded
-QSqlDatabase: available drivers: 
-QSqlQuery::prepare: database not open
+To compile a custom installation of SAGA with QGIS, follow these steps:
+
+1. Open the following file in your QGIS installation: (.../python/plugins/processing/algs/saga/SagaUtils.py)
+2. In the function `findSagaFolder()` change the path setting pointing to the folder containing `saga_cmd`:
+
+```py
+testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
 ```
+
+For homebrew installations (always located under "/usr/local/Cellar") a working setup would look like this:
+
+```py
+# testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
+testfolder = '/usr/local/Cellar/saga-gis/2.2.2/bin'
+```
+
+After restarting QGIS, you should recognize the change of the SAGA version under "Processing->Toolbox". 
+
+
 
 # Linux
 
