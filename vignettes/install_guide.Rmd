@@ -99,7 +99,7 @@ A guide how to compile seperately installed GRASS version with QGIS will follow 
 QGIS for Mac comes with a preconfigured SAGA installation and should work out of the box.  
 
 Custom SAGA installations: Using homebrew, SAGA can be installed via `brew install saga-gis`.  
-There is no binary install of SAGA for Mac. Therefore the "homebrew-way" is recommended. Alternatively you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do this using `qgis_session_info()` in RQGIS.
+There is no binary install of SAGA for Mac. Therefore the "homebrew-way" is recommended. Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do this using `qgis_session_info()` in RQGIS.
 
 To compile a custom installation of SAGA with QGIS, follow these steps:
 
