@@ -6,7 +6,7 @@
 #' @return The function returns a list with two elements. The first contains a 
 #'   raw batch file and the second the python raw command both of which are 
 #'   later on needed to access QGIS from within R via Python (see 
-#'   \code{\link{execute_cmds}}.
+#'   \code{\link{execute_cmds}}).
 #' @author Jannes Muenchow, Patrick Schratz
 #' @examples 
 #' \dontrun{

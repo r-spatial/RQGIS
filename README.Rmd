@@ -39,7 +39,14 @@ The main advantages of RQGIS are:
 ## Package installation
 In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
 
-You can install the latest RQGIS development version from Github with:
+You can install:
+
+- the latest released version from CRAN with:
+```{r, eval = FALSE}
+install.packages("RQGIS")
+```
+
+- the latest RQGIS development version from Github with:
 
 ```{r, eval = FALSE}
 if (packageVersion("devtools") < 1.6) {
