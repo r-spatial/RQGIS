@@ -43,11 +43,13 @@ Please note that some default values can only be set after the user's
   automatically in \code{\link{run_qgis}} if left blank.
 }
 \examples{
+\dontrun{
 get_args_man(alg = "qgis:addfieldtoattributestable")
 # and using the option argument
 get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 }
+}
 \author{
-Jannes Muenchow
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 

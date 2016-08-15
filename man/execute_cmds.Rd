@@ -25,6 +25,6 @@ This helper function constructs the batch and Python scripts
   which are necessary to run QGIS from the command line.
 }
 \author{
-Jannes Muenchow
+Jannes Muenchow, Patrick Schratz
 }
 

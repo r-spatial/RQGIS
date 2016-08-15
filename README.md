@@ -1,9 +1,15 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!! -->
+<!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
+<!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
+/usr/share/qgis/python/plugins/processing-->
 RQGIS
 =====
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.6/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console. The main advantages of RQGIS are:
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+
+<img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
+
+The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
@@ -12,7 +18,12 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 Installation
 ============
 
-You can install the latest RQGIS development version from Github with
+Package installation
+--------------------
+
+In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
+
+You can install the latest RQGIS development version from Github with:
 
 ``` r
 if (packageVersion("devtools") < 1.6) {
@@ -21,42 +32,35 @@ if (packageVersion("devtools") < 1.6) {
 if (!"lazyeval" %in% installed.packages()[, "Package"]) {
 devtools::install_github("hadley/lazyeval")  
 }
-devtools::install_github("jannes-m/RQGIS")
+devtools::install_github("jannes-m/RQGIS", build_vignettes = TRUE)
 ```
 
-**Please note that RQGIS is still a beta version and under active development.** Therefore, it is likely that major changes will occur in the near future. If you detect any bugs, let us know or, even better, commit a pull request.
+Before running these lines under **Linux** (Ubuntu), you need to install some `devtools` dependencies via the terminal:
 
-In order to run RQGIS properly, you need to download various third-party software packages. To fascilitate the download and installation procedures, we provide you with a platform-dependent installation manual in the following subsections.
-
-Windows
--------
-
-Before installing RQGIS, download the latest OSGeo4W from <http://trac.osgeo.org/osgeo4w/>. If you are unsure, what to install, simply select the express installation. This automatically also installs SAGA and GRASS, but not all other available third-party providers. If you wish to do install other providers (OTB, TauDEM, etc.), the best way would be to select everything under the advanced settings menu. This guarantees that all dependencies will be installed (though everything else what you might not plan to use as well). In any case, this should get you started and soon we will provide you with a detailed installation manual.
-
-Linux
------
-
-For Debian/Ubuntu, please follow the installation instructions found under this link [https://www.qgis.org/de/site/forusers/alldownloads.html](here). Note that if you install QGIS from the built-in Software managers of your OS, you will most likely get a rather old QGIS version as these repositories only getting updated quite sparsely. For other Linux builds, please see respective tutorial for yourself. If you want to harness the real power of RQGIS, you might want to install also GDAL, GRASS, SAGA and other applications (TauDEM, )
-
-### How to install SAGA on Ubuntu?
-
-To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window:
-
-``` bash
-sudo add-apt-repository ppa:johanvdw/saga-gis  
+``` sh
+sudo apt-get install libssl-dev
+# add curl repository to sources.list
+sudo sh -c 'echo "deb http://security.ubuntu.com/ubuntu precise-security main" >> /etc/apt/sources.list'
 sudo apt-get update
-sudo apt-get install saga
+# finally you can install libcurl
+sudo apt-get install libcurl4-gnutls-dev
 ```
 
-Mac OS X
---------
+QGIS 2.16 modifications
+-----------------------
 
-For Mac, please follow this link [https://www.qgis.org/de/site/forusers/download.html](link) to install QGIS. We recommend to download the latest stable release.
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+
+<img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
+
+The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). Hence, with the next minor release the manual adjustment is hopefully no longer required.
+
+For Windows users: If you installed both the LTR and the most recent QGIS version, you don't need to adjust anything since RQGIS will use by default the LTR (2.14).
 
 RQGIS usage
 ===========
 
-Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package. Secondly, we save the resulting SpatialObject as a shapefile in a temporary folder.
+Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.14/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. First off, we will download the administrative areas of Germany using the raster package.
 
 ``` r
 # attach packages
@@ -65,13 +69,12 @@ library("rgdal")
 
 # define path to a temporary folder
 dir_tmp <- tempdir()
-# download German administrative areas
+# download German administrative areas 
 ger <- getData(name = "GADM", country = "DEU", level = 1)
-# save ger as a shapefile in our temporary folder
-writeOGR(ger, dir_tmp, "ger", driver = "ESRI Shapefile", overwrite_layer = TRUE)
+# ger is of class "SpatialPolygonsDataFrame"
 ```
 
-Now that we have a shapefile, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 ``` r
 # attach RQGIS
@@ -89,10 +92,10 @@ my_env
 #> [1] "C:\\OSGeo4W64"
 #> 
 #> $qgis_prefix_path
-#> [1] "C:\\OSGeo4W64\\apps\\qgis"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
 #> 
 #> $python_plugins
-#> [1] "C:\\OSGeo4W64\\apps\\qgis\\python\\plugins"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -130,43 +133,43 @@ params
 #> [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify our input and output layer manually. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT\_LAYER (e.g. "ger.shp") you can also use a spatial object that resides in the global environment of R. Conveniently, `run_qgis` will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame `ger` as input layer.
 
 ``` r
-# path to the input shapefile
-params$INPUT_LAYER  <- file.path(dir_tmp, "ger.shp")
+# specify input layer
+params$INPUT_LAYER  <- ger
 # path to the output shapefile
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
 ```
 
-Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments.
+Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Aside from accepting spatial objects living in R as input, `run_qgis` also loads the result directly into R, if desired. Here, we would like to load the OUTPUT\_LAYER into R. To do so, we simply specify the desired file(s) in function argument `load_output` while assigning it/them to an object called `out`.
 
 ``` r
-run_qgis(alg = "qgis:polygoncentroids",
-         params = params,
-         qgis_env = my_env)
-#> character(0)
+out <- run_qgis(alg = "qgis:polygoncentroids",
+                params = params,
+                load_output = params$OUTPUT_LAYER,
+                qgis_env = my_env)
 ```
 
-Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. Therefore, we load the result into R and visualize it.
+Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.
 
 ``` r
-# load the point shapefile QGIS has created for us
-ger_coords <- readOGR(dsn = dir_tmp, layer = "ger_coords", verbose = FALSE)
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
-plot(ger_coords, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-![](README-unnamed-chunk-10-1.png)
+<img src="figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
 
-Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a vignette or a paper...
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
 TO DO:
 ======
 
--   platform-specific installation guide/manual (with screenshots) + how to install SAGA under Ubuntu 16.04
+-   check package and upload it to CRAN!!!
 -   build\_cmds: py\_cmd could be a one liner for all platforms
 -   Take care of the error message: ERROR 1: Can't load requested DLL: C:4~1\_FileGDB.dll 193: %1 ist keine zulässige Win32-Anwendung.
 -   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
+-   does it make sense to create a RQGIS-class?
+-   qgis\_session\_info -&gt; add OTB and Lidar to the list
