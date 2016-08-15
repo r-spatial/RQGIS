@@ -34,6 +34,6 @@ get_usage(alg = "saga:addcoordinatestopoints")
 }
 }
 \author{
-Jannes Muenchow, QGIS developer team
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 

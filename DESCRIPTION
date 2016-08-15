@@ -15,7 +15,7 @@ Description: Package RQGIS establishes an interface between R and QGIS, i.e. it 
     geocomputing.
 URL: https://github.com/jannes-m/RQGIS
 BugReports: https://github.com/jannes-m/RQGIS/issues
-License: GPL-2
+License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 RoxygenNote: 5.0.1

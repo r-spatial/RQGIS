@@ -37,6 +37,6 @@ set_env("C:/OSGEO4~1")  # Windows example
 
 }
 \author{
-Jannes Muenchow
+Jannes Muenchow, Patrick Schratz
 }
 

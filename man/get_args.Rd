@@ -28,6 +28,6 @@ get_args(alg = "qgis:addfieldtoattributestable")
 }
 }
 \author{
-Jannes Muenchow
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 

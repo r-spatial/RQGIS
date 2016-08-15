@@ -45,6 +45,6 @@ find_algorithms(search_term = "add")
 }
 }
 \author{
-Jannes Muenchow, QGIS developer team
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 
