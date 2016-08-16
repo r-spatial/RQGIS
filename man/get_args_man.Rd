@@ -50,6 +50,6 @@ get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 }
 }
 \author{
-Jannes Muenchow
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 

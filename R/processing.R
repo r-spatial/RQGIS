@@ -22,7 +22,7 @@
 #' }
 #' 
 #' @export
-#' @author Jannes Muenchow
+#' @author Jannes Muenchow, Patrick Schratz
 set_env <- function(root = NULL, ltr = TRUE) {
 
   if (Sys.info()["sysname"] == "Windows") {
@@ -239,7 +239,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @details Function \code{find_algorithms} simply calls 
 #'   \code{processing.alglist} using Python.
 #' @return Python console output will be captured as an R character vector.
-#' @author Jannes Muenchow, QGIS developer team
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples
 #' \dontrun{
 #' # list all available QGIS algorithms on your system
@@ -283,7 +283,7 @@ find_algorithms <- function(search_term = "",
 #'   \code{\link[base]{system}}.
 #' @details Function \code{get_usage} simply calls
 #'   \code{processing.alghelp} using Python.
-#' @author Jannes Muenchow, QGIS developer team
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples
 #' \dontrun{
@@ -315,7 +315,7 @@ get_usage <- function(alg = NULL,
 #'   \code{\link[base]{system}}.
 #' @details Function \code{get_options} simply calls
 #'   \code{processing.algoptions} using Python.
-#' @author Jannes Muenchow, QGIS devleoper team
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples
 #' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
@@ -475,7 +475,7 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
 #' @return The function returns a list whose names correspond to the function 
 #'   arguments you need to specify. Later on, the specified function arguments 
 #'   can serve as input for \code{\link{run_qgis}}'s params argument.
-#' @author Jannes Muenchow
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples
 #' \dontrun{
@@ -553,7 +553,7 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #'   input. For instance, the GRASS region extent will be determined
 #'   automatically in \code{\link{run_qgis}} if left blank.
 #' @export
-#' @author Jannes Muenchow
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples 
 #' \dontrun{
 #' get_args_man(alg = "qgis:addfieldtoattributestable")
@@ -704,7 +704,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'   GRASS users do not have to specify manually the GRASS region extent 
 #'   (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
 #'   automatically retrieve the region extent based on the input layers.
-#' @author Jannes Muenchow, QGIS developer team
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
@@ -855,7 +855,7 @@ run_qgis <-
                       qgis_env = qgis_env,
                       intern = ifelse(Sys.info()["sysname"] == "Darwin",
                                       FALSE, TRUE))
-  if (grepl("Error", msg)) {
+  if (isTRUE(grepl("error", tolower(msg)))) {
     stop(msg)
   }
   # load output

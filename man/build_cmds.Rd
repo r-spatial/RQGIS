@@ -26,6 +26,6 @@ build_cmds()
 }
 }
 \author{
-Jannes Muenchow
+Jannes Muenchow, Patrick Schratz
 }
 

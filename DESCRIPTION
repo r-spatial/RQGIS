@@ -2,7 +2,7 @@ Package: RQGIS
 Date: 2016-08-15
 Type: Package
 Title: RQGIS: Integrating R with QGIS
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
     person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
     person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut"))
@@ -15,7 +15,7 @@ Description: Package RQGIS establishes an interface between R and QGIS, i.e. it 
     geocomputing.
 URL: https://github.com/jannes-m/RQGIS
 BugReports: https://github.com/jannes-m/RQGIS/issues
-License: GPL-2
+License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 RoxygenNote: 5.0.1

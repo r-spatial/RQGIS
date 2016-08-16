@@ -31,6 +31,6 @@ get_options(alg = "saga:slopeaspectcurvature")
 }
 }
 \author{
-Jannes Muenchow, QGIS devleoper team
+Jannes Muenchow, Victor Olaya, QGIS core team
 }
 

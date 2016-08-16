@@ -1,6 +1,5 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
-
+<!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 RQGIS
@@ -24,7 +23,15 @@ Package installation
 
 In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
 
-You can install the latest RQGIS development version from Github with:
+You can install:
+
+-   the latest released version from CRAN with:
+
+``` r
+install.packages("RQGIS")
+```
+
+-   the latest RQGIS development version from Github with:
 
 ``` r
 if (packageVersion("devtools") < 1.6) {
@@ -50,7 +57,7 @@ sudo apt-get install libcurl4-gnutls-dev
 QGIS 2.16 modifications
 -----------------------
 
-If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
@@ -161,7 +168,7 @@ plot(ger)
 plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-<img src="figures/README-unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+<img src="figures/README-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 

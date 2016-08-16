@@ -6,8 +6,8 @@
 #' @return The function returns a list with two elements. The first contains a 
 #'   raw batch file and the second the python raw command both of which are 
 #'   later on needed to access QGIS from within R via Python (see 
-#'   \code{\link{execute_cmds}}.
-#' @author Jannes Muenchow
+#'   \code{\link{execute_cmds}}).
+#' @author Jannes Muenchow, Patrick Schratz
 #' @examples 
 #' \dontrun{
 #' build_cmds()
@@ -120,7 +120,7 @@ build_cmds <- function(qgis_env = set_env()) {
 #' @param intern Logical which indicates whether to capture the output of the 
 #'   command as an \code{R} character vector (see also
 #'   \code{\link[base]{system}}.
-#' @author Jannes Muenchow
+#' @author Jannes Muenchow, Patrick Schratz
 execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
                          qgis_env = set_env(),
@@ -173,8 +173,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 
 #' @title Checking paths to QGIS applications
 #' @description \code{check_apps} checks if platform-dependent applications 
-#'   (e.g, QGIS, Python27, Qt4, GRASS, msys, etc.) are installed in the correct 
-#'   locations.
+#'   (e.g, QGIS, Python27, etc.) are installed in the correct locations.
 #' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
 #'   ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
 #'   platforms.

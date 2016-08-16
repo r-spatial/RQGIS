@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
+<!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
@@ -39,7 +39,14 @@ The main advantages of RQGIS are:
 ## Package installation
 In order to run RQGIS properly, you need to download various third-party software packages. Our vignette should help you with the download and installation procedures on various platforms (Windows, Linux, Mac OSX). To access it, use `vignette("install_guide", package = "RQGIS")`. Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
 
-You can install the latest RQGIS development version from Github with:
+You can install:
+
+- the latest released version from CRAN with:
+```{r, eval = FALSE}
+install.packages("RQGIS")
+```
+
+- the latest RQGIS development version from Github with:
 
 ```{r, eval = FALSE}
 if (packageVersion("devtools") < 1.6) {
@@ -63,7 +70,7 @@ sudo apt-get install libcurl4-gnutls-dev
 ```
 
 ## QGIS 2.16 modifications
-If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one import statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+If you only installed the most recent QGIS version (2.16.1), you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
