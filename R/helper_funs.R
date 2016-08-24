@@ -15,17 +15,6 @@
 build_cmds <- function(qgis_env = set_env()) { 
   
   if (Sys.info()["sysname"] == "Windows") {
-    # check if GRASS path is correct and which version is available on
-    # the system
-    vers <- dir(paste0(qgis_env$root, "\\apps\\grass"))
-    # check if grass-7 is available
-    ind <- grepl("grass-7..*\\d$", vers)
-    if (any(grepl("grass-7..*[0-9]$", vers))) {
-      grass <- vers[ind]
-    } else {
-      # if not, simply use the older version
-      grass <- vers[1]
-    }
     # construct the batch file
     # = wrapper to set up the required environment variables before running
     # Python
@@ -44,28 +33,18 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("SET OSGEO4W_ROOT=", qgis_env$root),
         # calling batch files from within a batchfile -> sets many paths
         "call \"%OSGEO4W_ROOT%\"\\bin\\o4w_env.bat",
-        # paste0("call \"%OSGEO4W_ROOT%\"\\apps\\grass\\", grass,
-        #        "\\etc\\env.bat"),
         "@echo off",
         # add the directories where the QGIS libraries reside to search path 
         # of the dynamic linker
         paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\", my_qgis, "\\bin"),
-        # paste0("path %PATH%;%OSGEO4W_ROOT%\\apps\\grass\\", grass, "\\lib"), 
         # set the PYTHONPATH variable, so that QGIS knows where to search for
         # QGIS libraries and appropriate Python modules
         paste0("set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\",
                my_qgis, "\\python;"),
-        # adding a few more python paths to PYTHONPATH
-        # paste0("set PYTHONPATH=%PYTHONPATH%;",
-        #       "%OSGEO4W_ROOT%\\apps\\Python27\\Lib\\site-packages"),
         # defining QGIS prefix path (i.e. without bin)
         paste0("set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\", my_qgis)
         )
    
-    # construct the Python script
-    py_cmd <- build_py(qgis_env)
-    # return your result
-    cmds <- list("cmd" = cmd, "py_cmd" = py_cmd)
   } else if (Sys.info()["sysname"] == "Darwin") {
     # construct the batch file
     cmd <- 
@@ -80,12 +59,6 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/"), 
         paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))
     
-    # construct the Python script
-    py_cmd <- build_py(qgis_env)
-    
-    # return your result
-    cmds <- list("cmd" = cmd,
-                 "py_cmd" = py_cmd)
   } else if (Sys.info()["sysname"] == "Linux") {
     # construct the batch file
     cmd <- 
@@ -94,18 +67,14 @@ build_cmds <- function(qgis_env = set_env()) {
         # define path where QGIS libraries reside to search path of the
         # dynamic linker
         paste0("export LD_LIBRARY_PATH=", qgis_env$root, "/lib"))
-    
-    # construct the Python script
-    py_cmd <- build_py(qgis_env)
-    # return your result
-    cmds <- list("cmd" = cmd,
-                 "py_cmd" = py_cmd)
   } else {
     stop("Sorry, you can use RQGIS only under Windows and UNIX-based
          operating systems.")
   }
+  # construct the Python script
+  py_cmd <- build_py(qgis_env)
   # return your result
-  cmds
+  list("cmd" = cmd, "py_cmd" = py_cmd)
   }
 
 
@@ -125,20 +94,22 @@ execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
                          qgis_env = set_env(),
                          intern = FALSE) {
+
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  # load raw Python file (has to be called from the command line)
+  cmds <- build_cmds(qgis_env = qgis_env)
+  py_cmd <- c(cmds$py_cmd,
+              paste0(processing_name, "(", params, ")", "\n"))
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize path slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  cat(py_cmd, file = "py_cmd.py")
   
   if (Sys.info()["sysname"] == "Windows") {
-    cwd <- getwd()
-    on.exit(setwd(cwd))
-    tmp_dir <- tempdir()
-    setwd(tmp_dir)
-    # load raw Python file (has to be called from the command line)
-    cmds <- build_cmds(qgis_env = qgis_env)
-    py_cmd <- c(cmds$py_cmd,
-                paste0(processing_name, "(", params, ")",
-                       "\n"))
-    py_cmd <- paste(py_cmd, collapse = "\n")
-    cat(py_cmd, file = "py_cmd.py")
-    
     # write batch command
     cmd <- c(cmds$cmd, "python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
@@ -147,20 +118,6 @@ execute_cmds <- function(processing_name = "processing.alglist",
   }
   
   if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
-    cwd <- getwd()
-    on.exit(setwd(cwd))
-    tmp_dir <- tempdir()
-    setwd(tmp_dir)
-    # load raw Python file (has to be called from the command line)
-    cmds <- build_cmds(qgis_env = qgis_env)
-    py_cmd <- c(cmds$py_cmd,
-                paste0(processing_name, "(", params, ")", "\n"))
-    py_cmd <- paste(py_cmd, collapse = "\n")
-    # harmonize path slashes
-    py_cmd <- gsub("\\\\", "/", py_cmd)
-    py_cmd <- gsub("//", "/", py_cmd)
-    cat(py_cmd, file = "py_cmd.py")
-    
     # write batch command
     cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
@@ -172,29 +129,24 @@ execute_cmds <- function(processing_name = "processing.alglist",
 }
 
 #' @title Checking paths to QGIS applications
-#' @description \code{check_apps} checks if platform-dependent applications 
-#'   (e.g, QGIS, Python27, etc.) are installed in the correct locations.
-#' @param root Path to the root directory. Usually, this is 'C:/OSGeo4W64' 
-#'   ('C:/OSGeo4w32'), '/usr' and '/Applications/QGIS.app/' for the different 
-#'   platforms.
+#' @description \code{check_apps} checks if software applications necessary to
+#'   run QGIS (QGIS and Python plugins) are installed in the correct
+#'   locations.
+#' @param root Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
+#'   '/usr' and '/Applications/QGIS.app/' for the different platforms.
 #' @param ... Optional arguments used in \code{check_apps}. Here, \code{set_env}
-#'   passes \code{ltr} to \code{check_apps}.
+#'   passes \code{ltr} to \code{check_apps} under Windows.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #' @examples 
 #' \dontrun{
-#' check_apps("C:/OSGeo4W64")
+#' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
     path_apps <- file.path(root, "apps")
-
-    # qgis_prefix_path = C:\\OSGeo4W64\\apps\\qgis & usr/bin
-    # python_plugins = C:\\OSGeo4W64\\apps\\qgis\\python\\plugins & /usr/share/qgis/python/plugins
-    # apps <- c("qgis", "qgis\\python\\plugins", "Python27",
-    #           "Qt4", "msys", "grass")
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
@@ -204,64 +156,29 @@ check_apps <- function(root, ...) {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
       my_qgis <- my_qgis[1]
     }
-    
-    if (is.na(my_qgis)) {
-      stop("Could not find any qgis-Folder in ", path_apps, 
-           " Please install it.")
-    }
-    out <- file.path(path_apps, my_qgis)
-    out <- gsub("//|/", "\\\\", out)
-    apps <- c(file.path(my_qgis, "python\\plugins"), "Python27",
-              "Qt4")
-    
-    out <- 
-      c(out, 
-        lapply(apps, function(app) {
-          if (dir.exists(file.path(path_apps, app))) {
-            path <- file.path(path_apps, app)
-          } else {
-            path <- NULL
-            # apps necessary to run the QGIS-API
-            stop("Folder ", app, " could not be found under ", path_apps, 
-                 " Please install it.")
-          }
-          gsub("//|/", "\\\\", path)
-        }))
-    names(out) <- c("qgis_prefix_path", "python_plugins", "python27", "qt4")
-    # actually, we only need the first two elements...
-    out <- out[1:2]
+    apps <- c(file.path(path_apps, my_qgis),
+              file.path(path_apps, my_qgis, "python\\plugins"))
+  } else if (Sys.info()["sysname"] == "Linux") {
+    # paths to check
+    apps <- paste0(root, c("/bin/qgis", "/share/qgis/python/plugins"))
+  } else if (Sys.info()["sysname"] == "Darwin") {
+    # paths to check
+    apps <- file.path(root, c("Contents", "Contents/Resources/python/plugins"))
   }
   
-  if (Sys.info()["sysname"] == "Linux") {
-    # find out what is better: /usr/bin or usr/bin/qgis
-    # paths to check
-    root <- gsub("/$", "", root)  # make sure root doesn't end with a slash
-    paths <- paste0(root, c("/bin/qgis", "/share/qgis/python/plugins"))
-    out <- lapply(paths, function(x) {
-      if (file.exists(x)) {
-        x
+  apps <- gsub("//|/", "\\\\", apps)
+  out <- 
+    lapply(apps, function(app) {
+      if (dir.exists(app)) {
+        app
       } else {
-        stop("I could not find: '", x, "' on your system. 
-             Please specify all necessary paths yourself")
+        path <- NULL
+        # apps necessary to run the QGIS-API
+        stop("Folder ", dirname(app), " could not be found under ",
+             basename(app)," Please install it.")
       }
     })
-    names(out) <- c("qgis_prefix_path", "python_plugins")
-  }
-  
-  if (Sys.info()["sysname"] == "Darwin") {
-    # paths to check
-    root <- gsub("/$", "", root)  # make sure root doesn't end with a slash
-    paths <- paste0(root, c("/Contents", "/Contents/Resources/python/plugins"))
-    out <- lapply(paths, function(x) {
-      if (file.exists(x)) {
-        x
-      } else {
-        stop("I could not find: '", x, "' on your system. 
-             Please specify all necessary paths yourself")
-      }
-    })
-    names(out) <- c("qgis_prefix_path", "python_plugins")
-  }
+  names(out) <- c("qgis_prefix_path", "python_plugins")
   # return your result
   out
 }
