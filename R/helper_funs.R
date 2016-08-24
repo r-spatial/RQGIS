@@ -169,7 +169,7 @@ check_apps <- function(root, ...) {
   apps <- gsub("//|/", "\\\\", apps)
   out <- 
     lapply(apps, function(app) {
-      if (dir.exists(app)) {
+      if (file.exists(app)) {
         app
       } else {
         path <- NULL
