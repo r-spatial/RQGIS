@@ -158,6 +158,7 @@ check_apps <- function(root, ...) {
     }
     apps <- c(file.path(path_apps, my_qgis),
               file.path(path_apps, my_qgis, "python\\plugins"))
+    apps <- gsub("//|/", "\\\\", apps)
   } else if (Sys.info()["sysname"] == "Linux") {
     # paths to check
     apps <- paste0(root, c("/bin/qgis", "/share/qgis/python/plugins"))
@@ -166,7 +167,6 @@ check_apps <- function(root, ...) {
     apps <- file.path(root, c("Contents", "Contents/Resources/python/plugins"))
   }
   
-  apps <- gsub("//|/", "\\\\", apps)
   out <- 
     lapply(apps, function(app) {
       if (file.exists(app)) {
