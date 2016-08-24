@@ -67,10 +67,7 @@ build_cmds <- function(qgis_env = set_env()) {
         # define path where QGIS libraries reside to search path of the
         # dynamic linker
         paste0("export LD_LIBRARY_PATH=", qgis_env$root, "/lib"))
-  } else {
-    stop("Sorry, you can use RQGIS only under Windows and UNIX-based
-         operating systems.")
-  }
+  } 
   # construct the Python script
   py_cmd <- build_py(qgis_env)
   # return your result
@@ -161,10 +158,13 @@ check_apps <- function(root, ...) {
     apps <- gsub("//|/", "\\\\", apps)
   } else if (Sys.info()["sysname"] == "Linux") {
     # paths to check
-    apps <- paste0(root, c("/bin/qgis", "/share/qgis/python/plugins"))
+    apps <- file.path(root, c("bin/qgis", "share/qgis/python/plugins"))
   } else if (Sys.info()["sysname"] == "Darwin") {
     # paths to check
     apps <- file.path(root, c("Contents", "Contents/Resources/python/plugins"))
+  } else {
+    stop("Sorry, you can use RQGIS only under Windows and UNIX-based
+         operating systems.")
   }
   
   out <- 
