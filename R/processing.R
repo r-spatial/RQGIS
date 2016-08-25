@@ -266,8 +266,8 @@ find_algorithms <- function(search_term = "",
     if (name_only) {
       algs <- gsub(".*>", "", algs)
     }
-    # return your result
-    algs
+    # return your result while dismissing empty strings
+    algs[algs != ""]
 }
 
 
@@ -843,7 +843,7 @@ run_qgis <-
   start <- shQuote(alg)
   # True, False and None should not be put among parentheses!!
   ind <- !grepl("True|False|None", val)
-  # shellquote paths and numeric input (the latter is not necessary but doen't
+  # shellquote paths and numeric input (the latter is not necessary but doesn't
   # harm either)
   val[ind] <- shQuote(val[ind])
   # build the Python command
@@ -855,7 +855,7 @@ run_qgis <-
                       qgis_env = qgis_env,
                       intern = ifelse(Sys.info()["sysname"] == "Darwin",
                                       FALSE, TRUE))
-  if (isTRUE(grepl("error", tolower(msg)))) {
+  if (any(grepl("Error", msg))) {
     stop(msg)
   }
   # load output

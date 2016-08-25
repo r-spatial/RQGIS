@@ -166,8 +166,7 @@ Of course, this is a very simple example. We could have achieved the same using 
 
 # TO DO:
 
-- check package and upload it to CRAN!!!
-- build_cmds: py_cmd could be a one liner for all platforms
+- batch_call function since we had to duplicate these lines several times...
 - Take care of the error message:
   ERROR 1: Can't load requested DLL: C:\OSGEO4~1\bin\gdalplugins\ogr_FileGDB.dll
   193: %1 ist keine zulässige Win32-Anwendung.
