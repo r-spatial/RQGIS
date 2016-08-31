@@ -7,16 +7,16 @@
 get_args(alg = NULL, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{A character specifying the GIS algorithm whose arguments you want
-to retrieve.}
+\item{alg}{A character specifying the GIS algorithm whose arguments one
+wishes to retrieve.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
 }
 \value{
-The function returns a list whose names correspond to the function 
-  arguments you need to specify. Later on, the specified function arguments 
-  can serve as input for \code{\link{run_qgis}}'s params argument.
+\code{get_args} returns a list with the function arguments of a 
+  specific QGIS geoalgorithm. Later on, the specified function arguments 
+  should serve as input for \code{\link{run_qgis}}'s params argument.
 }
 \description{
 \code{get_args} uses \code{\link{get_usage}} to retrieve 

@@ -2,25 +2,26 @@
 % Please edit documentation in R/processing.R
 \name{open_help}
 \alias{open_help}
-\title{Access the QGIS/GRASS online help for a specific function}
+\title{Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm}
 \usage{
 open_help(alg = NULL, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{The name of the algorithm for which you wish to retrieve arguments
-and default values.}
+\item{alg}{The name of the algorithm for which one wishes to retrieve 
+arguments and default values.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
 }
 \value{
-The function opens your default web browser and displays the help for
+The function opens the default web browser, and displays the help for
   the specified algorithm.
 }
 \description{
-\code{open_help} opens the online help for a specific function. 
-  This is the help you also encounter in the QGIS GUI. Please note that you 
-  are referred to the GRASS documentation in the case of GRASS algorithms.
+\code{open_help} opens the online help for a specific (Q)GIS 
+  geoalgorithm. This is the online help one also encounters in the QGIS GUI.
+  In the case of GRASS algorithms this is actually the GRASS online
+  documentation.
 }
 \details{
 Bar a few exceptions \code{open_help} works for all QGIS, GRASS and

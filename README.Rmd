@@ -167,10 +167,9 @@ Of course, this is a very simple example. We could have achieved the same using 
 # TO DO:
 
 - batch_call function since we had to duplicate these lines several times...
-- Take care of the error message:
-  ERROR 1: Can't load requested DLL: C:\OSGEO4~1\bin\gdalplugins\ogr_FileGDB.dll
-  193: %1 ist keine zulässige Win32-Anwendung.
+- execute_cmds: rewrite in in such a way, that you can add further python commands!!
 - open_help: automatically construct a helpfile if no documentation is availabe on the Internet (-> if Python web scraping "Error" is True, construct html file)
 - does it make sense to create a RQGIS-class?
 - qgis_session_info -> add OTB and Lidar to the list
+
 

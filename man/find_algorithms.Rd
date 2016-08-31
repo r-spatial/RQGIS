@@ -9,7 +9,8 @@ find_algorithms(search_term = "", qgis_env = set_env(), name_only = FALSE,
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only 
-functions which contain the indicated string.}
+functions which contain the indicated string. If empty (\code{""}), the
+default, all available functions will be returned.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
@@ -18,16 +19,17 @@ more information, refer to \code{\link{set_env}}.}
 found algorithms. Otherwise, a short function description will be returned
 as well (default).}
 
-\item{intern}{Logical which indicates whether to capture the output of the 
-command as an \code{R} character vector (see also 
-\code{\link[base]{system}}.}
+\item{intern}{Logical, if \code{TRUE} the function captures the command line
+output as an \code{R} character vector (see also 
+\code{\link[base]{system}}).}
 }
 \value{
-Python console output will be captured as an R character vector.
+The function returns QGIS function names and short descriptions as an
+  R character vector.
 }
 \description{
-\code{find_algorithms} lists or queries all algorithms which can
-  be used via the command line and the QGIS API.
+\code{find_algorithms} lists or queries all QGIS algorithms
+  which can be used accessed through the command line.
 }
 \details{
 Function \code{find_algorithms} simply calls 

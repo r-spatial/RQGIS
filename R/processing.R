@@ -1,12 +1,12 @@
 #' @title Retrieve the environment settings to run QGIS from within R
 #' @description \code{set_env} tries to find all the paths necessary to run QGIS
 #'   from within R.
-#' @param root Root path to the QGIS-installation. If you do not specify 
-#'   function parameter \code{root}, the function looks for \code{qgis.bat} on 
-#'   your C: drive under Windows. If you are on a Mac, it looks for 
-#'   \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux, 
-#'   \code{set_env} assumes that your root path is "/usr".
-#' @param ltr If \code{TRUE}, \code{set_env} will use the long term release of
+#' @param root Root path to the QGIS-installation. If left empty, the function
+#'   looks for \code{qgis.bat} on the C: drive under Windows. On a
+#'   Mac, it looks for \code{QGIS.app} under "Applications" and
+#'   "/usr/local/Cellar/". On Linux, \code{set_env} assumes that the root path
+#'   is "/usr".
+#' @param ltr If \code{TRUE}, \code{set_env} will use the long term release of 
 #'   QGIS, if available (only for Windows).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
@@ -14,10 +14,10 @@
 #' @examples 
 #' \dontrun{
 #' # Letting set_env look for the QGIS installation might take a while depending
-#' # on how full your C: drive is (Windows)
+#' # on how full the C: drive is (Windows)
 #' set_env()
 #' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
-#' # installation on your machine
+#' # installation
 #' set_env("C:/OSGEO4~1")  # Windows example
 #' }
 #' 
@@ -224,21 +224,23 @@ qgis_session_info <- function(qgis_env = set_env()) {
 }
 
 #' @title Find and list available QGIS algorithms
-#' @description \code{find_algorithms} lists or queries all algorithms which can
-#'   be used via the command line and the QGIS API.
+#' @description \code{find_algorithms} lists or queries all QGIS algorithms
+#'   which can be used accessed through the command line.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
 #' @param search_term A character to query QGIS functions, i.e. to list only 
-#'   functions which contain the indicated string.
+#'   functions which contain the indicated string. If empty (\code{""}), the
+#'   default, all available functions will be returned.
 #' @param name_only If \code{TRUE}, the function returns only the name(s) of the
 #'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
-#' @param intern Logical which indicates whether to capture the output of the 
-#'   command as an \code{R} character vector (see also 
-#'   \code{\link[base]{system}}.
+#' @param intern Logical, if \code{TRUE} the function captures the command line
+#'   output as an \code{R} character vector (see also 
+#'   \code{\link[base]{system}}).
 #' @details Function \code{find_algorithms} simply calls 
 #'   \code{processing.alglist} using Python.
-#' @return Python console output will be captured as an R character vector.
+#' @return The function returns QGIS function names and short descriptions as an
+#'   R character vector.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples
 #' \dontrun{
@@ -266,23 +268,22 @@ find_algorithms <- function(search_term = "",
     if (name_only) {
       algs <- gsub(".*>", "", algs)
     }
-    # return your result while dismissing empty strings
+    # return the result while dismissing empty strings
     algs[algs != ""]
 }
 
 
-#' @title Get usage of a specific GIS function
-#' @description \code{get_usage} lists all function parameters of a specific GIS
-#'   function.
-#' @param alg Name of the function whose parameters are being
-#'   searched for.
+#' @title Get usage of a specific QGIS geoalgorithm
+#' @description \code{get_usage} lists all function parameters of a specific 
+#'   QGIS geoalgorithm.
+#' @param alg Name of the function whose parameters are being searched for.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @param intern Logical which indicates whether to capture the output of the
-#'   command as an \code{R} character vector (see also
-#'   \code{\link[base]{system}}.
+#' @param intern Logical, if \code{TRUE} the function captures the command line
+#'   output as an \code{R} character vector (see also 
+#'   \code{\link[base]{system}}).
 #' @details Function \code{get_usage} simply calls
-#'   \code{processing.alghelp} using Python.
+#'   \code{processing.alghelp} of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples
@@ -310,11 +311,11 @@ get_usage <- function(alg = NULL,
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @param intern Logical which indicates whether to capture the output of the
-#'   command as an \code{R} character vector (see also
-#'   \code{\link[base]{system}}.
+#' @param intern Logical, if \code{TRUE} the function captures the command line
+#'   output as an \code{R} character vector (see also 
+#'   \code{\link[base]{system}}).
 #' @details Function \code{get_options} simply calls
-#'   \code{processing.algoptions} using Python.
+#'   \code{processing.algoptions} of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples
 #' \dontrun{
@@ -334,18 +335,19 @@ get_options <- function(alg = NULL,
                intern = intern)
 }
 
-#' @title Access the QGIS/GRASS online help for a specific function
-#' @description \code{open_help} opens the online help for a specific function. 
-#'   This is the help you also encounter in the QGIS GUI. Please note that you 
-#'   are referred to the GRASS documentation in the case of GRASS algorithms.
-#' @param alg The name of the algorithm for which you wish to retrieve arguments
-#'   and default values.
+#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm
+#' @description \code{open_help} opens the online help for a specific (Q)GIS 
+#'   geoalgorithm. This is the online help one also encounters in the QGIS GUI.
+#'   In the case of GRASS algorithms this is actually the GRASS online
+#'   documentation.
+#' @param alg The name of the algorithm for which one wishes to retrieve 
+#'   arguments and default values.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
 #' @details Bar a few exceptions \code{open_help} works for all QGIS, GRASS and
 #'   SAGA geoalgorithms. The online help of other third-party providers,
 #'   however, has not been tested so far.
-#' @return The function opens your default web browser and displays the help for
+#' @return The function opens the default web browser, and displays the help for
 #'   the specified algorithm.
 #' @note Please note that \code{open_help} requires a \strong{working Internet 
 #'   connection}.
@@ -468,13 +470,13 @@ open_help <- function(alg = NULL, qgis_env = set_env()) {
 #' @title Automatically retrieve GIS function arguments
 #' @description \code{get_args} uses \code{\link{get_usage}} to retrieve 
 #'   function arguments of a GIS function.
-#' @param alg A character specifying the GIS algorithm whose arguments you want
-#'   to retrieve.
+#' @param alg A character specifying the GIS algorithm whose arguments one
+#'   wishes to retrieve.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @return The function returns a list whose names correspond to the function 
-#'   arguments you need to specify. Later on, the specified function arguments 
-#'   can serve as input for \code{\link{run_qgis}}'s params argument.
+#' @return \code{get_args} returns a list with the function arguments of a 
+#'   specific QGIS geoalgorithm. Later on, the specified function arguments 
+#'   should serve as input for \code{\link{run_qgis}}'s params argument.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @examples
@@ -529,29 +531,29 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 
 #' @title Get GIS arguments and respective default values
 #' @description\code{get_args_man} retrieves automatically function arguments 
-#' and respective default values for a given GIS algorithm.
-#' @param alg The name of the algorithm for which you wish to retrieve arguments
-#'   and default values.
-#' @param options Sometimes you can choose between various options for a 
+#' and respective default values for a given QGIS geoalgorithm.
+#' @param alg The name of the algorithm for which one wishes to retrieve
+#'   arguments and default values.
+#' @param options Sometimes one can choose between various options for a 
 #'   function argument. Setting option to \code{TRUE} will automatically assume 
-#'   you wish to use the first option (default: \code{FALSE}).
+#'   one wishes to use the first option (default: \code{FALSE}).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
 #' @details \code{get_args_man} basically mimics the behavior of the QGIS GUI. 
 #'   That means, for a given GIS algorithm, it captures automatically all 
-#'   arguments and default values. Additionally, you can indicate that you want 
-#'   to use the first option if a function argument has several options (see 
-#'   also \code{\link{get_options}}), which is the QGIS GUI default behavior.
+#'   arguments and default values. In the case that a function argument has
+#'   several options, one can indicate to use the first option (see also
+#'   \code{\link{get_options}}), which is the QGIS GUI default behavior.
 #' @return The function returns a list whose names correspond to the function 
-#'   arguments you need to specify. The list elements correspond to the argument
+#'   arguments one needs to specify. The list elements correspond to the argument
 #'   specifications. The specified function arguments can serve as input for 
 #'   \code{\link{run_qgis}}'s params argument. Please note that although 
-#'   \code{get_args_man} tries to retrieve default values, you still need to 
-#'   specify some function arguments by your own such as input and output 
-#'   layers.
-#' @note Please note that some default values can only be set after the user's
-#'   input. For instance, the GRASS region extent will be determined
-#'   automatically in \code{\link{run_qgis}} if left blank.
+#'   \code{get_args_man} tries to retrieve default values, one still needs to 
+#'   specify some function arguments manually such as the input and the output 
+#'   layer.
+#' @note Please note that some default values can only be set after the user's 
+#'   input. For instance, the GRASS region extent will be determined 
+#'   automatically by \code{\link{run_qgis}} if left blank.
 #' @export
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples 
@@ -677,35 +679,36 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'  \code{\link{find_algorithms}}).
 #'@param params A list of geoalgorithm function arguments that should be used in
 #'  conjunction with the selected (Q)GIS function (see 
-#'  \code{\link{get_args_man}}). Please make sure that you provide all function 
+#'  \code{\link{get_args_man}}). Please make sure to provide all function 
 #'  arguments in the correct order. To make sure this is the case, it is 
 #'  recommended to use the convenience function \code{\link{get_args_man}}.
 #'@param check_params If \code{TRUE} (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order.
 #'@param show_msg Logical, if \code{TRUE}, Python messages that occured during
 #'  the algorithm execution will be shown.
-#'@param load_output Character vector containing paths to (an) output file(s) to
-#'  load the QGIS output directly into R (optional). If \code{load_output} 
-#'  consists of more than one element, a list will be returned. See the example 
-#'  section for more details.
+#'@param load_output Character vector containing paths to (an) output file(s) in
+#'  order to load the QGIS output directly into R (optional). If
+#'  \code{load_output} consists of more than one element, a list will be
+#'  returned. See the example section for more details.
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to \code{\link{set_env}}.
-#'@details This workhorse function calls QGIS via Python (QGIS API) using the 
-#'  command line. Specifically, it calls \code{processing.runalg}.
-#'@return If not otherwiese specified, the function saves the QGIS generated 
+#'@details This workhorse function calls the QGIS Python API through the command
+#'  line. Specifically, it calls \code{processing.runalg}.
+#'@return If not otherwise specified, the function saves the QGIS generated 
 #'  output files in a temporary folder. Optionally, function parameter 
 #'  \code{load_output} loads spatial QGIS output (vector and raster data) into 
 #'  R.
-#'@note Please note that you can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are
-#'  \code{\link[sp]{SpatialPointsDataFrame}}, 
-#'  \code{\link[sp]{SpatialLinesDataFrame}}, 
-#'  \code{\link[sp]{SpatialPolygonsDataFrame}} and \code{\link[raster]{raster}}.
-#'  See the example section for more details.
+#'@note Please note that one can also pass spatial R objects as input parameters
+#'  where suitable (e.g., input layer, input raster). Supported formats are 
+#'  \code{\link[sp]{SpatialPointsDataFrame}}-, 
+#'  \code{\link[sp]{SpatialLinesDataFrame}}-, 
+#'  \code{\link[sp]{SpatialPolygonsDataFrame}}- and 
+#'  \code{\link[raster]{raster}}-objects. See the example section for more 
+#'  details.
 #'  
 #'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will 
-#'  automatically retrieve the region extent based on the input layers.
+#'  (function argument GRASS\_REGION\_PARAMETER). If "None", \code{run_qgis}
+#'  will automatically retrieve the region extent based on the input layers.
 #'@author Jannes Muenchow, Victor Olaya, QGIS core team
 #'@export
 #'@importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
@@ -722,7 +725,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' # load random_points - a SpatialPointsDataFrame
 #' data(random_points, package = "RQGIS")
 #' params$INPUT <- random_points
-#' # Here I specify a SpatialPointsDataFrame as input, but you could also
+#' # Here I specify a SpatialPointsDataFrame as input, but one could also
 #' # specify the path to a spatial object file (e.g., shapefile), e.g.;
 #' # params$INPUT <- "random_points.shp"
 #' params$OUTPUT <- "output.shp"
@@ -780,13 +783,13 @@ run_qgis <-
                       layer = names(params)[[i]],
                       driver = "ESRI Shapefile",
                       overwrite_layer = TRUE)
-      # return your result
+      # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
       raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
                           prj = TRUE, overwrite = TRUE)
-      # return your result
+      # return the result
       fname
     } else {
       params[[i]]
