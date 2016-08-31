@@ -7,13 +7,13 @@
 set_env(root = NULL, ltr = TRUE)
 }
 \arguments{
-\item{root}{Root path to the QGIS-installation. If you do not specify 
-function parameter \code{root}, the function looks for \code{qgis.bat} on 
-your C: drive under Windows. If you are on a Mac, it looks for 
-\code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux, 
-\code{set_env} assumes that your root path is "/usr".}
+\item{root}{Root path to the QGIS-installation. If left empty, the function
+looks for \code{qgis.bat} on the C: drive under Windows. On a
+Mac, it looks for \code{QGIS.app} under "Applications" and
+"/usr/local/Cellar/". On Linux, \code{set_env} assumes that the root path
+is "/usr".}
 
-\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of
+\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of 
 QGIS, if available (only for Windows).}
 }
 \value{
@@ -28,10 +28,10 @@ The function returns a list containing all the path necessary to run
 \examples{
 \dontrun{
 # Letting set_env look for the QGIS installation might take a while depending
-# on how full your C: drive is (Windows)
+# on how full the C: drive is (Windows)
 set_env()
 # It is much faster (0 sec) to explicitly state the root path to the QGIS 
-# installation on your machine
+# installation
 set_env("C:/OSGEO4~1")  # Windows example
 }
 

@@ -10,8 +10,8 @@ check_apps(root, ...)
 \item{root}{Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
 '/usr' and '/Applications/QGIS.app/' for the different platforms.}
 
-\item{...}{Optional arguments used in \code{check_apps}. Here, \code{set_env}
-passes \code{ltr} to \code{check_apps} under Windows.}
+\item{...}{Optional arguments used in \code{check_apps}. Under Windows,
+\code{set_env} passes function argument \code{ltr} to \code{check_apps}.}
 }
 \value{
 The function returns a list with the paths to all the necessary 

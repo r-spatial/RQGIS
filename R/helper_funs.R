@@ -83,9 +83,9 @@ build_cmds <- function(qgis_env = set_env()) {
 #' @param params Parameter to be used with the processing function.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to \code{\link{set_env}}.
-#' @param intern Logical which indicates whether to capture the output of the 
-#'   command as an \code{R} character vector (see also
-#'   \code{\link[base]{system}}.
+#' @param intern Logical, if \code{TRUE} the function captures the command line
+#'   output as an \code{R} character vector (see also 
+#'   \code{\link[base]{system}}).
 #' @author Jannes Muenchow, Patrick Schratz
 execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
@@ -131,8 +131,8 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #'   locations.
 #' @param root Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
 #'   '/usr' and '/Applications/QGIS.app/' for the different platforms.
-#' @param ... Optional arguments used in \code{check_apps}. Here, \code{set_env}
-#'   passes \code{ltr} to \code{check_apps} under Windows.
+#' @param ... Optional arguments used in \code{check_apps}. Under Windows,
+#'   \code{set_env} passes function argument \code{ltr} to \code{check_apps}.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #' @examples 
@@ -183,8 +183,8 @@ check_apps <- function(root, ...) {
   out
 }
 
-#' @title Little helper function to construct the python-skeleton
-#' @description This helper function simply constructs the python-skeleton 
+#' @title Little helper function to construct the Python-skeleton
+#' @description This helper function simply constructs the Python-skeleton 
 #'   necessary to run the QGIS-Python API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
 #'   API. For more information, refer to \code{\link{set_env}}.
@@ -221,10 +221,10 @@ build_py <- function(qgis_env = set_env()) {
 }
 
 #' @title Open the GRASS online help
-#' @description \code{open_grass_help} opens the GRASS online help for a
-#'   specified GRASS geoalgorithm.
-#' @param alg The name of the algorithm for which you wish to retrieve arguments
-#'   and default values.
+#' @description \code{open_grass_help} opens the GRASS online help for a 
+#'   specific GRASS geoalgorithm.
+#' @param alg The name of the algorithm for which one wishes to retrieve
+#'   arguments and default values.
 #' @examples 
 #' \dontrun{
 #' open_grass_help("grass7:r.sunmask")

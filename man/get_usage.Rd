@@ -2,28 +2,27 @@
 % Please edit documentation in R/processing.R
 \name{get_usage}
 \alias{get_usage}
-\title{Get usage of a specific GIS function}
+\title{Get usage of a specific QGIS geoalgorithm}
 \usage{
 get_usage(alg = NULL, qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
-\item{alg}{Name of the function whose parameters are being
-searched for.}
+\item{alg}{Name of the function whose parameters are being searched for.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
 
-\item{intern}{Logical which indicates whether to capture the output of the
-command as an \code{R} character vector (see also
-\code{\link[base]{system}}.}
+\item{intern}{Logical, if \code{TRUE} the function captures the command line
+output as an \code{R} character vector (see also 
+\code{\link[base]{system}}).}
 }
 \description{
-\code{get_usage} lists all function parameters of a specific GIS
-  function.
+\code{get_usage} lists all function parameters of a specific 
+  QGIS geoalgorithm.
 }
 \details{
 Function \code{get_usage} simply calls
-  \code{processing.alghelp} using Python.
+  \code{processing.alghelp} of the QGIS Python API.
 }
 \examples{
 \dontrun{
