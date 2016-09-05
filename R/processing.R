@@ -707,7 +707,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'  details.
 #'  
 #'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS\_REGION\_PARAMETER). If "None", \code{run_qgis}
+#'  (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis}
 #'  will automatically retrieve the region extent based on the input layers.
 #'@author Jannes Muenchow, Victor Olaya, QGIS core team
 #'@export
@@ -735,11 +735,13 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          load_output = params$OUTPUT,
 #'          qgis_env = my_env)
 #'}
-run_qgis <- 
-  function(alg = NULL, params = NULL, check_params = TRUE,
-           show_msg = TRUE, load_output = NULL,
-           qgis_env = set_env()) {
-  
+run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
+                     show_msg = TRUE, load_output = NULL,
+                     qgis_env = set_env()) {
+  # check if alg is qgis:vectorgrid
+  if (alg == "qgis:vectorgrid") {
+    stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
+  }
   # check if all necessary function arguments were supplied
   args <- list(alg, params)
   ind <- mapply(is.null, args)
@@ -870,18 +872,25 @@ run_qgis <-
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
-      if (!file.exists(x)) {
-        stop("Unfortunately, QGIS did not produce: ", x)
-      }
+      
       fname <- ifelse(dirname(x) == ".", 
                       file.path(tmp_dir, x),
                       x)
+       if (!file.exists(fname)) {
+        stop("Unfortunately, QGIS did not produce: ", x)
+      }
+     
       test <- try(expr = 
                     rgdal::readOGR(dsn = dirname(fname),
                                    layer = gsub("\\..*", "", basename(fname)),
                                    verbose = FALSE),
                   silent = TRUE
       )
+      
+      if (grepl("no features found", attr(test, "condition"))) {
+        stop("The output-file ", fname, " is empty, i.e. it has no features.")
+      }
+      
       if (inherits(test, "try-error")) {
         raster::raster(fname)
       } else {

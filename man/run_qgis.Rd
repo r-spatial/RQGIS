@@ -55,7 +55,7 @@ Please note that one can also pass spatial R objects as input parameters
  details.
  
  GRASS users do not have to specify manually the GRASS region extent 
- (function argument GRASS\_REGION\_PARAMETER). If "None", \code{run_qgis}
+ (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis}
  will automatically retrieve the region extent based on the input layers.
 }
 \examples{
