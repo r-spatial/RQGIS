@@ -204,7 +204,7 @@ build_py <- function(qgis_env = set_env()) {
     "from qgis.gui import *",
     # initialize QGIS application
     # supply path to qgis install location
-    paste0("QgsApplication.setPrefixPath('", qgis_env$qgis_prefix_path, 
+    paste0("QgsApplication.setPrefixPath('r", qgis_env$qgis_prefix_path, 
            "', True)"),
     # create a reference to the QgsApplication, setting the
     # second argument to True enables the GUI, which we need to do
