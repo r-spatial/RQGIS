@@ -887,12 +887,15 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                   silent = TRUE
       )
       
-      if (grepl("no features found", attr(test, "condition"))) {
+      # stop the function if the output exists but is empty
+      if (inherits(test, "try-error") && 
+          grepl("no features found", attr(test, "condition"))) {
         stop("The output-file ", fname, " is empty, i.e. it has no features.")
       }
-      
+      # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
         raster::raster(fname)
+        # well, well, if this doesn't work, you need to do something...
       } else {
         test
       }   
