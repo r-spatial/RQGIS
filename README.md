@@ -1,3 +1,4 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 #### General
 
@@ -5,7 +6,7 @@
 
 #### CRAN
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS) [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS) [![Rdoc](http://www.rdocumentation.org/badges/version/RQGIS)](http://www.rdocumentation.org/packages/RQGIS)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS) [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS) ![](http://cranlogs.r-pkg.org/badges/grand-total/RQGIS) [![Rdoc](http://www.rdocumentation.org/badges/version/RQGIS)](http://www.rdocumentation.org/packages/RQGIS)
 
 #### Github
 
