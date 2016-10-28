@@ -24,7 +24,7 @@ before_install:
   - ./configure --prefix=/usr
   - make
   - sudo make install
-  - cd /home/travis/build/pat-s/RQGIS
+  - cd /home/travis/build/jannes-m/RQGIS
   
 install:
   - ./pkg-build.sh install_deps
