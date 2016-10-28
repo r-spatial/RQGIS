@@ -1,2 +1,7 @@
+.Rhistory
+.RData
+.Ruserdata
+*Rproj*
 .Rproj.user
+README_files/
 README_cache
