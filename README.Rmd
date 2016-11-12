@@ -26,6 +26,7 @@ rvers <- stringr::str_match(grep("R \\(", description, value = TRUE), "[0-9]{1,4
 
 #### General
 [![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS)
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS)
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r rvers`-6666ff.svg)](https://cran.r-project.org/)
@@ -35,7 +36,6 @@ rvers <- stringr::str_match(grep("R \\(", description, value = TRUE), "[0-9]{1,4
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/RQGIS)
-[![Rdoc](http://www.rdocumentation.org/badges/version/RQGIS)](http://www.rdocumentation.org/packages/RQGIS)
 
 #### Github
 [![packageversion](https://img.shields.io/badge/Package%20version-`r version`-orange.svg?style=flat-square)](commits/master)
