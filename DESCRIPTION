@@ -30,5 +30,6 @@ Imports:
          XML
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr
