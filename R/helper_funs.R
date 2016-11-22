@@ -233,8 +233,8 @@ build_py <- function(qgis_env = set_env()) {
 #'   specific GRASS geoalgorithm.
 #' @param alg The name of the algorithm for which one wishes to retrieve
 #'   arguments and default values.
-#' @examples 
 #' @keywords internal
+#' @examples 
 #' \dontrun{
 #' open_grass_help("grass7:r.sunmask")
 #' }
