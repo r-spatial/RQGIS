@@ -7,4 +7,6 @@ GADM_.*
 cran-comments.md
 NEWS.md
 figures
-^appveyor\.yml$
+dem.asc
+dem.prj
+appveyor.yml
