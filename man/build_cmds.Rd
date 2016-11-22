@@ -28,4 +28,5 @@ build_cmds()
 \author{
 Jannes Muenchow, Patrick Schratz
 }
+\keyword{internal}
 

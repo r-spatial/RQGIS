@@ -30,4 +30,5 @@ check_apps()
 \author{
 Jannes Muenchow, Patrick Schratz
 }
+\keyword{internal}
 

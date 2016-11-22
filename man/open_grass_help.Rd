@@ -22,4 +22,6 @@ open_grass_help("grass7:r.sunmask")
 \author{
 Jannes Muenchow
 }
+\keyword{export}
+\keyword{internal}
 
