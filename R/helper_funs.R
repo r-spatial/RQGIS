@@ -7,11 +7,13 @@
 #'   raw batch file and the second the python raw command both of which are 
 #'   later on needed to access QGIS from within R via Python (see 
 #'   \code{\link{execute_cmds}}).
+#' @keywords internal
 #' @author Jannes Muenchow, Patrick Schratz
 #' @examples 
 #' \dontrun{
 #' build_cmds()
 #' }
+#' @export
 build_cmds <- function(qgis_env = set_env()) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -86,7 +88,9 @@ build_cmds <- function(qgis_env = set_env()) {
 #' @param intern Logical, if \code{TRUE} the function captures the command line
 #'   output as an \code{R} character vector (see also 
 #'   \code{\link[base]{system}}).
+#' @keywords internal
 #' @author Jannes Muenchow, Patrick Schratz
+#' @export
 execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
                          qgis_env = set_env(),
@@ -135,11 +139,13 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #'   \code{set_env} passes function argument \code{ltr} to \code{check_apps}.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
+#' @keywords internal
 #' @examples 
 #' \dontrun{
 #' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
+#' @export
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -189,10 +195,12 @@ check_apps <- function(root, ...) {
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
 #'   API. For more information, refer to \code{\link{set_env}}.
 #' @author Jannes Muenchow
+#' @keywords internal
 #' @examples 
 #' \dontrun{
 #' build_py()
 #' }
+#' @export
 build_py <- function(qgis_env = set_env()) {
   c(# import all the libraries you need
     "import os",
@@ -225,11 +233,13 @@ build_py <- function(qgis_env = set_env()) {
 #'   specific GRASS geoalgorithm.
 #' @param alg The name of the algorithm for which one wishes to retrieve
 #'   arguments and default values.
+#' @keywords internal
 #' @examples 
 #' \dontrun{
 #' open_grass_help("grass7:r.sunmask")
 #' }
 #' @author Jannes Muenchow 
+#' @keywords export
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
   url <- ifelse(grepl(7, alg),

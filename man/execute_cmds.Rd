@@ -27,4 +27,5 @@ This helper function constructs the batch and Python scripts
 \author{
 Jannes Muenchow, Patrick Schratz
 }
+\keyword{internal}
 
