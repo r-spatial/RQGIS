@@ -37,8 +37,11 @@ after_failure:
 
 notifications:
   email:
-    on_success: never
-    on_failure: always
+    on_success: change
+    on_failure: change
+    
+after_success:
+  - Rscript -e 'install.packages("devtools"); devtools::install_github("jimhester/covr"); covr::codecov(quiet = FALSE)'
 
 
 
