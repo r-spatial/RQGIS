@@ -27,7 +27,8 @@ Imports:
          RCurl,
          rgdal, 
          sp,
-         XML
+         XML,
+         tools
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests: knitr,
     rmarkdown,
