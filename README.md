@@ -194,6 +194,7 @@ TO DO:
 
 -   post QGIS &gt; 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
 -   install\_guide Linux compile SAGA from source is now on git (previously svn) -&gt; change the documentation accordingly
+- folder problem: sometimes RQGIS gets confused with working and temporary folders (`run_qgis`), e.g., Manuel Spinolas v.split.length example. Maybe you should somehow address this problem
 -   batch\_call function since we had to duplicate these lines several times...
 -   execute\_cmds: rewrite in in such a way, that you can add further python commands!!
 -   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)

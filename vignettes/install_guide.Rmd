@@ -228,7 +228,7 @@ saga_cmd
 ```
 --->
 
-Secondly, create a folder named `saga-svn` (e.g., in your home directory) to which you would like to download SAGA. Next, change to this folder and specifiy the SAGA release you would like to install (here: 2.2.0) by checking the corresponding branch. Changing the directory again to ~/saga-svn/release-2-2-0/saga-gis, finally sets you up for the SAGA compilation. The compilation installs SAGA to `/usr/local/lib`. 
+Secondly, create a folder named `saga-svn` (e.g., in your home directory) to which you would like to download SAGA. Next, change to this folder, and specifiy the SAGA release you would like to install (here: 2.2.0) by checking the corresponding branch. Changing the directory again to ~/saga-svn/release-2-2-0/saga-gis, finally sets you up for the SAGA compilation. The compilation installs SAGA to `/usr/local/lib`. 
 
 ```sh
 mkdir ~/saga-svn
