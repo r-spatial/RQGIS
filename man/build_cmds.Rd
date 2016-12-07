@@ -14,7 +14,7 @@ API. For more information, refer to \code{\link{set_env}}.}
 The function returns a list with two elements. The first contains a 
   raw batch file and the second the python raw command both of which are 
   later on needed to access QGIS from within R via Python (see 
-  \code{\link{execute_cmds}}.
+  \code{\link{execute_cmds}}).
 }
 \description{
 This function simply builds the raw Python and batch commands 
@@ -28,4 +28,5 @@ build_cmds()
 \author{
 Jannes Muenchow, Patrick Schratz
 }
+\keyword{internal}
 

@@ -13,9 +13,9 @@ returned.}
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link{set_env}}.}
 
-\item{intern}{Logical which indicates whether to capture the output of the
-command as an \code{R} character vector (see also
-\code{\link[base]{system}}.}
+\item{intern}{Logical, if \code{TRUE} the function captures the command line
+output as an \code{R} character vector (see also 
+\code{\link[base]{system}}).}
 }
 \description{
 \code{get_options} lists all available parameter options for
@@ -23,7 +23,7 @@ command as an \code{R} character vector (see also
 }
 \details{
 Function \code{get_options} simply calls
-  \code{processing.algoptions} using Python.
+  \code{processing.algoptions} of the QGIS Python API.
 }
 \examples{
 \dontrun{

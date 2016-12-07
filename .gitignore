@@ -1,0 +1,8 @@
+.Rhistory
+.RData
+.Ruserdata
+*Rproj*
+.Rproj.user
+inst/doc
+README_files/
+README_cache

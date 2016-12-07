@@ -2,7 +2,7 @@
 % Please edit documentation in R/helper_funs.R
 \name{build_py}
 \alias{build_py}
-\title{Little helper function to construct the python-skeleton}
+\title{Little helper function to construct the Python-skeleton}
 \usage{
 build_py(qgis_env = set_env())
 }
@@ -11,7 +11,7 @@ build_py(qgis_env = set_env())
 API. For more information, refer to \code{\link{set_env}}.}
 }
 \description{
-This helper function simply constructs the python-skeleton 
+This helper function simply constructs the Python-skeleton 
   necessary to run the QGIS-Python API.
 }
 \examples{
@@ -22,4 +22,5 @@ build_py()
 \author{
 Jannes Muenchow
 }
+\keyword{internal}
 
