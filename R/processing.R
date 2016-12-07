@@ -742,6 +742,13 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
   }
+  
+  # check if alg belongs to the QGIS "select by.."-category
+  if (grepl("^qgis\\:selectby", alg)) {
+    stop(paste("The 'Select by' operations of QGIS are interactive.", 
+               "Please use 'grass7:v.extract' instead."))
+  }
+  
   # check if all necessary function arguments were supplied
   args <- list(alg, params)
   ind <- mapply(is.null, args)
@@ -810,12 +817,15 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     ext <- params[-length(params)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
-      
+      # We cannot simply use gsub as we have done before (gsub("[.].*",
+      # "",basename(x))) if the filename itself also contains dots, e.g.,
+      # gis.osm_roads_free_1.shp 
+      # We could use regexp to cut off the file extension
+      # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
+      # but let's use an already existing function
+      my_layer <- tools::file_path_sans_ext(basename(x))
       # determine bbox in the case of a vector layer
-      tmp <- try(expr = 
-                   rgdal::ogrInfo(dsn = x, 
-                                  layer = gsub("[.].*", "",
-                                               basename(x)))$extent,
+      tmp <- try(expr = rgdal::ogrInfo(dsn = x, layer = my_layer)$extent,
                  silent = TRUE)
       if (!inherits(tmp, "try-error")) {
         # check if this is always this way (xmin, ymin, xmax, ymax...)
