@@ -24,6 +24,12 @@ run_taudem <-
          computer")
   }  
     
+  # work in the temporary folder
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
   # build the raw scripts
   cmds <- build_cmds(qgis_env)
   
@@ -159,11 +165,6 @@ if (Sys.info()["sysname"] == "Windows") {
   batch_call <- "sh batch_cmd.sh"
 }
 
-# work in the temporary folder
-cwd <- getwd()
-on.exit(setwd(cwd))
-tmp_dir <- tempdir()
-setwd(tmp_dir)
 
 # put each element on its own line
 cmd <- paste(cmd, collapse = "\n")
