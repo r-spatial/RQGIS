@@ -861,13 +861,6 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     start <- shQuote(alg)
     
     # retrieve specified function arguments, i.e. the values
-    # val <- as.character(unlist(params))
-    # True, False and None should not be put among parentheses!!
-    # ind <- !grepl("True|False|None", val)
-    # shellquote paths and numeric input (the latter is not necessary but
-    # doesn't harm either)
-    # val[ind] <- shQuote(val[ind])
-    
     # Sometimes function arguments are already shellquoted. Shellquoting them 
     # again will result in an error, e.g., grass7:r.viewshed
     # Hence, get rid off shellQuotes (if there are any) before you shellQuote
