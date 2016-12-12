@@ -646,7 +646,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   # retrieve the Python output
   tmp <- utils::read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
                          stringsAsFactors = FALSE)
-  # If a wrong algorithm (-> alg is None) name was provided, stop the function
+  # If a wrong algorithm (-> alg is None) name was provided, stop the
+  # function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
   }
@@ -687,33 +688,33 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'@param show_msg Logical, if \code{TRUE}, Python messages that occured during
 #'  the algorithm execution will be shown.
 #'@param load_output Character vector containing paths to (an) output file(s) in
-#'  order to load the QGIS output directly into R (optional). If
-#'  \code{load_output} consists of more than one element, a list will be
+#'  order to load the QGIS output directly into R (optional). If 
+#'  \code{load_output} consists of more than one element, a list will be 
 #'  returned. See the example section for more details.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
+#'@param qgis_env Environment containing all the paths to run the QGIS API. For
 #'  more information, refer to \code{\link{set_env}}.
 #'@details This workhorse function calls the QGIS Python API through the command
 #'  line. Specifically, it calls \code{processing.runalg}.
 #'@return If not otherwise specified, the function saves the QGIS generated 
 #'  output files in a temporary folder. Optionally, function parameter 
-#'  \code{load_output} loads spatial QGIS output (vector and raster data) into 
+#'  \code{load_output} loads spatial QGIS output (vector and raster data) into
 #'  R.
 #'@note Please note that one can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are 
+#'  where suitable (e.g., input layer, input raster). Supported formats are
 #'  \code{\link[sp]{SpatialPointsDataFrame}}-, 
 #'  \code{\link[sp]{SpatialLinesDataFrame}}-, 
 #'  \code{\link[sp]{SpatialPolygonsDataFrame}}- and 
 #'  \code{\link[raster]{raster}}-objects. See the example section for more 
 #'  details.
 #'  
-#'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis}
-#'  will automatically retrieve the region extent based on the input layers.
-#'@author Jannes Muenchow, Victor Olaya, QGIS core team
-#'@export
-#'@importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
-#'@importFrom sp SpatialLinesDataFrame
-#'@importFrom raster raster
+#' GRASS users do not have to specify manually the GRASS region extent (function
+#' argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
+#' automatically retrieve the region extent based on the input layers.
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
+#' @importFrom sp SpatialLinesDataFrame
+#' @importFrom raster raster
 #' @examples
 #' \dontrun{
 #' # set the environment
@@ -805,15 +806,13 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   })
   
-  # set the bbox in the case of GRASS functions if it hasn't already been
-  # provided 
-  # (if there are more of these 3rd-party based specifics, put them in a new
-  # function)
+  # set the bbox in the case of GRASS functions if it hasn't already been 
+  # provided (if there are more of these 3rd-party based specifics, put them in
+  # a new function)
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
-    # dismiss the last argument since it frequently corresponds to the output
-    # if the output was created before using another CRS, the function might
-    # crash
+    # dismiss the last argument since it frequently corresponds to the output if
+    # the output was created before using another CRS, the function might crash
     ext <- params[-length(params)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
@@ -854,30 +853,51 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       paste(c(ext@xmin, ext@xmax, ext@ymin, ext@ymax), collapse = ",")
   }
   
-  nm <- names(params)
-  val <- as.character(unlist(params))
-  # shellquote algorithm name
-  start <- shQuote(alg)
-  # True, False and None should not be put among parentheses!!
-  ind <- !grepl("True|False|None", val)
-  # shellquote paths and numeric input (the latter is not necessary but doesn't
-  # harm either)
-  val[ind] <- shQuote(val[ind])
-  # build the Python command
-  args <- paste(val, collapse = ", ")
-  args <- paste0(paste(start, args, sep = ", "))
-  # run QGIS command (while catching possible error messages)
-  msg <- execute_cmds(processing_name = "processing.runalg",
-                      params = args,
-                      qgis_env = qgis_env,
-                      intern = ifelse(Sys.info()["sysname"] == "Darwin",
-                                      FALSE, TRUE))
-  if (any(grepl("Error", msg))) {
-    stop(msg)
-  }
-  # if a message was produce show it in the console
-  if (show_msg & length(msg) > 0) {
-    message(msg)
+  # run QGIS
+  if (grepl("^taudem", alg)) {
+    run_taudem(alg = alg, params = params, qgis_env = qgis_env)
+  } else {
+    # shellquote algorithm name
+    start <- shQuote(alg)
+    
+    # retrieve specified function arguments, i.e. the values
+    # val <- as.character(unlist(params))
+    # True, False and None should not be put among parentheses!!
+    # ind <- !grepl("True|False|None", val)
+    # shellquote paths and numeric input (the latter is not necessary but
+    # doesn't harm either)
+    # val[ind] <- shQuote(val[ind])
+    
+    # Sometimes function arguments are already shellquoted. Shellquoting them 
+    # again will result in an error, e.g., grass7:r.viewshed
+    # Hence, get rid off shellQuotes (if there are any) before you shellQuote
+    # again... and ShellQuotes (or at at least quotes) are needed when using the
+    # command-line use
+    val <- vapply(params, function(x) {
+      # get rid off shellQuotes 
+      tmp <- unlist(strsplit(as.character(x), ""))
+      tmp <- tmp[tmp != "\""]
+      # paste the arguments together again and put them into a shellQuote
+      shQuote(paste(tmp, collapse = ""))
+    }, character(1))
+    
+    # build the Python command
+    args <- paste(val, collapse = ", ")
+    args <- paste0(paste(start, args, sep = ", "))
+    # run QGIS command (while catching possible error messages)
+    msg <- execute_cmds(processing_name = "processing.runalg",
+                        params = args,
+                        qgis_env = qgis_env,
+                        intern = ifelse(Sys.info()["sysname"] == "Darwin",
+                                        FALSE, TRUE))
+    if (any(grepl("Error", msg))) {
+      stop(msg)
+    }
+    # if a message was produce show it in the console
+    if (show_msg & length(msg) > 0) {
+      message(msg)
+    }
+    
   }
   # load output
   if (!is.null(load_output)) {
@@ -892,7 +912,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
      
       test <- try(expr = 
                     rgdal::readOGR(dsn = dirname(fname),
-                                   layer = gsub("\\..*", "", basename(fname)),
+                                   layer = gsub("\\..*", "", 
+                                                basename(fname)),
                                    verbose = FALSE),
                   silent = TRUE
       )
