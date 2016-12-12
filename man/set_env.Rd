@@ -4,7 +4,7 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, ltr = TRUE)
+set_env(root = NULL, ltr = TRUE, mpiexec_path = NA, taudem_path = NA)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
