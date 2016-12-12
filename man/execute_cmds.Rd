@@ -8,16 +8,16 @@ execute_cmds(processing_name = "processing.alglist", params = "",
   qgis_env = set_env(), intern = FALSE)
 }
 \arguments{
-\item{processing_name}{Name of the function from the processing library that
-should be used.}
+\item{processing_name}{Name of the function from the processing library
+that should be used.}
 
 \item{params}{Parameter to be used with the processing function.}
 
-\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API.
+For more information, refer to \code{\link{set_env}}.}
 
-\item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector (see also 
+\item{intern}{Logical, if \code{TRUE} the function captures the command
+line output as an \code{R} character vector (see also 
 \code{\link[base]{system}}).}
 }
 \description{

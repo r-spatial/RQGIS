@@ -7,8 +7,8 @@
 build_py(qgis_env = set_env())
 }
 \arguments{
-\item{qgis_env}{Environment settings containing all the paths to run the QGIS
-API. For more information, refer to \code{\link{set_env}}.}
+\item{qgis_env}{Environment settings containing all the paths to run the
+QGIS API. For more information, refer to \code{\link{set_env}}.}
 }
 \description{
 This helper function simply constructs the Python-skeleton 

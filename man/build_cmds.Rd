@@ -7,18 +7,18 @@
 build_cmds(qgis_env = set_env())
 }
 \arguments{
-\item{qgis_env}{Environment settings containing all the paths to run the QGIS
-API. For more information, refer to \code{\link{set_env}}.}
+\item{qgis_env}{Environment settings containing all the paths to run the
+QGIS API. For more information, refer to \code{\link{set_env}}.}
 }
 \value{
-The function returns a list with two elements. The first contains a 
-  raw batch file and the second the python raw command both of which are 
-  later on needed to access QGIS from within R via Python (see 
+The function returns a list with two elements. The first contains
+  a raw batch file and the second the python raw command both of which
+  are later on needed to access QGIS from within R via Python (see 
   \code{\link{execute_cmds}}).
 }
 \description{
-This function simply builds the raw Python and batch commands 
-  needed to acces the Python QGIS API.
+This function simply builds the raw Python and batch
+  commands needed to acces the Python QGIS API.
 }
 \examples{
 \dontrun{

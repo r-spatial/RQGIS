@@ -15,6 +15,14 @@
 # params$`-sd8` <- "D:/out_2.tif"
 # run_qgis(alg = "taudem:d8flowdirections", params = params, qgis_env = qgis_env)
 
+# open_help("taudem:d8contributingarea", qgis_env = qgis_env)
+# params <- get_args_man("taudem:d8contributingarea", options = TRUE,
+#                        qgis_env = qgis_env)
+# data("dem")
+# params$`-p` <- "C:/Users/pi37pat/Desktop/dem.tif"
+# params$`-ad8` <- file.path(tempdir(), "carea.tif")
+# run_qgis(alg = "taudem:d8contributingarea", params = params, qgis_env = qgis_env)
+
 #' @title Helper function to run TauDEM
 #' @description \code{run_taudem} calls QGIS-TauDEM algorithms from within R 
 #'   while passing the corresponding function arguments.
@@ -30,7 +38,7 @@
 #' @note \code{run_taudem} is an internal function which is called by
 #'   \code{run_qgis}.
 #' @keywords internal  
-#'  @examples 
+#' @examples 
 #'  \dontrun{
 #'  data("dem")
 #'  alg <- "taudem:d8flowdirections"
@@ -121,7 +129,7 @@ py_cmd <-
     paste0("commands.append(os.path.join('", qgis_env$taudem_path, "', ",
            "alg.cmdName))"),
     "for param in alg.parameters:",
-    "  if param.value is None or param.value == '':",
+    "  if param.value is None or param.value == '' or param.value == 'None':",
     "    continue",
     "  if isinstance(param, ParameterNumber):",
     "    commands.append(param.name)",
