@@ -564,7 +564,8 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 #' }
-get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
+get_args_man <- function(alg = NULL, options = FALSE, 
+                         qgis_env = set_env()) {
 
   if (is.null(alg)) {
     stop("Please specify an algorithm!")
@@ -648,7 +649,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   # retrieve the Python output
   tmp <- utils::read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
                          stringsAsFactors = FALSE)
-  # If a wrong algorithm (-> alg is None) name was provided, stop the function
+  # If a wrong algorithm (-> alg is None) name was provided, stop the
+  # function
   if (tmp$params[1] == "Specified algorithm does not exist!") {
     stop("Algorithm '", alg, "' does not exist")
   }
@@ -675,33 +677,34 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 }
 
 #'@title Interface to QGIS commands
-#'@description \code{run_qgis} calls QGIS algorithms from within R while passing
-#'  the corresponding function arguments.
+#'@description \code{run_qgis} calls QGIS algorithms from within R while
+#'  passing the corresponding function arguments.
 #'@param alg Name of the GIS function to be used (see 
 #'  \code{\link{find_algorithms}}).
-#'@param params A list of geoalgorithm function arguments that should be used in
-#'  conjunction with the selected (Q)GIS function (see 
+#'@param params A list of geoalgorithm function arguments that should be
+#'  used in conjunction with the selected (Q)GIS function (see 
 #'  \code{\link{get_args_man}}). Please make sure to provide all function 
 #'  arguments in the correct order. To make sure this is the case, it is 
 #'  recommended to use the convenience function \code{\link{get_args_man}}.
 #'@param check_params If \code{TRUE} (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order.
-#'@param show_msg Logical, if \code{TRUE}, Python messages that occured during
-#'  the algorithm execution will be shown.
-#'@param load_output Character vector containing paths to (an) output file(s) in
-#'  order to load the QGIS output directly into R (optional). If
-#'  \code{load_output} consists of more than one element, a list will be
+#'@param show_msg Logical, if \code{TRUE}, Python messages that occured
+#'  during the algorithm execution will be shown.
+#'@param load_output Character vector containing paths to (an) output
+#'  file(s) in order to load the QGIS output directly into R (optional). If 
+#'  \code{load_output} consists of more than one element, a list will be 
 #'  returned. See the example section for more details.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
-#'  more information, refer to \code{\link{set_env}}.
-#'@details This workhorse function calls the QGIS Python API through the command
-#'  line. Specifically, it calls \code{processing.runalg}.
+#'@param qgis_env Environment containing all the paths to run the QGIS API.
+#'  For more information, refer to \code{\link{set_env}}.
+#'@details This workhorse function calls the QGIS Python API through the
+#'  command line. Specifically, it calls \code{processing.runalg}.
 #'@return If not otherwise specified, the function saves the QGIS generated 
 #'  output files in a temporary folder. Optionally, function parameter 
-#'  \code{load_output} loads spatial QGIS output (vector and raster data) into 
-#'  R.
-#'@note Please note that one can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are 
+#'  \code{load_output} loads spatial QGIS output (vector and raster data)
+#'  into R.
+#'@note Please note that one can also pass spatial R objects as input
+#'  parameters where suitable (e.g., input layer, input raster). Supported
+#'  formats are
 #'  \code{\link[sp]{SpatialPointsDataFrame}}-, 
 #'  \code{\link[sp]{SpatialLinesDataFrame}}-, 
 #'  \code{\link[sp]{SpatialPolygonsDataFrame}}- and 

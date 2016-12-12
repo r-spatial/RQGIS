@@ -1,5 +1,5 @@
 # What to do next:
-# 1. SilentProgress
+# 1. SilentProgress QGIS 2.14 and > QGIS 2.14
 # 2. function documentation run_taudem, set_env
 # 3. taudem so far only works for Windows
 # 4. save loglines to temp and load it into R to report what went wrong/good
@@ -15,6 +15,32 @@
 # params$`-sd8` <- "D:/out_2.tif"
 # run_qgis(alg = "taudem:d8flowdirections", params = params, qgis_env = qgis_env)
 
+#' @title Helper function to run TauDEM
+#' @description \code{run_taudem} calls QGIS-TauDEM algorithms from within R 
+#'   while passing the corresponding function arguments.
+#' @param alg Name of the GIS function to be used (see 
+#'   \code{\link{find_algorithms}}).
+#' @param params A list of geoalgorithm function arguments that should be 
+#'   used in conjunction with the selected (Q)GIS function (see 
+#'   \code{\link{get_args_man}}). Please make sure to provide all function 
+#'   arguments in the correct order. To make sure this is the case, it is 
+#'   recommended to use the convenience function \code{\link{get_args_man}}.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. 
+#'   For more information, refer to \code{\link{set_env}}.
+#' @note \code{run_taudem} is an internal function which is called by
+#'   \code{run_qgis}.
+#' @keywords internal  
+#'  @examples 
+#'  \dontrun{
+#'  data("dem")
+#'  alg <- "taudem:d8flowdirections"
+#'  params <- get_args_man(alg = alg, options = TRUE)
+#'  params$`-fel` <- dem
+#'  params$`-p` <- "out_1.tif"
+#'  params$`-sd8` <- "out_2.tif"
+#'  run_qgis(alg = alg, params = params)
+#'  }
+#' @export
 run_taudem <- 
   function(alg, params,
            qgis_env) {
