@@ -58,8 +58,7 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("export PYTHONPATH=", qgis_env$root, 
                "/Contents/Resources/python/"),
         # add QGIS Prefix path (not sure if necessary)
-        paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/"), 
-        paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))
+        paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/")) 
     
   } else if (Sys.info()["sysname"] == "Linux") {
     # construct the batch file
