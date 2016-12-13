@@ -822,7 +822,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # We could use regexp to cut off the file extension
       # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
       # but let's use an already existing function
-      my_layer <- tools::file_path_sans_ext(basename(x))
+      my_layer <- tools::file_path_sans_ext(basename(as.character(x)))
       # determine bbox in the case of a vector layer
       tmp <- try(expr = rgdal::ogrInfo(dsn = x, layer = my_layer)$extent,
                  silent = TRUE)
@@ -870,9 +870,11 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # get rid off shellQuotes 
       tmp <- unlist(strsplit(as.character(x), ""))
       tmp <- tmp[tmp != "\""]
-      # paste the arguments together again and put them into a shellQuote
-      shQuote(paste(tmp, collapse = ""))
-    }, character(1))
+      # paste the argument together again
+      tmp <- paste(tmp, collapse = "")
+      # shellQuote argument if they are not True, False or None
+      ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
+      }, character(1))
     
     # build the Python command
     args <- paste(val, collapse = ", ")
