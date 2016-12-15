@@ -1,8 +1,13 @@
 context("build_cmds")
 
 test_that("correct output of build_cmds", {
-  skip_on_cran()
-  skip_on_travis()
+  
+  testthat::skip_on_appveyor()
+  testthat::skip_on_travis()
+  testthat::skip_on_cran()
+  
+  library("RQGIS")
+  
   out <- build_cmds()
   
   # check that 'cmd' and 'py_cmd' are build

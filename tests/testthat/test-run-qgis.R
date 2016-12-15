@@ -2,6 +2,10 @@ context("run_qgis")
 
 test_that("test GRASS7: is algorithm working?", {
   
+  testthat::skip_on_appveyor()
+  testthat::skip_on_travis()
+  testthat::skip_on_cran()
+  
   library(testthat)
   library("RQGIS")
   library("raster")
