@@ -853,47 +853,6 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       paste(c(ext@xmin, ext@xmax, ext@ymin, ext@ymax), collapse = ",")
   }
   
-  # run QGIS
-  if (grepl("^taudem", alg)) {
-    run_taudem(alg = alg, params = params, qgis_env = qgis_env)
-  } else {
-    # shellquote algorithm name
-    start <- shQuote(alg)
-    
-    # retrieve specified function arguments, i.e. the values
-    # Sometimes function arguments are already shellquoted. Shellquoting them 
-    # again will result in an error, e.g., grass7:r.viewshed
-    # Hence, get rid off shellQuotes (if there are any) before you shellQuote
-    # again... and ShellQuotes (or at at least quotes) are needed when using the
-    # command-line use
-    val <- vapply(params, function(x) {
-      # get rid off shellQuotes 
-      tmp <- unlist(strsplit(as.character(x), ""))
-      tmp <- tmp[tmp != "\""]
-      # paste the argument together again
-      tmp <- paste(tmp, collapse = "")
-      # shellQuote argument if they are not True, False or None
-      ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
-      }, character(1))
-    
-    # build the Python command
-    args <- paste(val, collapse = ", ")
-    args <- paste0(paste(start, args, sep = ", "))
-    # run QGIS command (while catching possible error messages)
-    msg <- execute_cmds(processing_name = "processing.runalg",
-                        params = args,
-                        qgis_env = qgis_env,
-                        intern = ifelse(Sys.info()["sysname"] == "Darwin",
-                                        FALSE, TRUE))
-    if (any(grepl("Error", msg))) {
-      stop(msg)
-    }
-    # if a message was produce show it in the console
-    if (show_msg & length(msg) > 0) {
-      message(msg)
-    }
-    
-  }
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
