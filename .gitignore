@@ -3,6 +3,6 @@
 .Ruserdata
 *Rproj*
 .Rproj.user
-inst/doc
+inst/
 README_files/
 README_cache
