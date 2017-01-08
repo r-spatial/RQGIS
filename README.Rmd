@@ -190,11 +190,6 @@ Of course, this is a very simple example. We could have achieved the same using 
 # TO DO:
 
 - post QGIS > 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
-- install_guide Linux compile SAGA from source is now on git (previously svn) -> change the documentation accordingly
 - batch_call function since we had to duplicate these lines several times...
-- we should rewrite execute_cmds so that it can also be used with qgis_session_info, open_help and get_args_man. This would delete rendundany and make the code more consistent. In this case, we could have had rewritten the python py_cmd.py to paste("python", file.path(tmp_dir), "py_cmd.py")) in execute_cmds
-- open_help: automatically construct a helpfile if no documentation is availabe on the Internet (-> if Python web scraping "Error" is True, construct html file)
-- does it make sense to create a RQGIS-class?
-- qgis_session_info -> add OTB and Lidar to the list
 
 

@@ -2,7 +2,7 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2016--11--12-yellowgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--08-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -193,10 +193,4 @@ TO DO:
 ======
 
 -   post QGIS &gt; 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
--   install\_guide Linux compile SAGA from source is now on git (previously svn) -&gt; change the documentation accordingly
-- folder problem: sometimes RQGIS gets confused with working and temporary folders (`run_qgis`), e.g., Manuel Spinolas v.split.length example. Maybe you should somehow address this problem
 -   batch\_call function since we had to duplicate these lines several times...
--   execute\_cmds: rewrite in in such a way, that you can add further python commands!!
--   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
--   does it make sense to create a RQGIS-class?
--   qgis\_session\_info -&gt; add OTB and Lidar to the list
