@@ -888,8 +888,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   if (any(grepl("Error", msg))) {
     stop(msg)
   }
-  # if a message was produce show it in the console
-  if (show_msg & length(msg) > 0) {
+  # if a message was produced, show it in the console
+  if (show_msg && length(msg) > 0) {
     message(msg)
   }
   
