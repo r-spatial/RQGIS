@@ -42,7 +42,10 @@ set_env <- function(root = NULL, ltr = TRUE) {
       cwd <- getwd()
       on.exit(setwd(cwd))
       setwd("C:/")
-      raw <- "dir /s /b | findstr"
+      # raw <- "dir /s /b | findstr"
+      # make it more general, since C:/WINDOWS/System32 might not be part of
+      # PATH on every Windows machine
+      raw <- "dir /s /b | %SystemRoot%\\System32\\findstr"
       # search QGIS on the the C: drive
       cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
       root <- shell(cmd, intern = TRUE)
