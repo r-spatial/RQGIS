@@ -30,7 +30,8 @@ Imports:
          XML,
          tools
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
-Suggests: knitr,
-    rmarkdown,
-    testthat
+Suggests: 
+          knitr,
+          rmarkdown,
+          testthat
 VignetteBuilder: knitr

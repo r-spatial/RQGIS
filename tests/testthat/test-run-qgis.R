@@ -10,33 +10,20 @@ test_that("Test, if QGIS-algorithms are working?", {
   library("testthat")
   library("RQGIS")
   library("sp")
-  library("dplyr")
   coords_1 <- 
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
            ncol = 2, byrow = TRUE)
-  coords_2 <-
-    matrix(data = c(-0.5, -0.5, 0.5, -0.5, 0.5, 0.5, 
-                    -0.5, 0.5, -0.5, -0.5),
-           ncol = 2, byrow = TRUE)
+  coords_2 <- coords_1 + 2
   # convert the coordinates into polygons
-  poly_1 <- SpatialPolygons(list(
-    Polygons(list(Polygon(coords_1)), 1))) %>%
-    as(., "SpatialPolygonsDataFrame")
-  poly_2 <- SpatialPolygons(list(Polygons(
-    list(Polygon(coords_2)), 2))) %>%
-    as(., "SpatialPolygonsDataFrame")
-  # plot(poly_1, xlim = c(-2, 2), ylim = c(-2, 2))
-  # plot(poly_2, add = TRUE)
-  # bind the polygons together
-  polys <- maptools::spRbind(poly_1, poly_2)
-  
+  polys <- 
+    as(SpatialPolygons(
+      list(Polygons(
+        list(Polygon(coords_1)), list(Polygon(coords_2))))),
+    "SpatialPolygonsDataFrame")
+
   # let's set the environment 
-  if (Sys.info()["sysname"] == "Windows") {
-  qgis_env <- set_env("C:/OSGeo4W64/")
-  } else {
   qgis_env <- set_env()  
-  }
-  
+
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
   params <- get_args_man(alg = "qgis:polygoncentroids", 
@@ -72,11 +59,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   library("raster")
   
   # let's set the environment 
-  if (Sys.info()["sysname"] == "Windows") {
-    qgis_env <- set_env("C:/OSGeo4W64/")
-  } else {
-    qgis_env <- set_env()  
-  }
+  qgis_env <- set_env()  
   
   data("dem")
   params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE,
@@ -102,11 +85,7 @@ test_that("Test, if GRASS7-algorithms are working?", {
   library("raster")
   
   # let's set the environment 
-  if (Sys.info()["sysname"] == "Windows") {
-    qgis_env <- set_env("C:/OSGeo4W64/")
-  } else {
-    qgis_env <- set_env()  
-  }
+  qgis_env <- set_env()  
   # attach data
   data("dem")
   params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE,
