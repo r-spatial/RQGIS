@@ -92,14 +92,13 @@ sudo apt-get update
 sudo apt-get install libcurl4-gnutls-dev
 ```
 
-## QGIS >2.16 modifications
-If you only installed QGIS version >2.16, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+## QGIS modifications (v. 2.16-2.18.1)
+If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
-The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). Hence, with the next minor release the manual adjustment is hopefully no longer required. 
+The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat).
 
-For Windows users: If you installed both the LTR and the most recent QGIS version, you don't need to adjust anything since RQGIS will use by default the LTR (2.14). 
 
 # RQGIS usage
 Subsequently, we will show you a typical workflow of how to use RQGIS. Basically, we will follow the steps also described in the [QGIS documentation](https://docs.qgis.org/2.14/en/docs/user_manual/processing/console.html). In our first and very simple example we simply would like to retrieve the centroid coordinates of a spatial polygon object. 
