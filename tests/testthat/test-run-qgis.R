@@ -25,8 +25,8 @@ test_that("Test, if QGIS-algorithms are working?", {
   poly_2 <- SpatialPolygons(list(Polygons(
     list(Polygon(coords_2)), 2))) %>%
     as(., "SpatialPolygonsDataFrame")
-  plot(poly_1, xlim = c(-2, 2), ylim = c(-2, 2))
-  plot(poly_2, add = TRUE)
+  # plot(poly_1, xlim = c(-2, 2), ylim = c(-2, 2))
+  # plot(poly_2, add = TRUE)
   # bind the polygons together
   polys <- maptools::spRbind(poly_1, poly_2)
   

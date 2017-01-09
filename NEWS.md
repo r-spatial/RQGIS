@@ -10,12 +10,12 @@
 * Deleting redundancies in functions `build_cmds`, `check_apps` and `execute_cmds`
 * Removing empty string from `find_algorithms` output
 * Added a `NEWS.md` file to track changes to the package.
+* vignette update (MacOSX and homebrew installation) (#14, @pat-s)
 
 ## Bug fixes
+* bug fix: we replaced `findstr` in `set_env` by the more general `%SystemRoot%\\System32\\findstr`
 * bug fix: when constructing the cmd-command (in `run_qgis`), we need to avoid "double" shell quotes. This happened e.g., with `grass7:r.viewshed`. Additionally, we made sure that None, True and False are not shellquoted.
 * bug fix: when determining the GRASS REGION PARAMETER in `run_qgis`. To extract the extent of a spatial object `ogrInfo` needs the layer name without the file extension. To do that we now use the `file_path_sans_ext` of the `tools` package instead of a simple `gsub`-command. Previously, we simply returned everything in front of a colon. This caused problems with filenames such as gis.osm_roads_free_1.shp.
 * bug fix: `run_qgis` function argument `load_output` now checks if the QGIS output was really created before trying to load it.
+* bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (`paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))`) solved the problem.
 
-## MacOX
-* `run_qgis` bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (`paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))`) solved the problem.
-* vignette update (MacOSX and homebrew installation) (#14, @pat-s)
