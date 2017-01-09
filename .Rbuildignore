@@ -5,7 +5,6 @@ check_package.R
 GADM_.*
 ^\.travis\.yml$
 cran-comments.md
-NEWS.md
 figures
 dem.asc
 dem.prj
