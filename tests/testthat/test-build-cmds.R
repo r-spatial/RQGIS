@@ -9,7 +9,7 @@ test_that("correct output of build_cmds", {
   library("testthat")
   library("RQGIS")
   
-  out <- build_cmds()
+  out <- RQGIS:::build_cmds()
   
   if (Sys.info()["sysname"] == "Darwin") {
   # check that 'cmd' and 'py_cmd' are build
@@ -24,7 +24,7 @@ test_that("correct output of build_cmds", {
     # check that 'cmd' and 'py_cmd' are build
     expect_equal(length(out), 2)
     # check that all lines of 'cmd' are build
-    expect_equal(length(out$cmd), 3)
+    expect_equal(length(out$cmd), 9)
     # check that all lines of 'py_cmd' are build
     expect_equal(length(out$py_cmd), 14)
   }
