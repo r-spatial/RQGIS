@@ -889,7 +889,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     stop(msg)
   }
   # if a message was produced, show it in the console
-  if (show_msg && length(msg) > 0) {
+  if (show_msg && length(msg) > 0 && !identical(msg, tempdir())) {
     message(msg)
   }
   
