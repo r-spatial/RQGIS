@@ -6,3 +6,5 @@
 inst/
 README_files/
 README_cache
+vignettes/*.html
+vignettes/*.R
