@@ -42,7 +42,10 @@ set_env <- function(root = NULL, ltr = TRUE) {
       cwd <- getwd()
       on.exit(setwd(cwd))
       setwd("C:/")
-      raw <- "dir /s /b | findstr"
+      # raw <- "dir /s /b | findstr"
+      # make it more general, since C:/WINDOWS/System32 might not be part of
+      # PATH on every Windows machine
+      raw <- "dir /s /b | %SystemRoot%\\System32\\findstr"
       # search QGIS on the the C: drive
       cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
       root <- shell(cmd, intern = TRUE)
@@ -854,15 +857,25 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   }
   
   # run QGIS
-  nm <- names(params)
-  val <- as.character(unlist(params))
+  
   # shellquote algorithm name
   start <- shQuote(alg)
-  # True, False and None should not be put among parentheses!!
-  ind <- !grepl("True|False|None", val)
-  # shellquote paths and numeric input (the latter is not necessary but
-  # doesn't harm either)
-  val[ind] <- shQuote(val[ind])
+  # retrieve specified function arguments, i.e. the values
+  # Sometimes function arguments are already shellquoted. Shellquoting them 
+  # again will result in an error, e.g., grass7:r.viewshed
+  # Hence, get rid off shellQuotes (if there are any) before you shellQuote
+  # again... and ShellQuotes (or at least quotes) are needed when using the
+  # command line 
+  val <- vapply(params, function(x) {
+    # get rid off shellQuotes 
+    tmp <- unlist(strsplit(as.character(x), ""))
+    tmp <- tmp[tmp != "\""]
+    # paste the argument together again
+    tmp <- paste(tmp, collapse = "")
+    # shellQuote argument if they are not True, False or None
+    ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
+  }, character(1))
+  
   # build the Python command
   args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
@@ -875,8 +888,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   if (any(grepl("Error", msg))) {
     stop(msg)
   }
-  # if a message was produce show it in the console
-  if (show_msg & length(msg) > 0) {
+  # if a message was produced, show it in the console
+  if (show_msg && length(msg) > 0 && !identical(msg, tempdir())) {
     message(msg)
   }
   

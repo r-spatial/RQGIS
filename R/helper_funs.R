@@ -31,6 +31,9 @@ build_cmds <- function(qgis_env = set_env()) {
     my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
     cmd <-
       c("@echo off",
+        # remember R temp directory, i.e. use the directory from where cmd was
+        # initialized
+        "set wd=%~dp0",
         # defining a root variable
         paste0("SET OSGEO4W_ROOT=", qgis_env$root),
         # calling batch files from within a batchfile -> sets many paths
@@ -44,7 +47,9 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("set PYTHONPATH=%PYTHONPATH%;%OSGEO4W_ROOT%\\apps\\",
                my_qgis, "\\python;"),
         # defining QGIS prefix path (i.e. without bin)
-        paste0("set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\", my_qgis)
+        paste0("set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\", my_qgis),
+        # return to R temp directory to call later python py_cmd.py
+        "pushd %wd%"
         )
    
   } else if (Sys.info()["sysname"] == "Darwin") {
@@ -111,6 +116,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
   
   if (Sys.info()["sysname"] == "Windows") {
     # write batch command
+    # cmd <- c(cmds$cmd, paste("python", file.path(tmp_dir, "py_cmd.py")))
     cmd <- c(cmds$cmd, "python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
     cat(cmd, file = "batch_cmd.cmd")

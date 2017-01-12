@@ -1,4 +1,4 @@
-library(testthat)
-library(RQGIS)
+library("testthat")
+library("RQGIS")
 
 test_check("RQGIS")

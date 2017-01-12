@@ -181,4 +181,3 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
-

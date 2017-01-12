@@ -9,7 +9,13 @@ NOTE: Please update to QGIS version &gt; 2.18.2
 
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--12-yellowgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) 
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
+[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS)
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) 
+[![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--12-yellowgreen.svg)](/commits/master)
+
 
 #### CRAN
 
