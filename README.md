@@ -1,8 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+NOTE: Please update to QGIS version &gt; 2.18.2
+===============================================
+
+-   if you want to use RQGIS in combination with the developer version of QGIS
+-   this version contains a major bug fix which RQGIS relies on
+-   preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
+
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2016--11--12-yellowgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--12-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -14,9 +21,6 @@
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
-RQGIS
-=====
-
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 <img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
@@ -65,17 +69,6 @@ sudo apt-get update
 # finally you can install libcurl
 sudo apt-get install libcurl4-gnutls-dev
 ```
-
-QGIS &gt;2.16 modifications
----------------------------
-
-If you only installed QGIS version &gt;2.16, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
-
-<img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
-
-The QGIS core team has already fixed this issue (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). Hence, with the next minor release the manual adjustment is hopefully no longer required.
-
-For Windows users: If you installed both the LTR and the most recent QGIS version, you don't need to adjust anything since RQGIS will use by default the LTR (2.14).
 
 RQGIS usage
 ===========
@@ -188,15 +181,3 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 <img src="figures/README-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
-
-TO DO:
-======
-
--   post QGIS &gt; 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
--   install\_guide Linux compile SAGA from source is now on git (previously svn) -&gt; change the documentation accordingly
-- folder problem: sometimes RQGIS gets confused with working and temporary folders (`run_qgis`), e.g., Manuel Spinolas v.split.length example. Maybe you should somehow address this problem
--   batch\_call function since we had to duplicate these lines several times...
--   execute\_cmds: rewrite in in such a way, that you can add further python commands!!
--   open\_help: automatically construct a helpfile if no documentation is availabe on the Internet (-&gt; if Python web scraping "Error" is True, construct html file)
--   does it make sense to create a RQGIS-class?
--   qgis\_session\_info -&gt; add OTB and Lidar to the list
