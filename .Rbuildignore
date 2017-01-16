@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-README.*
+README.md
+README.Rmd
 check_package.R
 GADM_.*
 ^\.travis\.yml$
