@@ -1,20 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-NOTE: Please update to QGIS version &gt; 2.18.2
-===============================================
-
--   if you want to use RQGIS in combination with the developer version of QGIS
--   this version contains a major bug fix which RQGIS relies on
--   preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
-
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
-[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
-[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) 
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) 
-[![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--16-yellowgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--16-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -22,7 +10,7 @@ NOTE: Please update to QGIS version &gt; 2.18.2
 
 #### Github
 
-[![packageversion](https://img.shields.io/badge/Package%20version-0.2.0-orange.svg?style=flat-square)](commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0.9000-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
