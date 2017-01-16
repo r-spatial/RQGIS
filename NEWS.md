@@ -18,4 +18,5 @@
 * bug fix: when determining the GRASS REGION PARAMETER in `run_qgis`. To extract the extent of a spatial object `ogrInfo` needs the layer name without the file extension. To do that we now use the `file_path_sans_ext` of the `tools` package instead of a simple `gsub`-command. Previously, we simply returned everything in front of a colon. This caused problems with filenames such as gis.osm_roads_free_1.shp.
 * bug fix: `run_qgis` function argument `load_output` now checks if the QGIS output was really created before trying to load it.
 * bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (`paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))`) solved the problem.
+* bug fix: `qgis_session_info` now also runs on MacOS (#34)
 

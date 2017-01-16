@@ -9,13 +9,12 @@ NOTE: Please update to QGIS version &gt; 2.18.2
 
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) 
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
 [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
-[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS)
+[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) 
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) 
-[![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--12-yellowgreen.svg)](/commits/master)
-
+[![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--16-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -23,7 +22,7 @@ NOTE: Please update to QGIS version &gt; 2.18.2
 
 #### Github
 
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0.9000-orange.svg?style=flat-square)](commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.2.0-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
@@ -102,18 +101,19 @@ library("RQGIS")
 # set the environment, i.e. specify all the paths necessary to run QGIS from 
 # within R
 my_env <- set_env()
+#> Trying to find OSGeo4W on your C: drive.
 # under Windows set_env would be much faster if you specify the root path:
 # my_env <- set_env("C:/OSGeo4W~1")
 # have a look at the paths necessary to run QGIS from within R
 my_env
 #> $root
-#> [1] "/Applications/QGIS.app"
+#> [1] "C:\\OSGeo4W64"
 #> 
 #> $qgis_prefix_path
-#> [1] "/Applications/QGIS.app/Contents"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
 #> 
 #> $python_plugins
-#> [1] "/Applications/QGIS.app/Contents/Resources/python/plugins"
+#> [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
 ```
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
@@ -122,10 +122,9 @@ Secondly, we would like to find out how the function in QGIS is called which giv
 # look for a function that contains the words "polygon" and "centroid"
 find_algorithms(search_term = "polygon centroid", 
                 qgis_env = my_env)
-#> [1] "ERROR: Opening of authentication db FAILED"                                 
-#> [2] "WARNING: Auth db query exec() FAILED"                                       
-#> [3] "Polygon centroids------------------------------------>qgis:polygoncentroids"
-#> [4] "Polygon centroids------------------------------------>saga:polygoncentroids"
+#> [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"                       
+#> [2] "Polygon centroids------------------------------------>qgis:polygoncentroids"
+#> [3] "Polygon centroids------------------------------------>saga:polygoncentroids"
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
@@ -134,14 +133,13 @@ This gives us two functions we could use. Here, we'll choose the QGIS function n
 get_usage(alg = "qgis:polygoncentroids",
           qgis_env = my_env,
           intern = TRUE)
-#> [1] "ERROR: Opening of authentication db FAILED"
-#> [2] "WARNING: Auth db query exec() FAILED"      
-#> [3] "ALGORITHM: Polygon centroids"              
-#> [4] "\tINPUT_LAYER <ParameterVector>"           
-#> [5] "\tOUTPUT_LAYER <OutputVector>"             
-#> [6] ""                                          
-#> [7] ""                                          
-#> [8] ""
+#> [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"
+#> [2] "ALGORITHM: Polygon centroids"                        
+#> [3] "\tINPUT_LAYER <ParameterVector>"                      
+#> [4] "\tOUTPUT_LAYER <OutputVector>"                        
+#> [5] ""                                                    
+#> [6] ""                                                    
+#> [7] ""
 ```
 
 Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
@@ -187,3 +185,12 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 <img src="figures/README-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
+
+(R)QGIS modifications (v. 2.16-2.18.1)
+======================================
+
+If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
+
+<img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
+
+The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, we would recommend strongly to either use the QGIS LTR or QGIS &gt;= 2.18.2.
