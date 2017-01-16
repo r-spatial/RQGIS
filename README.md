@@ -1,8 +1,20 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+NOTE: Please update to QGIS version &gt; 2.18.2
+===============================================
+
+-   if you want to use RQGIS in combination with the developer version of QGIS
+-   this version contains a major bug fix which RQGIS relies on
+-   preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
+
 #### General
 
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--16-yellowgreen.svg)](/commits/master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
+[![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&svg=true)](https://ci.appveyor.com/project/jannes-m/RQGIS) 
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) 
+[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) 
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) 
+[![Last-changedate](https://img.shields.io/badge/last%20change-2017--01--16-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -14,9 +26,6 @@
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
-RQGIS
-=====
-
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 <img src="figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
@@ -185,9 +194,3 @@ If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a P
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
 The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, we would recommend strongly to either use the QGIS LTR or QGIS &gt;= 2.18.2.
-
-TO DO:
-======
-
--   post QGIS &gt; 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
--   batch\_call function since we had to duplicate these lines several times...

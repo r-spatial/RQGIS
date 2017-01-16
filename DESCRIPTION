@@ -20,6 +20,7 @@ License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 RoxygenNote: 5.0.1
+ByteCompile: true
 Depends:
     R (>= 3.2.0)
 Imports:

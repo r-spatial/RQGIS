@@ -15,14 +15,19 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, echo = FALSE}
-description <- readLines("DESCRIPTION")
-version <- gsub(" ", "", gsub("Version:", "", grep("Version:", description, value = TRUE)))
+version <- "0.1.0.9000"
 ```
 
 ```{r, echo = FALSE}
-description <- readLines("DESCRIPTION")
-rvers <- stringr::str_match(grep("R \\(", description, value = TRUE), "[0-9]{1,4}\\.[0-9]{1,4}\\.[0-9]{1,4}")[1,1]
+rvers <- "3.2.0"
 ```
+
+# NOTE: Please update to QGIS version > 2.18.2 
+
+* if you want to use RQGIS in combination with the developer version of QGIS
+* this version contains a major bug fix which RQGIS relies on
+* preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
+
 
 #### General
 [![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)
@@ -43,7 +48,6 @@ rvers <- stringr::str_match(grep("R \\(", description, value = TRUE), "[0-9]{1,4
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 
-# RQGIS
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also [https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 
@@ -183,11 +187,4 @@ If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a P
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
 The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, we would recommend strongly to either use the QGIS LTR or QGIS >= 2.18.2.
-
-
-# TO DO:
-
-- post QGIS > 2.16 issue has still not been resolved. The issue has become even worse since no error message is reported. Instead everything runs smoothly, there is even a message that the output was created. Just there is none in the specified folders. Only fixing the SilentProgress()-stuff makes the issue go away...
-- batch_call function since we had to duplicate these lines several times...
-
 
