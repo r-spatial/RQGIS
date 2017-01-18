@@ -4,7 +4,7 @@ This is a resubmission. In this version I have:
 * replaced in the Description section "Package RQGIS establishes an interfaces..." by "Establishes an interface...".
 * omitted "RQGIS: " from the title.
 * single-quoted software names in the Description section of the DESCRIPTION file.
-* added a web-reference (http://www.qgis.org/en/site/) to the QGIS software in the DESCRIPTION file and put the url inside <...> .
+* added a web-reference (<http://www.qgis.org/en/site/>) to the QGIS software in the DESCRIPTION file and put the url inside <...> .
   
 ## Test environments
 * local Windows installation, R 3.3.2 and win-builder (devel)
