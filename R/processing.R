@@ -154,6 +154,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider",
       "from processing.algs.otb.OTBUtils import getInstalledVersion",
       "from processing.algs.taudem.TauDEMUtils import TauDEMUtils",
+      "from processing.algs.gdal.GdalUtils import GdalUtils",
       "from processing.tools.system import isWindows, isMac",
       # QGIS version
       "qgis = QGis.QGIS_VERSION",
@@ -193,6 +194,9 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "otb = getInstalledVersion()",
       #"otb = OTBUtils.getInstalledVersion()",
       
+      # GDAL
+      "gdal = GdalUtils.version()",
+      
       # write list for 'out.csv'
       "ls = []",
       "ls.append(qgis)",
@@ -201,6 +205,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "ls.append(saga)",
       "ls.append(saga_versions)",
       "ls.append(otb)",
+      "ls.append(gdal)",
 
       
       ### TauDEM versions (currently not in use because no function to extract
@@ -247,7 +252,8 @@ qgis_session_info <- function(qgis_env = set_env()) {
   out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
   out[[5]] <- unlist(strsplit(out[[5]], split = ", "))
   names(out) <- c("qgis_version", "grass6", "grass7", "saga", 
-                  "supported_saga_versions", "orfeo-toolbox")
+                  "supported_saga_versions", "orfeo_toolbox",
+                  "GDAL")
   # clean up after yourself
   # unlink(file.path(tmp_dir, "out.csv"))
   # return the output
