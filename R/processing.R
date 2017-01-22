@@ -195,7 +195,8 @@ qgis_session_info <- function(qgis_env = set_env()) {
       #"otb = OTBUtils.getInstalledVersion()",
       
       # GDAL
-      "gdal = GdalUtils.version()",
+      "gdal = str(GdalUtils.version())",
+      "gdal = gdal[0] + '.' + gdal[2] + '.' + gdal[4]",
       
       # write list for 'out.csv'
       "ls = []",
