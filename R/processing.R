@@ -151,6 +151,10 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "from processing.algs.saga import SagaUtils",
       "from processing.algs.grass.GrassUtils import GrassUtils",
       "from processing.algs.grass7.Grass7Utils import Grass7Utils",
+      "from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider",
+      "from processing.algs.otb.OTBUtils import getInstalledVersion",
+      "from processing.algs.taudem.TauDEMUtils import TauDEMUtils",
+      "from osgeo import gdal",
       "from processing.tools.system import isWindows, isMac",
       # QGIS version
       "qgis = QGis.QGIS_VERSION",
@@ -185,12 +189,25 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "my_dict = SagaAlgorithmProvider.supportedVersions",
       "saga_versions = my_dict.keys()",
       "saga_versions.sort()",
-      "ls = []",
-      "ls.append(qgis)",
-      "ls.append(g6)",
-      "ls.append(g7)",
-      "ls.append(saga)",
-      "ls.append(saga_versions)",
+      
+      # this is good to have for the future, but so far, I would not report 
+      # these software versions since we don't know if they actually work
+      # with QGIS (without additional functions such as run_taudem...)
+      # OTB versions
+      # "otb = getInstalledVersion()",
+      #"otb = OTBUtils.getInstalledVersion()",
+      
+      # GDAL
+      # "gdal = gdal.VersionInfo('VERSION_NUM')",
+      # "gdal = '.'.join([gdal[0], gdal[2], gdal[4]])",
+      
+      # write list for 'out.csv'
+      "ls = [qgis, g6, g7, saga, saga_versions]",
+      # "ls = [qgis, g6, g7, saga, saga_versions, otb, gdal]",
+      ### TauDEM versions (currently not in use because no function to extract
+      ### Taudem version in 'TauDEMUtils')
+      # "TauDEMUtils.taudemMultifilePath()",
+      
       paste0("with open('", tmp_dir, "/out.csv', 'w') as f:"),
       "  writer = csv.writer(f)",
       "  for item in ls:",
@@ -230,8 +247,12 @@ qgis_session_info <- function(qgis_env = set_env()) {
   out$V1 <- gsub("True", TRUE, out$V1)
   out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
   out[[5]] <- unlist(strsplit(out[[5]], split = ", "))
-  names(out) <- c("qgis_version", "grass6", "grass7", "saga", 
+  names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
+  
+  # names(out) <- c("qgis_version", "grass6", "grass7", "saga",
+  #                 "supported_saga_versions", "orfeo_toolbox",
+  #                 "GDAL")
   # clean up after yourself
   # unlink(file.path(tmp_dir, "out.csv"))
   # return the output

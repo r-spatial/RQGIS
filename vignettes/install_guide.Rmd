@@ -84,38 +84,38 @@ If you additionally want to use the **LiDAR processing tools** (LAStools), pleas
 # Mac OS X
 
 **NOTE**  
-Since there is no OSGEO like installer available for OS X, linking problems between different software installations (QGIS, RQGIS, SAGA etc.) might occur. To avoid/reduce such problems, we recommend to do all installations using the package management system "homebrew". This ensures correct linking between all softwares. Furthermore, this is the way we check RQGIS compatibility for OS X. Hence, more precise help can be given if problems might occur using this installation way. 
+We recommend to do all installations using the package management system `homebrew`. This ensures correct linkage between all softwares. Furthermore, this is the way we check RQGIS compatibility for macOS.
 
 ## QGIS
 
-Recently, Homebrew also supports [GUI installations](https://caskroom.github.io/). QGIS can be installed using `brew cask install qgis` from the command line if homebrew is installed and configured correctly. 
+Homebrew also supports [GUI installations](https://caskroom.github.io/). QGIS can be installed using `brew cask install qgis` from the command line if homebrew is installed and configured correctly. 
+If you do not want to use `homebrew`, you can install the QGIS binary from [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html). In fact, this is exactly doing the same as `brew cask install qgis`.
 
-[Follow this link](https://www.qgis.org/en/site/forusers/download.html) for the binary installation. Please make sure to also install GDAL separately, preferably following [this link](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
+If you want to build QGIS from source, please use the 'osgeo4mac' tap of `homebrew` with `brew install qgis2`. 
+Note: Right now, issues with the `processing` module occur when installing QGIS this way, so we recommend to use the other approach until this is fixed.
 
 ## GRASS
-If you install QGIS 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
-GRASS6 algorithms are deprecated and do not work anymore in QGIS 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
+If you install QGIS > 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
+GRASS6 is deprecated and does not work anymore in QGIS > 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
 
-Right now, problems linking GRASS6/7 in QGIS 2.14.x might occur. 
+You can still use GRASS6 if you 
 
-Other methods installing GRASS versions are listed here:
+1. Install it by `brew install grass6` from the 'osgeo4mac' tap
+2. Link it in QGIS via "Processing - Options - Providers"
 
-* The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
-
-* If you use homebrew, please see [this guide](https://grasswiki.osgeo.org/wiki/Compiling_on_MacOSX_using_homebrew) to install GRASS 7x on your system. 
-Right now, some problems might occur trying to link standalone GRASS7 installations and QGIS.
-
+The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
 
 ## SAGA
 QGIS for Mac comes with a preconfigured SAGA installation and should work out of the box.  
 
-Custom SAGA installations: Using homebrew, SAGA can be installed via `brew install saga-gis`.  
+**Custom SAGA installations**:  
+Using homebrew, SAGA can be compiled via `brew install saga-gis`.  
 
-There is no binary install of SAGA for Mac. Therefore the "homebrew-way" is recommended. Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do this using `qgis_session_info()` in RQGIS.
+There is no binary install of SAGA for Mac. Therefore, we recommended to use bottle compiling with `homebrew`. Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do so using `qgis_session_info()` in RQGIS.
 
-To compile a custom installation of SAGA with QGIS, follow these steps:
+To link a custom installation of SAGA with QGIS, follow these steps:
 
-1. Open the following file in your QGIS installation: (.../python/plugins/processing/algs/saga/SagaUtils.py)
+1. Open the following file of your QGIS installation: (.../python/plugins/processing/algs/saga/SagaUtils.py)
 2. In the function `findSagaFolder()` change the path setting pointing to the folder containing `saga_cmd`:
 
 ```py
@@ -158,7 +158,7 @@ sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sou
 sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
 ```
-For Ubuntu 14.04 simply replace xenial by trusty. 
+For Ubuntu 14.04, simply replace `xenial` with `trusty`. 
 
 After that, we can install QGIS and GRASS as follows:
 
@@ -179,6 +179,9 @@ sudo apt-get install qgis python-qgis qgis-plugin-grass
 ```
 
 This will install the QGIS 2.14 release (LTR) as well as GRASS-GIS as third-party provider. 
+You may still encounter error when trying to use GRASS7 algorithms within QGIS. 
+However, RQGIs should be able to find and use GRASS6 and GRASS7 algorithms now. 
+To check, simply call `RQGIS::find_algorithms()` and search for `grass` (= GRASS6) or `grass7` ( = GRASS7). 
 
 ## SAGA
 <!---
@@ -192,7 +195,8 @@ sudo apt-get install saga
 sudo add-apt-repository --remove ppa:johanvdw/saga-gis
 --->
 
-Unfortunately, QGIS does not support the latest SAGA versions. To find out which SAGA versions are supported by your QGIS installation, run:
+Unfortunately, QGIS does not support the latest SAGA versions. To find out which SAGA versions are supported 
+by your QGIS installation, run:
 
 ```{r saga, eval = FALSE, echo = TRUE, message = FALSE}
 library("RQGIS")
@@ -200,45 +204,34 @@ info <- qgis_session_info()
 info$supported_saga_versions
 ```
 
-This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions, QGIS supports. Using one of those versions, automatically will add SAGA to the processing toolbox of QGIS (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to [https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
+This also means we cannot simply use a package manager to install SAGA. 
+Instead we need to compile one of the SAGA versions that QGIS supports from source. 
+This will automatically add SAGA to the processing toolbox of QGIS 
+(this might not be true for SAGA >= 2.2.1 see further below). 
+Prior to the SAGA installation, we need to install various dependencies required by SAGA. 
+Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to [https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/](https://sourceforge.net/p/saga-gis/wiki/Compiling%20a%20Linux%20Unicode%20version/) for a more comprehensive SAGA installation guide. 
+Please note that we simply present in great parts a copy of this guide here.
 
 First of all, install all necessary SAGA dependencies:
 
 ```sh
-sudo apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev proj unixodbc-dev
+sudo apt-get install libwxgtk3.0-dev libtiff5-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
 
 sudo apt-get install g++ make automake libtool subversion
 ```
 
-<!---
-First option:
-
 1. Donwload the SAGA-version you would like to a folder you have access to (e.g.)
-mkdir /home/jannes/saga-svn
+`mkdir /home/jannes/source_software`
 2. Unzip/unpack SAGA in this folder
 3. open the terminal and change the directory to the SAGA folder
+
+
 ```sh
-autoreconf -i
+sudo autoreconf -i
 ./configure
 make
-make install
-saga_gui
-export SAGA_MLB=/usr/local/lib/saga
-saga_cmd
-```
---->
-
-Secondly, create a folder named `saga-svn` (e.g., in your home directory) to which you would like to download SAGA. Next, change to this folder, and specifiy the SAGA release you would like to install (here: 2.2.0) by checking the corresponding branch. Changing the directory again to ~/saga-svn/release-2-2-0/saga-gis, finally sets you up for the SAGA compilation. The compilation installs SAGA to `/usr/local/lib`. 
-
-```sh
-mkdir ~/saga-svn
-cd ~/saga-svn
-svn checkout svn://svn.code.sf.net/p/saga-gis/code-0/branches/release-2-2-0
-cd ~/saga-svn/release-2-2-0/saga-gis
-sudo autoreconf -i
-sudo ./configure
-sudo make
 sudo make install
+export SAGA_MLB=/usr/local/lib/saga
 ```
 
 To check if SAGA was successfully compiled, run:
@@ -259,12 +252,15 @@ export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 saga_gui
 ```
 
-Using SAGA >= 2.2.1 you might encounter following message in the Processing log when opening QGIS: `Problem with SAGA installation: installed SAGA version (2.2.1) is not supported`. Though in this case SAGA is not available in the processing toolbox, you are still able to use it via the QGIS Python API and therefore also with RQGIS.
+Using SAGA >= 2.2.1 you might encounter following message in the Processing log when opening QGIS: 
+`Problem with SAGA installation: installed SAGA version (2.2.1) is not supported`. 
+Though in this case SAGA is not available in the processing toolbox, you are still able to use it 
+via the QGIS Python API and therefore also with RQGIS.
 
 In case you would like to uninstall SAGA, type:
 
 ```sh
-cd ~/saga-svn/release-2-2-0/saga-gis
+cd /home/jannes/source_software
 sudo make uninstall
 ```
 
