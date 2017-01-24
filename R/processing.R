@@ -151,6 +151,10 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "from processing.algs.saga import SagaUtils",
       "from processing.algs.grass.GrassUtils import GrassUtils",
       "from processing.algs.grass7.Grass7Utils import Grass7Utils",
+      "from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider",
+      "from processing.algs.otb.OTBUtils import getInstalledVersion",
+      "from processing.algs.taudem.TauDEMUtils import TauDEMUtils",
+      "from processing.algs.gdal.GdalUtils import GdalUtils",
       "from processing.tools.system import isWindows, isMac",
       # QGIS version
       "qgis = QGis.QGIS_VERSION",
@@ -185,12 +189,30 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "my_dict = SagaAlgorithmProvider.supportedVersions",
       "saga_versions = my_dict.keys()",
       "saga_versions.sort()",
+      
+      # OTB versions
+      "otb = getInstalledVersion()",
+      #"otb = OTBUtils.getInstalledVersion()",
+      
+      # GDAL
+      "gdal = str(GdalUtils.version())",
+      "gdal = gdal[0] + '.' + gdal[2] + '.' + gdal[4]",
+      
+      # write list for 'out.csv'
       "ls = []",
       "ls.append(qgis)",
       "ls.append(g6)",
       "ls.append(g7)",
       "ls.append(saga)",
       "ls.append(saga_versions)",
+      "ls.append(otb)",
+      "ls.append(gdal)",
+
+      
+      ### TauDEM versions (currently not in use because no function to extract
+      ### Taudem version in 'TauDEMUtils')
+      # "TauDEMUtils.taudemMultifilePath()",
+      
       paste0("with open('", tmp_dir, "/out.csv', 'w') as f:"),
       "  writer = csv.writer(f)",
       "  for item in ls:",
@@ -231,7 +253,8 @@ qgis_session_info <- function(qgis_env = set_env()) {
   out <- as.list(gsub("\\[|\\]|u'|'", "", out$V1))
   out[[5]] <- unlist(strsplit(out[[5]], split = ", "))
   names(out) <- c("qgis_version", "grass6", "grass7", "saga", 
-                  "supported_saga_versions")
+                  "supported_saga_versions", "orfeo_toolbox",
+                  "GDAL")
   # clean up after yourself
   # unlink(file.path(tmp_dir, "out.csv"))
   # return the output
