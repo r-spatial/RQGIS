@@ -15,10 +15,6 @@ r_github_packages:
   - jimhester/covr
     
 before_install:
-  - curl -OL https://raw.githubusercontent.com/metacran/r-builder/master/pkg-build.sh
-  - chmod 755 pkg-build.sh
-  - ./pkg-build.sh bootstrap
-  - cd
   - wget http://download.osgeo.org/gdal/2.1.1/gdal-2.1.1.tar.gz
   - tar zxf gdal-2.1.1.tar.gz
   - cd gdal-2.1.1
@@ -33,15 +29,6 @@ before_install:
   - make
   - sudo make install
   - cd /home/travis/build/jannes-m/RQGIS
-  
-install:
-  - ./pkg-build.sh install_deps
-
-script:
-  # - ./pkg-build.sh run_tests
-
-after_failure:
-  - ./pkg-build.sh dump_logs
 
 notifications:
   email:
@@ -49,7 +36,7 @@ notifications:
     on_failure: change
     
 after_success:
-  - Rscript -e 'install.packages("devtools"); devtools::install_github("jimhester/covr"); covr::codecov(quiet = FALSE)'
+  - Rscript -e 'covr::codecov()'
 
 
 
