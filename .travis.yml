@@ -6,6 +6,8 @@ language: R
 sudo: required
 cache: packages	
 
+warnings_are_errors: false
+
 env:
   global:
     - R_CHECK_ARGS = "--no-tests"
