@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, echo = FALSE}
-version <- "0.1.0.9000"
+version <- "0.2.0.9000"
 ```
 
 ```{r, echo = FALSE}
@@ -180,5 +180,5 @@ If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a P
 
 <img src="figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
-The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, we would recommend strongly to either use the QGIS LTR or QGIS >= 2.18.2.
+The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS >= 2.18.2.
 
