@@ -773,7 +773,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          qgis_env = my_env)
 #'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     show_msg = TRUE, load_output = NULL,
+                     show_msg = TRUE, load_output = NULL, gpkg = FALSE
                      qgis_env = set_env()) {
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
@@ -817,7 +817,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   }
   
-  # save Spatial-Objects (sp and raster)
+  # save Spatial-Objects (sp, sf and raster)
   # define temporary folder
   tmp_dir <- tempdir()
   # List classes of objects supplied to parameters
@@ -842,12 +842,21 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # check if the function argument is a SpatialObject
     if (grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp) && 
         attr(tmp, "package") == "sp") {
-      rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
-                      layer = names(params)[[i]],
-                      driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
-      # return the result
-      file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
+      if (gpkg == FALSE) {
+        rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
+                        layer = names(params)[[i]],
+                        driver = "ESRI Shapefile",
+                        overwrite_layer = TRUE)
+        # return the result
+        file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
+      } else {
+        rgdal::writeOGR(params[[i]], dsn = paste0(tmp_dir, ".gpkg")
+                        layer = names(params)[[i]],
+                        driver = "GPKG",
+                        overwrite_layer = TRUE)
+        # return the result
+        file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
+      }
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
       raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
