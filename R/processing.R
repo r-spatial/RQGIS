@@ -815,10 +815,16 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
            " should be ",
            paste(names(test)[ind], collapse = ", "))
     }
+    
+    # Make sure boolean operators are in Python form
+    params[] <- lapply(seq_along(params), function(i) {
+      ifelse(params[i] == "TRUE", "True",
+             ifelse(params[i] == "FALSE", "False", params[i]))
+    })
   }
   
-  # save Spatial-Objects (sp and raster)
-  # define temporary folder
+  # Save Spatial-Objects (sp, sf and raster)
+  # Define temporary folder
   tmp_dir <- tempdir()
   # List classes of objects supplied to parameters
   classes <- sapply(params, function(x) class(x))
@@ -837,6 +843,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                   "Vector output will be loaded as a Simple Features object.",
                   sep = "\n"))
   }
+
   params[] <- lapply(seq_along(params), function(i) {
     tmp <- class(params[[i]])
     # check if the function argument is a SpatialObject
