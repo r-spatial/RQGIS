@@ -75,7 +75,7 @@
 <div id="github" class="section level4">
 <h4 class="hasAnchor">
 <a href="#github" class="anchor"> </a>Github</h4>
-<p><a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-0.1.0.9000-orange.svg?style=flat-square" alt="packageversion"></a></p>
+<p><a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-0.2.0.9000-orange.svg?style=flat-square" alt="packageversion"></a></p>
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 <p>RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html" class="uri">https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html</a>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.</p>
@@ -102,13 +102,13 @@
 <ul>
 <li>the latest RQGIS development version from Github with:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">if (<span class="kw">packageVersion</span>(<span class="st">"devtools"</span>) &lt;<span class="st"> </span><span class="fl">1.6</span>) {
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span> (<span class="kw">packageVersion</span>(<span class="st">"devtools"</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">1.6</span>) {
     <span class="kw">install.packages</span>(<span class="st">"devtools"</span>)    
     }
-if (!<span class="st">"lazyeval"</span> %in%<span class="st"> </span><span class="kw">installed.packages</span>()[, <span class="st">"Package"</span>]) {
-devtools::<span class="kw">install_github</span>(<span class="st">"hadley/lazyeval"</span>)  
+<span class="cf">if</span> (<span class="op">!</span><span class="st">"lazyeval"</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[, <span class="st">"Package"</span>]) {
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"hadley/lazyeval"</span>)  
 }
-devtools::<span class="kw">install_github</span>(<span class="st">"jannes-m/RQGIS"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
+devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"jannes-m/RQGIS"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <p>Before running these lines under <strong>Linux</strong> (Ubuntu), you need to install some <code>devtools</code> dependencies via the terminal:</p>
 <div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install libssl-dev
 <span class="co"># add curl repository to sources.list</span>
@@ -182,13 +182,13 @@ params
 <span class="co">#&gt; [1] "None"</span></code></pre></div>
 <p>In our case, <code>qgis:polygoncentroids</code> has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT_LAYER (e.g. “ger.shp”) you can also use a spatial object that resides in the global environment of R. Conveniently, <code>run_qgis</code> will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame <code>ger</code> as input layer.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify input layer</span>
-params$INPUT_LAYER  &lt;-<span class="st"> </span>ger
+params<span class="op">$</span>INPUT_LAYER  &lt;-<span class="st"> </span>ger
 <span class="co"># path to the output shapefile</span>
-params$OUTPUT_LAYER &lt;-<span class="st"> </span><span class="kw">file.path</span>(dir_tmp, <span class="st">"ger_coords.shp"</span>)</code></pre></div>
+params<span class="op">$</span>OUTPUT_LAYER &lt;-<span class="st"> </span><span class="kw">file.path</span>(dir_tmp, <span class="st">"ger_coords.shp"</span>)</code></pre></div>
 <p>Finally, <code>run_qgis</code> calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Aside from accepting spatial objects living in R as input, <code>run_qgis</code> also loads the result directly into R, if desired. Here, we would like to load the OUTPUT_LAYER into R. To do so, we simply specify the desired file(s) in function argument <code>load_output</code> while assigning it/them to an object called <code>out</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">out &lt;-<span class="st"> </span><span class="kw"><a href="reference/run_qgis.html">run_qgis</a></span>(<span class="dt">alg =</span> <span class="st">"qgis:polygoncentroids"</span>,
                 <span class="dt">params =</span> params,
-                <span class="dt">load_output =</span> params$OUTPUT_LAYER,
+                <span class="dt">load_output =</span> params<span class="op">$</span>OUTPUT_LAYER,
                 <span class="dt">qgis_env =</span> my_env)</code></pre></div>
 <p>Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># first, plot the federal states of Germany</span>
@@ -203,7 +203,7 @@ params$OUTPUT_LAYER &lt;-<span class="st"> </span><span class="kw">file.path</sp
 <a href="#rqgis-modifications-v--2-16-2-18-1" class="anchor"> </a>(R)QGIS modifications (v. 2.16-2.18.1)</h1>
 <p>If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one <code>import</code> statement (SilentProgress) to <code>../processing/gui/AlgorithmExecutor.py</code>. Secondly replace <code>python alg.execute(progress)</code> by <code>python alg.execute(progress or SilentProgress())</code>:</p>
 <p><img src="figures/rewrite_algexecutor.PNG" width="80%" height="80%" style="display: block; margin: auto;"></p>
-<p>The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary <a href="http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat">post</a>. Hence, we would recommend strongly to either use the QGIS LTR or QGIS &gt;= 2.18.2.</p>
+<p>The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this <a href="http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat">post</a>). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.</p>
 </div>
 </div>
   </div>
@@ -233,7 +233,7 @@ params$OUTPUT_LAYER &lt;-<span class="st"> </span><span class="kw">file.path</sp
 <li><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
 <li><a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg" alt="minimal R version"></a></li>
-<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--01--17-yellowgreen.svg" alt="Last-changedate"></a></li>
+<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--02--05-yellowgreen.svg" alt="Last-changedate"></a></li>
 </ul>
 </body></html>
 </div>
