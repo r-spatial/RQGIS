@@ -832,7 +832,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   invalid.sf <- any(unlist(classes) %in% 
                       c("sfc_GEOMETRY", "sfc_GEOMETRYCOLLECTION"))
   if (invalid.sf == TRUE) {
-    stop("RQGIS does not support GEOMETRY or GEOMETRYCOLLECTION classes")
+    stop("RQGIS does not support GEOMETRY or GEOMETRYCOLLECTION classes.")
   }
   # Check if vector input(s) is "sf" and/or "sp" object
   input.sf <- any(unlist(classes) %in% c("sf", "sfc", "sfg"))
@@ -862,14 +862,15 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # return the result
       fname
     } else if (any(tmp %in% c("sf", "sfc", "sfg"))) {
-      # st_write cannot currently replace layers, so file.remove() them
-      file.remove(list.files(path = tmp_dir, 
-                             pattern = names(params)[[i]],
-                             full.names = TRUE))
-      sf::st_write(params[[i]], dsn = tmp_dir, 
-                   layer = names(params)[[i]],
-                   driver = "ESRI Shapefile",
-                   quiet = TRUE)
+      if (packageVersion("sf") >= '0.3.5') {
+        sf::st_write(params[[i]], dsn = tmp_dir, 
+                     layer = names(params)[[i]],
+                     driver = "ESRI Shapefile",
+                     quiet = TRUE,
+                     update = TRUE)
+      } else {
+        Stop('sf version < 0.3.5 not supported. Run install.package("sf").')
+      }
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else {
