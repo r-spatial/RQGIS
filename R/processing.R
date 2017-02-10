@@ -866,8 +866,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       file.remove(list.files(path = tmp_dir, 
                              pattern = names(params)[[i]],
                              full.names = TRUE))
-      sf::st_write(params[[i]], dsn = tmp_dir, 
-                   layer = names(params)[[i]],
+      sf::st_write(params[[i]], 
+                   dsn = file.path(tmp_dir, paste0(names(params)[[i]], ".shp")),
                    driver = "ESRI Shapefile",
                    quiet = TRUE)
       # return the result
