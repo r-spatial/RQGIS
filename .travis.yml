@@ -1,3 +1,4 @@
+
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 ## See https://github.com/metacran/r-builder for details.
 ## settings from edzer/gstat
@@ -18,14 +19,11 @@ r_github_packages:
   - jimhester/covr
     
 before_install:
-    # install most recent QGIS
-    - sudo sh -c 'echo "deb http://qgis.org/debian xenial main" >> /etc/apt/sources.list'  
-    - sudo sh -c 'echo "deb-src http://qgis.org/debian xenial main " >> /etc/apt/sources.list'  
-    - wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import
-    - gpg --fingerprint 073D307A618E5811
-    - gpg --export --armor 073D307A618E5811 | sudo apt-key add -
-
-    - sudo apt-get update && sudo apt-get install qgis python-qgis saga
+  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
+  - sudo apt-get --yes --force-yes update -qq
+  ## saga and grass need to be installed from source and not using ubuntugis
+  # install qgis and qgis-plugin-grass from 'ubuntugis'
+  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev qgis python-qgis qgis-plugin-grass
 
 notifications:
   email:
@@ -37,8 +35,3 @@ notifications:
     
 after_success:
   - Rscript -e 'covr::codecov()'
-
-
-
-
-
