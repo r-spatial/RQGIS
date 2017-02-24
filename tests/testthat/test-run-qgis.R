@@ -96,3 +96,55 @@ test_that("Test, if GRASS7-algorithms are working?", {
   # check if the output is a raster
   expect_is(out, "RasterLayer")
   })
+
+test_that("Test if Simple Features are working", {
+  
+  testthat::skip_on_appveyor()
+  testthat::skip_on_travis()
+  testthat::skip_on_cran()
+  
+  library("testthat")
+  library("RQGIS")
+  library("sp")
+  library("sf")
+  
+  coords_1 <- 
+    matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+           ncol = 2, byrow = TRUE)
+  coords_2 <- coords_1 + 2
+  polys <- 
+    # convert the coordinates into polygons
+    polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                  Polygons(list(Polygon(coords_2)), 2)) 
+  polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
+  
+  # Convert to SF
+  polys <- st_as_sf(polys)
+  
+  # let's set the environment 
+  qgis_env <- set_env(root = "C:/OSGeo4W64/")  
+  
+  # Retrieve the function arguments in such a way that they can be easily
+  # specified and serve as input for run_qgis
+  params <- get_args_man(alg = "qgis:polygoncentroids", 
+                         qgis_env = qgis_env)
+  # Define function arguments
+  # specify input layer
+  params$INPUT_LAYER  <- polys  # please note that the input is an R object!!!
+  # path to the output shapefile
+  params$OUTPUT_LAYER <- file.path(tempdir(), "coords.shp")
+  # not indicating any folder, will write the QGIS output to tempdir() in most
+  # cases... though it is much safer to indicate a full output path!!)
+  
+  # finally, let QGIS do the work!!
+  out <- run_qgis(alg = "qgis:polygoncentroids",
+                  params = params,
+                  # let's load the QGIS output directly into R!
+                  load_output = params$OUTPUT_LAYER,
+                  qgis_env = qgis_env)
+  
+  # check if the output is simple features object
+  expect_is(out, "sf")
+  expect_is(out, "data.frame")
+  
+})
