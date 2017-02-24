@@ -739,7 +739,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'  where suitable (e.g., input layer, input raster). Supported formats are
 #'  \code{\link[sp]{SpatialPointsDataFrame}}-, 
 #'  \code{\link[sp]{SpatialLinesDataFrame}}-, 
-#'  \code{\link[sp]{SpatialPolygonsDataFrame}}- and 
+#'  \code{\link[sp]{SpatialPolygonsDataFrame}}- 
+#'  \code{\link[sf]{sf}}-and 
 #'  \code{\link[raster]{raster}}-objects. See the example section for more 
 #'  details.
 #'  
@@ -817,7 +818,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
     
     # Make sure boolean operators are in Python form
-    params[] <- lapply(seq_along(params), function(i) {
+    params <- sapply(seq_along(params), function(i) {
       ifelse(params[i] == "TRUE", "True",
              ifelse(params[i] == "FALSE", "False", params[i]))
     })
@@ -855,12 +856,6 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                       overwrite_layer = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
-    } else if (tmp == "RasterLayer") {
-      fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
-      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
-                          prj = TRUE, overwrite = TRUE)
-      # return the result
-      fname
     } else if (any(tmp %in% c("sf", "sfc", "sfg"))) {
       # st_write cannot currently replace layers, so file.remove() them
       file.remove(list.files(path = tmp_dir, 
@@ -872,7 +867,13 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                    quiet = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
-    } else {
+    } else if (tmp == "RasterLayer") {
+      fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
+      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
+                          prj = TRUE, overwrite = TRUE)
+      # return the result
+      fname
+    }  else {
       params[[i]]
     }
   })
