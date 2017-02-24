@@ -50,7 +50,8 @@ Please note that one can also pass spatial R objects as input parameters
  where suitable (e.g., input layer, input raster). Supported formats are
  \code{\link[sp]{SpatialPointsDataFrame}}-, 
  \code{\link[sp]{SpatialLinesDataFrame}}-, 
- \code{\link[sp]{SpatialPolygonsDataFrame}}- and 
+ \code{\link[sp]{SpatialPolygonsDataFrame}}- 
+ \code{\link[sf]{sf}}-and 
  \code{\link[raster]{raster}}-objects. See the example section for more 
  details.
  
@@ -83,4 +84,3 @@ run_qgis(alg = "saga:addcoordinatestopoints",
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team
 }
-
