@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r, echo = FALSE}
+```{r, echo = FALSE, eval = TRUE}
 version <- "0.2.0.9000"
 ```
 
