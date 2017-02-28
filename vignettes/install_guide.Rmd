@@ -33,7 +33,7 @@ There are at least two options to install QGIS on Windows in such a way that RQG
 To install OSGeo4W, the easiest way is to to use the Express installation:
 
 <center>
-  <img src="00_express.PNG" width="50%" height="50%">
+  <img src="../inst/figures/00_express.PNG" width="50%" height="50%">
 </center>
 
 We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
@@ -47,32 +47,32 @@ This installation is more or less equivalent to the standalone QGIS-installation
 1. Run the OSGeo4W setup and choose the advanced installation. 
 
 <center>
-  <img src="01_initial_setup.PNG" width="50%" height="50%">
+  <img src="../inst/figures/01_initial_setup.PNG" width="50%" height="50%">
 </center>
 
 
 2. Subsequently, accept the default settings until you reach the “Select Packages” window.
 
 <center>
-  <img src="04_select_packages.PNG" width="50%" height="50%">
+  <img src="../inst/figures/04_select_packages.PNG" width="50%" height="50%">
 </center>
 
 3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):
 
 <center>
-  <img src="05_command_line_utilties.PNG" width="50%" height="50%">
+  <img src="../inst/figures/05_command_line_utilties.PNG" width="50%" height="50%">
 </center>
 
 Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).
 
 <center>
-  <img src="06_desktop_gis.PNG" width="50%" height="50%">
+  <img src="../inst/figures/06_desktop_gis.PNG" width="50%" height="50%">
 </center>
 
 4. We leave the rest as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
 <center>
-  <img src="08_suggestions.PNG" width="50%" height="50%">
+  <img src="../inst/figures/08_suggestions.PNG" width="50%" height="50%">
 </center>
 
 Clicking "Next" once more will start the download and installation process which might take a while.
@@ -130,8 +130,6 @@ testfolder = '/usr/local/Cellar/saga-gis/2.2.2/bin'
 ```
 
 After restarting QGIS, you should recognize the change of the SAGA version under "Processing->Toolbox". 
-
-
 
 # Linux
 
