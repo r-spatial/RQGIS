@@ -14,12 +14,11 @@ test_that("Test, if QGIS-algorithms are working?", {
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
            ncol = 2, byrow = TRUE)
   coords_2 <- coords_1 + 2
-  # convert the coordinates into polygons
   polys <- 
-    as(SpatialPolygons(
-      list(Polygons(
-        list(Polygon(coords_1)), list(Polygon(coords_2))))),
-    "SpatialPolygonsDataFrame")
+  # convert the coordinates into polygons
+  polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                Polygons(list(Polygon(coords_2)), 2)) 
+  polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
 
   # let's set the environment 
   qgis_env <- set_env()  

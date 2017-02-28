@@ -1,13 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-NOTE: Please update to QGIS version &gt; 2.18.2
-===============================================
-
--   if you want to use RQGIS in combination with the developer version of QGIS
--   this version contains a major bug fix which RQGIS relies on
--   preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
-
 #### General
+
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--02--28-yellowgreen.svg)](/commits/master)
 
@@ -23,7 +17,7 @@ NOTE: Please update to QGIS version &gt; 2.18.2
 
 #### Github
 
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0.9000-orange.svg?style=flat-square)](commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-0.2.0.9000-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
@@ -38,7 +32,7 @@ The main advantages of RQGIS are:
 3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 Installation
-============
+
 
 Package installation
 --------------------
@@ -180,13 +174,5 @@ If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a P
 
 <img src="inst/figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
 
-The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat). Hence, we would recommend strongly to either use the QGIS LTR or QGIS &gt;= 2.18.2.
+The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.
 
-Software status
----------------
-
-| Resource:     | CRAN                                                                                                                                                             | Travis CI                                                                                                                                                | Appveyor                                                                                                                                                               |
-|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| *Platforms:*  | *Multiple*                                                                                                                                                       | *Linux & macOS*                                                                                                                                          | *Windows*                                                                                                                                                              |
-| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | <a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://travis-ci.org/jannes-m/RQGIS.svg?branch=master" alt="Build status"></a>                 | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
-| Test coverage |                                                                                                                                                                  | <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a> |                                                                                                                                                                        |

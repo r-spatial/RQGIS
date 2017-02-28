@@ -82,29 +82,47 @@
     </div>
 
     <div class="contents">
-    <div id="rqgis-0-1-0-9000" class="section level1">
+    <div id="rqgis-0-2-1" class="section level1">
 <h1 class="hasAnchor">
-<a href="#rqgis-0-1-0-9000" class="anchor"> </a>RQGIS 0.1.0.9000</h1>
+<a href="#rqgis-0-2-1" class="anchor"> </a>RQGIS 0.2.1</h1>
+</div>
+    <div id="rqgis-0-2-0" class="section level1">
+<h1 class="hasAnchor">
+<a href="#rqgis-0-2-0" class="anchor"> </a>RQGIS 0.2.0</h1>
+<div id="general" class="section level2">
+<h2 class="hasAnchor">
+<a href="#general" class="anchor"> </a>General</h2>
 <ul>
 <li>
-<code>run_qgis</code> bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (<code>paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))</code>) solved the problem.</li>
-<li>RQGIS now also does testing using the <code>testthat</code>-package.</li>
-<li>bug fix: when constructing the cmd-command (in <code>run_qgis</code>), we need to avoid “double” shell quotes. This happened e.g., with <code>grass7:r.viewshed</code>. Additionally, we made sure that None, True and False are not shellquoted.</li>
-<li>bug fix: when determining the GRASS REGION PARAMETER in <code>run_qgis</code>. To extract the extent of a spatial object <code>ogrInfo</code> needs the layer name without the file extension. To do that we now use the <code>file_path_sans_ext</code> of the <code>tools</code> package instead of a simple <code>gsub</code>-command. Previously, we simply returned everything in front of a colon. This caused problems with filenames such as gis.osm_roads_free_1.shp.</li>
+<code>build_cmds</code> now retrieves the working directory on the command line from where the script has been called (temporary folder), and makes it the working directory at the end of the batch script. This ensures that py_cmd.py can be found and executed (necessary since QGIS 2.18.2 since they somehow change the wd in one of their .bat-files) (#26, @eivindhammers).</li>
+<li>RQGIS now also does testing using the <code>testthat</code>-package (#20).</li>
 <li>
 <code>run_qgis</code> stops if the user specifies one of the interactive QGIS Select-by operations.</li>
 <li>
 <code>run_qgis</code> now stops if the output shapefile created by QGIS is empty.</li>
-<li>Removing a bug from <code>run_qgis</code>. Function argument <code>load_output</code> now checks if the QGIS output was really created before trying to load it.</li>
 <li>
 <code>run_qgis</code>-message: Use qgis:creategrid instead of qgis:vectorgrid.</li>
-<li>vignette update (MacOSX and homebrew installation)</li>
 <li>Fine-tuning of the documentation files</li>
 <li>Deleting redundancies in functions <code>build_cmds</code>, <code>check_apps</code> and <code>execute_cmds</code>
 </li>
 <li>Removing empty string from <code>find_algorithms</code> output</li>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+<li>vignette update (MacOSX and homebrew installation) (#14, @pat-s)</li>
 </ul>
+</div>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"> </a>Bug fixes</h2>
+<ul>
+<li>bug fix: we replaced <code>findstr</code> in <code>set_env</code> by the more general <code>%SystemRoot%\\System32\\findstr</code>
+</li>
+<li>bug fix: when constructing the cmd-command (in <code>run_qgis</code>), we need to avoid “double” shell quotes. This happened e.g., with <code>grass7:r.viewshed</code>. Additionally, we made sure that None, True and False are not shellquoted.</li>
+<li>bug fix: when determining the GRASS REGION PARAMETER in <code>run_qgis</code>. To extract the extent of a spatial object <code>ogrInfo</code> needs the layer name without the file extension. To do that we now use the <code>file_path_sans_ext</code> of the <code>tools</code> package instead of a simple <code>gsub</code>-command. Previously, we simply returned everything in front of a colon. This caused problems with filenames such as gis.osm_roads_free_1.shp.</li>
+<li>bug fix: <code>run_qgis</code> function argument <code>load_output</code> now checks if the QGIS output was really created before trying to load it.</li>
+<li>bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (<code>paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))</code>) solved the problem.</li>
+<li>bug fix: <code>qgis_session_info</code> now also runs on MacOS (#34)</li>
+</ul>
+</div>
 </div>
     </div>
   </div>
@@ -113,7 +131,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#rqgis-0-1-0-9000">0.1.0.9000</a></li>
+        <li><a href="#rqgis-0-2-1">0.2.1</a></li>
+        <li><a href="#rqgis-0-2-0">0.2.0</a></li>
       </ul>
     </div>
   </div>
