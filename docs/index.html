@@ -228,7 +228,7 @@ params<span class="op">$</span>OUTPUT_LAYER &lt;-<span class="st"> </span><span 
 <h1 class="hasAnchor">
 <a href="#rqgis-modifications-v--2-16-2-18-1" class="anchor"> </a>(R)QGIS modifications (v. 2.16-2.18.1)</h1>
 <p>If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one <code>import</code> statement (SilentProgress) to <code>../processing/gui/AlgorithmExecutor.py</code>. Secondly replace <code>python alg.execute(progress)</code> by <code>python alg.execute(progress or SilentProgress())</code>:</p>
-<p><img src="figures/rewrite_algexecutor.png" width="80%" height="80%" style="display: block; margin: auto;"></p>
+<p><img src="figures/rewrite_algexecutor.PNG" width="80%" height="80%" style="display: block; margin: auto;"></p>
 <p>The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this <a href="http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat">post</a>). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.</p>
 </div>
 </div>
