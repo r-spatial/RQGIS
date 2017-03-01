@@ -1,5 +1,6 @@
 context("run_qgis")
 
+# QGIS algs Wed Mar  1 11:40:49 2017 ------------------------------
 
 test_that("Test, if QGIS-algorithms are working?", {
   
@@ -46,6 +47,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   expect_is(out, "SpatialPointsDataFrame")
 })
 
+# SAGA Wed Mar  1 11:40:06 2017 ------------------------------
 
 test_that("Test, if SAGA-algorithms are working?", {
   
@@ -71,7 +73,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   expect_is(out, "RasterLayer")
 })
 
-
+# GRASS 7 Wed Mar  1 11:40:15 2017 ------------------------------
 
 test_that("Test, if GRASS7-algorithms are working?", {
   
@@ -97,6 +99,8 @@ test_that("Test, if GRASS7-algorithms are working?", {
   expect_is(out, "RasterLayer")
   })
 
+# simple features (sf) Wed Mar  1 11:40:29 2017 ------------------------------
+
 test_that("Test if Simple Features are working", {
   
   testthat::skip_on_appveyor()
@@ -108,21 +112,20 @@ test_that("Test if Simple Features are working", {
   library("sp")
   library("sf")
   
-  coords_1 <- 
-    matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
-           ncol = 2, byrow = TRUE)
+  coords_1 <- matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0), ncol = 2, 
+                     byrow = TRUE)
   coords_2 <- coords_1 + 2
-  polys <- 
-    # convert the coordinates into polygons
-    polys <- list(Polygons(list(Polygon(coords_1)), 1), 
-                  Polygons(list(Polygon(coords_2)), 2)) 
+  
+  # convert the coordinates into polygons
+  polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                Polygons(list(Polygon(coords_2)), 2)) 
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
   
   # Convert to SF
   polys <- st_as_sf(polys)
   
   # let's set the environment 
-  qgis_env <- set_env(root = "C:/OSGeo4W64/")  
+  qgis_env <- set_env()  
   
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
