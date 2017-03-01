@@ -116,7 +116,7 @@
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 <p>RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html" class="uri">https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html</a>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.</p>
-<p><img src="figures/r_qgis_puzzle.png" width="40%" height="40%" style="display: block; margin: auto;"></p>
+<p><img src="../figures/r_qgis_puzzle.png" width="40%" height="40%" style="display: block; margin: auto;"></p>
 <p>The main advantages of RQGIS are:</p>
 <ol style="list-style-type: decimal">
 <li>It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.</li>
@@ -221,14 +221,14 @@ params<span class="op">$</span>OUTPUT_LAYER &lt;-<span class="st"> </span><span 
 <span class="kw">plot</span>(ger)
 <span class="co"># next plot the centroids created by QGIS</span>
 <span class="kw">plot</span>(out, <span class="dt">pch =</span> <span class="dv">21</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">bg =</span> <span class="st">"lightblue"</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</code></pre></div>
-<p><img src="figures/10_plot_ger.png" width="60%" height="60%" style="display: block; margin: auto;"></p>
+<p><img src="../figures/10_plot_ger.png" width="60%" height="60%" style="display: block; margin: auto;"></p>
 <p>Of course, this is a very simple example. We could have achieved the same using <code>sp::coordinates</code>. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper…</p>
 </div>
 <div id="rqgis-modifications-v--2-16-2-18-1" class="section level1">
 <h1 class="hasAnchor">
 <a href="#rqgis-modifications-v--2-16-2-18-1" class="anchor"> </a>(R)QGIS modifications (v. 2.16-2.18.1)</h1>
 <p>If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one <code>import</code> statement (SilentProgress) to <code>../processing/gui/AlgorithmExecutor.py</code>. Secondly replace <code>python alg.execute(progress)</code> by <code>python alg.execute(progress or SilentProgress())</code>:</p>
-<p><img src="figures/rewrite_algexecutor.PNG" width="80%" height="80%" style="display: block; margin: auto;"></p>
+<p><img src="../figures/rewrite_algexecutor.PNG" width="80%" height="80%" style="display: block; margin: auto;"></p>
 <p>The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this <a href="http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat">post</a>). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.</p>
 </div>
 </div>
