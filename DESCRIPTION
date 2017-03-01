@@ -21,6 +21,7 @@ License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
 RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
 ByteCompile: true
 Depends:
     R (>= 3.2.0)
@@ -38,3 +39,4 @@ Suggests:
           rmarkdown,
           testthat,
 VignetteBuilder: knitr
+

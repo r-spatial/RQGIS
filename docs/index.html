@@ -62,10 +62,47 @@
     
 <div class="contents">
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+<div id="note-please-update-to-qgis-version-2-18-2" class="section level1">
+<div class="page-header"><h1 class="hasAnchor">
+<a href="#note-please-update-to-qgis-version-2-18-2" class="anchor"> </a>NOTE: Please update to QGIS version &gt; 2.18.2</h1></div>
+<ul>
+<li>if you want to use RQGIS in combination with the developer version of QGIS</li>
+<li>this version contains a major bug fix which RQGIS relies on</li>
+<li>preferably by using our <a href="https://jannes-m.github.io/RQGIS/articles/install_guide.html">install guide</a>
+</li>
+</ul>
 <div id="general" class="section level4">
 <h4 class="hasAnchor">
 <a href="#general" class="anchor"> </a>General</h4>
 
+<table class="table">
+<thead><tr class="header">
+<th>Resource:</th>
+<th>CRAN</th>
+<th>Travis CI</th>
+<th>Appveyor</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><em>Platforms:</em></td>
+<td><em>Multiple</em></td>
+<td><em>Linux &amp; macOS</em></td>
+<td><em>Windows</em></td>
+</tr>
+<tr class="even">
+<td>R CMD check</td>
+<td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://travis-ci.org/jannes-m/RQGIS.svg?branch=master" alt="Build status"></a></td>
+<td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
+</tr>
+<tr class="odd">
+<td>Test coverage</td>
+<td></td>
+<td><a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"></a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="cran" class="section level4">
 <h4 class="hasAnchor">
@@ -78,7 +115,7 @@
 <p><a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-0.2.0.9000-orange.svg?style=flat-square" alt="packageversion"></a></p>
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
-<p>RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framwork (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html" class="uri">https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html</a>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.</p>
+<p>RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html" class="uri">https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html</a>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.</p>
 <p><img src="figures/r_qgis_puzzle.png" width="40%" height="40%" style="display: block; margin: auto;"></p>
 <p>The main advantages of RQGIS are:</p>
 <ol style="list-style-type: decimal">
@@ -87,9 +124,10 @@
 <li>R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as <code>rsaga.slope.asp.curv</code> and <code>multi.focal.function</code>.</li>
 </ol>
 </div>
+</div>
 <div id="installation" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#installation" class="anchor"> </a>Installation</h1></div>
+<h1 class="hasAnchor">
+<a href="#installation" class="anchor"> </a>Installation</h1>
 <div id="package-installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#package-installation" class="anchor"> </a>Package installation</h2>
@@ -102,20 +140,7 @@
 <ul>
 <li>the latest RQGIS development version from Github with:</li>
 </ul>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="cf">if</span> (<span class="kw">packageVersion</span>(<span class="st">"devtools"</span>) <span class="op">&lt;</span><span class="st"> </span><span class="fl">1.6</span>) {
-    <span class="kw">install.packages</span>(<span class="st">"devtools"</span>)    
-    }
-<span class="cf">if</span> (<span class="op">!</span><span class="st">"lazyeval"</span> <span class="op">%in%</span><span class="st"> </span><span class="kw">installed.packages</span>()[, <span class="st">"Package"</span>]) {
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"hadley/lazyeval"</span>)  
-}
-devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"jannes-m/RQGIS"</span>, <span class="dt">build_vignettes =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<p>Before running these lines under <strong>Linux</strong> (Ubuntu), you need to install some <code>devtools</code> dependencies via the terminal:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install libssl-dev
-<span class="co"># add curl repository to sources.list</span>
-<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://security.ubuntu.com/ubuntu precise-security main" &gt;&gt; /etc/apt/sources.list'</span>
-<span class="fu">sudo</span> apt-get update
-<span class="co"># finally you can install libcurl</span>
-<span class="fu">sudo</span> apt-get install libcurl4-gnutls-dev</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">ghit<span class="op">::</span><span class="kw">install_github</span>(<span class="st">"jannes-m/RQGIS"</span>)</code></pre></div>
 </div>
 </div>
 <div id="rqgis-usage" class="section level1">
@@ -141,45 +166,46 @@ my_env &lt;-<span class="st"> </span><span class="kw"><a href="reference/set_env
 <span class="co"># under Windows set_env would be much faster if you specify the root path:</span>
 <span class="co"># my_env &lt;- set_env("C:/OSGeo4W~1")</span>
 <span class="co"># have a look at the paths necessary to run QGIS from within R</span>
+
 my_env
-<span class="co">#&gt; $root</span>
-<span class="co">#&gt; [1] "/Applications/QGIS.app"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $qgis_prefix_path</span>
-<span class="co">#&gt; [1] "/Applications/QGIS.app/Contents"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $python_plugins</span>
-<span class="co">#&gt; [1] "/Applications/QGIS.app/Contents/Resources/python/plugins"</span></code></pre></div>
+
+## $root
+## [1] "C:\\OSGeo4W64"
+##
+## $qgis_prefix_path
+## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
+##
+## $python_plugins
+## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"</code></pre></div>
 <p>Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use <code>find_algorithms</code>. We suspect that the function we are looking for contains the words <em>polygon</em> and <em>centroid</em>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look for a function that contains the words "polygon" and "centroid"</span>
 <span class="kw"><a href="reference/find_algorithms.html">find_algorithms</a></span>(<span class="dt">search_term =</span> <span class="st">"polygon centroid"</span>, 
                 <span class="dt">qgis_env =</span> my_env)
-<span class="co">#&gt; [1] "ERROR: Opening of authentication db FAILED"                                 </span>
-<span class="co">#&gt; [2] "WARNING: Auth db query exec() FAILED"                                       </span>
-<span class="co">#&gt; [3] "Polygon centroids------------------------------------&gt;qgis:polygoncentroids"</span>
-<span class="co">#&gt; [4] "Polygon centroids------------------------------------&gt;saga:polygoncentroids"</span>
-<span class="co">#&gt; [5] ""</span></code></pre></div>
+
+## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"                       
+## [2] "Polygon centroids------------------------------------&gt;qgis:polygoncentroids"
+## [3] "Polygon centroids------------------------------------&gt;saga:polygoncentroids"</code></pre></div>
 <p>This gives us two functions we could use. Here, we’ll choose the QGIS function named <code>qgis:polygoncentroids</code>. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="reference/get_usage.html">get_usage</a></span>(<span class="dt">alg =</span> <span class="st">"qgis:polygoncentroids"</span>,
           <span class="dt">qgis_env =</span> my_env,
           <span class="dt">intern =</span> <span class="ot">TRUE</span>)
-<span class="co">#&gt; [1] "ERROR: Opening of authentication db FAILED"</span>
-<span class="co">#&gt; [2] "WARNING: Auth db query exec() FAILED"      </span>
-<span class="co">#&gt; [3] "ALGORITHM: Polygon centroids"              </span>
-<span class="co">#&gt; [4] "\tINPUT_LAYER &lt;ParameterVector&gt;"           </span>
-<span class="co">#&gt; [5] "\tOUTPUT_LAYER &lt;OutputVector&gt;"             </span>
-<span class="co">#&gt; [6] ""                                          </span>
-<span class="co">#&gt; [7] ""                                          </span>
-<span class="co">#&gt; [8] ""</span></code></pre></div>
+
+## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"
+## [2] "ALGORITHM: Polygon centroids"                        
+## [3] "\tINPUT_LAYER &lt;ParameterVector&gt;"                      
+## [4] "\tOUTPUT_LAYER &lt;OutputVector&gt;"                        
+## [5] ""                                                    
+## [6] ""                                                    
+## [7] ""</code></pre></div>
 <p>Consequently <code>qgis:polygoncentroids</code> only expects a parameter called <code>INPUT_LAYER</code>, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called <code>OUTPUT_LAYER</code>, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named <code>get_args_man</code>. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by <code>run_qgis</code> (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting <code>get_arg_man</code>’s <code>options</code>-argument to <code>TRUE</code> makes sure that the first option will be selected (QGIS GUI behavior). For example, <code>qgis:addfieldtoattributestable</code> has three options for the <code>FIELD_TYPE</code>-parameter, namely integer, float and string. Setting <code>options</code> to <code>TRUE</code> means that the field type of your new column will be of type integer.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">params &lt;-<span class="st"> </span><span class="kw"><a href="reference/get_args_man.html">get_args_man</a></span>(<span class="dt">alg =</span> <span class="st">"qgis:polygoncentroids"</span>, 
                        <span class="dt">qgis_env =</span> my_env)
 params
-<span class="co">#&gt; $INPUT_LAYER</span>
-<span class="co">#&gt; [1] "None"</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt; $OUTPUT_LAYER</span>
-<span class="co">#&gt; [1] "None"</span></code></pre></div>
+## $INPUT_LAYER
+## [1] "None"
+## 
+## $OUTPUT_LAYER
+## [1] "None"</code></pre></div>
 <p>In our case, <code>qgis:polygoncentroids</code> has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT_LAYER (e.g. “ger.shp”) you can also use a spatial object that resides in the global environment of R. Conveniently, <code>run_qgis</code> will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame <code>ger</code> as input layer.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># specify input layer</span>
 params<span class="op">$</span>INPUT_LAYER  &lt;-<span class="st"> </span>ger
@@ -195,14 +221,14 @@ params<span class="op">$</span>OUTPUT_LAYER &lt;-<span class="st"> </span><span 
 <span class="kw">plot</span>(ger)
 <span class="co"># next plot the centroids created by QGIS</span>
 <span class="kw">plot</span>(out, <span class="dt">pch =</span> <span class="dv">21</span>, <span class="dt">add =</span> <span class="ot">TRUE</span>, <span class="dt">bg =</span> <span class="st">"lightblue"</span>, <span class="dt">col =</span> <span class="st">"black"</span>)</code></pre></div>
-<p><img src="figures/README-unnamed-chunk-12-1.png" width="480" style="display: block; margin: auto;"></p>
+<p><img src="figures/10_plot_ger.png" width="60%" height="60%" style="display: block; margin: auto;"></p>
 <p>Of course, this is a very simple example. We could have achieved the same using <code>sp::coordinates</code>. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper…</p>
 </div>
 <div id="rqgis-modifications-v--2-16-2-18-1" class="section level1">
 <h1 class="hasAnchor">
 <a href="#rqgis-modifications-v--2-16-2-18-1" class="anchor"> </a>(R)QGIS modifications (v. 2.16-2.18.1)</h1>
 <p>If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one <code>import</code> statement (SilentProgress) to <code>../processing/gui/AlgorithmExecutor.py</code>. Secondly replace <code>python alg.execute(progress)</code> by <code>python alg.execute(progress or SilentProgress())</code>:</p>
-<p><img src="figures/rewrite_algexecutor.png" width="80%" height="80%" style="display: block; margin: auto;"></p>
+<p><img src="figures/rewrite_algexecutor.PNG" width="80%" height="80%" style="display: block; margin: auto;"></p>
 <p>The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this <a href="http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat">post</a>). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.</p>
 </div>
 </div>
@@ -228,12 +254,9 @@ params<span class="op">$</span>OUTPUT_LAYER &lt;-<span class="st"> </span><span 
 <html><body>
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://travis-ci.org/jannes-m/RQGIS.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?branch=master&amp;svg=true" alt="AppVeyor Build Status"></a></li>
 <li><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a></li>
-<li><a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="codecov"></a></li>
 <li><a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg" alt="minimal R version"></a></li>
-<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--02--08-yellowgreen.svg" alt="Last-changedate"></a></li>
+<li><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--03--01-yellowgreen.svg" alt="Last-changedate"></a></li>
 </ul>
 </body></html>
 </div>

@@ -60,7 +60,7 @@
       <h1>(R)QGIS installation guide for Windows, Mac &amp; Linux</h1>
                         <h4 class="author">Jannes Muenchow, Patrick Schratz</h4>
             
-            <h4 class="date">2017-02-08</h4>
+            <h4 class="date">2017-03-01</h4>
           </div>
 
     
@@ -77,9 +77,9 @@
 <html><body><a href="#windows" class="anchor"> </a></body></html>Windows</h1>
 <p>There are at least two options to install QGIS on Windows in such a way that RQGIS can access QGIS. The first option is the Standalone Installer from the <a href="https://www.qgis.org/en/site/forusers/download.html">QGIS installer page</a>. This will install QGIS along with the third-party providers GRASS and SAGA. However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, PostGIS, etc.), we recommend to use the OSGeo4W Network installer. This installer is available on the <a href="https://www.qgis.org/en/site/forusers/download.html">QGIS installer page</a> as well as on the <a href="http://trac.osgeo.org/osgeo4w/">OSGeo4W-website</a>.</p>
 <p>To install OSGeo4W, the easiest way is to to use the Express installation:</p>
-<center>
-<img src="00_express.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/00_express.PNG">
+</div>
 <p>We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.</p>
 <ol style="list-style-type: decimal">
 <li>Select “Express Installation”</li>
@@ -90,31 +90,31 @@
 <ol style="list-style-type: decimal">
 <li>Run the OSGeo4W setup and choose the advanced installation.</li>
 </ol>
-<center>
-<img src="01_initial_setup.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/01_initial_setup.PNG">
+</div>
 <ol start="2" style="list-style-type: decimal">
 <li>Subsequently, accept the default settings until you reach the “Select Packages” window.</li>
 </ol>
-<center>
-<img src="04_select_packages.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/04_select_packages.PNG">
+</div>
 <ol start="3" style="list-style-type: decimal">
 <li>After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):</li>
 </ol>
-<center>
-<img src="05_command_line_utilties.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/05_command_line_utilties.PNG">
+</div>
 <p>Additionally, we choose the Desktop-GIS GRASS 6 &amp; 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).</p>
-<center>
-<img src="06_desktop_gis.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/06_desktop_gis.PNG">
+</div>
 <ol start="4" style="list-style-type: decimal">
 <li>We leave the rest as is, click “Next” and wait for the OSGeo4W-suggestions which we accept.</li>
 </ol>
-<center>
-<img src="08_suggestions.PNG" width="50%" height="50%">
-</center>
+<div class="figure">
+<img src="/Users/pjs/Google%20Drive/Github/RQGIS/docs/figures/08_suggestions.PNG">
+</div>
 <p>Clicking “Next” once more will start the download and installation process which might take a while.</p>
 <p>If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running <code>../OSGeo4W/bin/osgeo4w-setup.exe</code>. Alternatively, you can download and run again the latest <a href="http://trac.osgeo.org/osgeo4w/">OSGeo4W-executable</a>.</p>
 <p>If you additionally want to use the <strong>LiDAR processing tools</strong> (LAStools), please follow the steps found <a href="https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/">here</a>.</p>
