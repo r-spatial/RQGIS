@@ -13,7 +13,7 @@ vignette: >
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
-  # fig.path = "figures/README-",
+  #fig.path = "https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/",
   fig.align = "center",
   collapse = TRUE,
   comment = "#>"
@@ -32,7 +32,7 @@ There are at least two options to install QGIS on Windows in such a way that RQG
 
 To install OSGeo4W, the easiest way is to to use the Express installation:
 
-![](../figures/00_express.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/00_express.PNG)
 
 We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
 
@@ -44,23 +44,23 @@ This installation is more or less equivalent to the standalone QGIS-installation
 
 1. Run the OSGeo4W setup and choose the advanced installation. 
 
-![](../figures/01_initial_setup.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/01_initial_setup.PNG)
 
 2. Subsequently, accept the default settings until you reach the “Select Packages” window.
 
-![](../figures/04_select_packages.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/04_select_packages.PNG)
 
 3. After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):
 
-![](../figures/05_command_line_utilties.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/05_command_line_utilties.PNG)
 
 Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).
 
-![](../figures//06_desktop_gis.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures//06_desktop_gis.PNG)
 
 4. We leave the rest as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
-![](../figures/08_suggestions.PNG)
+![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/08_suggestions.PNG)
 
 Clicking "Next" once more will start the download and installation process which might take a while.
 
