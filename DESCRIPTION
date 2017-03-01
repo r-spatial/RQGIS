@@ -30,11 +30,11 @@ Imports:
          rgdal, 
          sp,
          XML,
-         tools
+         tools,
+         sf (>= 0.3-4)
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests: 
           knitr,
           rmarkdown,
           testthat,
-          sf
 VignetteBuilder: knitr

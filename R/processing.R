@@ -752,6 +752,11 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
 #' @importFrom raster raster
+#' @importFrom raster writeRaster
+#' @importFrom sf st_write
+#' @importFrom sf st_read
+#' @importFrom rgdal writeOGR
+#' @importFrom rgdal readOGR
 #' @examples
 #' \dontrun{
 #' # set the environment
@@ -861,16 +866,16 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       file.remove(list.files(path = tmp_dir, 
                              pattern = names(params)[[i]],
                              full.names = TRUE))
-      sf::st_write(params[[i]], 
-                   dsn = file.path(tmp_dir, paste0(names(params)[[i]], ".shp")),
-                   driver = "ESRI Shapefile",
-                   quiet = TRUE)
+      st_write(params[[i]], 
+               dsn = file.path(tmp_dir, paste0(names(params)[[i]], ".shp")),
+               driver = "ESRI Shapefile",
+               quiet = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
-      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
-                          prj = TRUE, overwrite = TRUE)
+      writeRaster(params[[i]], filename = fname, format = "ascii", 
+                  prj = TRUE, overwrite = TRUE)
       # return the result
       fname
     }  else {
@@ -974,16 +979,16 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       }
       
       if (input.sf == FALSE) {
-        test <- try(expr = rgdal::readOGR(dsn = dirname(fname),
-                                          layer = gsub("\\..*", "", 
-                                                       basename(fname)),
-                                          verbose = FALSE),
+        test <- try(expr = readOGR(dsn = dirname(fname),
+                                   layer = gsub("\\..*", "", 
+                                                basename(fname)),
+                                   verbose = FALSE),
                     silent = TRUE)
       } else {
-        test <- try(expr = sf::st_read(dsn = dirname(fname),
-                                       layer = gsub("\\..*", "",
-                                                    basename(fname)),
-                                       quiet = TRUE),
+        test <- try(expr = st_read(dsn = dirname(fname),
+                                   layer = gsub("\\..*", "",
+                                                basename(fname)),
+                                   quiet = TRUE),
                     silent = TRUE)
         }
       
