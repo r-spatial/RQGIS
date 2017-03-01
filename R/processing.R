@@ -751,6 +751,11 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
 #' @importFrom raster raster
+#' @importFrom raster writeRaster
+#' @importFrom sf st_write
+#' @importFrom sf st_read
+#' @importFrom rgdal writeOGR
+#' @importFrom rgdal readOGR
 #' @examples
 #' \dontrun{
 #' # set the environment
@@ -815,11 +820,35 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
            " should be ",
            paste(names(test)[ind], collapse = ", "))
     }
+    
+    # Make sure boolean operators are in Python form
+    params <- sapply(seq_along(params), function(i) {
+      ifelse(params[i] == "TRUE", "True",
+             ifelse(params[i] == "FALSE", "False", params[i]))
+    })
   }
   
-  # save Spatial-Objects (sp and raster)
-  # define temporary folder
+  # Save Spatial-Objects (sp, sf and raster)
+  # Define temporary folder
   tmp_dir <- tempdir()
+  # List classes of objects supplied to parameters
+  classes <- sapply(params, function(x) class(x))
+  # GEOMETRY and GEOMETRYCOLLECTION not supported
+  invalid.sf <- any(unlist(classes) %in% 
+                      c("sfc_GEOMETRY", "sfc_GEOMETRYCOLLECTION"))
+  if (invalid.sf == TRUE) {
+    stop("RQGIS does not support GEOMETRY or GEOMETRYCOLLECTION classes")
+  }
+  # Check if vector input(s) is "sf" and/or "sp" object
+  input.sf <- any(unlist(classes) %in% c("sf", "sfc", "sfg"))
+  input.sp <- any(grepl("^Spatial(Points|Lines|Polygons)DataFrame$", classes))
+  input.both <- input.sf == TRUE & input.sp == TRUE
+  if (input.both == TRUE & !is.null(load_output)) {
+    warning(paste("Simple Features and Spatial* objects supplied as inputs.",
+                  "Vector output will be loaded as a Simple Features object.",
+                  sep = "\n"))
+  }
+
   params[] <- lapply(seq_along(params), function(i) {
     tmp <- class(params[[i]])
     # check if the function argument is a SpatialObject
@@ -831,13 +860,24 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                       overwrite_layer = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
+    } else if (any(tmp %in% c("sf", "sfc", "sfg"))) {
+      # st_write cannot currently replace layers, so file.remove() them
+      file.remove(list.files(path = tmp_dir, 
+                             pattern = names(params)[[i]],
+                             full.names = TRUE))
+      st_write(params[[i]], 
+               dsn = file.path(tmp_dir, paste0(names(params)[[i]], ".shp")),
+               driver = "ESRI Shapefile",
+               quiet = TRUE)
+      # return the result
+      file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
-      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
-                          prj = TRUE, overwrite = TRUE)
+      writeRaster(params[[i]], filename = fname, format = "ascii", 
+                  prj = TRUE, overwrite = TRUE)
       # return the result
       fname
-    } else {
+    }  else {
       params[[i]]
     }
   })
@@ -926,7 +966,6 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     message(msg)
   }
   
-  
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
@@ -934,17 +973,23 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       fname <- ifelse(dirname(x) == ".", 
                       file.path(tmp_dir, x),
                       x)
-       if (!file.exists(fname)) {
+      if (!file.exists(fname)) {
         stop("Unfortunately, QGIS did not produce: ", x)
       }
-     
-      test <- try(expr = 
-                    rgdal::readOGR(dsn = dirname(fname),
+      
+      if (input.sf == FALSE) {
+        test <- try(expr = readOGR(dsn = dirname(fname),
                                    layer = gsub("\\..*", "", 
                                                 basename(fname)),
                                    verbose = FALSE),
-                  silent = TRUE
-      )
+                    silent = TRUE)
+      } else {
+        test <- try(expr = st_read(dsn = dirname(fname),
+                                   layer = gsub("\\..*", "",
+                                                basename(fname)),
+                                   quiet = TRUE),
+                    silent = TRUE)
+        }
       
       # stop the function if the output exists but is empty
       if (inherits(test, "try-error") && 
