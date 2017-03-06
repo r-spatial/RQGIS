@@ -207,7 +207,7 @@ check_apps <- function(root, ...) {
 #' }
 #' @export
 build_py <- function(qgis_env = set_env()) {
-  c(# import all the libraries you need
+  py_cmd <- c(# import all the libraries you need
     "import os",
     "import sys",
     "from qgis.core import *",
@@ -231,6 +231,31 @@ build_py <- function(qgis_env = set_env()) {
     "from processing.core.Processing import Processing",
     "Processing.initialize()",
     "import processing")
+  
+  # append sys paths if qgis is compiled via source from homebrew on macOS
+  if (Sys.info()["sysname"] == "Darwin") {
+    
+    # check if installed from source via homebrew
+    if (grepl("/usr/local/Cellar", qgis_env$root)) {
+      
+      # define function
+      ins <- function(a, to.insert=list(), pos=c()) {
+        
+        c(a[seq(pos[1])], 
+          to.insert[[1]], 
+          a[seq(pos[1] + 1, pos[2])], 
+          to.insert[[2]], 
+          a[seq(pos[2], length(a))]
+        )
+      }
+      
+      # append into py_cmd
+      append1 <- "sys.path.append('/usr/local/lib/python2.7/site-packages')"
+      append2 <- "sys.path.append('/usr/local/lib/qt-4/python2.7/site-packages')"
+      py_cmd <- ins(py_cmd, list(append1, append2), pos=c(3, 4))
+    }
+  }
+  return(py_cmd)
 }
 
 #' @title Open the GRASS online help
