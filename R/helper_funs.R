@@ -50,8 +50,8 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\\apps\\", my_qgis),
         # return to R temp directory to call later python py_cmd.py
         "pushd %wd%"
-        )
-   
+      )
+    
   } else if (Sys.info()["sysname"] == "Darwin") {
     # construct the batch file
     cmd <- 
@@ -59,11 +59,18 @@ build_cmds <- function(qgis_env = set_env()) {
         paste0("export DYLD_LIBRARY_PATH=", qgis_env$root,
                "/Contents/MacOS/lib/:/Applications/QGIS.app/Contents/",
                "Frameworks/"),
-        # append pythonpath to import qgis.core etc. packages
+        ### append pythonpath to import qgis.core etc. packages
+        # account for homebrew osgeo4mac installation in PYTHONPATH
+        if (grepl("/usr/local/Cellar", qgis_env$root)) {
+          paste0("export PYTHONPATH=/usr/local/Cellar//qgis2/2.18.4/QGIS.app/Contents/Resources/python/:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH")
+        } else {
         paste0("export PYTHONPATH=", qgis_env$root, 
-               "/Contents/Resources/python/"),
+               "/Contents/Resources/python/")
+          },
         # add QGIS Prefix path (not sure if necessary)
-        paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/")) 
+        # suppress debug messages for osgeo4mac homebrew installation setting QGIS env variable 'QGIS_DEBUG'
+        paste0("export QGIS_PREFIX_PATH=", qgis_env$root, "/Contents/MacOS/"),
+        "export QGIS_DEBUG=-1") 
     
   } else if (Sys.info()["sysname"] == "Linux") {
     # construct the batch file
@@ -78,7 +85,7 @@ build_cmds <- function(qgis_env = set_env()) {
   py_cmd <- build_py(qgis_env)
   # return your result
   list("cmd" = cmd, "py_cmd" = py_cmd)
-  }
+}
 
 
 #' @title Building and executing cmd and Python scripts
@@ -99,7 +106,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
                          params = "",
                          qgis_env = set_env(),
                          intern = FALSE) {
-
+  
   cwd <- getwd()
   on.exit(setwd(cwd))
   tmp_dir <- tempdir()
@@ -192,7 +199,7 @@ check_apps <- function(root, ...) {
   names(out) <- c("qgis_prefix_path", "python_plugins")
   # return your result
   out
-}
+  }
 
 #' @title Little helper function to construct the Python-skeleton
 #' @description This helper function simply constructs the Python-skeleton 
