@@ -11,8 +11,8 @@ open_grass_help(alg)
 arguments and default values.}
 }
 \description{
-\code{open_grass_help} opens the GRASS online help for a 
-  specific GRASS geoalgorithm.
+\code{open_grass_help} opens the GRASS online help for a
+specific GRASS geoalgorithm.
 }
 \examples{
 \dontrun{
@@ -24,4 +24,3 @@ Jannes Muenchow
 }
 \keyword{export}
 \keyword{internal}
-

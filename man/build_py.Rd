@@ -8,11 +8,11 @@ build_py(qgis_env = set_env())
 }
 \arguments{
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS
-API. For more information, refer to \code{\link{set_env}}.}
+API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \description{
-This helper function simply constructs the Python-skeleton 
-  necessary to run the QGIS-Python API.
+This helper function simply constructs the Python-skeleton
+necessary to run the QGIS-Python API.
 }
 \examples{
 \dontrun{
@@ -23,4 +23,3 @@ build_py()
 Jannes Muenchow
 }
 \keyword{internal}
-

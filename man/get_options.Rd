@@ -11,19 +11,19 @@ get_options(alg = NULL, qgis_env = set_env(), intern = FALSE)
 returned.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+more information, refer to \code{\link[=set_env]{set_env()}}.}
 
 \item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector (see also 
-\code{\link[base]{system}}).}
+output as an \code{R} character vector (see also
+\code{\link[base:system]{base::system()}}).}
 }
 \description{
 \code{get_options} lists all available parameter options for
-  the required GIS function.
+the required GIS function.
 }
 \details{
 Function \code{get_options} simply calls
-  \code{processing.algoptions} of the QGIS Python API.
+\code{processing.algoptions} of the QGIS Python API.
 }
 \examples{
 \dontrun{
@@ -33,4 +33,3 @@ get_options(alg = "saga:slopeaspectcurvature")
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team
 }
-

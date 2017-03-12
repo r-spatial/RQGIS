@@ -1,6 +1,6 @@
-# RQGIS 0.2.1
+# RQGIS 0.2.0.9000
 
-
+* RQGIS now supports QGIS `osgeo4mac` homebrew installations. This is also the recommended installation way from now on as it does not cause irritating error messages like the Kyngchaos QGIS binary. 
 
 # RQGIS 0.2.0
 
@@ -24,3 +24,6 @@
 * bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (`paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))`) solved the problem.
 * bug fix: `qgis_session_info` now also runs on MacOS (#34)
 
+# RQGIS 0.1.0
+
+Initial CRAN release

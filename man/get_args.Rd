@@ -11,16 +11,16 @@ get_args(alg = NULL, qgis_env = set_env())
 wishes to retrieve.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
-\code{get_args} returns a list with the function arguments of a 
-  specific QGIS geoalgorithm. Later on, the specified function arguments 
-  should serve as input for \code{\link{run_qgis}}'s params argument.
+\code{get_args} returns a list with the function arguments of a
+specific QGIS geoalgorithm. Later on, the specified function arguments
+should serve as input for \code{\link[=run_qgis]{run_qgis()}}'s params argument.
 }
 \description{
-\code{get_args} uses \code{\link{get_usage}} to retrieve 
-  function arguments of a GIS function.
+\code{get_args} uses \code{\link[=get_usage]{get_usage()}} to retrieve
+function arguments of a GIS function.
 }
 \examples{
 \dontrun{
@@ -30,4 +30,3 @@ get_args(alg = "qgis:addfieldtoattributestable")
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team
 }
-
