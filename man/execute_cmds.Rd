@@ -14,18 +14,17 @@ should be used.}
 \item{params}{Parameter to be used with the processing function.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+more information, refer to \code{\link[=set_env]{set_env()}}.}
 
 \item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector (see also 
-\code{\link[base]{system}}).}
+output as an \code{R} character vector (see also
+\code{\link[base:system]{base::system()}}).}
 }
 \description{
 This helper function constructs the batch and Python scripts
-  which are necessary to run QGIS from the command line.
+which are necessary to run QGIS from the command line.
 }
 \author{
 Jannes Muenchow, Patrick Schratz
 }
 \keyword{internal}
-

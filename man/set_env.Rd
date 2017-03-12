@@ -13,17 +13,17 @@ Mac, it looks for \code{QGIS.app} under "Applications" and
 "/usr/local/Cellar/". On Linux, \code{set_env} assumes that the root path
 is "/usr".}
 
-\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of 
+\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of
 QGIS, if available (only for Windows).}
 }
 \value{
-The function returns a list containing all the path necessary to run 
-  QGIS from within R. This is the root path, the QGIS prefix path and the 
-  path to the Python plugins.
+The function returns a list containing all the path necessary to run
+QGIS from within R. This is the root path, the QGIS prefix path and the
+path to the Python plugins.
 }
 \description{
 \code{set_env} tries to find all the paths necessary to run QGIS
-  from within R.
+from within R.
 }
 \examples{
 \dontrun{
@@ -39,4 +39,3 @@ set_env("C:/OSGEO4~1")  # Windows example
 \author{
 Jannes Muenchow, Patrick Schratz
 }
-

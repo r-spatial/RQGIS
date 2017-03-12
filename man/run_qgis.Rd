@@ -8,52 +8,52 @@ run_qgis(alg = NULL, params = NULL, check_params = TRUE,
   show_msg = TRUE, load_output = NULL, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{Name of the GIS function to be used (see 
-\code{\link{find_algorithms}}).}
+\item{alg}{Name of the GIS function to be used (see
+\code{\link[=find_algorithms]{find_algorithms()}}).}
 
 \item{params}{A list of geoalgorithm function arguments that should be used in
-conjunction with the selected (Q)GIS function (see 
-\code{\link{get_args_man}}). Please make sure to provide all function 
-arguments in the correct order. To make sure this is the case, it is 
-recommended to use the convenience function \code{\link{get_args_man}}.}
+conjunction with the selected (Q)GIS function (see
+\code{\link[=get_args_man]{get_args_man()}}). Please make sure to provide all function
+arguments in the correct order. To make sure this is the case, it is
+recommended to use the convenience function \code{\link[=get_args_man]{get_args_man()}}.}
 
-\item{check_params}{If \code{TRUE} (default), it will be checked if all 
+\item{check_params}{If \code{TRUE} (default), it will be checked if all
 geoalgorithm function arguments were provided in the correct order.}
 
 \item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during
 the algorithm execution will be shown.}
 
 \item{load_output}{Character vector containing paths to (an) output file(s) in
-order to load the QGIS output directly into R (optional). If 
-\code{load_output} consists of more than one element, a list will be 
+order to load the QGIS output directly into R (optional). If
+\code{load_output} consists of more than one element, a list will be
 returned. See the example section for more details.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
-If not otherwise specified, the function saves the QGIS generated 
- output files in a temporary folder. Optionally, function parameter 
- \code{load_output} loads spatial QGIS output (vector and raster data) into
- R.
+If not otherwise specified, the function saves the QGIS generated
+output files in a temporary folder. Optionally, function parameter
+\code{load_output} loads spatial QGIS output (vector and raster data) into
+R.
 }
 \description{
 \code{run_qgis} calls QGIS algorithms from within R while passing
- the corresponding function arguments.
+the corresponding function arguments.
 }
 \details{
 This workhorse function calls the QGIS Python API through the command
- line. Specifically, it calls \code{processing.runalg}.
+line. Specifically, it calls \code{processing.runalg}.
 }
 \note{
 Please note that one can also pass spatial R objects as input parameters
- where suitable (e.g., input layer, input raster). Supported formats are
- \code{\link[sp]{SpatialPointsDataFrame}}-, 
- \code{\link[sp]{SpatialLinesDataFrame}}-, 
- \code{\link[sp]{SpatialPolygonsDataFrame}}- and 
- \code{\link[raster]{raster}}-objects. See the example section for more 
- details.
- 
+where suitable (e.g., input layer, input raster). Supported formats are
+\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-,
+\code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-,
+\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and
+\code{\link[raster:raster]{raster::raster()}}-objects. See the example section for more
+details.
+
 GRASS users do not have to specify manually the GRASS region extent (function
 argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
 automatically retrieve the region extent based on the input layers.
@@ -83,4 +83,3 @@ run_qgis(alg = "saga:addcoordinatestopoints",
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team
 }
-

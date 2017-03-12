@@ -7,30 +7,30 @@
 open_help(alg = NULL, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{The name of the algorithm for which one wishes to retrieve 
+\item{alg}{The name of the algorithm for which one wishes to retrieve
 arguments and default values.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link{set_env}}.}
+more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
 The function opens the default web browser, and displays the help for
-  the specified algorithm.
+the specified algorithm.
 }
 \description{
-\code{open_help} opens the online help for a specific (Q)GIS 
-  geoalgorithm. This is the online help one also encounters in the QGIS GUI.
-  In the case of GRASS algorithms this is actually the GRASS online
-  documentation.
+\code{open_help} opens the online help for a specific (Q)GIS
+geoalgorithm. This is the online help one also encounters in the QGIS GUI.
+In the case of GRASS algorithms this is actually the GRASS online
+documentation.
 }
 \details{
 Bar a few exceptions \code{open_help} works for all QGIS, GRASS and
-  SAGA geoalgorithms. The online help of other third-party providers,
-  however, has not been tested so far.
+SAGA geoalgorithms. The online help of other third-party providers,
+however, has not been tested so far.
 }
 \note{
-Please note that \code{open_help} requires a \strong{working Internet 
-  connection}.
+Please note that \code{open_help} requires a \strong{working Internet
+connection}.
 }
 \examples{
 \dontrun{
@@ -43,4 +43,3 @@ open_help(alg = "grass:v.overlay")
 \author{
 Jannes Muenchow, Victor Olaya, QGIS core team
 }
-

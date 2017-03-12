@@ -4,27 +4,26 @@
 \name{random_points}
 \alias{random_points}
 \title{Random points.}
-\format{A \code{\link[sp]{SpatialPointsDataFrame}} object with 100 rows and 4
-  variables:
+\format{A \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} object with 100 rows and 4
+variables:
 \describe{
-  \item{id}{Plot ID.}
-  \item{spri}{No of vascular plants per plot (species richness).}
-  \item{x}{Longitude.}
-  \item{y}{Latitude.}
-  }}
+\item{id}{Plot ID.}
+\item{spri}{No of vascular plants per plot (species richness).}
+\item{x}{Longitude.}
+\item{y}{Latitude.}
+}}
 \usage{
 random_points
 }
 \description{
-A \code{\link[sp]{SpatialPointsDataFrame}} (EPSG:32717) object
-  with 100 randomly sampled points (stratified by altitude). For more
-  details, please refer to Muenchow et al. (2013).
+A \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} (EPSG:32717) object
+with 100 randomly sampled points (stratified by altitude). For more
+details, please refer to Muenchow et al. (2013).
 }
 \references{
-Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013): 
+Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013):
 Predictive mapping of species richness and plant species' distributions of a
 Peruvian fog oasis along an altitudinal gradient. Biotropica 45, 5, 557-566,
 doi: 10.1111/btp.12049.
 }
 \keyword{datasets}
-
