@@ -60,7 +60,7 @@
       <h1>(R)QGIS installation guide for Windows, Mac &amp; Linux</h1>
                         <h4 class="author">Jannes Muenchow, Patrick Schratz</h4>
             
-            <h4 class="date">2017-03-01</h4>
+            <h4 class="date">2017-03-12</h4>
           </div>
 
     
@@ -123,20 +123,39 @@
 <h1 class="hasAnchor">
 <html><body><a href="#mac-os-x" class="anchor"> </a></body></html>Mac OS X</h1>
 <p><strong>NOTE</strong><br>
-We recommend to do all installations using the package management system <code>homebrew</code>. This ensures correct linkage between all softwares. Furthermore, this is the way we check RQGIS compatibility for macOS.</p>
+We recommend to do all installations using the package management system <code>homebrew</code>.</p>
 <div id="qgis" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#qgis" class="anchor"> </a></body></html>QGIS</h2>
-<p>Homebrew also supports <a href="https://caskroom.github.io/">GUI installations</a>. QGIS can be installed using <code>brew cask install qgis</code> from the command line if homebrew is installed and configured correctly. If you do not want to use <code>homebrew</code>, you can install the QGIS binary from <a href="https://www.qgis.org/en/site/forusers/download.html" class="uri">https://www.qgis.org/en/site/forusers/download.html</a>. In fact, this is exactly doing the same as <code>brew cask install qgis</code>.</p>
-<p>If you want to build QGIS from source, please use the ‘osgeo4mac’ tap of <code>homebrew</code> with <code>brew install qgis2</code>. Note: Right now, issues with the <code>processing</code> module occur when installing QGIS this way, so we recommend to use the other approach until this is fixed.</p>
+<p>Two options exist installing QGIS on macOS</p>
+<ol style="list-style-type: decimal">
+<li>Compile from source from <a href="https://github.com/OSGeo/homebrew-osgeo4mac">osgeo4mac</a> <strong>(recommended)</strong>
+</li>
+</ol>
+<p>The <code>osgeo4mac</code> tap supports the most recent QGIS versions for both the development version and the long term release (LTR). You can compile with various options, e.g. <code>--with-grass</code> or <code>--with-saga-gis</code>. Check <code>brew info qgis2</code> for all available options. We recommend to compile QGIS using</p>
+<p><code>brew install qgis2 --with-grass --with-saga-gis</code>.</p>
+<p>The installation will take some time (30-45 mins, depending on your system). If you want to install the LTR version, simply replace <code>qgis</code> by <code>qgis2-ltr</code>.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Install QGIS binary from Kyngchaos</li>
+</ol>
+<p>Homebrew also supports <a href="https://caskroom.github.io/">GUI installations</a>. QGIS can be installed using</p>
+<p><code>brew cask install qgis</code></p>
+<p>from the command line if homebrew is installed and configured correctly. If you do not (want to) use <code>homebrew</code>, you can install the QGIS binary from <a href="https://www.qgis.org/en/site/forusers/download.html" class="uri">https://www.qgis.org/en/site/forusers/download.html</a>. This is exactly the same as calling <code>brew cask install qgis</code>.</p>
+<p>If you choose this option, you will get the following error messages during processing</p>
+<pre><code>QSqlDatabase: QSQLITE driver not loaded
+QSqlDatabase: available drivers:
+QSqlQuery::prepare: database not open
+[1] "ERROR: Opening of authentication db FAILED"
+[2] "WARNING: Auth db query exec() FAILED"</code></pre>
+<p>These look quite ugly but <strong>DO NOT affect RQGIS usage</strong>.</p>
 </div>
 <div id="grass" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#grass" class="anchor"> </a></body></html>GRASS</h2>
-<p>If you install QGIS &gt; 2.16 on your system using <code>brew cask install qgis</code>, GRASS7 will work out-of-the-box within QGIS. GRASS6 is deprecated and does not work anymore in QGIS &gt; 2.16 (see this <a href="http://gis.stackexchange.com/a/205964/43409">link</a>).</p>
+<p>If you install QGIS &gt; 2.16 on your system using <code>brew cask install qgis</code>, GRASS7 will work out-of-the-box within QGIS. GRASS6 is deprecated and does not work anymore in QGIS &gt; 2.16 (see this <a href="http://gis.stackexchange.com/a/205964/43409">link</a>). If you installed QGIS using option 1 (osgeo4mac), GRASS 7 will also work with QGIS &lt; 2.16.</p>
 <p>You can still use GRASS6 if you</p>
 <ol style="list-style-type: decimal">
-<li>Install it by <code>brew install grass6</code> from the ‘osgeo4mac’ tap</li>
+<li>Install it via <code>brew install grass6</code> from the ‘osgeo4mac’ tap</li>
 <li>Link it in QGIS via “Processing - Options - Providers”</li>
 </ol>
 <p>The binary GRASS installation can be found <a href="https://grass.osgeo.org/download/software/mac-osx/">here</a>.</p>
@@ -144,13 +163,12 @@ We recommend to do all installations using the package management system <code>h
 <div id="saga" class="section level2">
 <h2 class="hasAnchor">
 <html><body><a href="#saga" class="anchor"> </a></body></html>SAGA</h2>
-<p>QGIS for Mac comes with a preconfigured SAGA installation and should work out of the box.</p>
-<p><strong>Custom SAGA installations</strong>:<br>
-Using homebrew, SAGA can be compiled via <code>brew install saga-gis</code>.</p>
-<p>There is no binary install of SAGA for Mac. Therefore, we recommended to use bottle compiling with <code>homebrew</code>. Alternatively, you can compile SAGA from source from the <a href="https://sourceforge.net/projects/saga-gis/files/">SAGA website</a>. Make sure to check RQGIS compatibility with your SAGA version! You can do so using <code><a href="../reference/qgis_session_info.html">qgis_session_info()</a></code> in RQGIS.</p>
+<p>The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.</p>
+<p>Using homebrew, SAGA can be compiled via <code>brew install saga-gis</code>. If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.</p>
+<p>There is no binary install of SAGA for Mac. Therefore, we recommended to use the bottle installation from <code>homebrew</code>. Alternatively, you can compile SAGA from source from the <a href="https://sourceforge.net/projects/saga-gis/files/">SAGA website</a>. Make sure to check RQGIS compatibility with your SAGA version! You can do so using <code><a href="../reference/qgis_session_info.html">qgis_session_info()</a></code> in RQGIS.</p>
 <p>To link a custom installation of SAGA with QGIS, follow these steps:</p>
 <ol style="list-style-type: decimal">
-<li>Open the following file of your QGIS installation: (…/python/plugins/processing/algs/saga/SagaUtils.py)</li>
+<li>Open the following file of your QGIS installation: (<code>.../python/plugins/processing/algs/saga/SagaUtils.py</code>)</li>
 <li>In the function <code>findSagaFolder()</code> change the path setting pointing to the folder containing <code>saga_cmd</code>:</li>
 </ol>
 <div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">testfolder <span class="op">=</span> os.path.join(QgsApplication.prefixPath(), <span class="st">'bin'</span>)</code></pre></div>

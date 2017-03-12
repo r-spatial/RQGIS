@@ -1,15 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-NOTE: Please update to QGIS version &gt; 2.18.2
-===============================================
+Important news
+==============
 
--   if you want to use RQGIS in combination with the developer version of QGIS
--   this version contains a major bug fix which RQGIS relies on
--   preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)
+-   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on.
+
+-   You might encounter `segfault` errors using SAGA algorithms on macOS. See [this issue](http://hub.qgis.org/issues/16332).
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--03--01-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--03--12-yellowgreen.svg)](/commits/master)
 
 | Resource:     | CRAN                                                                                                                                                             | Travis CI                                                                                                                                                | Appveyor                                                                                                                                                               |
 |---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
