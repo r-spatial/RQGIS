@@ -1,5 +1,14 @@
+library("testthat")
+library("RQGIS")
+library("sp")
+library("raster")
+
 context("run_qgis")
 
+# let's set the environment 
+# qgis_env <- set_env()
+# Test if all functions are working also with the QGIS developer version
+# qgis_env <- set_env("C:/OSGeo4W64/", ltr = FALSE)  
 
 test_that("Test, if QGIS-algorithms are working?", {
   
@@ -7,9 +16,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  library("testthat")
-  library("RQGIS")
-  library("sp")
+
   coords_1 <- 
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
            ncol = 2, byrow = TRUE)
@@ -21,8 +28,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
 
   # let's set the environment 
-  qgis_env <- set_env()  
-
+  qgis_env <- set_env()
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
   params <- get_args_man(alg = "qgis:polygoncentroids", 
@@ -52,11 +58,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   testthat::skip_on_appveyor()
   testthat::skip_on_travis()
   testthat::skip_on_cran()
-  
-  library("testthat")
-  library("RQGIS")
-  library("raster")
-  
+
   # let's set the environment 
   qgis_env <- set_env()  
   
@@ -78,10 +80,6 @@ test_that("Test, if GRASS7-algorithms are working?", {
   testthat::skip_on_appveyor()
   testthat::skip_on_travis()
   testthat::skip_on_cran()
-  
-  library("testthat")
-  library("RQGIS")
-  library("raster")
   
   # let's set the environment 
   qgis_env <- set_env()  
