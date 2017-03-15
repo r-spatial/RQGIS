@@ -62,7 +62,7 @@ build_cmds <- function(qgis_env = set_env()) {
         ### append pythonpath to import qgis.core etc. packages
         # account for homebrew osgeo4mac installation in PYTHONPATH
         if (grepl("/usr/local/Cellar", qgis_env$root)) {
-          paste0("export PYTHONPATH=/usr/local/Cellar//qgis2/2.18.4/QGIS.app/Contents/Resources/python/:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH")
+          paste0("export PYTHONPATH=", qgis_env$root, "/Contents/Resources/python/:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH")
         } else {
         paste0("export PYTHONPATH=", qgis_env$root, 
                "/Contents/Resources/python/")
