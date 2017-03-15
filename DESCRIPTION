@@ -1,25 +1,28 @@
 Package: RQGIS
-Date: 2016-08-15
+Date: 2017-01-18
 Type: Package
-Title: RQGIS: Integrating R with QGIS
-Version: 0.1.0.9000
+Title: Integrating R with QGIS
+Version: 0.2.0.9000
 Authors@R: c(
     person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
     person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut")
     )
-Description: Package RQGIS establishes an interface between R and QGIS, i.e. it allows
-    the user to access QGIS functionalities from the R console. It achieves this
-    by using the QGIS Python API via the command line. Hence, RQGIS extends R's 
-    statistical power by the incredible vast geo-functionality of QGIS (including 
-    also GDAL, SAGA- and GRASS-GIS among other third-party providers). This in turn 
+Description: Establishes an interface between R and 'QGIS', i.e. it allows
+    the user to access 'QGIS' functionalities from the R console. It achieves this
+    by using the 'QGIS' Python API via the command line. Hence, RQGIS extends R's 
+    statistical power by the incredible vast geo-functionality of 'QGIS' (including 
+    also 'GDAL', 'SAGA'- and 'GRASS'-GIS among other third-party providers). This in turn 
     creates a powerful environment for advanced and innovative (geo-)statistical
-    geocomputing.
+    geocomputing. 'QGIS' is licensed under GPL version 2 or greater and is available from
+    <http://www.qgis.org/en/site/>.
 URL: https://github.com/jannes-m/RQGIS
 BugReports: https://github.com/jannes-m/RQGIS/issues
 License: GPL-3
 LazyData: TRUE
 Encoding: UTF-8
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
+ByteCompile: true
 Depends:
     R (>= 3.2.0)
 Imports:
@@ -30,7 +33,8 @@ Imports:
          XML,
          tools
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
-Suggests: knitr,
-    rmarkdown,
-    testthat
+Suggests: 
+          knitr,
+          rmarkdown,
+          testthat
 VignetteBuilder: knitr

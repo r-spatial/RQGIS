@@ -6,3 +6,6 @@
 inst/doc
 README_files/
 README_cache
+vignettes/*.html
+vignettes/*.R
+GADM_2.8_DEU_adm1.rds

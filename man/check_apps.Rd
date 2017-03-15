@@ -7,20 +7,20 @@
 check_apps(root, ...)
 }
 \arguments{
-\item{root}{Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
+\item{root}{Path to the root directory. Usually, this is 'C:/OSGEO4~1',
 '/usr' and '/Applications/QGIS.app/' for the different platforms.}
 
 \item{...}{Optional arguments used in \code{check_apps}. Under Windows,
 \code{set_env} passes function argument \code{ltr} to \code{check_apps}.}
 }
 \value{
-The function returns a list with the paths to all the necessary 
-  QGIS-applications.
+The function returns a list with the paths to all the necessary
+QGIS-applications.
 }
 \description{
 \code{check_apps} checks if software applications necessary to
-  run QGIS (QGIS and Python plugins) are installed in the correct
-  locations.
+run QGIS (QGIS and Python plugins) are installed in the correct
+locations.
 }
 \examples{
 \dontrun{
@@ -31,4 +31,3 @@ check_apps()
 Jannes Muenchow, Patrick Schratz
 }
 \keyword{internal}
-

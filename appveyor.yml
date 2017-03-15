@@ -9,14 +9,14 @@ init:
 
 install:
   ps: Bootstrap
-
+  
 # Adapt as necessary starting from here
 
 build_script:
   - travis-tool.sh install_deps
 
-test_script:
-  - travis-tool.sh run_tests
+# test_script:
+  # - travis-tool.sh run_tests
 
 on_failure:
   - 7z a failure.zip *.Rcheck\*
