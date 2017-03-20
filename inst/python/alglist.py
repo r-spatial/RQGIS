@@ -1,4 +1,3 @@
-text = None
 s = ''
 for provider in Processing.algs.values():
   sortedlist = sorted(provider.values(), key=lambda alg: alg.name)

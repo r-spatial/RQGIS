@@ -4,24 +4,16 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "", qgis_env = set_env(), name_only = FALSE,
-  intern = ifelse(Sys.info()["sysname"] == "Windows", TRUE, FALSE))
+find_algorithms(search_term = "", name_only = FALSE)
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only
 functions which contain the indicated string. If empty (\code{""}), the
 default, all available functions will be returned.}
 
-\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link[=set_env]{set_env()}}.}
-
 \item{name_only}{If \code{TRUE}, the function returns only the name(s) of the
 found algorithms. Otherwise, a short function description will be returned
 as well (default).}
-
-\item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector (see also
-\code{\link[base:system]{base::system()}}).}
 }
 \value{
 The function returns QGIS function names and short descriptions as an

@@ -70,9 +70,9 @@ set_env <- function(root = NULL, ltr = TRUE) {
       }
     }
     # harmonize root syntax
-    root <- gsub("/|//", "\\\\", root)
+    root <- normalizePath(root)
     # make sure that the root path does not end with some sort of slash
-    root <- gsub("/$|//$|\\$|\\\\$", "", root)
+    root <- gsub("\\\\$", "", root)
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
@@ -108,8 +108,6 @@ set_env <- function(root = NULL, ltr = TRUE) {
 #'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
 #'   Additionally, it figures out with which SAGA versions the QGIS installation
 #'   is compatible.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
 #' @return The function returns a list with following elements:
 #' \enumerate{
 #'  \item{qgis_version: Name and version of QGIS used by RQGIS.}
@@ -131,7 +129,7 @@ set_env <- function(root = NULL, ltr = TRUE) {
 #' qgis_session_info()
 #' }
 qgis_session_info <- function() {
-  tmp <- try(expr =  reticulate::py_run_string("app")$app,
+  tmp <- try(expr =  py_run_string("app")$app,
              silent = TRUE)
   if (inherits(tmp, "try-error")) {
     open_app()
@@ -150,22 +148,18 @@ qgis_session_info <- function() {
 #' @title Find and list available QGIS algorithms
 #' @description `find_algorithms` lists or queries all QGIS algorithms
 #'   which can be used accessed through the command line.
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to [set_env()].
 #' @param search_term A character to query QGIS functions, i.e. to list only 
 #'   functions which contain the indicated string. If empty (`""`), the
 #'   default, all available functions will be returned.
 #' @param name_only If `TRUE`, the function returns only the name(s) of the
 #'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
-#' @param intern Logical, if `TRUE` the function captures the command line
-#'   output as an `R` character vector (see also 
-#'   [base::system()]).
 #' @details Function `find_algorithms` simply calls 
 #'   `processing.alglist` using Python.
 #' @return The function returns QGIS function names and short descriptions as an
 #'   R character vector.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @importFrom reticulate py_run_string py_run_file
 #' @examples
 #' \dontrun{
 #' # list all available QGIS algorithms on your system
@@ -176,24 +170,31 @@ qgis_session_info <- function() {
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
 #' }
-
 #' @export
-find_algorithms <- function(search_term = "",
-                            qgis_env = set_env(),
-                            name_only = FALSE,
-                            intern = 
-                              ifelse(Sys.info()["sysname"] == "Windows",
-                                     TRUE, FALSE)) {
+find_algorithms <- function(search_term = "", name_only = FALSE) {
   
-    algs <- execute_cmds(processing_name = "processing.alglist",
-                         params = shQuote(search_term),
-                         qgis_env = qgis_env,
-                         intern = intern)
-    if (name_only) {
-      algs <- gsub(".*>", "", algs)
+  tmp <- try(expr =  py_run_string("app")$app,
+             silent = TRUE)
+  if (inherits(tmp, "try-error")) {
+    open_app()
+  }
+  
+  if (search_term == "") {
+    py_run_string("text = None")
+  } else {
+    py_run_string(paste0("text = '", search_term, "'"))
+  }
+         
+  py_file <- system.file("python", "alglist.py", package = "RQGIS")
+  algs <- py_run_file(py_file)
+  algs <- strsplit(algs$s, split = "\n")[[1]]
+  if (name_only) {
+    algs <- gsub(".*>", "", algs)
     }
-    # return the result while dismissing empty strings
-    algs[algs != ""]
+  # clean up after yourself, just in case
+  py_run_string("del(text, s)")
+  # return your result
+  algs
 }
 
 
