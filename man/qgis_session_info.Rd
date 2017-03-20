@@ -4,7 +4,7 @@
 \alias{qgis_session_info}
 \title{QGIS session info}
 \usage{
-qgis_session_info(qgis_env = set_env())
+qgis_session_info()
 }
 \arguments{
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS
