@@ -165,7 +165,8 @@ py_run_string('processing.runalg("saga:slopeaspectcurvature", "C:/Users/pi37pat/
 devtools::load_all()
 library("reticulate")
 qgis_env <- set_env("C:/OSGeo4W64/", ltr = TRUE)
-open_app(qgis_env = qgis_env)
+qgis_app <- open_app(qgis_env = qgis_env)
+qgis_session_info(qgis_app = qgis_app)
 }
 #' @title Open a QGIS application
 #' @description `open_app` first sets all the correct paths to the QGIS Python
@@ -187,6 +188,51 @@ open_app <- function(qgis_env = set_env()) {
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
   on.exit(do.call(Sys.setenv, settings))
+
+  # run Windows setup
+  setup_win()
+  # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
+
+  # make sure that QGIS is not already running (this would crash R)
+  # app = QgsApplication([], True)  # see below
+  tmp <- try(expr =  py_run_string("app")$app,
+             silent = TRUE)
+  if (!inherits(tmp, "try-error")) {
+    stop("Python QGIS application is already running.")
+  }
+  
+  py_run_string("import os, sys")
+  py_run_string("from qgis.core import *")
+  py_run_string("from osgeo import ogr")
+  py_run_string("from PyQt4.QtCore import *")
+  py_run_string("from PyQt4.QtGui import *")
+  py_run_string("from qgis.gui import *")
+  set_prefix <- paste0("QgsApplication.setPrefixPath(r'", 
+                       qgis_env$qgis_prefix_path, "', True)")
+  py_run_string(set_prefix)
+  py_run_string("app = QgsApplication([], True)")
+  py_run_string("QgsApplication.initQgis()")
+  py_plugins <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
+  py_run_string(py_plugins)
+  py_run_string("from processing.core.Processing import Processing")
+  py_run_string("Processing.initialize()")
+  py_run_string("import processing")
+}
+
+#' @title Reproduce o4w_env.bat script in R
+#' @description Windows helper function to start QGIS application by setting all
+#'   necessary path especially through running [run_ini()].
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function changes the system settings using [base::Sys.setenv()].
+#' @keywords internal
+#' @author Jannes Muenchow
+#' @examples 
+#' \dontrun{
+#' run_ini()
+#' }
+#' @export
+setup_win <- function() {
   # call o4w_env.bat from within R
   # not really sure, if we need the next line (just in case)
   Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
@@ -228,32 +274,8 @@ open_app <- function(qgis_env = set_env()) {
   if (!identical(py_path, qgis_env$root)) {
     stop("Wrong Python binary. Restart R and check!")
   }
-  
-  # make sure that QGIS is not already running (this would crash R)
-  # app = QgsApplication([], True)  # see below
-  tmp <- try(expr =  py_run_string("app")$app,
-             silent = TRUE)
-  if (!inherits(tmp, "try-error")) {
-    stop("Python QGIS application is already running.")
-  }
-  
-  py_run_string("import os, sys")
-  py_run_string("from qgis.core import *")
-  py_run_string("from osgeo import ogr")
-  py_run_string("from PyQt4.QtCore import *")
-  py_run_string("from PyQt4.QtGui import *")
-  py_run_string("from qgis.gui import *")
-  set_prefix <- paste0("QgsApplication.setPrefixPath(r'", 
-                       qgis_env$qgis_prefix_path, "', True)")
-  py_run_string(set_prefix)
-  py_run_string("app = QgsApplication([], True)")
-  py_run_string("QgsApplication.initQgis()")
-  py_plugins <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
-  py_run_string(py_plugins)
-  py_run_string("from processing.core.Processing import Processing")
-  py_run_string("Processing.initialize()")
-  py_run_string("import processing")
 }
+
 
 #' @title Reproduce o4w_env.bat script in R
 #' @description Windows helper function to start QGIS application. Basically, 
