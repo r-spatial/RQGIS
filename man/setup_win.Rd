@@ -4,7 +4,7 @@
 \alias{setup_win}
 \title{Reproduce o4w_env.bat script in R}
 \usage{
-setup_win()
+setup_win(qgis_env = set_env())
 }
 \arguments{
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS

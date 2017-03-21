@@ -224,7 +224,7 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from processing.core.Processing import Processing")
   py_run_string("Processing.initialize()")
   py_run_string("import processing")
-  # ParameterSelection required by get_args_man.py, algoptions
+  # ParameterSelection required by get_args_man.py, algoptions, alghelp
   py_run_string("from processing.core.parameters import ParameterSelection")
   py_run_string(paste("from processing.gui.Postprocessing",
                       "import handleAlgorithmResults"))

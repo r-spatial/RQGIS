@@ -4,7 +4,7 @@
 \alias{get_args_man}
 \title{Get GIS arguments and respective default values}
 \usage{
-get_args_man(alg = NULL, options = FALSE, qgis_env = set_env())
+get_args_man(alg = "", options = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the algorithm for which one wishes to retrieve

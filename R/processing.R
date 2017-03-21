@@ -108,6 +108,8 @@ set_env <- function(root = NULL, ltr = TRUE) {
 #'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
 #'   Additionally, it figures out with which SAGA versions the QGIS installation
 #'   is compatible.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
 #' @return The function returns a list with following elements:
 #' \enumerate{
 #'  \item{qgis_version: Name and version of QGIS used by RQGIS.}
@@ -150,6 +152,8 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @param name_only If `TRUE`, the function returns only the name(s) of the
 #'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
 #' @details Function `find_algorithms` simply calls 
 #'   `processing.alglist` using Python.
 #' @return The function returns QGIS function names and short descriptions as an

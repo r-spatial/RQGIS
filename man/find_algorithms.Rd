@@ -4,7 +4,7 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "", name_only = FALSE)
+find_algorithms(search_term = "", name_only = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{search_term}{A character to query QGIS functions, i.e. to list only
@@ -14,6 +14,9 @@ default, all available functions will be returned.}
 \item{name_only}{If \code{TRUE}, the function returns only the name(s) of the
 found algorithms. Otherwise, a short function description will be returned
 as well (default).}
+
+\item{qgis_env}{Environment settings containing all the paths to run the QGIS
+API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
 The function returns QGIS function names and short descriptions as an

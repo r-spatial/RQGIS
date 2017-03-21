@@ -4,7 +4,11 @@
 \alias{qgis_session_info}
 \title{QGIS session info}
 \usage{
-qgis_session_info()
+qgis_session_info(qgis_env = set_env())
+}
+\arguments{
+\item{qgis_env}{Environment settings containing all the paths to run the QGIS
+API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
 The function returns a list with following elements:
