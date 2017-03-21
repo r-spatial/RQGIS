@@ -217,6 +217,8 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from processing.core.Processing import Processing")
   py_run_string("Processing.initialize()")
   py_run_string("import processing")
+  # ParameterSelection required by get_args_man.py
+  py_run_string("from processing.core.parameters import ParameterSelection")
 }
 
 #' @title Reproduce o4w_env.bat script in R

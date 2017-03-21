@@ -479,6 +479,7 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' @note Please note that some default values can only be set after the user's 
 #'   input. For instance, the GRASS region extent will be determined 
 #'   automatically by [run_qgis()] if left blank.
+#' @importFrom reticulate py_run_string py_run_file
 #' @export
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples 
@@ -487,115 +488,39 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 #' }
-get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
-
+get_args_man <- function(alg = NULL, options = FALSE) {
+  # check if the QGIS application was started
+  tmp <- try(expr =  py_run_string("app")$app,
+             silent = TRUE)
+  if (inherits(tmp, "try-error")) {
+    open_app()
+  }
+  
   if (is.null(alg)) {
     stop("Please specify an algorithm!")
   }
-  # find out if it's necessary to obtain default values for
-  # GRASS_REGION_CELLSIZE_PARAMETER, etc.
-
-  # set the paths
-  cwd <- getwd()
-  on.exit(setwd(cwd))
-  tmp_dir <- tempdir()
-  setwd(tmp_dir)
   
-  # build the raw scripts
-  cmds <- build_cmds(qgis_env)
+  py_cmd <- paste0("alg = Processing.getAlgorithm('", alg, "')")
+  py_run_string(py_cmd)
+  py_file <- system.file("python", "get_args_man.py", package = "RQGIS")
   
-  # extend the python command
-  py_cmd <- 
-    c(cmds$py_cmd,
-      "from processing.core.Processing import Processing",
-      "from processing.core.parameters import ParameterSelection",
-      "from itertools import izip",
-      "import csv",
-      # retrieve the algorithm
-      paste0("alg = Processing.getAlgorithm('", alg, "')"),
-      "vals = []",
-      "params = []",
-      "opts = list()",
-      "if alg is None:",
-      paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
-      "    writer = csv.writer(f)",
-      "    writer.writerow(['params'])",
-      "    writer.writerow(['Specified algorithm does not exist!'])",
-      "    f.close()",
-      "else:",
-      "  alg = alg.getCopy()",
-      # retrieve function arguments and defaults
-      "  for param in alg.parameters:",
-      "    params.append(param.name)",
-      "    vals.append(param.getValueAsCommandLineParameter())",
-      "    opts.append(isinstance(param, ParameterSelection))",
-      "  for out in alg.outputs:",
-      "    params.append(out.name)",
-      "    vals.append(out.getValueAsCommandLineParameter())",
-      "    opts.append(isinstance(out, ParameterSelection))",
-      # write the three lists (arguments, defaults, options) to a csv-file
-      paste0("  with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
-      "    writer = csv.writer(f)",
-      "    writer.writerow(['params', 'vals', 'opts'])",
-      "    writer.writerows(izip(params, vals, opts))",
-      "    f.close()",
-      ""
-    )
-  # each py_cmd element should go on its own line
-  py_cmd <- paste(py_cmd, collapse = "\n")
-  # harmonize slashes
-  py_cmd <- gsub("\\\\", "/", py_cmd)
-  py_cmd <- gsub("//", "/", py_cmd)
-  # save the Python script
-  cat(py_cmd, file = "py_cmd.py")
-
-  # build the batch/shell command to run the Python script
-  if (Sys.info()["sysname"] == "Windows") {
-    cmd <- c(cmds$cmd, "python py_cmd.py")
-    # filename
-    f_name <- "batch_cmd.cmd"
-    batch_call <- f_name
-  } else {
-    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
-    # filename
-    f_name <- "batch_cmd.sh"
-    batch_call <- "sh batch_cmd.sh"
-  }
-  # put each element on its own line
-  cmd <- paste(cmd, collapse = "\n")
-  # save the batch file to the temporary location
-  cat(cmd, file = f_name)
-  # run Python via the command line
-  system(batch_call, intern = TRUE)
-  
-  # retrieve the Python output
-  tmp <- utils::read.csv(file.path(tmp_dir, "output.csv"), header = TRUE, 
-                         stringsAsFactors = FALSE)
-  # If a wrong algorithm (-> alg is None) name was provided, stop the
-  # function
-  if (tmp$params[1] == "Specified algorithm does not exist!") {
-    stop("Algorithm '", alg, "' does not exist")
-  }
+  # you have to be careful here, if you want to preserve True and False in
+  # Python language... -> check!!!!!!!!!!! or maybe not, because reticulate is
+  # taking care of it???
+  args <- py_run_file(py_file)$args
+  names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several
   # options to choose from
   if (options) {
-    tmp[tmp$opts == "True", "vals"] <- "0"
+    args$vals[args$opts] <- "0"
   }
-  
-  # convert the dataframe into a list
-  args <- as.list(tmp$vals)
-  names(args) <- trimws(tmp$params)
-  
-  # sometime None, True or False might be 'shellquoted'
-  # we have to take care of this
-  # well, maybe not necessary:
-  # http://stackoverflow.com/questions/28204507/remove-backslashes-from-character-string
-  # args <- lapply(args, function(x) as.character(noquote(x)))
-  # clean up after yourself
-  unlink(file.path(tmp_dir, "output.csv"))
+  # clean up after yoursef
+  py_run_string("del(alg, args, params, vals, opts)")
   # return your result
-  args
+  out <- as.list(args$vals)
+  names(out) <- args$params
+  out
 }
 
 #'@title Interface to QGIS commands
