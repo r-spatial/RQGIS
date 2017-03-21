@@ -128,12 +128,8 @@ set_env <- function(root = NULL, ltr = TRUE) {
 #' \dontrun{
 #' qgis_session_info()
 #' }
-qgis_session_info <- function() {
-  tmp <- try(expr =  py_run_string("app")$app,
-             silent = TRUE)
-  if (inherits(tmp, "try-error")) {
-    open_app()
-  }
+qgis_session_info <- function(qgis_env = set_env()) {
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   py_file <- system.file("python", "qgis_session_info.py", package = "RQGIS")
   out <- py_run_file(py_file)
 
@@ -171,28 +167,42 @@ qgis_session_info <- function() {
 #' find_algorithms(search_term = "add")
 #' }
 #' @export
-find_algorithms <- function(search_term = "", name_only = FALSE) {
+
+find_algorithms <- function(search_term = "", name_only = FALSE,
+                            qgis_env = set_env()) {
+  # reticulate:::py_discover_config("C:/OSGeo4W64/bin/python.exe")
+  # check if the QGIS application has already been started
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
-  tmp <- try(expr =  py_run_string("app")$app,
-             silent = TRUE)
-  if (inherits(tmp, "try-error")) {
-    open_app()
-  }
-  
-  if (search_term == "") {
-    py_run_string("text = None")
-  } else {
-    py_run_string(paste0("text = '", search_term, "'"))
-  }
-         
-  py_file <- system.file("python", "alglist.py", package = "RQGIS")
-  algs <- py_run_file(py_file)
-  algs <- strsplit(algs$s, split = "\n")[[1]]
+  # Advantage of this approach: we are using directly alglist and do not have to
+  # save it in inst
+  # Disadvantage: more processing
+  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
+  py_run_file(py_file)
+  code <- sprintf("with Capturing() as output:\n  processing.alglist('%s')",
+                  search_term)
+
+  algs <- as.character(py_run_string(code)$output)
+  algs <- unlist(strsplit(algs, "', |, '"))
+  algs <- unlist(strsplit(algs, '", '))
+  algs <- gsub("\\['|'\\]|'", "", algs)
+  algs <- algs[algs != ""]
+  # clean up after yourself, just in case
+  py_run_string("del(output)")
   if (name_only) {
     algs <- gsub(".*>", "", algs)
     }
-  # clean up after yourself, just in case
-  py_run_string("del(text, s)")
+
+  # py_run_string(sprintf("text = '%s'", search_term))       
+  # py_file <- system.file("python", "alglist.py", package = "RQGIS")
+  # algs <- py_run_file(py_file)
+  # algs <- strsplit(algs$s, split = "\n")[[1]]
+  # if (name_only) {
+  #   algs <- gsub(".*>", "", algs)
+  #   }
+  # # clean up after yourself, just in case
+  # py_run_string("del(text, s)")
+  
   # return your result
   algs
 }
@@ -204,12 +214,10 @@ find_algorithms <- function(search_term = "", name_only = FALSE) {
 #' @param alg Name of the function whose parameters are being searched for.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @param intern Logical, if `TRUE` the function captures the command line
-#'   output as an `R` character vector (see also 
-#'   [base::system()]).
 #' @details Function `get_usage` simply calls
 #'   `processing.alghelp` of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @importFrom reticulate py_run_string
 #' @export
 #' @examples
 #' \dontrun{
@@ -220,13 +228,16 @@ find_algorithms <- function(search_term = "", name_only = FALSE) {
 #' }
 
 get_usage <- function(alg = NULL,
-                      qgis_env = set_env(),
-                      intern = FALSE) {
-  
-  execute_cmds(processing_name = "processing.alghelp",
-               params = shQuote(alg),
-               qgis_env = qgis_env,
-               intern = intern)
+                      qgis_env = set_env()) {
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
+  code <- sprintf("with Capturing() as output:\n  processing.alghelp('%s')", 
+                  alg)
+  out <- as.character(py_run_string(code)$output)
+  out <- gsub("^\\[|\\]$|'", "", out)
+  out <- gsub(", ", "\n", out)
+  # clean up after yourself
+  py_run_string("del(output)")
+  cat(gsub("\\\\t", "\t", out))
 }
 
 #' @title Get options of parameters for a specific GIS option
@@ -236,28 +247,27 @@ get_usage <- function(alg = NULL,
 #'   returned.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @param intern Logical, if `TRUE` the function captures the command line
-#'   output as an `R` character vector (see also 
-#'   [base::system()]).
 #' @details Function `get_options` simply calls
 #'   `processing.algoptions` of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @importFrom reticulate py_run_string
 #' @examples
 #' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
 #' }
 #' @export
-get_options <- function(alg = NULL,
-                        qgis_env = set_env(),
-                        intern = FALSE) {
-  if (is.null(alg)) {
-    stop("Please specify an algorithm!")
-  }
+get_options <- function(alg = "",
+                        qgis_env = set_env()) {
   
-  execute_cmds(processing_name = "processing.algoptions",
-               params = shQuote(alg),
-               qgis_env = qgis_env,
-               intern = intern)
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
+  code <- sprintf("with Capturing() as output:\n  processing.algoptions('%s')", 
+                  alg)
+  out <- as.character(py_run_string(code)$output)
+  out <- gsub("^\\[|\\]$|'", "", out)
+  out <- gsub(", ", "\n", out)
+  # clean up after yourself
+  py_run_string("del(output)")
+  cat(gsub("\\\\t", "\t", out))
 }
 
 #' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm
@@ -488,19 +498,17 @@ get_args <- function(alg = NULL, qgis_env = set_env()) {
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 #' }
-get_args_man <- function(alg = NULL, options = FALSE) {
-  # check if the QGIS application was started
-  tmp <- try(expr =  py_run_string("app")$app,
-             silent = TRUE)
-  if (inherits(tmp, "try-error")) {
-    open_app()
+get_args_man <- function(alg = "", options = FALSE, 
+                         qgis_env = set_env()) {
+  # check if the QGIS application has already been started
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
+  
+  algs <- find_algorithms(name_only = TRUE, qgis_env = qgis_env)
+  if (!alg %in% algs) {
+    stop("The specified algorithm ", alg, " does not exist.")
   }
   
-  if (is.null(alg)) {
-    stop("Please specify an algorithm!")
-  }
-  
-  py_cmd <- paste0("alg = Processing.getAlgorithm('", alg, "')")
+  py_cmd <- sprintf("alg = Processing.getAlgorithm('%s')", alg)
   py_run_string(py_cmd)
   py_file <- system.file("python", "get_args_man.py", package = "RQGIS")
   

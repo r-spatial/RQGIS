@@ -190,8 +190,15 @@ open_app <- function(qgis_env = set_env()) {
   on.exit(do.call(Sys.setenv, settings))
 
   # run Windows setup
-  setup_win()
+  setup_win(qgis_env = qgis_env)
   # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
+  
+  # compare py_config path with set_env path!!
+  a <- py_config()
+  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
+  if (!identical(py_path, qgis_env$root)) {
+    stop("Wrong Python binary. Restart R and check!")
+  }
 
   # make sure that QGIS is not already running (this would crash R)
   # app = QgsApplication([], True)  # see below
@@ -217,8 +224,14 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from processing.core.Processing import Processing")
   py_run_string("Processing.initialize()")
   py_run_string("import processing")
-  # ParameterSelection required by get_args_man.py
+  # ParameterSelection required by get_args_man.py, algoptions
   py_run_string("from processing.core.parameters import ParameterSelection")
+  py_run_string(paste("from processing.gui.Postprocessing",
+                      "import handleAlgorithmResults"))
+  
+  # load Barry's capture class (needed for alglist, algoptions, alghelp)
+  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
+  py_run_file(py_file)
 }
 
 #' @title Reproduce o4w_env.bat script in R
@@ -234,7 +247,7 @@ open_app <- function(qgis_env = set_env()) {
 #' run_ini()
 #' }
 #' @export
-setup_win <- function() {
+setup_win <- function(qgis_env = set_env()) {
   # call o4w_env.bat from within R
   # not really sure, if we need the next line (just in case)
   Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
@@ -269,13 +282,6 @@ setup_win <- function() {
   Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
                                           fsep = "\\"))
   # shell.exec("python")  # yeah, it works!!!
-  
-  # compare py_config path with set_env path!!
-  a <- py_config()
-  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
-  if (!identical(py_path, qgis_env$root)) {
-    stop("Wrong Python binary. Restart R and check!")
-  }
 }
 
 
