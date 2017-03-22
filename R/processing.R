@@ -190,6 +190,7 @@ find_algorithms <- function(search_term = "", name_only = FALSE,
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
   algs <- gsub("\\['|'\\]|'", "", algs)
+  algs = gsub('\\\\|"', "", shQuote(algs))
   algs <- algs[algs != ""]
   # clean up after yourself, just in case
   py_run_string("del(output)")
@@ -197,13 +198,14 @@ find_algorithms <- function(search_term = "", name_only = FALSE,
     algs <- gsub(".*>", "", algs)
     }
 
-  # py_run_string(sprintf("text = '%s'", search_term))       
+  # py_run_string(sprintf("text = '%s'", search_term))
   # py_file <- system.file("python", "alglist.py", package = "RQGIS")
-  # algs <- py_run_file(py_file)
-  # algs <- strsplit(algs$s, split = "\n")[[1]]
+  # algs_2 <- py_run_file(py_file)
+  # algs_2 <- strsplit(algs_2$s, split = "\n")[[1]]
   # if (name_only) {
-  #   algs <- gsub(".*>", "", algs)
-  #   }
+  #   algs_2 <- gsub(".*>", "", algs_2)
+  # }
+  # all.equal(algs, algs_2)  # TRUE for name_only, perfect!
   # # clean up after yourself, just in case
   # py_run_string("del(text, s)")
   
@@ -299,173 +301,30 @@ get_options <- function(alg = "",
 #' # GRASS example
 #' open_help(alg = "grass:v.overlay")
 #' }
-open_help <- function(alg = NULL, qgis_env = set_env()) {
+open_help <- function(alg = "", qgis_env = set_env()) {
   
-  if (is.null(alg)) {
-    stop("Please specify an algorithm!")
+  # check if the QGIS application has already been started
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
+  
+  algs <- find_algorithms(name_only = TRUE, qgis_env = qgis_env)
+  if (!alg %in% algs) {
+    stop("The specified algorithm ", alg, " does not exist.")
   }
   
   if (grepl("grass", alg)) {
     open_grass_help(alg)
   } else {
     algName <- alg
-    
-    # set the paths
-    cwd <- getwd()
-    on.exit(setwd(cwd))
-    tmp_dir <- tempdir()
-    setwd(tmp_dir)
-    
-    cmds <- build_cmds(qgis_env = qgis_env)
-    py_cmd <- 
-      c(cmds$py_cmd,
-        "from processing.gui.Help2Html import *",
-        "from processing.tools.help import createAlgorithmHelp",
-        "import webbrowser",
-        "import re",
-        # from processing.tools.help import *
-        paste0("alg = Processing.getAlgorithm('", algName, "')"), 
-        # copied from baseHelpForAlgorithm in processing\tools\help.py
-        # find the provider (qgis, saga, grass, etc.)
-        "provider = alg.provider.getName().lower()",
-        # to which group does the algorithm belong (e.g., vector_table_tools)
-        "groupName = alg.group.lower()",
-        # format the groupName in the QGIS way
-        "groupName = groupName.replace('[', '').replace(']', '').replace(' - ', '_')",
-        "groupName = groupName.replace(' ', '_')",
-        "if provider == 'saga':",
-        "  alg2 = alg.getCopy()",
-        "  groupName = alg2.undecoratedGroup",
-        "  groupName = groupName.replace('ta_', 'terrain_analysis_')",
-        "  groupName = groupName.replace('statistics_kriging', 'kriging')",
-        "  groupName = re.sub('^statistics_.*', 'geostatistics', groupName)",
-        "  groupName = re.sub('visualisation', 'visualization', groupName)",
-        "  groupName = re.sub('_preprocessor', '_hydrology', groupName)",
-        "  groupName = groupName.replace('sim_', 'simulation_')",
-        # retrieve the command line name (worked for 2.8...)
-        # "cmdLineName = alg.commandLineName()",
-        # "algName = cmdLineName[cmdLineName.find(':') + 1:].lower()",
-        # for 2.14 we cannot use the algorithm name 
-        # (now you have to test all SAGA and QGIS functions again...)
-        "algName = alg.name.lower().replace(' ', '-')",
-        
-        # just use valid characters
-        "validChars = ('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRS' +
-        'TUVWXYZ0123456789_')",
-        "safeGroupName = ''.join(c for c in groupName if c in validChars)",
-        "validChars = validChars + '-'",
-        "safeAlgName = ''.join(c for c in algName if c in validChars)",
-        # which QGIS version are we using
-        "version = '.'.join(QGis.QGIS_VERSION.split('.')[0:2])",
-        # build the html to the help file
-        "url = ('https:///docs.qgis.org/%s/en/docs/user_manual/' +
-        'processing_algs/%s/%s.html#%s') % (version, provider,
-        safeGroupName, safeAlgName)",
-        
-        
-        # suppress error messages raised by the browser, e.g.,
-        # console.error: CustomizableUI: 
-        # TypeError: aNode.previousSibling is null -- 
-        #  resource://app/modules/CustomizableUI.jsm:4294
-        # Solution was found here:
-        # paste0("http://stackoverflow.com/questions/2323080/",
-        #        "how-can-i-disable-the-webbrowser-message-in-python")
-        "savout = os.dup(1)",
-        "os.close(1)",
-        "os.open(os.devnull, os.O_RDWR)",
-        "try:",
-        "  webbrowser.open(url)",
-        "finally:",
-        "  os.dup2(savout, 1)"
-        )
-    # each py_cmd element should go on its own line
-    py_cmd <- paste(py_cmd, collapse = "\n")
-    # harmonize slashes
-    py_cmd <- gsub("\\\\", "/", py_cmd)
-    py_cmd <- gsub("//", "/", py_cmd)
-    # save the Python script
-    cat(py_cmd, file = "py_cmd.py")
-    # build the batch/shell command to run the Python script
-    if (Sys.info()["sysname"] == "Windows") {
-      cmd <- c(cmds$cmd, "python py_cmd.py")
-      # filename
-      f_name <- "batch_cmd.cmd"
-      batch_call <- f_name
-    } else {
-      cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
-      # filename
-      f_name <- "batch_cmd.sh"
-      batch_call <- "sh batch_cmd.sh"
-    }
-    # put each element on its own line
-    cmd <- paste(cmd, collapse = "\n")
-    # save the batch file to the temporary location
-    cat(cmd, file = f_name)
-    # run Python via the command line
-    system(batch_call, intern = TRUE)
   }
-}
-
-#' @title Automatically retrieve GIS function arguments
-#' @description `get_args` uses [get_usage()] to retrieve 
-#'   function arguments of a GIS function.
-#' @param alg A character specifying the GIS algorithm whose arguments one
-#'   wishes to retrieve.
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to [set_env()].
-#' @return `get_args` returns a list with the function arguments of a 
-#'   specific QGIS geoalgorithm. Later on, the specified function arguments 
-#'   should serve as input for [run_qgis()]'s params argument.
-#' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @export
-#' @examples
-#' \dontrun{
-#' get_args(alg = "qgis:addfieldtoattributestable")
-#' }
-get_args <- function(alg = NULL, qgis_env = set_env()) {
+  py_cmd <- sprintf("alg = Processing.getAlgorithm('%s')", algName)
+  py_run_string(py_cmd)
+  py_file <- system.file("python", "open_help.py", package = "RQGIS")
+  out <- py_run_file(py_file)
   
-  if (is.null(alg)) {
-    stop("Please specify an algorithm!")
-  }
-  
-  # get the usage of a function
-  tmp <- get_usage(alg = alg, qgis_env = qgis_env, intern = TRUE)
-  # check if algorithm could be found
-  if (any(grepl("Algorithm not found", tmp))) {
-    stop("Specified algorithm was not found!")
-  }
-  
-  # dismiss everything prior to ALGORITHM
-  tmp <- tmp[grep("ALGORITHM: ", tmp):length(tmp)]
-  # extract the arguments
-  ind <- which(tmp == "")
-  my_diff <- c(0, diff(ind))
-  # extract the arguments
-  if (any(my_diff == 1)) {
-    ind <- ind[(my_diff == 1)] - 1
-    # okay, for now let's hardcode it assuming that only the first double space
-    # indicates the break between function arguments and options...
-    args <- tmp[1:ind[1]]
-    # extract the options
-    # opts <- tmp[ind:length(tmp)]
-  } else {
-    args <- tmp
-  }
-  args <- grep("\t", args, value = TRUE)
-  # extract the domain
-  # domain <- gsub(".*<|>", "", args)
-  # dismiss the tab and everything following a space
-  args <- gsub(" .*|\t", "", args)
-  
-  # return your result, in this case just the arguments
-  # in the future, we might want to return the options and the domains as well
-  arg_list <- vector(mode = "list", length = length(args))
-  names(arg_list) <- args
-  # define the default values: If you have an instance of a QGIS object 
-  # representing the layer, you can also pass it as parameter. If the input is 
-  # optional and you do not want to use any data object, use None (see also
-  # https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html).
-  lapply(arg_list, function(x) x <- "None")
+  # clean up after yourself
+  py_cmd <- paste0("del(provider, groupName, algName, safeGroupName, ", 
+                   "validChars, safeAlgName, version, url, savout)")
+  py_run_string(py_cmd)
 }
 
 #' @title Get GIS arguments and respective default values

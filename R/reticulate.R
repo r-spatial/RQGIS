@@ -187,7 +187,10 @@ open_app <- function(qgis_env = set_env()) {
   # since we are adding quite a few new environment variables these will remain
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
-  on.exit(do.call(Sys.setenv, settings))
+  
+  # Well, well, not sure if we should change it back or at least we have to get
+  # rid off Anaconda Python
+  # on.exit(do.call(Sys.setenv, settings))
 
   # run Windows setup
   setup_win(qgis_env = qgis_env)
@@ -208,7 +211,7 @@ open_app <- function(qgis_env = set_env()) {
     stop("Python QGIS application is already running.")
   }
   
-  py_run_string("import os, sys")
+  py_run_string("import os, sys, re, webbrowser")
   py_run_string("from qgis.core import *")
   py_run_string("from osgeo import ogr")
   py_run_string("from PyQt4.QtCore import *")
@@ -228,7 +231,8 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from processing.core.parameters import ParameterSelection")
   py_run_string(paste("from processing.gui.Postprocessing",
                       "import handleAlgorithmResults"))
-  
+  # needed for open_help
+  py_run_string("from processing.tools.help import createAlgorithmHelp")
   # load Barry's capture class (needed for alglist, algoptions, alghelp)
   py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
   py_run_file(py_file)
