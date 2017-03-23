@@ -13,7 +13,7 @@
 #' \dontrun{
 #' build_cmds()
 #' }
-#' @export
+
 build_cmds <- function(qgis_env = set_env()) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -157,7 +157,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-#' @export
+
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -212,7 +212,7 @@ check_apps <- function(root, ...) {
 #' \dontrun{
 #' build_py()
 #' }
-#' @export
+
 build_py <- function(qgis_env = set_env()) {
   c(# import all the libraries you need
     "import os",
@@ -280,5 +280,112 @@ open_grass_help <- function(alg) {
   }
   url <- paste0(url, grass_name, ".html")
   utils::browseURL(url)
+}
+
+#' @title Reproduce o4w_env.bat script in R
+#' @description Windows helper function to start QGIS application by setting all
+#'   necessary path especially through running [run_ini()].
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function changes the system settings using [base::Sys.setenv()].
+#' @keywords internal
+#' @author Jannes Muenchow
+#' @examples 
+#' \dontrun{
+#' run_ini()
+#' }
+
+setup_win <- function(qgis_env = set_env()) {
+  # call o4w_env.bat from within R
+  # not really sure, if we need the next line (just in case)
+  Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
+  # shell("ECHO %OSGEO4W_ROOT%")
+  # REM start with clean path
+  windir <- shell("ECHO %WINDIR%", intern = TRUE)
+  Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
+                          file.path(windir, "system32", fsep = "\\"),
+                          windir,
+                          file.path(windir, "WBem", fsep = "\\"),
+                          sep = ";"))
+  # call all bat-files
+  run_ini(qgis_env = qgis_env)
+  
+  # we need to make sure that qgis-ltr can also be used...
+  my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
+  # add the directories where the QGIS libraries reside to search path 
+  # of the dynamic linker
+  Sys.setenv(PATH = paste(Sys.getenv("PATH"),
+                          file.path(qgis_env$root, "apps",
+                                    my_qgis, "bin", fsep = "\\"),
+                          sep = ";"))
+  # set the PYTHONPATH variable, so that QGIS knows where to search for
+  # QGIS libraries and appropriate Python modules
+  python_path <- Sys.getenv("PYTHONPATH")
+  python_path <- paste(python_path,
+                       file.path(qgis_env$root, "apps", my_qgis, "python;", 
+                                 fsep = "\\"),
+                       sep = ";")
+  Sys.setenv(PYTHONPATH = python_path)
+  # defining QGIS prefix path (i.e. without bin)
+  Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
+                                          fsep = "\\"))
+  # shell.exec("python")  # yeah, it works!!!
+}
+
+
+#' @title Reproduce o4w_env.bat script in R
+#' @description Windows helper function to start QGIS application. Basically, 
+#'   the code found in all .bat files found in etc/ini (most likely
+#'   "C:/OSGEO4~1/etc/ini") is reproduced within R.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function changes the system settings using [base::Sys.setenv()].
+#' @keywords internal
+#' @author Jannes Muenchow
+#' @examples 
+#' \dontrun{
+#' run_ini()
+#' }
+
+run_ini <- function(qgis_env = set_env()) {
+  files <- dir(file.path(qgis_env$root, "etc/ini"), full.names = TRUE)
+  files <- files[-grep("msvcrt|rbatchfiles", files)]
+  root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
+  ls <- lapply(files, function(file) {
+    tmp <- readr::read_file(file)
+    tmp <- gsub("%OSGEO4W_ROOT%", root, tmp)
+    tmp <- strsplit(tmp, split = "\r\n|\n")[[1]]
+    tmp
+  })
+  cmds <- do.call(c, ls)
+  # remove everything followed by a semi-colon but not if the colon is followed 
+  # by %PATH%
+  cmds <- gsub(";%([^PATH]).*", "", cmds)
+  cmds <- gsub(";%PYTHONPATH%", "", cmds)  # well, not really elegant...
+  for (i in cmds) {
+    if (grepl("^(SET|set)", i)) {
+      tmp <- gsub("^(SET|set) ", "", i)
+      tmp <- strsplit(tmp, "=")[[1]]
+      args <- list(tmp[2])
+      names(args) <- tmp[1]
+      if (Sys.getenv(names(args)) != "") {
+        args[[1]] <- paste(args[[1]], Sys.getenv(names(args)), sep = ";")
+      } 
+      do.call(Sys.setenv, args)
+    }
+    if (grepl("^(path|PATH)", i)) {
+      tmp <- gsub("^(PATH|path) ", "", i)
+      path <- Sys.getenv("PATH")
+      path <- gsub("\\\\", "\\\\\\\\", path)
+      tmp <- gsub("%PATH%", path, tmp)
+      Sys.setenv(PATH = tmp)
+    }
+    if (grepl("^if not defined HOME", i)) {
+      if (Sys.getenv("HOME") == "") {
+        use_prof <- shell("ECHO %USERPROFILE%", intern = TRUE)
+        Sys.setenv(HOME = use_prof)
+      }
+    }
+  }
 }
 

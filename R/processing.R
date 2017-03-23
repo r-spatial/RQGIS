@@ -103,6 +103,77 @@ set_env <- function(root = NULL, ltr = TRUE) {
   c(qgis_env, check_apps(root = root, ltr = ltr))
 }
 
+#' @title Open a QGIS application
+#' @description `open_app` first sets all the correct paths to the QGIS Python
+#'   binary, and secondly opens a QGIS application while importing the most
+#'   common Python modules.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function enables a 'tunnel' to the Python QGIS API.
+#' @author Jannes Muenchow
+#' @importFrom reticulate py_config py_run_string
+#' @examples 
+#' \dontrun{
+#' open_app()
+#' }
+#' @export
+open_app <- function(qgis_env = set_env()) {
+  settings <- as.list(Sys.getenv())
+  # since we are adding quite a few new environment variables these will remain
+  # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
+  # function but I am not sure if this is necessary
+  
+  # Well, well, not sure if we should change it back or at least we have to get
+  # rid off Anaconda Python
+  # on.exit(do.call(Sys.setenv, settings))
+  
+  # run Windows setup
+  setup_win(qgis_env = qgis_env)
+  # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
+  
+  # compare py_config path with set_env path!!
+  a <- py_config()
+  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
+  if (!identical(py_path, qgis_env$root)) {
+    stop("Wrong Python binary. Restart R and check!")
+  }
+  
+  # make sure that QGIS is not already running (this would crash R)
+  # app = QgsApplication([], True)  # see below
+  tmp <- try(expr =  py_run_string("app")$app,
+             silent = TRUE)
+  if (!inherits(tmp, "try-error")) {
+    stop("Python QGIS application is already running.")
+  }
+  
+  py_run_string("import os, sys, re, webbrowser")
+  py_run_string("from qgis.core import *")
+  py_run_string("from osgeo import ogr")
+  py_run_string("from PyQt4.QtCore import *")
+  py_run_string("from PyQt4.QtGui import *")
+  py_run_string("from qgis.gui import *")
+  set_prefix <- paste0("QgsApplication.setPrefixPath(r'", 
+                       qgis_env$qgis_prefix_path, "', True)")
+  py_run_string(set_prefix)
+  py_run_string("app = QgsApplication([], True)")
+  py_run_string("QgsApplication.initQgis()")
+  py_plugins <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
+  py_run_string(py_plugins)
+  py_run_string("from processing.core.Processing import Processing")
+  py_run_string("Processing.initialize()")
+  py_run_string("import processing")
+  # ParameterSelection required by get_args_man.py, algoptions, alghelp
+  py_run_string("from processing.core.parameters import ParameterSelection")
+  py_run_string(paste("from processing.gui.Postprocessing",
+                      "import handleAlgorithmResults"))
+  # needed for open_help
+  py_run_string("from processing.tools.help import createAlgorithmHelp")
+  # load Barry's capture class (needed for alglist, algoptions, alghelp)
+  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
+  py_run_file(py_file)
+}
+
+
 #' @title QGIS session info
 #' @description `qgis_session_info` reports the version of QGIS and
 #'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 

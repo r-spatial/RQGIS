@@ -162,186 +162,89 @@ py_run_string('processing.runalg("saga:slopeaspectcurvature", "C:/Users/pi37pat/
 # perfect, that works
 # this is interesting because I didn't even run all the etc/ini batch files...
 
+
+# testing get_args_man (and True, False, None)-------------
 devtools::load_all()
 library("reticulate")
 qgis_env <- set_env("C:/OSGeo4W64/", ltr = TRUE)
 qgis_app <- open_app(qgis_env = qgis_env)
 qgis_session_info(qgis_app = qgis_app)
-}
-#' @title Open a QGIS application
-#' @description `open_app` first sets all the correct paths to the QGIS Python
-#'   binary, and secondly opens a QGIS application while importing the most
-#'   common Python modules.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function enables a 'tunnel' to the Python QGIS API.
-#' @author Jannes Muenchow
-#' @importFrom reticulate py_config py_run_string
-#' @examples 
-#' \dontrun{
-#' open_app()
-#' }
-#' @export
-open_app <- function(qgis_env = set_env()) {
-  settings <- as.list(Sys.getenv())
-  # since we are adding quite a few new environment variables these will remain
-  # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
-  # function but I am not sure if this is necessary
-  
-  # Well, well, not sure if we should change it back or at least we have to get
-  # rid off Anaconda Python
-  # on.exit(do.call(Sys.setenv, settings))
 
-  # run Windows setup
-  setup_win(qgis_env = qgis_env)
-  # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
-  
-  # compare py_config path with set_env path!!
-  a <- py_config()
-  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
-  if (!identical(py_path, qgis_env$root)) {
-    stop("Wrong Python binary. Restart R and check!")
-  }
+algs <- find_algorithms(name_only = TRUE, qgis_env = qgis_env)
+tmp <- sample(algs, 100)
+ls_1 <- lapply(algs, function(x) {
+  print(x)
+  x = "grass:v.distance.toattr\""
+  x = gsub('\\\\|"', "", shQuote(x))
+  get_args_man(x, qgis_env = qgis_env, options = TRUE)
+})
 
-  # make sure that QGIS is not already running (this would crash R)
-  # app = QgsApplication([], True)  # see below
-  tmp <- try(expr =  py_run_string("app")$app,
-             silent = TRUE)
-  if (!inherits(tmp, "try-error")) {
-    stop("Python QGIS application is already running.")
-  }
-  
-  py_run_string("import os, sys, re, webbrowser")
-  py_run_string("from qgis.core import *")
-  py_run_string("from osgeo import ogr")
-  py_run_string("from PyQt4.QtCore import *")
-  py_run_string("from PyQt4.QtGui import *")
-  py_run_string("from qgis.gui import *")
-  set_prefix <- paste0("QgsApplication.setPrefixPath(r'", 
-                       qgis_env$qgis_prefix_path, "', True)")
-  py_run_string(set_prefix)
-  py_run_string("app = QgsApplication([], True)")
-  py_run_string("QgsApplication.initQgis()")
-  py_plugins <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
-  py_run_string(py_plugins)
-  py_run_string("from processing.core.Processing import Processing")
-  py_run_string("Processing.initialize()")
-  py_run_string("import processing")
-  # ParameterSelection required by get_args_man.py, algoptions, alghelp
-  py_run_string("from processing.core.parameters import ParameterSelection")
-  py_run_string(paste("from processing.gui.Postprocessing",
-                      "import handleAlgorithmResults"))
-  # needed for open_help
-  py_run_string("from processing.tools.help import createAlgorithmHelp")
-  # load Barry's capture class (needed for alglist, algoptions, alghelp)
-  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
-  py_run_file(py_file)
-}
-
-#' @title Reproduce o4w_env.bat script in R
-#' @description Windows helper function to start QGIS application by setting all
-#'   necessary path especially through running [run_ini()].
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @author Jannes Muenchow
-#' @examples 
-#' \dontrun{
-#' run_ini()
-#' }
-#' @export
-setup_win <- function(qgis_env = set_env()) {
-  # call o4w_env.bat from within R
-  # not really sure, if we need the next line (just in case)
-  Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
-  # shell("ECHO %OSGEO4W_ROOT%")
-  # REM start with clean path
-  windir <- shell("ECHO %WINDIR%", intern = TRUE)
-  Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
-                          file.path(windir, "system32", fsep = "\\"),
-                          windir,
-                          file.path(windir, "WBem", fsep = "\\"),
-                          sep = ";"))
-  # call all bat-files
-  run_ini(qgis_env = qgis_env)
-  
-  # we need to make sure that qgis-ltr can also be used...
-  my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
-  # add the directories where the QGIS libraries reside to search path 
-  # of the dynamic linker
-  Sys.setenv(PATH = paste(Sys.getenv("PATH"),
-                          file.path(qgis_env$root, "apps",
-                                    my_qgis, "bin", fsep = "\\"),
-                          sep = ";"))
-  # set the PYTHONPATH variable, so that QGIS knows where to search for
-  # QGIS libraries and appropriate Python modules
-  python_path <- Sys.getenv("PYTHONPATH")
-  python_path <- paste(python_path,
-                       file.path(qgis_env$root, "apps", my_qgis, "python;", 
-                                 fsep = "\\"),
-                       sep = ";")
-  Sys.setenv(PYTHONPATH = python_path)
-  # defining QGIS prefix path (i.e. without bin)
-  Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
-                                          fsep = "\\"))
-  # shell.exec("python")  # yeah, it works!!!
-}
-
-
-#' @title Reproduce o4w_env.bat script in R
-#' @description Windows helper function to start QGIS application. Basically, 
-#'   the code found in all .bat files found in etc/ini (most likely
-#'   "C:/OSGEO4~1/etc/ini") is reproduced within R.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @author Jannes Muenchow
-#' @examples 
-#' \dontrun{
-#' run_ini()
-#' }
-#' @export
-
-run_ini <- function(qgis_env = set_env()) {
-  files <- dir(file.path(qgis_env$root, "etc/ini"), full.names = TRUE)
-  files <- files[-grep("msvcrt|rbatchfiles", files)]
-  root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
-  ls <- lapply(files, function(file) {
-    tmp <- readr::read_file(file)
-    tmp <- gsub("%OSGEO4W_ROOT%", root, tmp)
-    tmp <- strsplit(tmp, split = "\r\n|\n")[[1]]
-    tmp
-    })
-  cmds <- do.call(c, ls)
-  # remove everything followed by a semi-colon but not if the colon is followed 
-  # by %PATH%
-  cmds <- gsub(";%([^PATH]).*", "", cmds)
-  cmds <- gsub(";%PYTHONPATH%", "", cmds)  # well, not really elegant...
-  for (i in cmds) {
-    if (grepl("^(SET|set)", i)) {
-      tmp <- gsub("^(SET|set) ", "", i)
-      tmp <- strsplit(tmp, "=")[[1]]
-      args <- list(tmp[2])
-      names(args) <- tmp[1]
-      if (Sys.getenv(names(args)) != "") {
-        args[[1]] <- paste(args[[1]], Sys.getenv(names(args)), sep = ";")
-      } 
-      do.call(Sys.setenv, args)
+# ok, there is not a single function with a function argument set to True
+# interesting...
+# However, None and False exist and where not converted from reticulate into
+# R equivalents NULL and FALSE...
+tmp <- lapply(seq_along(ls_1), function(i) {
+  lapply(ls_1[[i]], function(j) {
+    if (grepl(pattern = "True", j)) {
+      print(algs[i])
     }
-    if (grepl("^(path|PATH)", i)) {
-      tmp <- gsub("^(PATH|path) ", "", i)
-      path <- Sys.getenv("PATH")
-      path <- gsub("\\\\", "\\\\\\\\", path)
-      tmp <- gsub("%PATH%", path, tmp)
-      Sys.setenv(PATH = tmp)
-    }
-    if (grepl("^if not defined HOME", i)) {
-      if (Sys.getenv("HOME") == "") {
-        use_prof <- shell("ECHO %USERPROFILE%", intern = TRUE)
-        Sys.setenv(HOME = use_prof)
-      }
-    }
-  }
+  })
+})
+
+#**********************************************************
+# rewriting load_output argument---------------------------
+#**********************************************************
+
+# implement when rewriting run_qgis for reticulate usage
+# 1. run_qgis via reticulate
+# 2. `...`-arguments for specifying arguments within run_qgis (see doGRASS)
+# 3. when input is SpatialObject, convert to sf and use write_sf instead of 
+#    writeOGR (write a helper_function, say save_spat_object)
+# 4. load_output should use read_sf and be only set to TRUE/FALSE, i.e. it
+#    should automatically detect which objects should be loaded into R 
+#    (write a helper_function, say load_output)
+
+# Example 1: one output file
+params <- get_args_man(alg = "qgis:polygoncentroids", options = TRUE,
+                       qgis_env = qgis_env)
+params$INPUT_LAYER  <- polys  # please note that the input is an R object!!!
+# path to the output shapefile
+params$OUTPUT_LAYER <- file.path(tempdir(), "coords.shp")
+cmd <- paste("'qgis:polygoncentroids'", 
+             "'C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/INPUT_LAYER.shp'", 
+             "'C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/coords.shp'",
+             sep = ", ")
+out <- py_run_string(sprintf("a = processing.runalg(%s)", cmd))$a
+# py_run_string("[a.name for a in alg.outputs]")
+
+# Example 2: several output files
+data("dem")
+params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE,
+                       qgis_env = qgis_env)
+params$ELEVATION <- dem
+# ok, if the user does not specify tempdir() what happens then??? In load_output
+# we automatically save the file to tempdir(), so we have to account for that
+params$SLOPE <- file.path(tempdir(), "slope.asc")
+params$ASPECT <- file.path(tempdir(), "aspect.asc")
+cmd <- 'a = processing.runalg("saga:slopeaspectcurvature", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/ELEVATION.asc", "0", "0", "0", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/slope.asc", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/aspect.asc", None, None, None, None, None, None, None, None, None, None)'
+out <- py_run_string(cmd)$a
+# here, you can also check if QGIS has produced an output!
+# compare with input
+int <- intersect(names(params), names(out))
+params_inp <- normalizePath(unlist(params[int]), mustWork = FALSE)
+params_out <- normalizePath(unlist(out[int]), mustWork = FALSE)
+out_files <- params_out[params_out == params_inp]
+# and now get the files that were actually specified
+
+
+# also possible using the algorithm name to find out the output names:
+# maybe the saver way, because we don't know what happens if QGIS does not write
+# any output
+py_run_string("alg = Processing.getAlgorithm('saga:slopeaspectcurvature')")
+params_out <- py_run_string("out = [a.name for a in alg.outputs]")$out
+params_inp <- names(params[params != "None"])
+int <- intersect(params_inp, params_out)
+out_files <- params[int]
+
 }
+
