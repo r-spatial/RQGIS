@@ -144,18 +144,19 @@ qgis_session_info <- function(qgis_env = set_env()) {
 }
 
 #' @title Find and list available QGIS algorithms
-#' @description `find_algorithms` lists or queries all QGIS algorithms
-#'   which can be used accessed through the command line.
-#' @param search_term A character to query QGIS functions, i.e. to list only 
-#'   functions which contain the indicated string. If empty (`""`), the
-#'   default, all available functions will be returned.
-#' @param name_only If `TRUE`, the function returns only the name(s) of the
-#'   found algorithms. Otherwise, a short function description will be returned
+#' @description `find_algorithms` lists or queries all QGIS algorithms which can
+#'   be accessed via the QGIS Python API.
+#' @param search_term If (`NULL`), the default, all available functions will be 
+#'   returned. If `search_term` is a character, all available functions will be
+#'   queried accordingly. The character string might also contain a regular
+#'   expression (see examples).
+#' @param name_only If `TRUE`, the function returns only the name(s) of the 
+#'   found algorithms. Otherwise, a short function description will be returned 
 #'   as well (default).
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
 #'   API. For more information, refer to [set_env()].
-#' @details Function `find_algorithms` simply calls 
-#'   `processing.alglist` using Python.
+#' @details Function `find_algorithms` simply calls `processing.alglist` using 
+#'   Python.
 #' @return The function returns QGIS function names and short descriptions as an
 #'   R character vector.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
@@ -165,14 +166,16 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' # list all available QGIS algorithms on your system
 #' algs <- find_algorithms()
 #' algs[1:15]
-#' # just find all native, i.e. QGIS-algorithms
-#' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
+#' # find only QGIS functions
+#' find_algorithms(search_term = "qgis:")
+#' # find QGIS and SAGA functions related to centroid computations
+#' find_algorithms(search_term = "centroid.+(qgis:|saga:)")
 #' }
 #' @export
 
-find_algorithms <- function(search_term = "", name_only = FALSE,
+find_algorithms <- function(search_term = NULL, name_only = FALSE,
                             qgis_env = set_env()) {
   # reticulate:::py_discover_config("C:/OSGeo4W64/bin/python.exe")
   # check if the QGIS application has already been started
@@ -183,8 +186,7 @@ find_algorithms <- function(search_term = "", name_only = FALSE,
   # Disadvantage: more processing
   py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
   py_run_file(py_file)
-  code <- sprintf("with Capturing() as output:\n  processing.alglist('%s')",
-                  search_term)
+  code <- "with Capturing() as output:\n  processing.alglist()"
 
   algs <- as.character(py_run_string(code)$output)
   algs <- unlist(strsplit(algs, "', |, '"))
@@ -194,6 +196,12 @@ find_algorithms <- function(search_term = "", name_only = FALSE,
   algs <- algs[algs != ""]
   # clean up after yourself, just in case
   py_run_string("del(output)")
+  
+  # use regular expressions to query all available algorithms
+  if (!is.null(search_term)) {
+    algs <- grep(search_term, algs, value = TRUE)
+  }
+  
   if (name_only) {
     algs <- gsub(".*>", "", algs)
     }
