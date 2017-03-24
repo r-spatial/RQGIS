@@ -157,19 +157,13 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string(set_prefix)
   py_run_string("app = QgsApplication([], True)")
   py_run_string("QgsApplication.initQgis()")
-  py_plugins <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
-  py_run_string(py_plugins)
-  py_run_string("from processing.core.Processing import Processing")
-  py_run_string("Processing.initialize()")
-  py_run_string("import processing")
-  # ParameterSelection required by get_args_man.py, algoptions, alghelp
-  py_run_string("from processing.core.parameters import ParameterSelection")
-  py_run_string(paste("from processing.gui.Postprocessing",
-                      "import handleAlgorithmResults"))
-  # needed for open_help
-  py_run_string("from processing.tools.help import createAlgorithmHelp")
-  # load Barry's capture class (needed for alglist, algoptions, alghelp)
-  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
+  code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
+  py_run_string(code)
+  # attach further modules 
+  py_file <- system.file("python", "import_setup.py", package = "RQGIS")
+  py_run_file(py_file)
+  # attach Barry's capture class (needed for alglist, algoptions, alghelp)
+  py_file <- system.file("python", "helper_funs.py", package = "RQGIS")
   py_run_file(py_file)
 }
 
@@ -203,14 +197,14 @@ open_app <- function(qgis_env = set_env()) {
 #' }
 qgis_session_info <- function(qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
-  py_file <- system.file("python", "qgis_session_info.py", package = "RQGIS")
-  out <- py_run_file(py_file)
-
+  
+  out <- py_run_string("my_session_info = qgis_session_info()")$my_session_info
   # retrieve the output
-  out <- out$ls
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
-  
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(my_session_info)\nexcept:\  pass")
   out
 }
 
@@ -248,25 +242,23 @@ qgis_session_info <- function(qgis_env = set_env()) {
 
 find_algorithms <- function(search_term = NULL, name_only = FALSE,
                             qgis_env = set_env()) {
-  # reticulate:::py_discover_config("C:/OSGeo4W64/bin/python.exe")
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
   # Advantage of this approach: we are using directly alglist and do not have to
   # save it in inst
   # Disadvantage: more processing
-  py_file <- system.file("python", "capturing_barry.py", package = "RQGIS")
-  py_run_file(py_file)
-  code <- "with Capturing() as output:\n  processing.alglist()"
+  code <- "with Capturing() as output_alglist:\n  processing.alglist()"
 
-  algs <- as.character(py_run_string(code)$output)
+  algs <- as.character(py_run_string(code)$output_alglist)
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
   algs <- gsub("\\['|'\\]|'", "", algs)
-  algs = gsub('\\\\|"', "", shQuote(algs))
+  algs <- gsub('\\\\|"', "", shQuote(algs))
   algs <- algs[algs != ""]
-  # clean up after yourself, just in case
-  py_run_string("del(output)")
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(output_alglist)\nexcept:\  pass")
   
   # use regular expressions to query all available algorithms
   if (!is.null(search_term)) {
@@ -315,13 +307,15 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 get_usage <- function(alg = NULL,
                       qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
-  code <- sprintf("with Capturing() as output:\n  processing.alghelp('%s')", 
-                  alg)
-  out <- as.character(py_run_string(code)$output)
+  code <- 
+    sprintf("with Capturing() as output_usage:\n  processing.alghelp('%s')", 
+            alg)
+  out <- as.character(py_run_string(code)$output_usage)
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
-  # clean up after yourself
-  py_run_string("del(output)")
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(output_usage)\nexcept:\  pass")
   cat(gsub("\\\\t", "\t", out))
 }
 
@@ -345,13 +339,15 @@ get_options <- function(alg = "",
                         qgis_env = set_env()) {
   
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
-  code <- sprintf("with Capturing() as output:\n  processing.algoptions('%s')", 
-                  alg)
-  out <- as.character(py_run_string(code)$output)
+  code <-
+    sprintf("with Capturing() as output_options:\n  processing.algoptions('%s')", 
+            alg)
+  out <- as.character(py_run_string(code)$output_options)
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
-  # clean up after yourself
-  py_run_string("del(output)")
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(output_options)\nexcept:\  pass")
   cat(gsub("\\\\t", "\t", out))
 }
 
@@ -391,45 +387,38 @@ open_help <- function(alg = "", qgis_env = set_env()) {
   }
   
   if (grepl("grass", alg)) {
+    # open GRASS online help
     open_grass_help(alg)
   } else {
     algName <- alg
+    # open the QGIS online help
+    py_run_string(sprintf("open_help('%s')", algName))
   }
-  py_cmd <- sprintf("alg = Processing.getAlgorithm('%s')", algName)
-  py_run_string(py_cmd)
-  py_file <- system.file("python", "open_help.py", package = "RQGIS")
-  out <- py_run_file(py_file)
-  
-  # clean up after yourself
-  py_cmd <- paste0("del(provider, groupName, algName, safeGroupName, ", 
-                   "validChars, safeAlgName, version, url, savout)")
-  py_run_string(py_cmd)
 }
 
 #' @title Get GIS arguments and respective default values
-#' @description`get_args_man` retrieves automatically function arguments 
-#' and respective default values for a given QGIS geoalgorithm.
-#' @param alg The name of the algorithm for which one wishes to retrieve
+#' @description`get_args_man` retrieves automatically function arguments and
+#' respective default values for a given QGIS geoalgorithm.
+#' @param alg The name of the algorithm for which one wishes to retrieve 
 #'   arguments and default values.
 #' @param options Sometimes one can choose between various options for a 
-#'   function argument. Setting option to `TRUE` will automatically assume 
-#'   one wishes to use the first option (default: `FALSE`).
+#'   function argument. Setting option to `TRUE` will automatically assume one
+#'   wishes to use the first option (default: `FALSE`).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. 
-#'   That means, for a given GIS algorithm, it captures automatically all 
-#'   arguments and default values. In the case that a function argument has
-#'   several options, one can indicate to use the first option (see also
+#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. That
+#'   means, for a given GIS algorithm, it captures automatically all arguments
+#'   and default values. In the case that a function argument has several
+#'   options, one can indicate to use the first option (see also 
 #'   [get_options()]), which is the QGIS GUI default behavior.
 #' @return The function returns a list whose names correspond to the function 
-#'   arguments one needs to specify. The list elements correspond to the argument
-#'   specifications. The specified function arguments can serve as input for 
-#'   [run_qgis()]'s params argument. Please note that although 
-#'   `get_args_man` tries to retrieve default values, one still needs to 
-#'   specify some function arguments manually such as the input and the output 
-#'   layer.
+#'   arguments one needs to specify. The list elements correspond to the
+#'   argument specifications. The specified function arguments can serve as
+#'   input for [run_qgis()]'s params argument. Please note that although 
+#'   `get_args_man` tries to retrieve default values, one still needs to specify
+#'   some function arguments manually such as the input and the output layer.
 #' @note Please note that some default values can only be set after the user's 
-#'   input. For instance, the GRASS region extent will be determined 
+#'   input. For instance, the GRASS region extent will be determined
 #'   automatically by [run_qgis()] if left blank.
 #' @importFrom reticulate py_run_string py_run_file
 #' @export
@@ -449,15 +438,12 @@ get_args_man <- function(alg = "", options = FALSE,
   if (!alg %in% algs) {
     stop("The specified algorithm ", alg, " does not exist.")
   }
-  
-  py_cmd <- sprintf("alg = Processing.getAlgorithm('%s')", alg)
-  py_run_string(py_cmd)
-  py_file <- system.file("python", "get_args_man.py", package = "RQGIS")
-  
+
   # you have to be careful here, if you want to preserve True and False in
   # Python language... -> check!!!!!!!!!!! or maybe not, because reticulate is
   # taking care of it???
-  args <- py_run_file(py_file)$args
+  args <- py_run_string(
+    sprintf("algorithm_params = get_args_man('%s')", alg))$algorithm_params
   names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several
@@ -465,8 +451,9 @@ get_args_man <- function(alg = "", options = FALSE,
   if (options) {
     args$vals[args$opts] <- "0"
   }
-  # clean up after yoursef
-  py_run_string("del(alg, args, params, vals, opts)")
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(algorithm_params)\nexcept:\  pass")
   # return your result
   out <- as.list(args$vals)
   names(out) <- args$params

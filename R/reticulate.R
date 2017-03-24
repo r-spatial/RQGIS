@@ -204,7 +204,11 @@ tmp <- lapply(seq_along(ls_1), function(i) {
 #    should automatically detect which objects should be loaded into R 
 #    (write a helper_function, say load_output)
 
-# Example 1: one output file
+# Example 1: one output file load_output = FALSE but can also take as argument 
+# TRUE and a vector of filenames this would make sure that the user can specify 
+# to load only one raster or two instead of all (as would be the case for 
+# r.slope.aspect or saga:slopeaspectcurvature) however, I am not sure if I might
+# mix TRUE, FALSE and other values... but why not?
 params <- get_args_man(alg = "qgis:polygoncentroids", options = TRUE,
                        qgis_env = qgis_env)
 params$INPUT_LAYER  <- polys  # please note that the input is an R object!!!
@@ -245,6 +249,53 @@ params_out <- py_run_string("out = [a.name for a in alg.outputs]")$out
 params_inp <- names(params[params != "None"])
 int <- intersect(params_inp, params_out)
 out_files <- params[int]
+
+#**********************************************************
+# link2GI--------------------------------------------------
+#**********************************************************
+# get meuse data as sp object
+library(link2GI)
+require(sp)
+data(meuse) 
+coordinates(meuse) <- ~x+y 
+proj4string(meuse) <-CRS("+init=epsg:28992") 
+
+# get meuse data as sf object
+# require(sf)
+# meuse_sf = st_as_sf(meuse, 
+#                     coords = 
+#                       c("x", "y"), 
+#                     crs = 28992, 
+#                     agr = "constant")
+linkGRASS7(meuse, c("C:/OSGeo4W64","grass-7.2.0","osgeo4W"))
+library("rgrass7")
+rgrass7::parseGRASS("r.slope.aspect")
+
+data("meuse", package = "sp")
+
+data("meuse", package = "sp")
+linkGRASS7(meuse, c("C:/OSGeo4W64", "grass-7.2.0", "osgeo4w"))
+
+#**********************************************************
+# Tests----------------------------------------------------
+#**********************************************************
+
+devtools::load_all()
+qgis_env <- set_env("C:/OSGeo4W64/")
+open_app(qgis_env = qgis_env)
+# write a test for qgis_session_info
+qgis_session_info(qgis_env = qgis_env)
+# write a test for find algorithms!!!
+find_algorithms(qgis_env = qgis_env)
+# write a test for get_usage
+get_usage("grass7:v.voronoi", qgis_env = qgis_env)
+# write a test for get_options
+get_options("grass7:r.slope.aspect", qgis_env = qgis_env)
+# write a test for open_help
+open_help("grass7:r.slope.aspect", qgis_env = qgis_env)
+# write a test for get_args_man
+get_args_man("grass7:r.slope.aspect", qgis_env = qgis_env)
+get_args_man("saga:slopeaspectcurvature", qgis_env = qgis_env)
 
 }
 
