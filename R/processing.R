@@ -442,8 +442,13 @@ get_args_man <- function(alg = "", options = FALSE,
   # you have to be careful here, if you want to preserve True and False in
   # Python language... -> check!!!!!!!!!!! or maybe not, because reticulate is
   # taking care of it???
+  
+  # args <- py_run_string(
+  #   sprintf("algorithm_params = get_args_man('%s')", alg))$algorithm_params
+  # using the RQGIS class
+  py_run_string("rqgis = RQGIS()")
   args <- py_run_string(
-    sprintf("algorithm_params = get_args_man('%s')", alg))$algorithm_params
+   sprintf("algorithm_params = rqgis.get_args_man('%s')", alg))$algorithm_params
   names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several

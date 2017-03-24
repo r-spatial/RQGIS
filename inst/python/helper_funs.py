@@ -1,3 +1,7 @@
+# Think about putting your functions into a class named RQGIS,
+# e.g., RQGIS.get_args_man this would make it quite improbable that somebody 
+# would accidentally overwrote your methods defined inside the class!
+
 # Author: Barry Rowlingson
 # handy output catcher because capture.output in R
 # wont catch Python output
@@ -12,6 +16,9 @@ class Capturing(list):
   def __exit__(self, *args):
     self.extend(self._stringio.getvalue().splitlines())
     sys.stdout = self._stdout
+
+
+
 
 # Author: Jannes Muenchow, Victor Olaya
 # Function to retrieve geoalgorithm arguments
@@ -156,5 +163,36 @@ def qgis_session_info():
   ### TauDEM versions (currently not in use because no function to extract
   ### Taudem version in 'TauDEMUtils')
   # "TauDEMUtils.taudemMultifilePath()",
-      
+
+# A basic class consists only of the class keyword, the name of the class, and
+# the class from which the new class inherits in parentheses. (We'll get to
+# inheritance soon.) For now, our classes will inherit from the object class,
+# like so:
+# class RQGIS(object):
+# Do we need object-power, I guess not:
+class RQGIS:
+  def __init__(self):
+    # well, you need to specify something here, e.g.,
+    # self.x = ""
+    # could be also something useful. If not needed, use pass
+    pass
+  def get_args_man(self, alg):
+    alg = Processing.getAlgorithm(alg)
+    vals = []
+    params = []
+    opts = list()
+    if alg is None:
+      sys.exit('Specified algorithm does not exist!')
+      # return 'Specified algorithm does not exist!'
+    alg = alg.getCopy()
+    for param in alg.parameters:
+      params.append(param.name)
+      vals.append(param.getValueAsCommandLineParameter())
+      opts.append(isinstance(param, ParameterSelection))
+    for out in alg.outputs:
+      params.append(out.name)
+      vals.append(out.getValueAsCommandLineParameter())
+      opts.append(isinstance(out, ParameterSelection))
+    args = [params, vals, opts]
+    return args      
 
