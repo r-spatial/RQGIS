@@ -131,6 +131,7 @@ open_app <- function(qgis_env = set_env()) {
   setup_win(qgis_env = qgis_env)
   # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
   
+
   # compare py_config path with set_env path!!
   a <- py_config()
   py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
@@ -162,9 +163,12 @@ open_app <- function(qgis_env = set_env()) {
   # attach further modules 
   py_file <- system.file("python", "import_setup.py", package = "RQGIS")
   py_run_file(py_file)
-  # attach Barry's capture class (needed for alglist, algoptions, alghelp)
+  # attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
+  # alghelp)
   py_file <- system.file("python", "helper_funs.py", package = "RQGIS")
   py_run_file(py_file)
+  # initialize our RQGIS class
+  py_run_string("RQGIS = RQGIS()")
 }
 
 
@@ -198,7 +202,8 @@ open_app <- function(qgis_env = set_env()) {
 qgis_session_info <- function(qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
-  out <- py_run_string("my_session_info = qgis_session_info()")$my_session_info
+  out <- 
+    py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
   # retrieve the output
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
@@ -340,7 +345,8 @@ get_options <- function(alg = "",
   
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   code <-
-    sprintf("with Capturing() as output_options:\n  processing.algoptions('%s')", 
+    sprintf(paste0("with Capturing() as output_options:\n",
+                   "  processing.algoptions('%s')"), 
             alg)
   out <- as.character(py_run_string(code)$output_options)
   out <- gsub("^\\[|\\]$|'", "", out)
@@ -392,7 +398,7 @@ open_help <- function(alg = "", qgis_env = set_env()) {
   } else {
     algName <- alg
     # open the QGIS online help
-    py_run_string(sprintf("open_help('%s')", algName))
+    py_run_string(sprintf("RQGIS.open_help('%s')", algName))
   }
 }
 
@@ -446,9 +452,9 @@ get_args_man <- function(alg = "", options = FALSE,
   # args <- py_run_string(
   #   sprintf("algorithm_params = get_args_man('%s')", alg))$algorithm_params
   # using the RQGIS class
-  py_run_string("rqgis = RQGIS()")
+  
   args <- py_run_string(
-   sprintf("algorithm_params = rqgis.get_args_man('%s')", alg))$algorithm_params
+   sprintf("algorithm_params = RQGIS.get_args_man('%s')", alg))$algorithm_params
   names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several
