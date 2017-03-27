@@ -293,6 +293,7 @@ get_usage("grass7:v.voronoi", qgis_env = qgis_env)
 get_options("grass7:r.slope.aspect", qgis_env = qgis_env)
 # write a test for open_help
 open_help("grass7:r.slope.aspect", qgis_env = qgis_env)
+open_help(alg = "qgis:addfieldtoattributestable", qgis_env = qgis_env)
 # write a test for get_args_man
 get_args_man("grass7:r.slope.aspect", qgis_env = qgis_env)
 get_args_man("saga:slopeaspectcurvature", qgis_env = qgis_env)

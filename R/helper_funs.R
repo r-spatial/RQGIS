@@ -289,6 +289,7 @@ open_grass_help <- function(alg) {
 #'   API. For more information, refer to [set_env()].
 #' @return The function changes the system settings using [base::Sys.setenv()].
 #' @keywords internal
+#' @importFrom reticulate use_python
 #' @author Jannes Muenchow
 #' @examples 
 #' \dontrun{
@@ -321,15 +322,20 @@ setup_win <- function(qgis_env = set_env()) {
   # set the PYTHONPATH variable, so that QGIS knows where to search for
   # QGIS libraries and appropriate Python modules
   python_path <- Sys.getenv("PYTHONPATH")
-  python_path <- paste(python_path,
-                       file.path(qgis_env$root, "apps", my_qgis, "python;", 
-                                 fsep = "\\"),
-                       sep = ";")
-  Sys.setenv(PYTHONPATH = python_path)
+  python_add <- file.path(qgis_env$root, "apps", my_qgis, "python", 
+                          fsep = "\\")
+  if (!grepl(gsub("\\\\", "\\\\\\\\", python_add), python_path)) {
+    python_path <- paste(python_path, python_add, sep = ";")    
+    Sys.setenv(PYTHONPATH = python_path)
+    }
+
   # defining QGIS prefix path (i.e. without bin)
   Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
                                           fsep = "\\"))
   # shell.exec("python")  # yeah, it works!!!
+  # !!!Try to make sure that the right Python version is used!!!
+  use_python(file.path(qgis_env$root, "bin\\python.exe", fsep = "\\"), 
+             required = TRUE)
 }
 
 
@@ -368,7 +374,9 @@ run_ini <- function(qgis_env = set_env()) {
       tmp <- strsplit(tmp, "=")[[1]]
       args <- list(tmp[2])
       names(args) <- tmp[1]
-      if (Sys.getenv(names(args)) != "") {
+      if (Sys.getenv(names(args)) != "" &
+          !grepl(gsub("\\\\", "\\\\\\\\", args[[1]]), 
+                 Sys.getenv((names(args))))) {
         args[[1]] <- paste(args[[1]], Sys.getenv(names(args)), sep = ";")
       } 
       do.call(Sys.setenv, args)
