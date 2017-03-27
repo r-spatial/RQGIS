@@ -1,7 +1,3 @@
-# Think about putting your functions into a class named RQGIS,
-# e.g., RQGIS.get_args_man this would make it quite improbable that somebody 
-# would accidentally overwrote your methods defined inside the class!
-
 # Author: Barry Rowlingson
 # handy output catcher because capture.output in R
 # wont catch Python output
@@ -17,6 +13,8 @@ class Capturing(list):
     self.extend(self._stringio.getvalue().splitlines())
     sys.stdout = self._stdout
 
+# RQGIS class should make it unlikely that somebody accidentally overwrites our
+# methods defined within this class.
 # A basic class consists only of the class keyword, the name of the class, and
 # the class from which the new class inherits in parentheses. For now, our 
 # classes will inherit from the object class, like so:
@@ -170,4 +168,3 @@ class RQGIS:
     ### TauDEM versions (currently not in use because no function to extract
     ### Taudem version in 'TauDEMUtils')
     # "TauDEMUtils.taudemMultifilePath()",
-
