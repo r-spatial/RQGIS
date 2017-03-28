@@ -483,8 +483,6 @@ get_args_man <- function(alg = "", options = FALSE,
 #'  recommended to use the convenience function [get_args_man()].
 #'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order.
-#'@param show_msg Logical, if `TRUE`, Python messages that occured during
-#'  the algorithm execution will be shown.
 #'@param load_output Character vector containing paths to (an) output file(s) in
 #'  order to load the QGIS output directly into R (optional). If 
 #'  `load_output` consists of more than one element, a list will be 
@@ -513,6 +511,7 @@ get_args_man <- function(alg = "", options = FALSE,
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
 #' @importFrom raster raster
+#' @importFrom reticulate py_run_string
 #' @examples
 #' \dontrun{
 #' # set the environment
@@ -535,8 +534,7 @@ get_args_man <- function(alg = "", options = FALSE,
 #'          qgis_env = my_env)
 #'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     show_msg = TRUE, load_output = NULL,
-                     qgis_env = set_env()) {
+                     load_output = NULL, qgis_env = set_env()) {
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -655,12 +653,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   
   # shellquote algorithm name
   start <- shQuote(alg)
-  # retrieve specified function arguments, i.e. the values
-  # Sometimes function arguments are already shellquoted. Shellquoting them 
-  # again will result in an error, e.g., grass7:r.viewshed
-  # Hence, get rid off shellQuotes (if there are any) before you shellQuote
-  # again... and ShellQuotes (or at least quotes) are needed when using the
-  # command line 
+  # build the Python command
   val <- vapply(params, function(x) {
     # get rid off shellQuotes 
     tmp <- unlist(strsplit(as.character(x), ""))
@@ -671,24 +664,14 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
   }, character(1))
   
-  # build the Python command
+
   args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
-  # run QGIS command (while catching possible error messages)
-  msg <- execute_cmds(processing_name = "processing.runalg",
-                      params = args,
-                      qgis_env = qgis_env,
-                      intern = ifelse(Sys.info()["sysname"] == "Darwin",
-                                      FALSE, TRUE))
-  if (any(grepl("Error", msg))) {
-    stop(msg)
-  }
-  # if a message was produced, show it in the console
-  if (show_msg && length(msg) > 0 && !identical(msg, tempdir())) {
-    message(msg)
-  }
+  cmd <- paste0("processing.runalg(", args, ")")
   
-  
+  # run QGIS
+  py_run_string(cmd)
+
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {

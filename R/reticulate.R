@@ -127,30 +127,6 @@ tmp = py_run_string("alg = Processing.getAlgorithm('saga:slopeaspectcurvature')"
 tmp$alg
 py_get_attr(x = tmp, name = "alg")
 
-#**********************************************************
-# get_args_man---------------------------------------------
-#**********************************************************
-
-# compare py_config path with set_env path!!
-# a <- py_config()
-# py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
-# qgis_env <- set_env("C:/OSGeo4W64/")
-# identical(py_path, qgis_env$root)
-
-py_file <- system.file("python", "get_args_man.py", package = "RQGIS")
-tmp <- py_run_file("D:/programming/R/RQGIS/RQGIS/inst/python/get_args_man.py")
-py_get_attr(tmp, "params") %>% 
-  py_to_r
-py_get_attr(tmp, "vals") %>%
-  py_to_r  
-# you have to be careful here, if you want to preserve True and False in Python
-# script
-py_get_attr(tmp, "opts") %>%
-  py_to_r
-# or return a list
-tmp <- py_run_string("args = [params, vals, opts]")
-tmp$args
-  
 
 #**********************************************************
 # run_qgis-------------------------------------------------
