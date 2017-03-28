@@ -180,7 +180,6 @@ open_app <- function(qgis_env = set_env()) {
                        qgis_env$qgis_prefix_path, "', True)")
   py_run_string(set_prefix)
   py_run_string("app = QgsApplication([], True)")
-  py_run_string("app.setPrefixPath('/usr', True)")
   py_run_string("QgsApplication.initQgis()")
   code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
   py_run_string(code)
