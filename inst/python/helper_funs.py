@@ -126,7 +126,7 @@ class RQGIS:
     if g6 is True and isWindows():
       g6 = GrassUtils.grassPath()
       g6 = re.findall('grass-.*', g6)
-    if g6 is True and isMac:
+    if g6 is True and isMac():
       g6 = GrassUtils.grassPath()
       g6 = os.listdir(g6)
       delim = ';'
@@ -137,7 +137,7 @@ class RQGIS:
     if g7 is True and isWindows():
       g7 = Grass7Utils.grassPath()
       g7 = re.findall('grass-.*', g7)
-    if g7 is True and isMac:
+    if g7 is True and isMac():
       g7 = Grass7Utils.grassPath()
       g7 = os.listdir(g7)
       delim = ';'
