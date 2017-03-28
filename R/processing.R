@@ -177,7 +177,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
       "if g7 is True and isWindows():",
       "  g7 = Grass7Utils.grassPath()",
       "  g7 = re.findall('grass-.*', g7)",
-      "if g7 is True and isMac:",
+      "if g7 is True and isMac():",
       "  g7 = Grass7Utils.grassPath()",
       "  g7 = os.listdir(g7)",
       "  delim = ';'",
