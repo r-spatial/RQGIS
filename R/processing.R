@@ -127,17 +127,40 @@ open_app <- function(qgis_env = set_env()) {
   # rid off Anaconda Python
   # on.exit(do.call(Sys.setenv, settings))
   
-  # run Windows setup
-  setup_win(qgis_env = qgis_env)
-  # Mac & Linux are still missing here!!!!!!!!!!!!!!!!!
-  
-
-  # compare py_config path with set_env path!!
-  a <- py_config()
-  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
-  if (!identical(py_path, qgis_env$root)) {
-    stop("Wrong Python binary. Restart R and check!")
+  # !!!Mac is still missing here!!!
+  if (Sys.info()["sysname"] == "Windows") {
+    # run Windows setup
+    setup_win(qgis_env = qgis_env)
+  } else if (Sys.info()["sysname"] == "Linux") {
+    # append pythonpath to import qgis.core etc. packages
+    python_path <- Sys.getenv("PYTHONPATH")
+    qgis_python_path <- paste0(qgis_env$root, "/share/qgis/python")
+    if (python_path != "" & !grepl(qgis_python_path, python_path)) {
+      qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
+                                sep=":")
+    }
+  Sys.setenv(PYTHONPATH = qgis_python_path)
+  # define path where QGIS libraries reside to search path of the
+  # dynamic linker
+  ld_library <- Sys.getenv("LD_LIBRARY_PATH")
+  qgis_ld <- paste(paste0(qgis_env$root, "/lib"))
+  if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
+  qgis_ld <- paste(paste0(qgis_env$root, "/lib"),
+                   Sys.getenv("LD_LIBRARY_PATH"), sep=":")
   }
+  Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
+  }
+  # not sure, if we need the subsequent test for Linux & Mac since the Python 
+  # binary should be alway /usr/bin/python.exe -> ask Patrick
+  if (Sys.info()["sysname"] == "Windows") {
+    # compare py_config path with set_env path!!
+    a <- py_config()
+    py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
+    if (!identical(py_path, qgis_env$root)) {
+      stop("Wrong Python binary. Restart R and check!")
+    }
+  }
+
   
   # make sure that QGIS is not already running (this would crash R)
   # app = QgsApplication([], True)  # see below
@@ -153,10 +176,11 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from PyQt4.QtCore import *")
   py_run_string("from PyQt4.QtGui import *")
   py_run_string("from qgis.gui import *")
-  set_prefix <- paste0("QgsApplication.setPrefixPath(r'", 
+  set_prefix <- paste0("QgsApplication.setPrefixPath(r'",
                        qgis_env$qgis_prefix_path, "', True)")
   py_run_string(set_prefix)
   py_run_string("app = QgsApplication([], True)")
+  py_run_string("app.setPrefixPath('/usr', True)")
   py_run_string("QgsApplication.initQgis()")
   code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
   py_run_string(code)
@@ -259,7 +283,12 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
   algs <- gsub("\\['|'\\]|'", "", algs)
-  algs <- gsub('\\\\|"', "", shQuote(algs))
+  # quick-and-dirty, maybe there is more elegant approach...
+  if (Sys.info()["sysname"] == "Windows") {
+    algs <- gsub('\\\\|"', "", shQuote(algs))
+  } else {
+    algs <- gsub('\\\\|"', "", algs)
+  }
   algs <- algs[algs != ""]
   # clean up after yourself!!
   py_run_string(

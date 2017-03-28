@@ -27,6 +27,10 @@ py_run_string("Processing.initialize()")
 py_run_string("import processing")
 py_run_string("processing.alglist()")
 
+py_run_string("app.setPrefixPath('/usr', True)")
+py_run_string("app.initQgis()")
+py_run_string("print app.showSettings()")
+
 #**********************************************************
 # WINDOWS--------------------------------------------------
 #**********************************************************
@@ -262,7 +266,7 @@ open_app(qgis_env = qgis_env)
 # write a test for qgis_session_info
 qgis_session_info(qgis_env = qgis_env)
 # write a test for find algorithms!!!
-find_algorithms(qgis_env = qgis_env)
+find_algorithms(qgis_env = qgis_env)  # ok, under Linux, you have to take of '
 # write a test for get_usage
 get_usage("grass7:v.voronoi", qgis_env = qgis_env)
 # write a test for get_options
