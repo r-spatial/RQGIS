@@ -127,7 +127,6 @@ open_app <- function(qgis_env = set_env()) {
   # rid off Anaconda Python
   # on.exit(do.call(Sys.setenv, settings))
   
-  # !!!Mac is still missing here!!!
   if (Sys.info()["sysname"] == "Windows") {
     # run Windows setup
     setup_win(qgis_env = qgis_env)
@@ -138,20 +137,38 @@ open_app <- function(qgis_env = set_env()) {
     if (python_path != "" & !grepl(qgis_python_path, python_path)) {
       qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
                                 sep=":")
+    } 
+  } else if (Sys.info()["sysname"] == "Darwin") { 
+    python_path <- Sys.getenv("PYTHONPATH")
+    # PYTHONPATH only applies to homebrew installation - todo: account for Kyngchaos 
+    qgis_python_path <- paste0(qgis_env$root, "/Contents/Resources/python/:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH")
+    if (python_path != "" & !grepl(qgis_python_path, python_path)) {
+      qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
+                                sep=":")    
     }
+    
+    Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/")) ### is this not needed on Windows/Linux? Without `open_app() does not work on Mac`
+  } 
   Sys.setenv(PYTHONPATH = qgis_python_path)
+  
+  
   # define path where QGIS libraries reside to search path of the
   # dynamic linker
   ld_library <- Sys.getenv("LD_LIBRARY_PATH")
-  qgis_ld <- paste(paste0(qgis_env$root, "/lib"))
+  
+  if (!Sys.info()["sysname"] == "Darwin") {
+    qgis_ld <- paste(paste0(qgis_env$root, "/lib"))
+  } else {
+    qgis_ld <- paste(paste0(qgis_env$qgis_prefix_path, "/MacOS/lib/:/Applications/QGIS.app/Contents/Frameworks/")) # homebrew
+  }
   if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
   qgis_ld <- paste(paste0(qgis_env$root, "/lib"),
                    Sys.getenv("LD_LIBRARY_PATH"), sep=":")
   }
   Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
-  }
+  
   # not sure, if we need the subsequent test for Linux & Mac since the Python 
-  # binary should be alway /usr/bin/python.exe -> ask Patrick
+  # binary should be alway /usr/bin/python.exe -> ask Patrick Patrick: you are right, python binary is always in /usr/bin for Linux & Mac
   if (Sys.info()["sysname"] == "Windows") {
     # compare py_config path with set_env path!!
     a <- py_config()
@@ -159,6 +176,11 @@ open_app <- function(qgis_env = set_env()) {
     if (!identical(py_path, qgis_env$root)) {
       stop("Wrong Python binary. Restart R and check!")
     }
+  }
+  
+  # suppress messages for homebrew Mac installation
+  if (Sys.info()["sysname"] == "Darwin") {
+    Sys.setenv(QGIS_DEBUG=-1)
   }
 
   
@@ -178,11 +200,11 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from qgis.gui import *")
   set_prefix <- paste0("QgsApplication.setPrefixPath(r'",
                        qgis_env$qgis_prefix_path, "', True)")
+  code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
+  py_run_string(code)
   py_run_string(set_prefix)
   py_run_string("app = QgsApplication([], True)")
   py_run_string("QgsApplication.initQgis()")
-  code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
-  py_run_string(code)
   # attach further modules 
   py_file <- system.file("python", "import_setup.py", package = "RQGIS")
   py_run_file(py_file)
