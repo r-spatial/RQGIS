@@ -131,6 +131,28 @@ tmp = py_run_string("alg = Processing.getAlgorithm('saga:slopeaspectcurvature')"
 tmp$alg
 py_get_attr(x = tmp, name = "alg")
 
+#**********************************************************
+# Mac--------------------------------------------------
+#**********************************************************
+
+py_run_string("import os, sys")
+py_run_string("from qgis.core import *")
+py_run_string("from osgeo import ogr")
+py_run_string("from PyQt4.QtCore import *")
+py_run_string("from PyQt4.QtGui import *")
+py_run_string("from qgis.gui import *")
+
+py_run_string("sys.path.append(r'/usr/local/Cellar/qgis2-ltr/2.14.13/QGIS.app/Contents/Resources/python/plugins')")  
+py_run_string("QgsApplication.setPrefixPath(r'/usr/local/Cellar/qgis2-ltr/2.14.13/QGIS.app/Contents', True)")
+
+py_run_string("print QgsApplication.showSettings()")
+py_run_string("app = QgsApplication([], True)")
+py_run_string("print app.showSettings()")
+py_run_string("QgsApplication.initQgis()")
+
+py_run_string("from processing.core.Processing import Processing")   
+py_run_string("Processing.initialize()")
+py_run_string("import processing")
 
 #**********************************************************
 # run_qgis-------------------------------------------------
