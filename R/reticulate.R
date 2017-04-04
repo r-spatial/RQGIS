@@ -317,8 +317,8 @@ params <- get_args_man("qgis:polygoncentroids", options = TRUE,
                        qgis_env = qgis_env)
 params$INPUT_LAYER <- file.path(tempdir(), "polys.shp")
 params$OUTPUT_LAYER <- file.path(tempdir(), "out.shp")
-out <- run_qgis(alg = "qgis:polygoncentroids", params = params, 
-                load_output = params$OUTPUT_LAYER)
+out <- run_qgis(alg = "qgis:polygoncentroids", params = params,
+                load_output = params$OUTPUT_LAYER, qgis_env = qgis_env)
 # check
 plot(polys)
 points(out)
