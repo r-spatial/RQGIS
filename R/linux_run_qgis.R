@@ -17,7 +17,8 @@ if (FALSE) {
   # otherwise RStudio gets problems..
   Sys.setenv(LD_LIBRARY_PATH = paste("/usr/lib", Sys.getenv("LD_LIBRARY_PATH"), 
                                      sep = ":"))
-  
+  # setting here the QGIS_PREFIX_PATH also works instead of running it twice
+  Sys.setenv(QGIS_PREFIX_PATH = "/usr")
   # reproducing our py_cmd.py
   py_run_string("import os, sys")
   py_run_string("from qgis.core import *")
