@@ -223,7 +223,7 @@ open_app <- function(qgis_env = set_env()) {
   py_run_file(py_file)
   # attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
   # alghelp)
-  py_file <- system.file("python", "helper_funs.py", package = "RQGIS")
+  py_file <- system.file("python", "python_funs.py", package = "RQGIS")
   py_run_file(py_file)
   # initialize our RQGIS class
   py_run_string("RQGIS = RQGIS()")
