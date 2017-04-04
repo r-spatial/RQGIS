@@ -1,32 +1,43 @@
 
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-## See https://github.com/metacran/r-builder for details.
-## settings from edzer/gstat
-
 language: R		 
 sudo: required
-cache: packages	
+cache: 
+  - packages	
+  - /usr/local
 dist: trusty
 
-warnings_are_errors: false
-
-#env:
-  #global:
-    #- R_CHECK_ARGS = "--no-tests"
-    
-r_packages: devtools
-    
-r_github_packages: 
-  #- hadley/devtools
+r_github_packages:
   - jimhester/covr
     
 before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo apt-get --yes --force-yes update -qq
-  ## saga needs to be installed from source and not using ubuntugis
-  # install qgis and qgis-plugin-grass from 'ubuntugis'
-  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev qgis python-qgis qgis-plugin-grass
+    # install most recent QGIS
+    - sudo sh -c 'echo "deb http://qgis.org/debian xenial main" >> /etc/apt/sources.list'  
+    - sudo sh -c 'echo "deb-src http://qgis.org/debian xenial main " >> /etc/apt/sources.list'  
+    - wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import
+    - gpg --fingerprint 073D307A618E5811
+    - gpg --export --armor 073D307A618E5811 | sudo apt-key add -
+    
+    - sudo apt-get autoremove
+    - sudo apt-get autoclean
+    - sudo apt-get -f install
+    - sudo apt-get autoremove qgis
+    - sudo apt-get --purge remove qgis
+    
+    # - sudo apt-get install grass
+    - sudo apt-get install qgis qgis-plugin-grass saga grass
+    
+    # related to "cannot connect to X Server" error : http://askubuntu.com/questions/175611/cannot-connect-to-x-server-when-running-app-with-sudo
+    #- xhost local:root
+    #- sudo DISPLAY=$DISPLAY gedit /etc/profile
+    # - sudo sh -c 'echo Defaults env_keep="DISPLAY XAUTHORITY" >> ~/visudo' 
 
+# imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+  
 notifications:
   email:
     on_success: change
@@ -37,3 +48,6 @@ notifications:
     
 after_success:
   - Rscript -e 'covr::codecov()'
+
+# inspect log of failing tests
+after_failure: "cat /home/travis/build/jannes-m/RQGIS/RQGIS.Rcheck/00check.log"
