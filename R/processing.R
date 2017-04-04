@@ -24,7 +24,7 @@
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
 set_env <- function(root = NULL, ltr = TRUE) {
-
+  
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(root)) {
@@ -125,19 +125,13 @@ open_app <- function(qgis_env = set_env()) {
   
   # Well, well, not sure if we should change it back or at least we have to get
   # rid off Anaconda Python
-  # on.exit(do.call(Sys.setenv, settings))
+  on.exit(do.call(Sys.setenv, settings))
   
   if (Sys.info()["sysname"] == "Windows") {
     # run Windows setup
     setup_win(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Linux") {
-    # append pythonpath to import qgis.core etc. packages
-    python_path <- Sys.getenv("PYTHONPATH")
-    qgis_python_path <- paste0(qgis_env$root, "/share/qgis/python")
-    if (python_path != "" & !grepl(qgis_python_path, python_path)) {
-      qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
-                                sep=":")
-    } 
+    setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     python_path <- Sys.getenv("PYTHONPATH")
     # PYTHONPATH only applies to homebrew installation - todo: account for Kyngchaos 
@@ -148,11 +142,12 @@ open_app <- function(qgis_env = set_env()) {
                                   "$PYTHONPATH", sep = ":"))
     if (python_path != "" & !grepl(qgis_python_path, python_path)) {
       qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
-                                sep=":")    
+                                sep = ":")    
     }
     
     ### is this not needed on Windows/Linux? Without `open_app() does not work on Mac`
-    ### No, it is not needed
+    ### No, it is not necessarily needed under Linux, however, I used it this time
+    ### Under Windows we set QGIS_PREFIX_PATH in setup_win
     Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/")) 
     Sys.setenv(PYTHONPATH = qgis_python_path)
     # define path where QGIS libraries reside to search path of the
@@ -185,11 +180,12 @@ open_app <- function(qgis_env = set_env()) {
     }
   }
   
-  # suppress messages for homebrew Mac installation
+  # suppress messages for homebrew Mac installation 
+  ### Patrick, can you put this in setup_darwin as well?
   if (Sys.info()["sysname"] == "Darwin") {
     Sys.setenv(QGIS_DEBUG=-1)
   }
-
+  
   
   # make sure that QGIS is not already running (this would crash R)
   # app = QgsApplication([], True)  # see below
@@ -205,13 +201,23 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("from PyQt4.QtCore import *")
   py_run_string("from PyQt4.QtGui import *")
   py_run_string("from qgis.gui import *")
+  # interestingly, under Linux the app would start also without running the next
+  # two lines
   set_prefix <- paste0("QgsApplication.setPrefixPath(r'",
                        qgis_env$qgis_prefix_path, "', True)")
-  code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
-  py_run_string(code)
   py_run_string(set_prefix)
+  # not running the next line will produce following error message under Linux
+  # QSqlDatabase: QSQLITE driver not loaded
+  # QSqlDatabase: available drivers: 
+  # ERROR: Opening of authentication db FAILED
+  # QSqlQuery::prepare: database not open
+  # WARNING: Auth db query exec() FAILED
+  py_run_string("QgsApplication.showSettings()")
   py_run_string("app = QgsApplication([], True)")
   py_run_string("QgsApplication.initQgis()")
+  code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
+  py_run_string(code)
+  
   # attach further modules 
   py_file <- system.file("python", "import_setup.py", package = "RQGIS")
   py_run_file(py_file)
@@ -306,7 +312,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   # save it in inst
   # Disadvantage: more processing
   code <- "with Capturing() as output_alglist:\n  processing.alglist()"
-
+  
   algs <- as.character(py_run_string(code)$output_alglist)
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
@@ -329,8 +335,8 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   
   if (name_only) {
     algs <- gsub(".*>", "", algs)
-    }
-
+  }
+  
   # py_run_string(sprintf("text = '%s'", search_term))
   # py_file <- system.file("python", "alglist.py", package = "RQGIS")
   # algs_2 <- py_run_file(py_file)
@@ -501,7 +507,7 @@ get_args_man <- function(alg = "", options = FALSE,
   if (!alg %in% algs) {
     stop("The specified algorithm ", alg, " does not exist.")
   }
-
+  
   # you have to be careful here, if you want to preserve True and False in
   # Python language... -> check!!!!!!!!!!! or maybe not, because reticulate is
   # taking care of it???
@@ -511,7 +517,7 @@ get_args_man <- function(alg = "", options = FALSE,
   # using the RQGIS class
   
   args <- py_run_string(
-   sprintf("algorithm_params = RQGIS.get_args_man('%s')", alg))$algorithm_params
+    sprintf("algorithm_params = RQGIS.get_args_man('%s')", alg))$algorithm_params
   names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several
@@ -721,14 +727,14 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
   }, character(1))
   
-
+  
   args <- paste(val, collapse = ", ")
   args <- paste0(paste(start, args, sep = ", "))
   cmd <- paste0("processing.runalg(", args, ")")
   
   # run QGIS
   py_run_string(cmd)
-
+  
   # load output
   if (!is.null(load_output)) {
     ls_1 <- lapply(load_output, function(x) {
@@ -736,10 +742,10 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       fname <- ifelse(dirname(x) == ".", 
                       file.path(tmp_dir, x),
                       x)
-       if (!file.exists(fname)) {
+      if (!file.exists(fname)) {
         stop("Unfortunately, QGIS did not produce: ", x)
       }
-     
+      
       test <- try(expr = 
                     rgdal::readOGR(dsn = dirname(fname),
                                    layer = gsub("\\..*", "", 
