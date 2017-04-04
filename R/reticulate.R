@@ -283,6 +283,8 @@ linkGRASS7(meuse, c("C:/OSGeo4W64", "grass-7.2.0", "osgeo4w"))
 #**********************************************************
 
 devtools::load_all()
+library("sp")
+library("rgdal")
 qgis_env <- set_env("C:/OSGeo4W64/")
 open_app(qgis_env = qgis_env)
 # write a test for qgis_session_info
@@ -299,6 +301,27 @@ open_help(alg = "qgis:addfieldtoattributestable", qgis_env = qgis_env)
 # write a test for get_args_man
 get_args_man("grass7:r.slope.aspect", qgis_env = qgis_env)
 get_args_man("saga:slopeaspectcurvature", qgis_env = qgis_env)
+# check run_qgis
+coords_1 <- 
+  matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+         ncol = 2, byrow = TRUE)
+coords_2 <- coords_1 + 2
+polys <- 
+  # convert the coordinates into polygons
+  polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                Polygons(list(Polygon(coords_2)), 2)) 
+polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
+writeOGR(polys, dsn = tempdir(), layer = "polys", driver = "ESRI Shapefile")
+
+params <- get_args_man("qgis:polygoncentroids", options = TRUE, 
+                       qgis_env = qgis_env)
+params$INPUT_LAYER <- file.path(tempdir(), "polys.shp")
+params$OUTPUT_LAYER <- file.path(tempdir(), "out.shp")
+out <- run_qgis(alg = "qgis:polygoncentroids", params = params, 
+                load_output = params$OUTPUT_LAYER)
+# check
+plot(polys)
+points(out)
 
 }
 
