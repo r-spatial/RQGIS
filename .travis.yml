@@ -14,8 +14,10 @@ warnings_are_errors: false
   #global:
     #- R_CHECK_ARGS = "--no-tests"
     
+r_packages: devtools
+    
 r_github_packages: 
-  - hadley/devtools
+  #- hadley/devtools
   - jimhester/covr
     
 before_install:
