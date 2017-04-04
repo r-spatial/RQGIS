@@ -265,6 +265,33 @@ qgis_session_info <- function(qgis_env = set_env()) {
   # retrieve the output
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
+  if (Sys.info()["sysname"] == "Linux" & out$grass7) {
+    # find out which GRASS version is available
+    # my_grass <- searchGRASSX()
+    my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ", 
+                              "-executable -iname 'grass??' -print"),
+                       intern = TRUE)
+    if (grepl("72", my_grass)) {
+      warning(paste0("QGIS might be still pointing to grass70. In this case ",
+                     "you might want to consider using a softlink by running: ",
+                     "'sudo ln -s /usr/bin/grass72 /usr/bin/grass70' on the ",
+                     "commandline. See also ", 
+                     "'https://lists.osgeo.org/pipermail/qgis-user/2017-", 
+                     "January/038907.html'. Then restart R again."))
+    }
+    
+    # more or less copied from link2GI::searchGRASSX
+    if (length(my_grass) > 0) {
+      install <- lapply(seq(length(my_grass)), function(i) {
+        cmd <- grep(readLines(my_grass), pattern = "cmd_name = \"", 
+                value = TRUE)
+        cmd <- substr(cmd, gregexpr(pattern = "\"", cmd)[[1]][1] + 
+                    1, nchar(cmd) - 1)
+        })
+    }
+    out$grass7 <- grep("7", unlist(install), value = TRUE)
+  }
+    
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(my_session_info)\nexcept:\  pass")
@@ -598,6 +625,11 @@ get_args_man <- function(alg = "", options = FALSE,
 #'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                      load_output = NULL, qgis_env = set_env()) {
+  # check under Linux which GRASS version is in use. If its GRASS72 the user
+  # might have to add a softlink due to as QGIS bug
+  if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
+    qgis_session_info(qgis_env)
+  }
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -672,6 +704,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       grepl("None", params$GRASS_REGION_PARAMETER)) {
     # dismiss the last argument since it frequently corresponds to the output if
     # the output was created before using another CRS, the function might crash
+    # however, this is not always the case, e.g., rgrass7::r.slope.aspect
     ext <- params[-length(params)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
@@ -707,9 +740,10 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # now that we have possibly several extents, union them
     ext <- ext[!is.na(ext)]
     ext <- Reduce(raster::merge, ext)
+    # sometimes the extent is given back with dec = ","; you need to change that
+    ext <- gsub(",", ".", c(ext@xmin, ext@xmax, ext@ymin, ext@ymax))
     # final bounding box in GRASS notation
-    params$GRASS_REGION_PARAMETER <- 
-      paste(c(ext@xmin, ext@xmax, ext@ymin, ext@ymax), collapse = ",")
+    params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
   }
   
   # run QGIS
