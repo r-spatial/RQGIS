@@ -10,8 +10,8 @@ dist: trusty
 
 warnings_are_errors: false
 
-env:
-  global:
+#env:
+  #global:
     #- R_CHECK_ARGS = "--no-tests"
     
 r_github_packages: 
