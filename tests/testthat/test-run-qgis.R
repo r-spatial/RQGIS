@@ -13,7 +13,7 @@ context("run_qgis")
 test_that("Test, if QGIS-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
 
@@ -78,7 +78,7 @@ test_that("Test, if SAGA-algorithms are working?", {
 test_that("Test, if GRASS7-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   # let's set the environment 
