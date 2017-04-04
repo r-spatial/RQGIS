@@ -282,7 +282,7 @@ open_grass_help <- function(alg) {
   utils::browseURL(url)
 }
 
-#' @title Reproduce o4w_env.bat script in R
+#' @title Set all Windows paths necessary to start QGIS
 #' @description Windows helper function to start QGIS application by setting all
 #'   necessary path especially through running [run_ini()].
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
@@ -293,7 +293,7 @@ open_grass_help <- function(alg) {
 #' @author Jannes Muenchow
 #' @examples 
 #' \dontrun{
-#' run_ini()
+#' setup_win()
 #' }
 
 setup_win <- function(qgis_env = set_env()) {
@@ -397,3 +397,44 @@ run_ini <- function(qgis_env = set_env()) {
   }
 }
 
+#' @title Set all Linux paths necessary to start QGIS
+#' @description Helper function to start QGIS application under Linux.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function changes the system settings using [base::Sys.setenv()].
+#' @keywords internal
+#' @author Jannes Muenchow
+#' @examples 
+#' \dontrun{
+#' setup_linux()
+#' }
+
+setup_linux <- function(qgis_env = set_env()) {
+  # append PYTHONPATH to import qgis.core etc. packages
+  python_path <- Sys.getenv("PYTHONPATH")
+  qgis_python_path <- paste0(qgis_env$root, "/share/qgis/python")
+  reg_exp <- grepl(paste0(qgis_python_path, ":"), python_path) | 
+    grepl(paste0(qgis_python_path, "$"), python_path)
+  if (python_path != "" & reg_exp) {
+    qgis_python_path <- python_path
+  } else if (python_path != "" & !reg_exp) {
+    qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
+                              sep = ":")
+  }
+  Sys.setenv(PYTHONPATH = qgis_python_path)
+  # append LD_LIBRARY_PATH
+  ld_lib_path <- Sys.getenv("LD_LIBRARY_PATH")
+  qgis_ld_path <-  file.path(qgis_env$root, "lib")
+  reg_exp <- grepl(paste0(qgis_ld_path, ":"), ld_lib_path) | 
+    grepl(paste0(qgis_ld_path, "$"), ld_lib_path)
+  if (ld_lib_path != "" & reg_exp) {
+    qgis_ld_path <- ld_lib_path
+  } else if (ld_lib_path != "" & !reg_exp) {
+    qgis_ld_path <- paste(qgis_ld_path, Sys.getenv("LD_LIBRARY_PATH"), 
+                          sep = ":")
+  }
+  Sys.setenv(LD_LIBRARY_PATH = qgis_ld_path)
+  # setting here the QGIS_PREFIX_PATH also works instead of running it twice
+  # later on
+  Sys.setenv(QGIS_PREFIX_PATH = qgis_env$root)
+}
