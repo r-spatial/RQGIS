@@ -103,9 +103,18 @@ py_run_string(code)
 py_run_string(set_prefix)
 py_run_string("app = QgsApplication([], True)")
 py_run_string("QgsApplication.initQgis()")
+
+print(qgis_env) # for debugging
+py_run_string("print app.showSettings()") # debugging
+
+
+### this is not working on TRAVIS
 # attach further modules 
 py_file <- system.file("python", "import_setup.py", package = "RQGIS")
 py_run_file(py_file)
+###
+
+
 # attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
 # alghelp)
 py_file <- system.file("python", "helper_funs.py", package = "RQGIS")
