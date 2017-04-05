@@ -12,21 +12,23 @@ r_github_packages:
     
 before_install:
     # install most recent QGIS
-    - sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'  
-    - sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'
-    - sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main" >> /etc/apt/sources.list'
-    - wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import
-    - gpg --fingerprint 073D307A618E5811
-    - gpg --export --armor 073D307A618E5811 | sudo apt-key add -
+    #- sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'  
+    #- sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'
+    #- sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main" >> /etc/apt/sources.list'
+    #- wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import
+    #- gpg --fingerprint 073D307A618E5811
+    #- gpg --export --armor 073D307A618E5811 | sudo apt-key add -
     
-    - sudo apt-get autoremove
-    - sudo apt-get autoclean
-    - sudo apt-get -f install
-    - sudo apt-get autoremove qgis
-    - sudo apt-get --purge remove qgis
+    #- sudo apt-get autoremove
+    #- sudo apt-get autoclean
+    #- sudo apt-get -f install
+    #- sudo apt-get autoremove qgis
+    #- sudo apt-get --purge remove qgis
     
     # - sudo apt-get install grass
-    - sudo apt-get install qgis python-qgis qgis-plugin-grass grass libgdal-dev libproj-dev
+    - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+    - sudo apt-get update
+    - sudo apt-get install qgis python-qgis qgis-plugin-grass grass gdal libproj-dev
     
     # related to "cannot connect to X Server" error : http://askubuntu.com/questions/175611/cannot-connect-to-x-server-when-running-app-with-sudo
     #- xhost local:root

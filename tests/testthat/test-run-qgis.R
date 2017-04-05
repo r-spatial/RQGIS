@@ -13,7 +13,9 @@ context("run_qgis")
 # qgis_env <- set_env("C:/OSGeo4W64/", ltr = FALSE)  
 
 
-##### manual testing for travis
+##### 
+# manual testing for travis
+#####
 
 qgis_env <- set_env()
 
@@ -108,12 +110,12 @@ py_run_string("QgsApplication.initQgis()")
 print(qgis_env) # for debugging
 py_run_string("print app.showSettings()") # debugging
 
-# lets see if it works manually -> maybe sys.append missing?? py_run_string("sys.path.append(r'/usr/share/qgis/python/plugins')") 
+# works!
 py_run_string("from processing.core.Processing import Processing")   
 py_run_string("Processing.initialize()")
 py_run_string("import processing")
 
-# check if it works
+# works!
 py_run_string("processing.alglist()") # works!!! lets see if grass7 algs are also found
 
 print("Searching QGIS algs")
@@ -127,24 +129,33 @@ py_run_string("processing.alghelp('grass7:r.slope.aspect')")
 coords_1 <- 
   matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
          ncol = 2, byrow = TRUE)
+print("1")
 coords_2 <- coords_1 + 2
+print("2")
 polys <- 
   # convert the coordinates into polygons
   polys <- list(Polygons(list(Polygon(coords_1)), 1), 
                 Polygons(list(Polygon(coords_2)), 2)) 
+print("3")
 polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
+print("4")
 writeOGR(polys, dsn = tempdir(), layer = "polys", driver = "ESRI Shapefile")
+print("5")
 
 inp <- file.path(tempdir(), "polys.shp")
+print("6")
 out <- file.path(tempdir(), "out.shp")
+print("7")
 cmd <- paste(shQuote("qgis:polygoncentroids"), shQuote(inp), 
              shQuote(out), sep = ",")
+print("8")
 cmd <- paste0("processing.runalg(", cmd, ")")
+print("9")
 py_run_string(cmd)
+print("10")
 # load output
 out <- readOGR(dsn = tempdir(), layer = "out")
-plot(polys)
-points(out)
+print("11")
 
 
 # open_app()
