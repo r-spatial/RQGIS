@@ -2,6 +2,7 @@ library("testthat")
 library("RQGIS")
 library("sp")
 library("raster")
+library("reticulate")
 
 context("run_qgis")
 
@@ -10,10 +11,16 @@ context("run_qgis")
 # Test if all functions are working also with the QGIS developer version
 # qgis_env <- set_env("C:/OSGeo4W64/", ltr = FALSE)  
 
+
+open_app()
+
+as.character(py_run_string("with Capturing() as output_alglist:\n  processing.alglist()")$output_alglist)
+
+
 test_that("Test, if QGIS-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  #testthat::skip_on_travis()
+  testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   py_config()
