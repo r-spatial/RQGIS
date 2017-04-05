@@ -625,6 +625,9 @@ get_args_man <- function(alg = "", options = FALSE,
 #'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                      load_output = NULL, qgis_env = set_env()) {
+  # check if the QGIS application has already been started
+  tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
+  
   # check under Linux which GRASS version is in use. If its GRASS72 the user
   # might have to add a softlink due to as QGIS bug
   if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
