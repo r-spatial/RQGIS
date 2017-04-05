@@ -16,7 +16,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  py_config()
+  print(py_config())
   
 
   coords_1 <- 
