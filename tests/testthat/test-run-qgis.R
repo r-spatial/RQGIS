@@ -107,13 +107,21 @@ py_run_string("QgsApplication.initQgis()")
 print(qgis_env) # for debugging
 py_run_string("print app.showSettings()") # debugging
 
+# lets see if it works manually -> maybe sys.append missing?? py_run_string("sys.path.append(r'/usr/share/qgis/python/plugins')") 
+py_run_string("from processing.core.Processing import Processing")   
+py_run_string("Processing.initialize()")
+py_run_string("import processing")
+
+# check if it works
+py_run_string("processing.alglist()")
+
+
 
 ### this is not working on TRAVIS
 # attach further modules 
 py_file <- system.file("python", "import_setup.py", package = "RQGIS")
 py_run_file(py_file)
 ###
-
 
 # attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
 # alghelp)
