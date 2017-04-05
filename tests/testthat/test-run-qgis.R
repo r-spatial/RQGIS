@@ -16,8 +16,10 @@ test_that("Test, if QGIS-algorithms are working?", {
   #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  print(py_config())
+  py_config()
   
+  
+  as.character(py_run_string("with Capturing() as output_alglist:\n  processing.alglist()")$output_alglist)
 
   coords_1 <- 
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
