@@ -4,17 +4,20 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, ltr = TRUE)
+set_env(root = NULL, new = FALSE, ltr = TRUE)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
-looks for \code{qgis.bat} on the C: drive under Windows. On a
-Mac, it looks for \code{QGIS.app} under "Applications" and
-"/usr/local/Cellar/". On Linux, \code{set_env} assumes that the root path
-is "/usr".}
+looks for \code{qgis.bat} on the C: drive under Windows. On a Mac, it looks for
+\code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
+\code{set_env} assumes that the root path is "/usr".}
 
-\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of
-QGIS, if available (only for Windows).}
+\item{new}{When called for the first time in an R session, \code{set_env} caches
+its output. Setting \code{new} to \code{TRUE} resets the cache when calling \code{set_env}
+again. Otherwise, the cached output will be loaded back into R.}
+
+\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of QGIS, if
+available (only for Windows).}
 }
 \value{
 The function returns a list containing all the path necessary to run
@@ -22,8 +25,8 @@ QGIS from within R. This is the root path, the QGIS prefix path and the
 path to the Python plugins.
 }
 \description{
-\code{set_env} tries to find all the paths necessary to run QGIS
-from within R.
+\code{set_env} tries to find all the paths necessary to run QGIS from
+within R.
 }
 \examples{
 \dontrun{
