@@ -24,6 +24,12 @@
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
 set_env <- function(root = NULL, ltr = TRUE) {
+  
+  # load cached qgis_env if possible
+  if (file.exists(file.path(tempdir(), "qgis_env.Rdata"))) {
+    load(file.path(tempdir(), "qgis_env.Rdata"))
+    return(qgis_env)
+    }
 
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -99,8 +105,10 @@ set_env <- function(root = NULL, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
+  qgis_env <- c(qgis_env, check_apps(root = root, ltr = ltr))
+  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
   # return your result
-  c(qgis_env, check_apps(root = root, ltr = ltr))
+  qgis_env
 }
 
 #' @title QGIS session info
