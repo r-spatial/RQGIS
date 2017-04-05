@@ -857,6 +857,11 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # a new function)
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
+    
+    # REWRITE-----------------------------------------------------
+    # find out what are the QGIS output values and delete them from the list!!!!
+    # you also need the output values for load_output!!!!
+    
     # dismiss the last argument since it frequently corresponds to the output if
     # the output was created before using another CRS, the function might crash
     ext <- params[-length(params)]
