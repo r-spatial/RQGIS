@@ -1,13 +1,15 @@
 #' @title Retrieve the environment settings to run QGIS from within R
-#' @description `set_env` tries to find all the paths necessary to run QGIS
-#'   from within R.
-#' @param root Root path to the QGIS-installation. If left empty, the function
-#'   looks for `qgis.bat` on the C: drive under Windows. On a
-#'   Mac, it looks for `QGIS.app` under "Applications" and
-#'   "/usr/local/Cellar/". On Linux, `set_env` assumes that the root path
-#'   is "/usr".
-#' @param ltr If `TRUE`, `set_env` will use the long term release of 
-#'   QGIS, if available (only for Windows).
+#' @description `set_env` tries to find all the paths necessary to run QGIS from
+#'   within R.
+#' @param root Root path to the QGIS-installation. If left empty, the function 
+#'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
+#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
+#'   `set_env` assumes that the root path is "/usr".
+#' @param new When called for the first time in an R session, `set_env` caches 
+#'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
+#'   again. Otherwise, the cached output will be loaded back into R.
+#' @param ltr If `TRUE`, `set_env` will use the long term release of QGIS, if 
+#'   available (only for Windows).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -23,10 +25,10 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, ltr = TRUE) {
+set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
   
   # load cached qgis_env if possible
-  if (file.exists(file.path(tempdir(), "qgis_env.Rdata"))) {
+  if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
     load(file.path(tempdir(), "qgis_env.Rdata"))
     return(qgis_env)
     }
@@ -131,8 +133,8 @@ open_app <- function(qgis_env = set_env()) {
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
   
-  # Well, well, not sure if we should change it back or at least we have to get
-  # rid off Anaconda Python
+  # Well, well, not sure if we should change it back or if we at least have to
+  # get rid off Anaconda Python or other Python binaries (I guess not)
   on.exit(do.call(Sys.setenv, settings))
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -142,7 +144,8 @@ open_app <- function(qgis_env = set_env()) {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     python_path <- Sys.getenv("PYTHONPATH")
-    # PYTHONPATH only applies to homebrew installation - todo: account for Kyngchaos 
+    # PYTHONPATH only applies to homebrew installation - todo: account for
+    # Kyngchaos
     qgis_python_path <- 
       paste0(qgis_env$root, paste("/Contents/Resources/python/", 
                                   "/usr/local/lib/qt-4/python2.7/site-packages",
@@ -153,9 +156,6 @@ open_app <- function(qgis_env = set_env()) {
                                 sep = ":")    
     }
     
-    ### is this not needed on Windows/Linux? Without `open_app() does not work on Mac`
-    ### No, it is not necessarily needed under Linux, however, I used it this time
-    ### Under Windows we set QGIS_PREFIX_PATH in setup_win
     Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/")) 
     Sys.setenv(PYTHONPATH = qgis_python_path)
     # define path where QGIS libraries reside to search path of the
@@ -553,7 +553,8 @@ get_args_man <- function(alg = "", options = FALSE,
   # using the RQGIS class
   
   args <- py_run_string(
-    sprintf("algorithm_params = RQGIS.get_args_man('%s')", alg))$algorithm_params
+    sprintf("algorithm_params = RQGIS.get_args_man('%s')",
+            alg))$algorithm_params
   names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several

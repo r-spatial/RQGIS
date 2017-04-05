@@ -26,7 +26,6 @@ ByteCompile: true
 Depends:
     R (>= 3.2.0)
 Imports:
-<<<<<<< HEAD
          raster,
          RCurl,
          rgdal, 
@@ -34,14 +33,6 @@ Imports:
          XML,
          tools,
          reticulate
-=======
-    raster,
-    RCurl,
-    rgdal,
-    sp,
-    XML,
-    tools
->>>>>>> origin/master
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,
