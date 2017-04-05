@@ -18,6 +18,8 @@ test_that("Test, if QGIS-algorithms are working?", {
   
   py_config()
   
+  # check if python modules are available
+  py_module_available("cStringIO")
   
   as.character(py_run_string("with Capturing() as output_alglist:\n  processing.alglist()")$output_alglist)
 
