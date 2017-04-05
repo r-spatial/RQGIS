@@ -44,8 +44,10 @@ notifications:
     on_success: change
     on_failure: change
   slack:
-    rooms:
-      - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
+      rooms:
+        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
+      rooms:
+        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
     
 after_success:
   - Rscript -e 'covr::codecov()'
