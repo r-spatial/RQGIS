@@ -3,6 +3,7 @@ library("RQGIS")
 library("sp")
 library("raster")
 library("reticulate")
+library("rgdal")
 
 context("run_qgis")
 
@@ -115,7 +116,11 @@ py_run_string("import processing")
 # check if it works
 py_run_string("processing.alglist()") # works!!! lets see if grass7 algs are also found
 
+print("Searching QGIS algs")
+py_run_string("processing.algoptions('qgis:polygoncentroids')")
+py_run_string("processing.alghelp('qgis:polygoncentroids')")
 
+print("Searching GRASS algs")
 py_run_string("processing.algoptions('grass7:r.slope.aspect')")
 py_run_string("processing.alghelp('grass7:r.slope.aspect')")
 
