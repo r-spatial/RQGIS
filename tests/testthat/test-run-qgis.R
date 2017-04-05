@@ -113,22 +113,33 @@ py_run_string("Processing.initialize()")
 py_run_string("import processing")
 
 # check if it works
-py_run_string("processing.alglist()")
+py_run_string("processing.alglist()") # works!!! lets see if grass7 algs are also found
 
 
+py_run_string("processing.algoptions('grass7:r.slope.aspect')")
+py_run_string("processing.alghelp('grass7:r.slope.aspect')")
 
-### this is not working on TRAVIS
-# attach further modules 
-py_file <- system.file("python", "import_setup.py", package = "RQGIS")
-py_run_file(py_file)
-###
+coords_1 <- 
+  matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
+         ncol = 2, byrow = TRUE)
+coords_2 <- coords_1 + 2
+polys <- 
+  # convert the coordinates into polygons
+  polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                Polygons(list(Polygon(coords_2)), 2)) 
+polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
+writeOGR(polys, dsn = tempdir(), layer = "polys", driver = "ESRI Shapefile")
 
-# attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
-# alghelp)
-py_file <- system.file("python", "helper_funs.py", package = "RQGIS")
-py_run_file(py_file)
-# initialize our RQGIS class
-py_run_string("RQGIS = RQGIS()")
+inp <- file.path(tempdir(), "polys.shp")
+out <- file.path(tempdir(), "out.shp")
+cmd <- paste(shQuote("qgis:polygoncentroids"), shQuote(inp), 
+             shQuote(out), sep = ",")
+cmd <- paste0("processing.runalg(", cmd, ")")
+py_run_string(cmd)
+# load output
+out <- readOGR(dsn = tempdir(), layer = "out")
+plot(polys)
+points(out)
 
 
 # open_app()
