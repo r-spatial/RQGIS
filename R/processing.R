@@ -25,6 +25,12 @@
 #' @author Jannes Muenchow, Patrick Schratz
 set_env <- function(root = NULL, ltr = TRUE) {
   
+  # load cached qgis_env if possible
+  if (file.exists(file.path(tempdir(), "qgis_env.Rdata"))) {
+    load(file.path(tempdir(), "qgis_env.Rdata"))
+    return(qgis_env)
+    }
+
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(root)) {
@@ -99,8 +105,10 @@ set_env <- function(root = NULL, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
+  qgis_env <- c(qgis_env, check_apps(root = root, ltr = ltr))
+  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
   # return your result
-  c(qgis_env, check_apps(root = root, ltr = ltr))
+  qgis_env
 }
 
 #' @title Open a QGIS application
@@ -260,9 +268,9 @@ open_app <- function(qgis_env = set_env()) {
 qgis_session_info <- function(qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
+  # retrieve the output
   out <- 
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
-  # retrieve the output
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
   if (Sys.info()["sysname"] == "Linux" & out$grass7) {
@@ -281,6 +289,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
     }
     
     # more or less copied from link2GI::searchGRASSX
+    # Problem: sometimes the batch command is interrupted or does not finish...
     if (length(my_grass) > 0) {
       install <- lapply(seq(length(my_grass)), function(i) {
         cmd <- grep(readLines(my_grass), pattern = "cmd_name = \"", 
