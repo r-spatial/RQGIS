@@ -339,7 +339,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @return The function returns QGIS function names and short descriptions as an
 #'   R character vector.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_run_string py_run_file
+#' @importFrom reticulate py_run_string py_run_file py_capture_output
 #' @examples
 #' \dontrun{
 #' # list all available QGIS algorithms on your system
