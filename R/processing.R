@@ -91,13 +91,42 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
+      
       # check for homebrew QGIS installation
-      path <- system("find /usr/local/Cellar/ -name 'QGIS.app'", intern = TRUE)
-      if (length(path) > 0) {
+      path <- system("find /usr/local/Cellar -name 'QGIS.app'", intern = TRUE)
+      
+      if (length(path) == 1) {
         root <- path
       }
+        
+      # check for multiple homebrew installations
+      if (length(path) == 2) {
+        
+        # extract version out of root path
+        path1 <- as.numeric(regmatches(path[1], gregexpr('[0-9]+', path[1]))[[1]][3])
+        path2 <- as.numeric(regmatches(path[2], gregexpr('[0-9]+', path[2]))[[1]][3])
+        
+        # account for 'dev' arg
+        # installations are not constant within path -> depend on which version was installed first/last
+        # hence we have to catch all possibilites
+        if (dev == TRUE && path1 > path2) {
+          root <- path[1]
+        } else if (dev == TRUE && path1 < path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 > path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 < path2) {
+          root <- path[1]
+        }
+      }
+      # just in case if someone has more than 2 QGIS homebrew installations (very unlikely though)
+      if (length(path) > 2) {
+        stop("We recognized more than 2 QGIS homebrew installations on your System. ",
+             "Please clean up or set 'set_env()' manually.")
+      }
+      
+      # check for Kyngchaos installation
       if (is.null(root)) {
-        # check for binary QGIS installation
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
         if (length(path) > 0) {
           root <- path
