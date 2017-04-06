@@ -4,7 +4,7 @@
 \alias{open_help}
 \title{Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm}
 \usage{
-open_help(alg = NULL, qgis_env = set_env())
+open_help(alg = "", qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the algorithm for which one wishes to retrieve

@@ -4,9 +4,8 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = NULL, qgis_env = set_env(),
-  name_only = FALSE, intern = ifelse(Sys.info()["sysname"] == "Windows",
-  TRUE, FALSE))
+find_algorithms(search_term = NULL, name_only = FALSE,
+  qgis_env = set_env())
 }
 \arguments{
 \item{search_term}{If (\code{NULL}), the default, all available functions will be
@@ -14,28 +13,27 @@ returned. If \code{search_term} is a character, all available functions will be
 queried accordingly. The character string might also contain a regular
 expression (see examples).}
 
-\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link[=set_env]{set_env()}}.}
-
 \item{name_only}{If \code{TRUE}, the function returns only the name(s) of the
 found algorithms. Otherwise, a short function description will be returned
 as well (default).}
 
-\item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector (see also
-\code{\link[base:system]{base::system()}}).}
+\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
+more information, refer to \code{\link[=set_env]{set_env()}}.}
+
+\item{qgis_env}{Environment settings containing all the paths to run the QGIS
+API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
 The function returns QGIS function names and short descriptions as an
 R character vector.
 }
 \description{
-\code{find_algorithms} lists or queries all QGIS algorithms
-which can be used accessed through the command line.
+\code{find_algorithms} lists or queries all QGIS algorithms which can
+be accessed via the QGIS Python API.
 }
 \details{
-Function \code{find_algorithms} simply calls
-\code{processing.alglist} using Python.
+Function \code{find_algorithms} simply calls \code{processing.alglist} using
+Python.
 }
 \examples{
 \dontrun{

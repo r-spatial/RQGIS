@@ -1,5 +1,8 @@
 # RQGIS 0.2.0.9000
 
+* RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win`, `run_ini`, `setup_linux`, `setup_mac`). Additionally, we put much of the Python code into inst/python. `python_funs` contains two classes. The first, `Capture`,  was written by Barry Rowlingson and captures the printed output of `processing.alglist`. The second, `RQGIS`, contains several methods to call from within R (`get_args_man`, `open_help`, `qgis_session_info`).
+* We have added many new test functions.
+* You can now use regular expression with `find_algorithms`.
 * RQGIS now supports QGIS `osgeo4mac` homebrew installations. This is also the recommended installation way from now on as it does not cause irritating error messages like the Kyngchaos QGIS binary. 
 * `set_env` now caches its output, so calling it a second time, will load the cached output.
 * `find_algorithms` now also accepts regular expressions as search term

@@ -58,7 +58,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   data("dem")
   params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
   params$ELEVATION <- dem
-  params$SLOPE <- file.path(tempdir(), "slope.asc")
+  params$SLOPE <- file.path(tempdir(), "slope2.asc")
   out <- run_qgis("saga:slopeaspectcurvature", params = params, 
                   load_output = params$SLOPE)
   # check if the output is a raster
@@ -173,3 +173,4 @@ if (Sys.info()["sysname"] == "Windows") {
     expect_is(out, "RasterLayer")
   })
 }
+
