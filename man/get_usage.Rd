@@ -4,10 +4,14 @@
 \alias{get_usage}
 \title{Get usage of a specific QGIS geoalgorithm}
 \usage{
-get_usage(alg = NULL, qgis_env = set_env())
+get_usage(alg = NULL, intern = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the function whose parameters are being searched for.}
+
+\item{intern}{Logical, if \code{TRUE} the function captures the command line
+output as an \code{R} character vector\code{. If}FALSE`, the default, the ouptut is
+printed to the console in a pretty way.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}

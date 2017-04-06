@@ -400,6 +400,9 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #' @description `get_usage` lists all function parameters of a specific 
 #'   QGIS geoalgorithm.
 #' @param alg Name of the function whose parameters are being searched for.
+#' @param intern Logical, if `TRUE` the function captures the command line 
+#'   output as an `R` character vector`. If `FALSE`, the default, the ouptut is
+#'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
 #' @details Function `get_usage` simply calls
@@ -415,7 +418,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #' get_usage(alg = "saga:addcoordinatestopoints")
 #' }
 
-get_usage <- function(alg = NULL,
+get_usage <- function(alg = NULL, intern = FALSE,
                       qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   code <- 
@@ -427,18 +430,25 @@ get_usage <- function(alg = NULL,
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(output_usage)\nexcept:\  pass")
-  cat(gsub("\\\\t", "\t", out))
+  if (intern) {
+    out
+  } else {
+    cat(gsub("\\\\t", "\t", out))
+  }
+  
 }
 
 #' @title Get options of parameters for a specific GIS option
-#' @description `get_options` lists all available parameter options for
-#'   the required GIS function.
-#' @param alg Name of the GIS function for which options should be
-#'   returned.
+#' @description `get_options` lists all available parameter options for the 
+#'   required GIS function.
+#' @param alg Name of the GIS function for which options should be returned.
+#' @param intern Logical, if `TRUE` the function captures the command line 
+#'   output as an `R` character vector`. If `FALSE`, the default, the ouptut is
+#'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @details Function `get_options` simply calls
-#'   `processing.algoptions` of the QGIS Python API.
+#' @details Function `get_options` simply calls `processing.algoptions` of the 
+#'   QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @importFrom reticulate py_run_string
 #' @examples
@@ -446,7 +456,7 @@ get_usage <- function(alg = NULL,
 #' get_options(alg = "saga:slopeaspectcurvature")
 #' }
 #' @export
-get_options <- function(alg = "",
+get_options <- function(alg = "", intern = FALSE,
                         qgis_env = set_env()) {
   
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
@@ -460,7 +470,12 @@ get_options <- function(alg = "",
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(output_options)\nexcept:\  pass")
-  cat(gsub("\\\\t", "\t", out))
+  if (intern) {
+    out
+  } else {
+    cat(gsub("\\\\t", "\t", out))
+  }
+  
 }
 
 #' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm

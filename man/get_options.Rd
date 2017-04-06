@@ -4,22 +4,25 @@
 \alias{get_options}
 \title{Get options of parameters for a specific GIS option}
 \usage{
-get_options(alg = "", qgis_env = set_env())
+get_options(alg = "", intern = FALSE, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{Name of the GIS function for which options should be
-returned.}
+\item{alg}{Name of the GIS function for which options should be returned.}
+
+\item{intern}{Logical, if \code{TRUE} the function captures the command line
+output as an \code{R} character vector\code{. If}FALSE`, the default, the ouptut is
+printed to the console in a pretty way.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \description{
-\code{get_options} lists all available parameter options for
-the required GIS function.
+\code{get_options} lists all available parameter options for the
+required GIS function.
 }
 \details{
-Function \code{get_options} simply calls
-\code{processing.algoptions} of the QGIS Python API.
+Function \code{get_options} simply calls \code{processing.algoptions} of the
+QGIS Python API.
 }
 \examples{
 \dontrun{
