@@ -1,15 +1,13 @@
 #' @title Retrieve the environment settings to run QGIS from within R
-#' @description `set_env` tries to find all the paths necessary to run QGIS from
-#'   within R.
-#' @param root Root path to the QGIS-installation. If left empty, the function 
-#'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
-#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
-#'   `set_env` assumes that the root path is "/usr".
-#' @param new When called for the first time in an R session, `set_env` caches 
-#'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
-#'   again. Otherwise, the cached output will be loaded back into R.
-#' @param ltr If `TRUE`, `set_env` will use the long term release of QGIS, if 
-#'   available (only for Windows).
+#' @description `set_env` tries to find all the paths necessary to run QGIS
+#'   from within R.
+#' @param root Root path to the QGIS-installation. If left empty, the function
+#'   looks for `qgis.bat` on the C: drive under Windows. On a
+#'   Mac, it looks for `QGIS.app` under "Applications" and
+#'   "/usr/local/Cellar/". On Linux, `set_env` assumes that the root path
+#'   is "/usr".
+#' @param ltr If `TRUE`, `set_env` will use the long term release of 
+#'   QGIS, if available (only for Windows).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -25,13 +23,7 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
-  
-  # load cached qgis_env if possible
-  if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
-    load(file.path(tempdir(), "qgis_env.Rdata"))
-    return(qgis_env)
-  }
+set_env <- function(root = NULL, ltr = TRUE) {
   
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -107,10 +99,8 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
-  qgis_env <- c(qgis_env, check_apps(root = root, ltr = ltr))
-  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
   # return your result
-  qgis_env
+  c(qgis_env, check_apps(root = root, ltr = ltr))
 }
 
 #' @title QGIS session info
