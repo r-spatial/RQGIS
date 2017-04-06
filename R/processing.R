@@ -24,7 +24,14 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, new = FALSE, dev = FALSE) {
+set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
+  
+  dots <- list(...)
+  if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
+    warning("argument 'ltr' is deprecated; please use 'dev' instead.", 
+            call. = FALSE)
+    dev <- FALSE
+  }
   
   # load cached qgis_env if possible
   if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
