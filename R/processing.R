@@ -273,7 +273,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
-  if (Sys.info()["sysname"] == "Linux" & out$grass7) {
+  if (Sys.info()["sysname"] == "Linux" && out$grass7) {
     # find out which GRASS version is available
     # my_grass <- searchGRASSX()
     my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ", 
