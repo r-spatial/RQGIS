@@ -114,8 +114,10 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
   # write warning if Kyngchaos QGIS for Mac is installed
   if (any(grepl("/Applications", qgis_env))) {
     warning("We recognized that you have the Kyngchaos QGIS binary installed. \n",
-            "Please consider installing QGIS from homebrew: 'https://github.com/OSGeo/homebrew-osgeo4mac'. \n",
-            "The Kyngchaos installation throws some warnings during processing. However, usage is not affected.")
+            "Please consider installing QGIS from homebrew: 'https://github.com/OSGeo/homebrew-osgeo4mac'. ",
+            "Run 'vignette(install_guide)' for installation instructions. \n",
+            "The Kyngchaos installation throws some warnings during processing. ",
+            "However, usage/outcome is not affected and you can continue using the Kyngchaos installation.")
   }
   
   # return your result
