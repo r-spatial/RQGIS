@@ -4,13 +4,15 @@
 \alias{find_algorithms}
 \title{Find and list available QGIS algorithms}
 \usage{
-find_algorithms(search_term = "", qgis_env = set_env(), name_only = FALSE,
-  intern = ifelse(Sys.info()["sysname"] == "Windows", TRUE, FALSE))
+find_algorithms(search_term = NULL, qgis_env = set_env(),
+  name_only = FALSE, intern = ifelse(Sys.info()["sysname"] == "Windows",
+  TRUE, FALSE))
 }
 \arguments{
-\item{search_term}{A character to query QGIS functions, i.e. to list only
-functions which contain the indicated string. If empty (\code{""}), the
-default, all available functions will be returned.}
+\item{search_term}{If (\code{NULL}), the default, all available functions will be
+returned. If \code{search_term} is a character, all available functions will be
+queried accordingly. The character string might also contain a regular
+expression (see examples).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
@@ -40,10 +42,12 @@ Function \code{find_algorithms} simply calls
 # list all available QGIS algorithms on your system
 algs <- find_algorithms()
 algs[1:15]
-# just find all native, i.e. QGIS-algorithms
-grep("qgis:", algs, value = TRUE)
 # find a function which adds coordinates
 find_algorithms(search_term = "add")
+# find only QGIS functions
+find_algorithms(search_term = "qgis:")
+# find QGIS and SAGA functions related to centroid computations
+find_algorithms(search_term = "centroid.+(qgis:|saga:)")
 }
 }
 \author{

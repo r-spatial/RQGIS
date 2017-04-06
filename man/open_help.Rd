@@ -2,7 +2,7 @@
 % Please edit documentation in R/processing.R
 \name{open_help}
 \alias{open_help}
-\title{Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm}
+\title{Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm}
 \usage{
 open_help(alg = NULL, qgis_env = set_env())
 }
