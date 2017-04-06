@@ -45,7 +45,7 @@ test_that("get_usage yields an output", {
   
   qgis_env <- set_env()
   # get the usage of v.voronoi
-  usage <- get_usage("grass7:v.voronoi")
+  usage <- get_usage("grass7:v.voronoi", intern = TRUE)
   expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
   })
 
@@ -58,7 +58,7 @@ test_that("get_options yields an output", {
   
   qgis_env <- set_env() 
   # write a test for get_options
-  opts <- get_options("grass7:r.slope.aspect")
+  opts <- get_options("grass7:r.slope.aspect", intern = TRUE)
   # check if the output is correct
   expect_match(paste(opts, collapse = "\n"), 
               "format\\(Format for reporting the slope")
@@ -111,7 +111,7 @@ if (Sys.info()["sysname"] == "Windows") {
     
     qgis_env <- set_env(ltr = FALSE)
     # get the usage of v.voronoi
-    usage <- get_usage("grass7:v.voronoi")
+    usage <- get_usage("grass7:v.voronoi", intern = TRUE)
     expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
   })
   
@@ -124,7 +124,7 @@ if (Sys.info()["sysname"] == "Windows") {
     
     qgis_env <- set_env(ltr = FALSE) 
     # write a test for get_options
-    opts <- get_options("grass7:r.slope.aspect")
+    opts <- get_options("grass7:r.slope.aspect", intern = TRUE)
 
     # check if the output is correct
     expect_match(paste(opts, collapse = "\n"), 
