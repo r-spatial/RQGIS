@@ -17,9 +17,6 @@ expression (see examples).}
 found algorithms. Otherwise, a short function description will be returned
 as well (default).}
 
-\item{qgis_env}{Environment containing all the paths to run the QGIS API. For
-more information, refer to \code{\link[=set_env]{set_env()}}.}
-
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS
 API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 }

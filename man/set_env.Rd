@@ -17,6 +17,8 @@ its output. Setting \code{new} to \code{TRUE} resets the cache when calling \cod
 again. Otherwise, the cached output will be loaded back into R.}
 
 \item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of QGIS (if available).}
+
+\item{...}{Currently not in use.}
 }
 \value{
 The function returns a list containing all the path necessary to run
