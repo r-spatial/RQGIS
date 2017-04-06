@@ -5,7 +5,7 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, params = NULL, check_params = TRUE,
-  load_output = NULL, qgis_env = set_env())
+  show_msg = TRUE, load_output = NULL, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see
@@ -19,6 +19,9 @@ recommended to use the convenience function \code{\link[=get_args_man]{get_args_
 
 \item{check_params}{If \code{TRUE} (default), it will be checked if all
 geoalgorithm function arguments were provided in the correct order.}
+
+\item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during
+the algorithm execution will be shown.}
 
 \item{load_output}{Character vector containing paths to (an) output file(s) in
 order to load the QGIS output directly into R (optional). If

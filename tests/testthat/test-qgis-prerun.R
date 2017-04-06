@@ -44,7 +44,7 @@ test_that("get_usage yields an output", {
   # skip_if_no_python()
   
   qgis_env <- set_env()
-  # get the usage of v.voronoi
+  # get the usage of v.voronoi (intern: you have to change that for reticulate)
   usage <- get_usage("grass7:v.voronoi", intern = TRUE)
   expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
   })
@@ -58,7 +58,8 @@ test_that("get_options yields an output", {
   
   qgis_env <- set_env() 
   # write a test for get_options
-  opts <- get_options("grass7:r.slope.aspect", intern = TRUE)
+  opts <- get_options("grass7:r.slope.aspect",  
+                      intern = TRUE)  # intern has to be deleted with reticulate
   # check if the output is correct
   expect_match(paste(opts, collapse = "\n"), 
               "format\\(Format for reporting the slope")
@@ -110,7 +111,7 @@ if (Sys.info()["sysname"] == "Windows") {
     # skip_if_no_python()
     
     qgis_env <- set_env(ltr = FALSE)
-    # get the usage of v.voronoi
+    # get the usage of v.voronoi (intern: you have to change that for reticulate)
     usage <- get_usage("grass7:v.voronoi", intern = TRUE)
     expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
   })
@@ -124,8 +125,8 @@ if (Sys.info()["sysname"] == "Windows") {
     
     qgis_env <- set_env(ltr = FALSE) 
     # write a test for get_options
-    opts <- get_options("grass7:r.slope.aspect", intern = TRUE)
-
+    opts <- get_options("grass7:r.slope.aspect",  
+                        intern = TRUE)  # intern has to be deleted with reticulate
     # check if the output is correct
     expect_match(paste(opts, collapse = "\n"), 
                  "format\\(Format for reporting the slope")

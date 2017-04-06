@@ -11,7 +11,7 @@ check_apps(root, ...)
 '/usr' and '/Applications/QGIS.app/' for the different platforms.}
 
 \item{...}{Optional arguments used in \code{check_apps}. Under Windows,
-\code{set_env} passes function argument \code{dev} to \code{check_apps}.}
+\code{set_env} passes function argument \code{ltr} to \code{check_apps}.}
 }
 \value{
 The function returns a list with the paths to all the necessary
