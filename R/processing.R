@@ -128,6 +128,7 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
 #' }
 #' @export
 open_app <- function(qgis_env = set_env()) {
+  
   settings <- as.list(Sys.getenv())
   # since we are adding quite a few new environment variables these will remain
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
@@ -147,38 +148,7 @@ open_app <- function(qgis_env = set_env()) {
   } else if (Sys.info()["sysname"] == "Linux") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
-    python_path <- Sys.getenv("PYTHONPATH")
-    # PYTHONPATH only applies to homebrew installation - todo: account for
-    # Kyngchaos
-    qgis_python_path <- 
-      paste0(qgis_env$root, paste("/Contents/Resources/python/", 
-                                  "/usr/local/lib/qt-4/python2.7/site-packages",
-                                  "/usr/local/lib/python2.7/site-packages",
-                                  "$PYTHONPATH", sep = ":"))
-    if (python_path != "" & !grepl(qgis_python_path, python_path)) {
-      qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
-                                sep = ":")    
-    }
-    
-    Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/")) 
-    Sys.setenv(PYTHONPATH = qgis_python_path)
-    # define path where QGIS libraries reside to search path of the
-    # dynamic linker
-    ld_library <- Sys.getenv("LD_LIBRARY_PATH")
-    
-    ### Are you sure that your are have to check again if it's Darwin??
-    if (!Sys.info()["sysname"] == "Darwin") {  
-      qgis_ld <- paste(paste0(qgis_env$root, "/lib"))
-    } else {
-      qgis_ld <- paste(paste0(qgis_env$qgis_prefix_path, 
-                              file.path("/MacOS/lib/:/Applications/QGIS.app/", 
-                                        "Contents/Frameworks/"))) # homebrew
-    }
-    if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
-      qgis_ld <- paste(paste0(qgis_env$root, "/lib"),
-                       Sys.getenv("LD_LIBRARY_PATH"), sep = ":")
-    }
-    Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
+    setup_mac((qgis_env = qgis_env))
   }
   
   # not sure, if we need the subsequent test for Linux & Mac since the Python 
@@ -191,14 +161,7 @@ open_app <- function(qgis_env = set_env()) {
       stop("Wrong Python binary. Restart R and check!")
     }
   }
-  
-  # suppress messages for homebrew Mac installation 
-  ### Patrick, can you put this in setup_darwin as well?
-  if (Sys.info()["sysname"] == "Darwin") {
-    Sys.setenv(QGIS_DEBUG=-1)
-  }
-  
-  
+
   # make sure that QGIS is not already running (this would crash R)
   # app = QgsApplication([], True)  # see below
   tmp <- try(expr =  py_run_string("app")$app,

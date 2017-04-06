@@ -438,3 +438,50 @@ setup_linux <- function(qgis_env = set_env()) {
   # later on
   Sys.setenv(QGIS_PREFIX_PATH = qgis_env$root)
 }
+
+#' @title Set all Mac paths necessary to start QGIS
+#' @description Helper function to start QGIS application under macOS.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @return The function changes the system settings using [base::Sys.setenv()].
+#' @keywords internal
+#' @author Patrick Schratz
+#' @examples 
+#' \dontrun{
+#' setup_mac()
+#' }
+
+setup_mac <- function(qgis_env = set_env()) {
+  
+  # append PYTHONPATH to import qgis.core etc. packages
+  python_path <- Sys.getenv("PYTHONPATH")
+  
+  qgis_python_path <- 
+    paste0(qgis_env$root, paste("/Contents/Resources/python/", 
+                                "/usr/local/lib/qt-4/python2.7/site-packages",
+                                "/usr/local/lib/python2.7/site-packages",
+                                "$PYTHONPATH", sep = ":"))
+  if (python_path != "" & !grepl(qgis_python_path, python_path)) {
+    qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
+                              sep = ":")
+  }
+  
+  Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/"))
+  Sys.setenv(PYTHONPATH = qgis_python_path)
+  
+  # define path where QGIS libraries reside to search path of the
+  # dynamic linker
+  ld_library <- Sys.getenv("LD_LIBRARY_PATH")
+  
+  qgis_ld <- paste(paste0(qgis_env$qgis_prefix_path, 
+                          file.path("/MacOS/lib/:/Applications/QGIS.app/", 
+                                    "Contents/Frameworks/"))) # homebrew
+  if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
+    qgis_ld <- paste(paste0(qgis_env$root, "/lib"),
+                     Sys.getenv("LD_LIBRARY_PATH"), sep = ":")
+  }
+  Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
+  
+  # suppress verbose QGIS output for homebrew
+  Sys.setenv(QGIS_DEBUG = -1)
+}
