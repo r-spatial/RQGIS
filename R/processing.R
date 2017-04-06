@@ -274,9 +274,10 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #'   which can be used accessed through the command line.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @param search_term A character to query QGIS functions, i.e. to list only 
-#'   functions which contain the indicated string. If empty (`""`), the
-#'   default, all available functions will be returned.
+#' @param search_term If (`NULL`), the default, all available functions will be 
+#'   returned. If `search_term` is a character, all available functions will be
+#'   queried accordingly. The character string might also contain a regular
+#'   expression (see examples).
 #' @param name_only If `TRUE`, the function returns only the name(s) of the
 #'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
@@ -293,14 +294,16 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' # list all available QGIS algorithms on your system
 #' algs <- find_algorithms()
 #' algs[1:15]
-#' # just find all native, i.e. QGIS-algorithms
-#' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
+#' # find only QGIS functions
+#' find_algorithms(search_term = "qgis:")
+#' # find QGIS and SAGA functions related to centroid computations
+#' find_algorithms(search_term = "centroid.+(qgis:|saga:)")
 #' }
 
 #' @export
-find_algorithms <- function(search_term = "",
+find_algorithms <- function(search_term = NULL,
                             qgis_env = set_env(),
                             name_only = FALSE,
                             intern = 
@@ -308,9 +311,15 @@ find_algorithms <- function(search_term = "",
                                      TRUE, FALSE)) {
   
     algs <- execute_cmds(processing_name = "processing.alglist",
-                         params = shQuote(search_term),
+                         params = shQuote(""),
                          qgis_env = qgis_env,
                          intern = intern)
+    algs <- algs[algs != ""]
+    # use regular expressions to query all available algorithms
+    if (!is.null(search_term)) {
+      algs <- grep(search_term, algs, value = TRUE)
+    }
+    
     if (name_only) {
       algs <- gsub(".*>", "", algs)
     }
