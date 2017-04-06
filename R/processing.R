@@ -9,6 +9,7 @@
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R.
 #' @param dev If set to `TRUE`, `set_env` will use the development version of QGIS (if available).
+#' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -323,8 +324,6 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @title Find and list available QGIS algorithms
 #' @description `find_algorithms` lists or queries all QGIS algorithms which can
 #'   be accessed via the QGIS Python API.
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For
-#'   more information, refer to [set_env()].
 #' @param search_term If (`NULL`), the default, all available functions will be 
 #'   returned. If `search_term` is a character, all available functions will be
 #'   queried accordingly. The character string might also contain a regular
