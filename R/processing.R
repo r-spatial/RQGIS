@@ -93,7 +93,7 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
       if (is.null(root)) {
         # check for binary QGIS installation
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
-        if(length(path) > 0) {
+        if (length(path) > 0) {
           root <- path
         }
       }
@@ -109,6 +109,15 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
   qgis_env <- list(root = root)
   qgis_env <- c(qgis_env, check_apps(root = root, ltr = ltr))
   save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
+  
+  
+  # write warning if Kyngchaos QGIS for Mac is installed
+  if (any(grepl("/Applications", qgis_env))) {
+    warning("We recognized that you have the Kyngchaos QGIS binary installed. \n",
+            "Please consider installing QGIS from homebrew: 'https://github.com/OSGeo/homebrew-osgeo4mac'. \n",
+            "The Kyngchaos installation throws some warnings during processing. However, usage is not affected.")
+  }
+  
   # return your result
   qgis_env
 }
