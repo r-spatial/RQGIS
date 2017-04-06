@@ -148,7 +148,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' @param root Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
 #'   '/usr' and '/Applications/QGIS.app/' for the different platforms.
 #' @param ... Optional arguments used in `check_apps`. Under Windows,
-#'   `set_env` passes function argument `ltr` to `check_apps`.
+#'   `set_env` passes function argument `dev` to `check_apps`.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #' @keywords internal
@@ -165,7 +165,7 @@ check_apps <- function(root, ...) {
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
-    if (length(dots) > 0 && isTRUE(dots$ltr)) {
+    if (length(dots) > 0 && isFALSE(dots$dev)) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version

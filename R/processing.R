@@ -8,8 +8,7 @@
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R.
-#' @param ltr If `TRUE`, `set_env` will use the long term release of QGIS, if 
-#'   available (only for Windows).
+#' @param dev If set to `TRUE`, `set_env` will use the development version of QGIS (if available).
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -25,7 +24,7 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
+set_env <- function(root = NULL, new = FALSE, dev = FALSE) {
   
   # load cached qgis_env if possible
   if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
@@ -107,7 +106,7 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
-  qgis_env <- c(qgis_env, check_apps(root = root, ltr = ltr))
+  qgis_env <- c(qgis_env, check_apps(root = root, dev = dev))
   save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
   
   

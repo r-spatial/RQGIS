@@ -4,7 +4,7 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, new = FALSE, ltr = TRUE)
+set_env(root = NULL, new = FALSE, dev = FALSE)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
@@ -16,8 +16,7 @@ looks for \code{qgis.bat} on the C: drive under Windows. On a Mac, it looks for
 its output. Setting \code{new} to \code{TRUE} resets the cache when calling \code{set_env}
 again. Otherwise, the cached output will be loaded back into R.}
 
-\item{ltr}{If \code{TRUE}, \code{set_env} will use the long term release of QGIS, if
-available (only for Windows).}
+\item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of QGIS (if available).}
 }
 \value{
 The function returns a list containing all the path necessary to run
