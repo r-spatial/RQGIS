@@ -157,7 +157,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-#' @export
+
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -199,7 +199,7 @@ check_apps <- function(root, ...) {
   names(out) <- c("qgis_prefix_path", "python_plugins")
   # return your result
   out
-  }
+}
 
 #' @title Little helper function to construct the Python-skeleton
 #' @description This helper function simply constructs the Python-skeleton 
