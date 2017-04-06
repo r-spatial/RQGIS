@@ -15,9 +15,17 @@ test_that("qgis_session_info yields a list as output", {
   # rstudio/reticulate/blob/master/tests/testthat/utils.R
   
   qgis_env <- set_env()
-  info <- qgis_session_info(qgis_env = qgis_env)
+  info <- qgis_session_info()
   # check if the output is a list of length 5
   expect_that(str(info), prints_text("List of 5"))
+  
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    qgis_env <- set_env(new = TRUE, ltr = FALSE)
+    info <- qgis_session_info()
+    # check if the output is a list of length 5
+    expect_that(str(info), prints_text("List of 5"))
+    }
   })
 
 test_that("find_algorithms finds QGIS geoalgorithms", {
@@ -28,14 +36,24 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
   # skip_if_no_python() 
   
   qgis_env <- set_env()
-  algs <- find_algorithms(qgis_env = qgis_env)
+  algs <- find_algorithms()
   # just retrieve QGIS geoalgorithms
   test <- grep("qgis:", algs, value = TRUE)
   # normally there are 101 QGIS geoalgorithms, so check if there are more than 
   # 50
   expect_that(length(test), is_more_than(50))
-  }
-  )
+ 
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    qgis_env <- set_env(new = TRUE, ltr = FALSE)
+    algs <- find_algorithms()
+    # just retrieve QGIS geoalgorithms
+    test <- grep("qgis:", algs, value = TRUE)
+    # normally there are 101 QGIS geoalgorithms, so check if there are more than 
+    # 50
+    expect_that(length(test), is_more_than(50))
+    }
+  })
 
 test_that("get_usage yields an output", {
   
@@ -45,9 +63,17 @@ test_that("get_usage yields an output", {
   # skip_if_no_python()
   
   qgis_env <- set_env()
-  # get the usage of v.voronoi (you have to change that for reticulate)
-  usage <- get_usage("grass7:v.voronoi", qgis_env = qgis_env, intern = TRUE)
+  # get the usage of v.voronoi (intern: you have to change that for reticulate)
+  usage <- get_usage("grass7:v.voronoi", intern = TRUE)
   expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
+  
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    qgis_env <- set_env(new = TRUE, ltr = FALSE)
+    # get the usage of v.voronoi (intern: you have to change that for reticulate)
+    usage <- get_usage("grass7:v.voronoi", intern = TRUE)
+    expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
+  }
 })
 
 test_that("get_options yields an output", {
@@ -59,12 +85,22 @@ test_that("get_options yields an output", {
   
   qgis_env <- set_env() 
   # write a test for get_options
-  opts <- get_options("grass7:r.slope.aspect", qgis_env = qgis_env, 
+  opts <- get_options("grass7:r.slope.aspect",  
                       intern = TRUE)  # intern has to be deleted with reticulate
   # check if the output is correct
   expect_match(paste(opts, collapse = "\n"), 
               "format\\(Format for reporting the slope")
-})
+  
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    qgis_env <- set_env(new = TRUE, ltr = FALSE)
+    opts <- get_options("grass7:r.slope.aspect",  
+                        intern = TRUE)  # intern has to be deleted with reticulate
+    # check if the output is correct
+    expect_match(paste(opts, collapse = "\n"), 
+                 "format\\(Format for reporting the slope")
+    }
+  })
 
   
 # write a test for open_help

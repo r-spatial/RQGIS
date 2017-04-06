@@ -5,11 +5,6 @@ library("raster")
 
 context("run_qgis")
 
-# let's set the environment 
-# qgis_env <- set_env()
-# Test if all functions are working also with the QGIS developer version
-# qgis_env <- set_env("C:/OSGeo4W64/", ltr = FALSE)  
-
 test_that("Test, if QGIS-algorithms are working?", {
   
   testthat::skip_on_appveyor()
@@ -28,11 +23,10 @@ test_that("Test, if QGIS-algorithms are working?", {
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
 
   # let's set the environment 
-  qgis_env <- set_env()
+  set_env()
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
-  params <- get_args_man(alg = "qgis:polygoncentroids", 
-                         qgis_env = qgis_env)
+  params <- get_args_man(alg = "qgis:polygoncentroids")
   # Define function arguments
   # specify input layer
   params$INPUT_LAYER  <- polys  # please note that the input is an R object!!!
@@ -45,12 +39,23 @@ test_that("Test, if QGIS-algorithms are working?", {
   out <- run_qgis(alg = "qgis:polygoncentroids",
                   params = params,
                   # let's load the QGIS output directly into R!
-                  load_output = params$OUTPUT_LAYER,
-                  qgis_env = qgis_env)
+                  load_output = params$OUTPUT_LAYER)
   
   # check if the output is spatial object
   expect_is(out, "SpatialPointsDataFrame")
-})
+  
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    set_env(new = TRUE, ltr = FALSE)
+    out <- run_qgis(alg = "qgis:polygoncentroids",
+                    params = params,
+                    # let's load the QGIS output directly into R!
+                    load_output = params$OUTPUT_LAYER)
+    
+    # check if the output is spatial object
+    expect_is(out, "SpatialPointsDataFrame")
+    }
+  })
 
 
 test_that("Test, if SAGA-algorithms are working?", {
@@ -60,18 +65,24 @@ test_that("Test, if SAGA-algorithms are working?", {
   testthat::skip_on_cran()
 
   # let's set the environment 
-  qgis_env <- set_env()  
-  
+  set_env()  
+  # attach data
   data("dem")
-  params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE,
-                         qgis_env = qgis_env)
+  params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
   params$ELEVATION <- dem
   params$SLOPE <- file.path(tempdir(), "slope.asc")
   out <- run_qgis("saga:slopeaspectcurvature", params = params, 
-                  load_output = params$SLOPE, qgis_env = qgis_env)
+                  load_output = params$SLOPE)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
-})
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    set_env(new = TRUE, ltr = FALSE)
+    out <- run_qgis("saga:slopeaspectcurvature", params = params, 
+                    load_output = params$SLOPE)
+    expect_is(out, "RasterLayer")
+    }
+  })
 
 
 
@@ -82,15 +93,23 @@ test_that("Test, if GRASS7-algorithms are working?", {
   testthat::skip_on_cran()
   
   # let's set the environment 
-  qgis_env <- set_env()  
+  set_env()  
   # attach data
   data("dem")
-  params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE,
-                         qgis_env = qgis_env)
+  params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE)
   params$elevation <- dem
   params$slope <- file.path(tempdir(), "slope.asc")
   out <- run_qgis("grass7:r.slope.aspect", params = params, 
-                  load_output = params$slope, qgis_env = qgis_env)
+                  load_output = params$slope)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
+  
+  # now check the developer QGIS release (at least for Windows)
+  if (Sys.info()["sysname"] == "Windows") {
+    set_env(new = TRUE, ltr = FALSE)
+    out <- run_qgis("grass7:r.slope.aspect", params = params, 
+                    load_output = params$slope)
+    # check if the output is a raster
+    expect_is(out, "RasterLayer")
+    }
   })

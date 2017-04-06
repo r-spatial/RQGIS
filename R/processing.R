@@ -381,7 +381,7 @@ get_options <- function(alg = NULL,
                intern = intern)
 }
 
-#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm
+#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm
 #' @description `open_help` opens the online help for a specific (Q)GIS 
 #'   geoalgorithm. This is the online help one also encounters in the QGIS GUI.
 #'   In the case of GRASS algorithms this is actually the GRASS online
