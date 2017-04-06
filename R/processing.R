@@ -194,7 +194,7 @@ open_app <- function(qgis_env = set_env()) {
   } else if (Sys.info()["sysname"] == "Linux") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
-    setup_mac((qgis_env = qgis_env))
+    setup_mac(qgis_env = qgis_env)
   }
   
   # not sure, if we need the subsequent test for Linux & Mac since the Python 
@@ -362,12 +362,12 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   # Advantage of this approach: we are using directly alglist and do not have to
   # save it in inst
   # Disadvantage: more processing
-  code <- "with Capturing() as output_alglist:\n  processing.alglist()"
-  
-  algs <- as.character(py_run_string(code)$output_alglist)
+  algs <- py_capture_output(py_run_string("processing.alglist()"))
+  algs <- gsub("\n", "', '", algs)
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
   algs <- gsub("\\['|'\\]|'", "", algs)
+  
   # quick-and-dirty, maybe there is more elegant approach...
   if (Sys.info()["sysname"] == "Windows") {
     algs <- gsub('\\\\|"', "", shQuote(algs))
