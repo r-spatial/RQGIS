@@ -31,8 +31,8 @@ set_env <- function(root = NULL, new = FALSE, ltr = TRUE) {
   if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
     load(file.path(tempdir(), "qgis_env.Rdata"))
     return(qgis_env)
-    }
-
+  }
+  
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(root)) {
@@ -310,12 +310,14 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @title Find and list available QGIS algorithms
 #' @description `find_algorithms` lists or queries all QGIS algorithms which can
 #'   be accessed via the QGIS Python API.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to [set_env()].
 #' @param search_term If (`NULL`), the default, all available functions will be 
 #'   returned. If `search_term` is a character, all available functions will be
 #'   queried accordingly. The character string might also contain a regular
 #'   expression (see examples).
-#' @param name_only If `TRUE`, the function returns only the name(s) of the 
-#'   found algorithms. Otherwise, a short function description will be returned 
+#' @param name_only If `TRUE`, the function returns only the name(s) of the
+#'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
 #'   API. For more information, refer to [set_env()].
@@ -386,6 +388,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   
   # return your result
   algs
+
 }
 
 
@@ -456,7 +459,7 @@ get_options <- function(alg = "",
   cat(gsub("\\\\t", "\t", out))
 }
 
-#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm
+#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm
 #' @description `open_help` opens the online help for a specific (Q)GIS 
 #'   geoalgorithm. This is the online help one also encounters in the QGIS GUI.
 #'   In the case of GRASS algorithms this is actually the GRASS online
@@ -715,6 +718,11 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # a new function)
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
+    
+    # REWRITE-----------------------------------------------------
+    # find out what are the QGIS output values and delete them from the list!!!!
+    # you also need the output values for load_output!!!!
+    
     # dismiss the last argument since it frequently corresponds to the output if
     # the output was created before using another CRS, the function might crash
     # however, this is not always the case, e.g., rgrass7::r.slope.aspect
