@@ -11,17 +11,17 @@ test_that("Test, if QGIS-algorithms are working?", {
   testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-
+  
   coords_1 <- 
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
            ncol = 2, byrow = TRUE)
   coords_2 <- coords_1 + 2
   polys <- 
-  # convert the coordinates into polygons
-  polys <- list(Polygons(list(Polygon(coords_1)), 1), 
-                Polygons(list(Polygon(coords_2)), 2)) 
+    # convert the coordinates into polygons
+    polys <- list(Polygons(list(Polygon(coords_1)), 1), 
+                  Polygons(list(Polygon(coords_2)), 2)) 
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
-
+  
   # let's set the environment 
   set_env()
   # Retrieve the function arguments in such a way that they can be easily
@@ -43,7 +43,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   
   # check if the output is spatial object
   expect_is(out, "SpatialPointsDataFrame")
-  })
+})
 
 
 test_that("Test, if SAGA-algorithms are working?", {
@@ -51,7 +51,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   testthat::skip_on_appveyor()
   testthat::skip_on_travis()
   testthat::skip_on_cran()
-
+  
   # let's set the environment 
   set_env()  
   # attach data
@@ -63,7 +63,7 @@ test_that("Test, if SAGA-algorithms are working?", {
                   load_output = params$SLOPE)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
-  })
+})
 
 
 
@@ -84,7 +84,7 @@ test_that("Test, if GRASS7-algorithms are working?", {
                   load_output = params$slope)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
-  })
+})
 
 #********************************************************************
 # CHECKING developer QGIS release (Windows)--------------------------
@@ -173,4 +173,3 @@ if (Sys.info()["sysname"] == "Windows") {
     expect_is(out, "RasterLayer")
   })
 }
-
