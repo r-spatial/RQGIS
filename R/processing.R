@@ -133,9 +133,13 @@ open_app <- function(qgis_env = set_env()) {
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
   
-  # Well, well, not sure if we should change it back or if we at least have to
-  # get rid off Anaconda Python or other Python binaries (I guess not)
+  # Well, well, not sure if we should change it back or if we at least have to 
+  # get rid off Anaconda Python or other Python binaries (I guess not) 
+  
   # on.exit(do.call(Sys.setenv, settings))
+  
+  # resetting system settings causes that SAGA algorithms cannot be processed
+  # anymore, find out why this is!!!
   
   if (Sys.info()["sysname"] == "Windows") {
     # run Windows setup
