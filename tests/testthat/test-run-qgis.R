@@ -3,7 +3,7 @@ library("RQGIS")
 library("sp")
 library("raster")
 library("reticulate")
-library("rgdal")
+library("rgdal", quietly = TRUE)
 
 context("run_qgis")
 
@@ -68,30 +68,6 @@ if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
 }
 Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
 
-# not sure, if we need the subsequent test for Linux & Mac since the Python 
-# binary should be alway /usr/bin/python.exe -> ask Patrick Patrick: you are right, python binary is always in /usr/bin for Linux & Mac
-if (Sys.info()["sysname"] == "Windows") {
-  # compare py_config path with set_env path!!
-  a <- py_config()
-  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
-  if (!identical(py_path, qgis_env$root)) {
-    stop("Wrong Python binary. Restart R and check!")
-  }
-}
-
-# suppress messages for homebrew Mac installation
-if (Sys.info()["sysname"] == "Darwin") {
-  Sys.setenv(QGIS_DEBUG=-1)
-}
-
-
-# make sure that QGIS is not already running (this would crash R)
-# app = QgsApplication([], True)  # see below
-tmp <- try(expr =  py_run_string("app")$app,
-           silent = TRUE)
-if (!inherits(tmp, "try-error")) {
-  stop("Python QGIS application is already running.")
-}
 
 py_run_string("import os, sys, re, webbrowser")
 py_run_string("from qgis.core import *")
@@ -99,13 +75,18 @@ py_run_string("from osgeo import ogr")
 py_run_string("from PyQt4.QtCore import *")
 py_run_string("from PyQt4.QtGui import *")
 py_run_string("from qgis.gui import *")
+
 set_prefix <- paste0("QgsApplication.setPrefixPath(r'",
                      qgis_env$qgis_prefix_path, "', True)")
 code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
 py_run_string(code)
 py_run_string(set_prefix)
+
 py_run_string("app = QgsApplication([], True)")
 py_run_string("QgsApplication.initQgis()")
+
+py_run_string("app.setPrefixPath('/usr', True)") # see if that solves QObject::connect: Cannot connect (null)::raiseError( QString ) to QgsVectorLayer::raiseError( QString )
+
 
 print(qgis_env) # for debugging
 py_run_string("print app.showSettings()") # debugging
@@ -116,7 +97,7 @@ py_run_string("Processing.initialize()")
 py_run_string("import processing")
 
 # works!
-py_run_string("processing.alglist()") # works!!! lets see if grass7 algs are also found
+#py_run_string("processing.alglist()") # works!!! lets see if grass7 algs are also found
 
 print("Searching QGIS algs")
 py_run_string("processing.algoptions('qgis:polygoncentroids')")
