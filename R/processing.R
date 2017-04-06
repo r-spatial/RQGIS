@@ -135,7 +135,7 @@ open_app <- function(qgis_env = set_env()) {
   
   # Well, well, not sure if we should change it back or if we at least have to
   # get rid off Anaconda Python or other Python binaries (I guess not)
-  on.exit(do.call(Sys.setenv, settings))
+  # on.exit(do.call(Sys.setenv, settings))
   
   if (Sys.info()["sysname"] == "Windows") {
     # run Windows setup
