@@ -165,7 +165,7 @@ check_apps <- function(root, ...) {
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
-    if (length(dots) > 0 && isFALSE(dots$dev)) {
+    if (length(dots) > 0 && !isTRUE(dots$dev)) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
@@ -343,6 +343,7 @@ setup_win <- function(qgis_env = set_env()) {
 #' @description Windows helper function to start QGIS application. Basically, 
 #'   the code found in all .bat files found in etc/ini (most likely
 #'   "C:/OSGEO4~1/etc/ini") is reproduced within R.
+#' @importFrom readr read_file
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
 #'   API. For more information, refer to [set_env()].
 #' @return The function changes the system settings using [base::Sys.setenv()].
@@ -358,7 +359,7 @@ run_ini <- function(qgis_env = set_env()) {
   files <- files[-grep("msvcrt|rbatchfiles", files)]
   root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
   ls <- lapply(files, function(file) {
-    tmp <- readr::read_file(file)
+    tmp <- read_file(file)
     tmp <- gsub("%OSGEO4W_ROOT%", root, tmp)
     tmp <- strsplit(tmp, split = "\r\n|\n")[[1]]
     tmp
