@@ -13,7 +13,7 @@
 #' \dontrun{
 #' build_cmds()
 #' }
-
+#' @export
 build_cmds <- function(qgis_env = set_env()) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -148,7 +148,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' @param root Path to the root directory. Usually, this is 'C:/OSGEO4~1', 
 #'   '/usr' and '/Applications/QGIS.app/' for the different platforms.
 #' @param ... Optional arguments used in `check_apps`. Under Windows,
-#'   `set_env` passes function argument `dev` to `check_apps`.
+#'   `set_env` passes function argument `ltr` to `check_apps`.
 #' @return The function returns a list with the paths to all the necessary 
 #'   QGIS-applications.
 #' @keywords internal
@@ -157,7 +157,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-
+#' @export
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -165,7 +165,7 @@ check_apps <- function(root, ...) {
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
-    if (length(dots) > 0 && isFALSE(dots$dev)) {
+    if (length(dots) > 0 && isTRUE(dots$ltr)) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
@@ -212,7 +212,7 @@ check_apps <- function(root, ...) {
 #' \dontrun{
 #' build_py()
 #' }
-
+#' @export
 build_py <- function(qgis_env = set_env()) {
   c(# import all the libraries you need
     "import os",
@@ -282,206 +282,3 @@ open_grass_help <- function(alg) {
   utils::browseURL(url)
 }
 
-#' @title Set all Windows paths necessary to start QGIS
-#' @description Windows helper function to start QGIS application by setting all
-#'   necessary path especially through running [run_ini()].
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @importFrom reticulate use_python
-#' @author Jannes Muenchow
-#' @examples 
-#' \dontrun{
-#' setup_win()
-#' }
-
-setup_win <- function(qgis_env = set_env()) {
-  # call o4w_env.bat from within R
-  # not really sure, if we need the next line (just in case)
-  Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
-  # shell("ECHO %OSGEO4W_ROOT%")
-  # REM start with clean path
-  windir <- shell("ECHO %WINDIR%", intern = TRUE)
-  Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
-                          file.path(windir, "system32", fsep = "\\"),
-                          windir,
-                          file.path(windir, "WBem", fsep = "\\"),
-                          sep = ";"))
-  # call all bat-files
-  run_ini(qgis_env = qgis_env)
-  
-  # we need to make sure that qgis-ltr can also be used...
-  my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
-  # add the directories where the QGIS libraries reside to search path 
-  # of the dynamic linker
-  Sys.setenv(PATH = paste(Sys.getenv("PATH"),
-                          file.path(qgis_env$root, "apps",
-                                    my_qgis, "bin", fsep = "\\"),
-                          sep = ";"))
-  # set the PYTHONPATH variable, so that QGIS knows where to search for
-  # QGIS libraries and appropriate Python modules
-  python_path <- Sys.getenv("PYTHONPATH")
-  python_add <- file.path(qgis_env$root, "apps", my_qgis, "python", 
-                          fsep = "\\")
-  if (!grepl(gsub("\\\\", "\\\\\\\\", python_add), python_path)) {
-    python_path <- paste(python_path, python_add, sep = ";")    
-    Sys.setenv(PYTHONPATH = python_path)
-    }
-
-  # defining QGIS prefix path (i.e. without bin)
-  Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
-                                          fsep = "\\"))
-  # shell.exec("python")  # yeah, it works!!!
-  # !!!Try to make sure that the right Python version is used!!!
-  use_python(file.path(qgis_env$root, "bin\\python.exe", fsep = "\\"), 
-             required = TRUE)
-}
-
-
-#' @title Reproduce o4w_env.bat script in R
-#' @description Windows helper function to start QGIS application. Basically, 
-#'   the code found in all .bat files found in etc/ini (most likely
-#'   "C:/OSGEO4~1/etc/ini") is reproduced within R.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @author Jannes Muenchow
-#' @examples 
-#' \dontrun{
-#' run_ini()
-#' }
-
-run_ini <- function(qgis_env = set_env()) {
-  files <- dir(file.path(qgis_env$root, "etc/ini"), full.names = TRUE)
-  files <- files[-grep("msvcrt|rbatchfiles", files)]
-  root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
-  ls <- lapply(files, function(file) {
-    tmp <- readr::read_file(file)
-    tmp <- gsub("%OSGEO4W_ROOT%", root, tmp)
-    tmp <- strsplit(tmp, split = "\r\n|\n")[[1]]
-    tmp
-  })
-  cmds <- do.call(c, ls)
-  # remove everything followed by a semi-colon but not if the colon is followed 
-  # by %PATH%
-  cmds <- gsub(";%([^PATH]).*", "", cmds)
-  cmds <- gsub(";%PYTHONPATH%", "", cmds)  # well, not really elegant...
-  for (i in cmds) {
-    if (grepl("^(SET|set)", i)) {
-      tmp <- gsub("^(SET|set) ", "", i)
-      tmp <- strsplit(tmp, "=")[[1]]
-      args <- list(tmp[2])
-      names(args) <- tmp[1]
-      if (Sys.getenv(names(args)) != "" &
-          !grepl(gsub("\\\\", "\\\\\\\\", args[[1]]), 
-                 Sys.getenv((names(args))))) {
-        args[[1]] <- paste(args[[1]], Sys.getenv(names(args)), sep = ";")
-      } 
-      do.call(Sys.setenv, args)
-    }
-    if (grepl("^(path|PATH)", i)) {
-      tmp <- gsub("^(PATH|path) ", "", i)
-      path <- Sys.getenv("PATH")
-      path <- gsub("\\\\", "\\\\\\\\", path)
-      tmp <- gsub("%PATH%", path, tmp)
-      Sys.setenv(PATH = tmp)
-    }
-    if (grepl("^if not defined HOME", i)) {
-      if (Sys.getenv("HOME") == "") {
-        use_prof <- shell("ECHO %USERPROFILE%", intern = TRUE)
-        Sys.setenv(HOME = use_prof)
-      }
-    }
-  }
-}
-
-#' @title Set all Linux paths necessary to start QGIS
-#' @description Helper function to start QGIS application under Linux.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @author Jannes Muenchow
-#' @examples 
-#' \dontrun{
-#' setup_linux()
-#' }
-
-setup_linux <- function(qgis_env = set_env()) {
-  # append PYTHONPATH to import qgis.core etc. packages
-  python_path <- Sys.getenv("PYTHONPATH")
-  qgis_python_path <- paste0(qgis_env$root, "/share/qgis/python")
-  reg_exp <- grepl(paste0(qgis_python_path, ":"), python_path) | 
-    grepl(paste0(qgis_python_path, "$"), python_path)
-  if (python_path != "" & reg_exp) {
-    qgis_python_path <- python_path
-  } else if (python_path != "" & !reg_exp) {
-    qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
-                              sep = ":")
-  }
-  Sys.setenv(PYTHONPATH = qgis_python_path)
-  # append LD_LIBRARY_PATH
-  ld_lib_path <- Sys.getenv("LD_LIBRARY_PATH")
-  qgis_ld_path <-  file.path(qgis_env$root, "lib")
-  reg_exp <- grepl(paste0(qgis_ld_path, ":"), ld_lib_path) | 
-    grepl(paste0(qgis_ld_path, "$"), ld_lib_path)
-  if (ld_lib_path != "" & reg_exp) {
-    qgis_ld_path <- ld_lib_path
-  } else if (ld_lib_path != "" & !reg_exp) {
-    qgis_ld_path <- paste(qgis_ld_path, Sys.getenv("LD_LIBRARY_PATH"), 
-                          sep = ":")
-  }
-  Sys.setenv(LD_LIBRARY_PATH = qgis_ld_path)
-  # setting here the QGIS_PREFIX_PATH also works instead of running it twice
-  # later on
-  Sys.setenv(QGIS_PREFIX_PATH = qgis_env$root)
-}
-
-#' @title Set all Mac paths necessary to start QGIS
-#' @description Helper function to start QGIS application under macOS.
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return The function changes the system settings using [base::Sys.setenv()].
-#' @keywords internal
-#' @author Patrick Schratz
-#' @examples 
-#' \dontrun{
-#' setup_mac()
-#' }
-
-setup_mac <- function(qgis_env = set_env()) {
-  
-  # append PYTHONPATH to import qgis.core etc. packages
-  python_path <- Sys.getenv("PYTHONPATH")
-  
-  qgis_python_path <- 
-    paste0(qgis_env$root, paste("/Contents/Resources/python/", 
-                                "/usr/local/lib/qt-4/python2.7/site-packages",
-                                "/usr/local/lib/python2.7/site-packages",
-                                "$PYTHONPATH", sep = ":"))
-  if (python_path != "" & !grepl(qgis_python_path, python_path)) {
-    qgis_python_path <- paste(qgis_python_path, Sys.getenv("PYTHONPATH"), 
-                              sep = ":")
-  }
-  
-  Sys.setenv(QGIS_PREFIX_PATH = paste0(qgis_env$root, "/Contents/MacOS/"))
-  Sys.setenv(PYTHONPATH = qgis_python_path)
-  
-  # define path where QGIS libraries reside to search path of the
-  # dynamic linker
-  ld_library <- Sys.getenv("LD_LIBRARY_PATH")
-  
-  qgis_ld <- paste(paste0(qgis_env$qgis_prefix_path, 
-                          file.path("/MacOS/lib/:/Applications/QGIS.app/", 
-                                    "Contents/Frameworks/"))) # homebrew
-  if (ld_library != "" & !grepl(paste0(qgis_ld, ":"), ld_library)) {
-    qgis_ld <- paste(paste0(qgis_env$root, "/lib"),
-                     Sys.getenv("LD_LIBRARY_PATH"), sep = ":")
-  }
-  Sys.setenv(LD_LIBRARY_PATH = qgis_ld)
-  
-  # suppress verbose QGIS output for homebrew
-  Sys.setenv(QGIS_DEBUG = -1)
-}
