@@ -16,7 +16,8 @@ looks for \code{qgis.bat} on the C: drive under Windows. On a Mac, it looks for
 its output. Setting \code{new} to \code{TRUE} resets the cache when calling \code{set_env}
 again. Otherwise, the cached output will be loaded back into R.}
 
-\item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of QGIS (if available).}
+\item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of
+QGIS (if available).}
 
 \item{...}{Currently not in use.}
 }

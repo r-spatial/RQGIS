@@ -8,7 +8,8 @@
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R.
-#' @param dev If set to `TRUE`, `set_env` will use the development version of QGIS (if available).
+#' @param dev If set to `TRUE`, `set_env` will use the development version of
+#'   QGIS (if available).
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
@@ -104,8 +105,10 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       if (length(path) == 2) {
         
         # extract version out of root path
-        path1 <- as.numeric(regmatches(path[1], gregexpr('[0-9]+', path[1]))[[1]][3])
-        path2 <- as.numeric(regmatches(path[2], gregexpr('[0-9]+', path[2]))[[1]][3])
+        path1 <- 
+          as.numeric(regmatches(path[1], gregexpr("[0-9]+", path[1]))[[1]][3])
+        path2 <- 
+          as.numeric(regmatches(path[2], gregexpr("[0-9]+", path[2]))[[1]][3])
         
         # account for 'dev' arg
         # installations are not constant within path -> depend on which version was installed first/last
@@ -120,10 +123,11 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
           root <- path[1]
         }
       }
-      # just in case if someone has more than 2 QGIS homebrew installations (very unlikely though)
+      # just in case if someone has more than 2 QGIS homebrew installations
+      # (very unlikely though)
       if (length(path) > 2) {
-        stop("We recognized more than 2 QGIS homebrew installations on your System. ",
-             "Please clean up or set 'set_env()' manually.")
+        stop(paste("We recognized more than 2 QGIS homebrew installations on ", 
+                   "your System. Please clean up or set 'set_env()' manually."))
       }
       
       # check for Kyngchaos installation
@@ -149,11 +153,14 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   
   # write warning if Kyngchaos QGIS for Mac is installed
   if (any(grepl("/Applications", qgis_env))) {
-    warning("We recognized that you have the Kyngchaos QGIS binary installed. \n",
-            "Please consider installing QGIS from homebrew: 'https://github.com/OSGeo/homebrew-osgeo4mac'. ",
-            "Run 'vignette(install_guide)' for installation instructions. \n",
-            "The Kyngchaos installation throws some warnings during processing. ",
-            "However, usage/outcome is not affected and you can continue using the Kyngchaos installation.")
+    warning(
+      paste0("We recognized that you are using the Kyngchaos QGIS binary.\n",
+      "Please consider installing QGIS from homebrew:", 
+      "'https://github.com/OSGeo/homebrew-osgeo4mac'.",
+      " Run 'vignette(install_guide)' for installation instructions.\n",
+      "The Kyngchaos installation throws some warnings during processing.",
+      " However, usage/outcome is not affected and you can continue using the", 
+      "Kyngchaos installation."))
   }
   
   # return your result
@@ -198,8 +205,8 @@ open_app <- function(qgis_env = set_env()) {
     setup_mac(qgis_env = qgis_env)
   }
   
-  # not sure, if we need the subsequent test for Linux & Mac since the Python 
-  # binary should be alway /usr/bin/python.exe -> ask Patrick Patrick: you are right, python binary is always in /usr/bin for Linux & Mac
+  # We do not need the subsequent test for Linux & Mac since the Python 
+  # binary should be always found under  /usr/bin
   if (Sys.info()["sysname"] == "Windows") {
     # compare py_config path with set_env path!!
     a <- py_config()
@@ -374,10 +381,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
     algs <- gsub('\\\\|"', "", algs)
   }
   algs <- algs[algs != ""]
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(output_alglist)\nexcept:\  pass")
-  
+
   # use regular expressions to query all available algorithms
   if (!is.null(search_term)) {
     algs <- grep(search_term, algs, value = TRUE)
@@ -416,7 +420,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #' @details Function `get_usage` simply calls
 #'   `processing.alghelp` of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_run_string
+#' @importFrom reticulate py_capture_output py_run_string
 #' @export
 #' @examples
 #' \dontrun{
@@ -429,15 +433,10 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 get_usage <- function(alg = NULL, intern = FALSE,
                       qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
-  code <- 
-    sprintf("with Capturing() as output_usage:\n  processing.alghelp('%s')", 
-            alg)
-  out <- as.character(py_run_string(code)$output_usage)
+  out <- 
+    py_capture_output(py_run_string(sprintf("processing.alghelp('%s')", alg)))
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(output_usage)\nexcept:\  pass")
   if (intern) {
     out
   } else {
@@ -458,7 +457,7 @@ get_usage <- function(alg = NULL, intern = FALSE,
 #' @details Function `get_options` simply calls `processing.algoptions` of the 
 #'   QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_run_string
+#' @importFrom reticulate py_capture_output py_run_string
 #' @examples
 #' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
@@ -468,22 +467,16 @@ get_options <- function(alg = "", intern = FALSE,
                         qgis_env = set_env()) {
   
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
-  code <-
-    sprintf(paste0("with Capturing() as output_options:\n",
-                   "  processing.algoptions('%s')"), 
-            alg)
-  out <- as.character(py_run_string(code)$output_options)
+  out <- 
+    py_capture_output(py_run_string(
+      sprintf("processing.algoptions('%s')", alg)))
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(output_options)\nexcept:\  pass")
   if (intern) {
     out
   } else {
     cat(gsub("\\\\t", "\t", out))
   }
-  
 }
 
 #' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm
