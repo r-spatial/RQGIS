@@ -20,6 +20,14 @@ before_install:
     - sudo apt-get install --yes aptitude # aptitude ensures that dependencies are installed 
     - sudo aptitude install -y qgis python-qgis qgis-plugin-grass grass qgis-provider-grass libgdal-dev libproj-dev
     
+    # install SAGA 2.2.2 from source
+    - cd && wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz && rm saga-2.2.2.tar.gz
+    - sudo apt-get install libwxgtk3.0-dev libtiff5-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev g++ make automake libtool git
+    - cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    - cd /home/travis/build/jannes-m/RQGIS
+    # check for successfull installation
+    - saga_cmd --version
+    
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
   - "export DISPLAY=:99.0"
