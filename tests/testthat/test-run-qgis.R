@@ -42,7 +42,7 @@ test_that("Test, if QGIS-algorithms are working?", {
                   load_output = TRUE)
   
   # check if the output is spatial object
-  expect_is(out, "sf")
+  expect_is(out, "SpatialPointsDataFrame")
 })
 
 

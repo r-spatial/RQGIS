@@ -32,7 +32,7 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
   test <- grep("qgis:", algs, value = TRUE)
   # normally there are 101 QGIS geoalgorithms, so check if there are more than 
   # 50
-  expect_that(length(test), 50)
+  expect_that(length(test), is_more_than(50))
   })
 
 test_that("get_usage yields an output", {

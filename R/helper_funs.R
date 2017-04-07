@@ -336,6 +336,15 @@ setup_win <- function(qgis_env = set_env()) {
   # !!!Try to make sure that the right Python version is used!!!
   use_python(file.path(qgis_env$root, "bin\\python.exe", fsep = "\\"), 
              required = TRUE)
+  # We do not need the subsequent test for Linux & Mac since the Python 
+  # binary should be always found under  /usr/bin
+  
+  # compare py_config path with set_env path!!
+  a <- py_config()
+  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
+  if (!identical(py_path, qgis_env$root)) {
+    stop("Wrong Python binary. Restart R and check!")
+  }
 }
 
 
