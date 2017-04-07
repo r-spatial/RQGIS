@@ -49,7 +49,7 @@ test_that("Test, if QGIS-algorithms are working?", {
 test_that("Test, if SAGA-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  #testthat::skip_on_travis()
+  testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   # let's set the environment 
