@@ -153,3 +153,13 @@ class RQGIS:
     ### TauDEM versions (currently not in use because no function to extract
     ### Taudem version in 'TauDEMUtils')
     # "TauDEMUtils.taudemMultifilePath()",
+
+  def get_output_names(self, alg):
+    alg = Processing.getAlgorithm(alg)
+    if alg is None:
+      sys.exit('Specified algorithm does not exist!')
+    alg = alg.getCopy()
+    params = []
+    for out in alg.outputs:
+      params.append(out.name)
+    return params

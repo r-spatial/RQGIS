@@ -3,7 +3,7 @@ library("RQGIS")
 library("sp")
 library("raster")
 
-context("prerun")
+context("prerun_dev")
 
 
   test_that("qgis_session_info yields a list as output", {

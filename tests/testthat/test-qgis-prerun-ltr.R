@@ -3,10 +3,9 @@ library("RQGIS")
 library("sp")
 library("raster")
 
-context("prerun")
+context("prerun_ltr")
 
 test_that("qgis_session_info yields a list as output", {
-  
   skip_on_appveyor()
   skip_on_travis()
   skip_on_cran()
@@ -33,7 +32,7 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
   test <- grep("qgis:", algs, value = TRUE)
   # normally there are 101 QGIS geoalgorithms, so check if there are more than 
   # 50
-  expect_gt(length(test), 50)
+  expect_that(length(test), 50)
   })
 
 test_that("get_usage yields an output", {

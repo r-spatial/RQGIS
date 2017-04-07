@@ -225,14 +225,16 @@ out <- py_run_string(sprintf("a = processing.runalg(%s)", cmd))$a
 
 # Example 2: several output files
 data("dem")
-params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE,
-                       qgis_env = qgis_env)
+params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
 params$ELEVATION <- dem
 # ok, if the user does not specify tempdir() what happens then??? In load_output
 # we automatically save the file to tempdir(), so we have to account for that
 params$SLOPE <- file.path(tempdir(), "slope.asc")
 params$ASPECT <- file.path(tempdir(), "aspect.asc")
-cmd <- 'a = processing.runalg("saga:slopeaspectcurvature", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/ELEVATION.asc", "0", "0", "0", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/slope.asc", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/aspect.asc", None, None, None, None, None, None, None, None, None, None)'
+library("raster")
+writeRaster(dem, file.path(tempdir(), "dem.asc"), format = "ascii", 
+            prj = TRUE, overwrite = TRUE)
+cmd <- 'a = processing.runalg("saga:slopeaspectcurvature", "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\RtmpI5FuD8/dem.asc", "0", "0", "0", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/slope.asc", "C:/Users/pi37pat/AppData/Local/Temp/Rtmp2NUnNd/aspect.asc", None, None, None, None, None, None, None, None, None, None)'
 out <- py_run_string(cmd)$a
 # here, you can also check if QGIS has produced an output!
 # compare with input
