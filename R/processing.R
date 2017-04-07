@@ -110,9 +110,9 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
         path2 <- 
           as.numeric(regmatches(path[2], gregexpr("[0-9]+", path[2]))[[1]][3])
         
-        # account for 'dev' arg
-        # installations are not constant within path -> depend on which version was installed first/last
-        # hence we have to catch all possibilites
+        # account for 'dev' arg installations are not constant within path ->
+        # depend on which version was installed first/last hence we have to
+        # catch all possibilites
         if (dev == TRUE && path1 > path2) {
           root <- path[1]
         } else if (dev == TRUE && path1 < path2) {
@@ -280,7 +280,7 @@ open_app <- function(qgis_env = set_env()) {
 #'  versions supported by the QGIS installation.}
 #' }
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_to_r py_run_file py_run_string
+#' @importFrom reticulate py_run_string
 #' @export
 #' @examples 
 #' \dontrun{
