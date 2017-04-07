@@ -13,12 +13,15 @@ r_github_packages:
     
 before_install:
     
+    # this will install gdal1 instead of gdal2 when calling after ubuntugis installation (SAGA from source needs gdal1?)
+    - sudo apt-get install -y libgdal-dev libproj-dev 
+    
     # - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
     - sudo add-apt-repository ppa:ubuntugis/ppa --yes
     - sudo apt-get --yes --force-yes update -qq
 
     - sudo apt-get install --yes aptitude # aptitude ensures that dependencies are installed 
-    - sudo aptitude install -y qgis python-qgis qgis-plugin-grass grass libgdal-dev libproj-dev
+    - sudo aptitude install -y qgis python-qgis qgis-plugin-grass grass
     
     # install SAGA 2.2.2 from source
     - cd && wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz && rm saga-2.2.2.tar.gz
