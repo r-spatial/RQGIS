@@ -175,7 +175,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
 #'   API. For more information, refer to [set_env()].
 #' @return The function enables a 'tunnel' to the Python QGIS API.
 #' @author Jannes Muenchow
-#' @importFrom reticulate py_config py_run_string
+#' @importFrom reticulate py_run_string py_run_file
 #' @examples 
 #' \dontrun{
 #' open_app()
@@ -239,8 +239,7 @@ open_app <- function(qgis_env = set_env()) {
   # attach further modules 
   py_file <- system.file("python", "import_setup.py", package = "RQGIS")
   py_run_file(py_file)
-  # attach Barry's capture and our RQGIS class (needed for alglist, algoptions,
-  # alghelp)
+  # attach our RQGIS class (needed for alglist, algoptions, alghelp)
   py_file <- system.file("python", "python_funs.py", package = "RQGIS")
   py_run_file(py_file)
   # initialize our RQGIS class

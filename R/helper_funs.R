@@ -414,6 +414,7 @@ run_ini <- function(qgis_env = set_env()) {
 #' @return The function changes the system settings using [base::Sys.setenv()].
 #' @keywords internal
 #' @author Jannes Muenchow
+#' @importFrom reticulate py_config
 #' @examples 
 #' \dontrun{
 #' setup_linux()
