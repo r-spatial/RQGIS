@@ -13,19 +13,18 @@ r_github_packages:
     
 before_install:
     
-    # install SAGA 2.2.2 from source
-    - cd && wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz && rm saga-2.2.2.tar.gz
-    - sudo apt-get install libwxgtk3.0-dev libtiff5-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
-    - cd saga-2.2.2 && sudo autoreconf -i && ./configure && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-    - cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
-    - cd /home/travis/build/jannes-m/RQGIS
-    
     # - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
     - sudo add-apt-repository ppa:ubuntugis/ppa --yes
     - sudo apt-get --yes --force-yes update -qq
 
     - sudo apt-get install --yes aptitude # aptitude ensures that dependencies are installed 
     - sudo aptitude install -y qgis python-qgis qgis-plugin-grass grass libgdal-dev libproj-dev
+    
+    # install SAGA 2.2.2 from source
+    - cd && wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz && rm saga-2.2.2.tar.gz
+    - sudo apt-get install libwxgtk3.0-dev libtiff5-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
+    - cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+    - cd /home/travis/build/jannes-m/RQGIS
     
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
