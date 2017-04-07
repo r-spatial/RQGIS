@@ -5,25 +5,24 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, params = NULL, check_params = TRUE,
-  load_output = NULL, qgis_env = set_env())
+  load_output = FALSE, qgis_env = set_env())
 }
 \arguments{
-\item{alg}{Name of the GIS function to be used (see
-\code{\link[=find_algorithms]{find_algorithms()}}).}
+\item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
 
 \item{params}{A list of geoalgorithm function arguments that should be used in
-conjunction with the selected (Q)GIS function (see
-\code{\link[=get_args_man]{get_args_man()}}). Please make sure to provide all function
-arguments in the correct order. To make sure this is the case, it is
-recommended to use the convenience function \code{\link[=get_args_man]{get_args_man()}}.}
+conjunction with the selected (Q)GIS function (see \code{\link[=get_args_man]{get_args_man()}}). Please
+make sure to provide all function arguments in the correct order. To make
+sure this is the case, it is recommended to use the convenience function
+\code{\link[=get_args_man]{get_args_man()}}.}
 
 \item{check_params}{If \code{TRUE} (default), it will be checked if all
 geoalgorithm function arguments were provided in the correct order.}
 
-\item{load_output}{Character vector containing paths to (an) output file(s) in
-order to load the QGIS output directly into R (optional). If
-\code{load_output} consists of more than one element, a list will be
-returned. See the example section for more details.}
+\item{load_output}{If \code{TRUE}, all QGIS output files as specified in
+\code{get_args_man} will be loaded directly into R. A list will be returned if
+there is more than one output file (e.g., `grass7:r.slope.aspect). See the
+example section for more details.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
@@ -31,12 +30,11 @@ more information, refer to \code{\link[=set_env]{set_env()}}.}
 \value{
 If not otherwise specified, the function saves the QGIS generated
 output files in a temporary folder. Optionally, function parameter
-\code{load_output} loads spatial QGIS output (vector and raster data) into
-R.
+\code{load_output} loads spatial QGIS output (vector and raster data) into R.
 }
 \description{
-\code{run_qgis} calls QGIS algorithms from within R while passing
-the corresponding function arguments.
+\code{run_qgis} calls QGIS algorithms from within R while passing the
+corresponding function arguments.
 }
 \details{
 This workhorse function calls the QGIS Python API through the command
@@ -45,36 +43,31 @@ line. Specifically, it calls \code{processing.runalg}.
 \note{
 Please note that one can also pass spatial R objects as input parameters
 where suitable (e.g., input layer, input raster). Supported formats are
-\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-,
-\code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-,
-\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and
-\code{\link[raster:raster]{raster::raster()}}-objects. See the example section for more
-details.
+\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-, \code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-,
+\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and \code{\link[raster:raster]{raster::raster()}}-objects. See the
+example section for more details.
 
-GRASS users do not have to specify manually the GRASS region extent (function
-argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
+GRASS users do not have to specify manually the GRASS region extent
+(function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
 automatically retrieve the region extent based on the input layers.
 }
 \examples{
 \dontrun{
-# set the environment
-my_env <- set_env()
 # find out how a function is called
-find_algorithms(search_term = "add", qgis_env = my_env)
+find_algorithms(search_term = "add")
 # specify parameters
-params <- get_args_man("saga:addcoordinatestopoints", qgis_env = my_env)
+params <- get_args_man("saga:addcoordinatestopoints")
 # load random_points - a SpatialPointsDataFrame
 data(random_points, package = "RQGIS")
 params$INPUT <- random_points
 # Here I specify a SpatialPointsDataFrame as input, but one could also
-# specify the path to a spatial object file (e.g., shapefile), e.g.;
+# specify the path to a spatial object stored on disk (e.g., shapefile), e.g.:
 # params$INPUT <- "random_points.shp"
 params$OUTPUT <- "output.shp"
 # Run the QGIS API and load its output into R
 run_qgis(alg = "saga:addcoordinatestopoints",
          params = params,
-         load_output = params$OUTPUT,
-         qgis_env = my_env)
+         load_output = TRUE)
 }
 }
 \author{
