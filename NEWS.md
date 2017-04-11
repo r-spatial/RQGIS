@@ -3,6 +3,7 @@
 * RQGIS now supports QGIS `osgeo4mac` homebrew installations. This is also the recommended installation way from now on as it does not cause irritating error messages like the Kyngchaos QGIS binary. 
 * `set_env` now caches its output, so calling it a second time, will load the cached output.
 * `find_algorithms` now also accepts regular expressions as search term
+* new helper function `get_output_names` used in `run_qgis`
 
 # RQGIS 0.2.0
 
