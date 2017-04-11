@@ -1,13 +1,16 @@
 #' @title Retrieve the environment settings to run QGIS from within R
-#' @description `set_env` tries to find all the paths necessary to run QGIS
-#'   from within R.
-#' @param root Root path to the QGIS-installation. If left empty, the function
-#'   looks for `qgis.bat` on the C: drive under Windows. On a
-#'   Mac, it looks for `QGIS.app` under "Applications" and
-#'   "/usr/local/Cellar/". On Linux, `set_env` assumes that the root path
-#'   is "/usr".
-#' @param ltr If `TRUE`, `set_env` will use the long term release of 
-#'   QGIS, if available (only for Windows).
+#' @description `set_env` tries to find all the paths necessary to run QGIS from
+#'   within R.
+#' @param root Root path to the QGIS-installation. If left empty, the function 
+#'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
+#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
+#'   `set_env` assumes that the root path is "/usr".
+#' @param new When called for the first time in an R session, `set_env` caches 
+#'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
+#'   again. Otherwise, the cached output will be loaded back into R.
+#' @param dev If set to `TRUE`, `set_env` will use the development version of
+#'   QGIS (if available).
+#' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -23,7 +26,20 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, ltr = TRUE) {
+set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
+  
+  dots <- list(...)
+  if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
+    warning("argument 'ltr' is deprecated; please use 'dev' instead.", 
+            call. = FALSE)
+    dev <- FALSE
+  }
+  
+  # load cached qgis_env if possible
+  if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
+    load(file.path(tempdir(), "qgis_env.Rdata"))
+    return(qgis_env)
+  }
   
   if (Sys.info()["sysname"] == "Windows") {
     
@@ -77,15 +93,47 @@ set_env <- function(root = NULL, ltr = TRUE) {
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
+      
       # check for homebrew QGIS installation
-      path <- system("find /usr/local/Cellar/ -name 'QGIS.app'", intern = TRUE)
-      if (length(path) > 0) {
+      path <- system("find /usr/local/Cellar -name 'QGIS.app'", intern = TRUE)
+      
+      if (length(path) == 1) {
         root <- path
       }
+      
+      # check for multiple homebrew installations
+      if (length(path) == 2) {
+        
+        # extract version out of root path
+        path1 <- 
+          as.numeric(regmatches(path[1], gregexpr("[0-9]+", path[1]))[[1]][3])
+        path2 <- 
+          as.numeric(regmatches(path[2], gregexpr("[0-9]+", path[2]))[[1]][3])
+        
+        # account for 'dev' arg installations are not constant within path ->
+        # depend on which version was installed first/last hence we have to
+        # catch all possibilites
+        if (dev == TRUE && path1 > path2) {
+          root <- path[1]
+        } else if (dev == TRUE && path1 < path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 > path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 < path2) {
+          root <- path[1]
+        }
+      }
+      # just in case if someone has more than 2 QGIS homebrew installations
+      # (very unlikely though)
+      if (length(path) > 2) {
+        stop(paste("We recognized more than 2 QGIS homebrew installations on ", 
+                   "your System. Please clean up or set 'set_env()' manually."))
+      }
+      
+      # check for Kyngchaos installation
       if (is.null(root)) {
-        # check for binary QGIS installation
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
-        if(length(path) > 0) {
+        if (length(path) > 0) {
           root <- path
         }
       }
@@ -99,8 +147,24 @@ set_env <- function(root = NULL, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
+  qgis_env <- c(qgis_env, check_apps(root = root, dev = dev))
+  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
+  
+  
+  # write warning if Kyngchaos QGIS for Mac is installed
+  if (any(grepl("/Applications", qgis_env))) {
+    warning(
+      paste0("We recognized that you are using the Kyngchaos QGIS binary.\n",
+             "Please consider installing QGIS from homebrew:", 
+             "'https://github.com/OSGeo/homebrew-osgeo4mac'.",
+             " Run 'vignette(install_guide)' for installation instructions.\n",
+             "The Kyngchaos installation throws some warnings during ", 
+             "processing. However, usage/outcome is not affected and you can ", 
+             "continue using the Kyngchaos installation."))
+  }
+  
   # return your result
-  c(qgis_env, check_apps(root = root, ltr = ltr))
+  qgis_env
 }
 
 #' @title QGIS session info
@@ -854,16 +918,19 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # set the bbox in the case of GRASS functions if it hasn't already been 
   # provided (if there are more of these 3rd-party based specifics, put them in
   # a new function)
+  
+  # find out the argument which correspond to the output names
+  out_names <- get_output_names(alg = alg, qgis_env = qgis_env)
+  out_names <- out_names$outnames
+
+  
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
     
-    # REWRITE-----------------------------------------------------
-    # find out what are the QGIS output values and delete them from the list!!!!
-    # you also need the output values for load_output!!!!
-    
-    # dismiss the last argument since it frequently corresponds to the output if
-    # the output was created before using another CRS, the function might crash
-    ext <- params[-length(params)]
+    # dismiss the output arguments. Not doing so could cause R to crash since 
+    # the output-file might already exist. For instance, the already existing
+    # output might have another CRS.
+    ext <- params[setdiff(names(params), out_names)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
       # We cannot simply use gsub as we have done before (gsub("[.].*",
