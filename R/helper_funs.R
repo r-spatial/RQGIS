@@ -241,16 +241,16 @@ build_py <- function(qgis_env = set_env()) {
 }
 
 #' @title Open the GRASS online help
-#' @description `open_grass_help` opens the GRASS online help for a 
-#'   specific GRASS geoalgorithm.
-#' @param alg The name of the algorithm for which one wishes to retrieve
-#'   arguments and default values.
+#' @description `open_grass_help` opens the GRASS online help for a specific
+#'   GRASS geoalgorithm.
+#' @param alg The name of the GRASS geoalgorithm for which one wishes to open
+#'   the online help.
 #' @keywords internal
 #' @examples 
 #' \dontrun{
 #' open_grass_help("grass7:r.sunmask")
 #' }
-#' @author Jannes Muenchow 
+#' @author Jannes Muenchow
 #' @keywords export
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
@@ -282,3 +282,76 @@ open_grass_help <- function(alg) {
   utils::browseURL(url)
 }
 
+#' @title Get output function argument for a specific  QGIS geoalgorithm
+#' @description The function retrieves the function arguments corresponding to
+#'   the output names for a specific QGIS geoalgorithm.
+#' @param alg The name of the algorithm for which one wishes to retrieve 
+#'   the output arguments.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @keywords internal
+#' @examples 
+#' \dontrun{
+#' get_output_names("grass7:r.slope.aspect")
+#' }
+#' @author Jannes Muenchow
+
+get_output_names <- function(alg, qgis_env = set_env()) {
+  # set the paths
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env = qgis_env)
+  # extend the python command
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "import csv",
+      "from itertools import izip",
+      sprintf("alg = Processing.getAlgorithm('%s')", alg),
+      "params = []",
+      "for out in alg.outputs:",
+      "  params.append(out.name)",
+      "if len(params) is 0:",
+      "  params.append('no output names')",
+      
+      # write the three lists (arguments, defaults, options) to a csv-file
+      paste0("with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+      "  writer = csv.writer(f)",
+      "  writer.writerow(['outnames'])",
+      "  writer.writerows(izip(params))",
+      "  f.close()"
+    )
+  
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
+  cat(py_cmd, file = "py_cmd.py")
+  
+  # build the batch/shell command to run the Python script
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
+  }
+  # put each element on its own line
+  cmd <- paste(cmd, collapse = "\n")
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  # run Python via the command line
+  test <- try(system(batch_call, intern = TRUE))
+  message(test)
+  # retrieve the output
+  utils::read.csv(file.path(tempdir(), "output.csv"), header = TRUE,
+                  stringsAsFactors = FALSE) 
+}
