@@ -311,6 +311,8 @@ get_output_names <- function(alg, qgis_env = set_env()) {
       "import csv",
       "from itertools import izip",
       sprintf("alg = Processing.getAlgorithm('%s')", alg),
+      # not sure if really necessary but just in case...
+      "alg = alg.getCopy()",
       "params = []",
       "for out in alg.outputs:",
       "  params.append(out.name)",
