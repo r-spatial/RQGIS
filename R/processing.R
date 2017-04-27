@@ -7,7 +7,8 @@
 #'   `set_env` assumes that the root path is "/usr".
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
-#'   again. Otherwise, the cached output will be loaded back into R.
+#'   again. Otherwise, the cached output will be loaded back into R even if you
+#'   used new values for function arguments `root` and/or `dev`.
 #' @param dev If set to `TRUE`, `set_env` will use the development version of
 #'   QGIS (if available).
 #' @param ... Currently not in use.
@@ -30,9 +31,11 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   
   dots <- list(...)
   if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
-    warning("argument 'ltr' is deprecated; please use 'dev' instead.", 
+    warning("Function argument 'ltr' is deprecated. Please use 'dev' instead.", 
             call. = FALSE)
-    dev <- FALSE
+    # we have to reverse the specified input, e.g., if ltr = TRUE, then dev 
+    # has to be FALSE
+    dev <- !dots$ltr
   }
   
   # load cached qgis_env if possible
@@ -796,10 +799,10 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'  geoalgorithm function arguments were provided in the correct order.
 #'@param show_msg Logical, if `TRUE`, Python messages that occured during
 #'  the algorithm execution will be shown.
-#'@param load_output Character vector containing paths to (an) output file(s) in
-#'  order to load the QGIS output directly into R (optional). If 
-#'  `load_output` consists of more than one element, a list will be 
-#'  returned. See the example section for more details.
+#'@param load_output If `TRUE`, all QGIS output files as specified in 
+#'  `get_args_man` will be loaded directly into R. A list will be returned if 
+#'  there is more than one output file (e.g., `grass7:r.slope.aspect). See the 
+#'  example section for more details.
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For
 #'  more information, refer to [set_env()].
 #'@details This workhorse function calls the QGIS Python API through the command
@@ -823,7 +826,8 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #' @export
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
-#' @importFrom raster raster
+#' @importFrom raster raster writeRaster extent
+#' @importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
 #' @examples
 #' \dontrun{
 #' # set the environment
@@ -846,7 +850,7 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
 #'          qgis_env = my_env)
 #'}
 run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     show_msg = TRUE, load_output = NULL,
+                     show_msg = TRUE, load_output = FALSE,
                      qgis_env = set_env()) {
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
@@ -898,15 +902,13 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # check if the function argument is a SpatialObject
     if (grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp) && 
         attr(tmp, "package") == "sp") {
-      rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
-                      layer = names(params)[[i]],
-                      driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+      writeOGR(params[[i]], dsn = tmp_dir, layer = names(params)[[i]],
+               driver = "ESRI Shapefile", overwrite_layer = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
-      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
+      writeRaster(params[[i]], filename = fname, format = "ascii", 
                           prj = TRUE, overwrite = TRUE)
       # return the result
       fname
@@ -915,14 +917,23 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   })
   
+  # Find out what the output names are (we will also need them for load_output)
+  out_names <- get_output_names(alg = alg, qgis_env = qgis_env)
+  out_names <- out_names$outnames
+  # if the user has only specified an output filename without a directory path,
+  # make sure that the output will be saved to the temporary R folder (not doing
+  # so could sometimes save the output in the temporary QGIS folder)
+  params[out_names] <- lapply(params[out_names], function(x) {
+    if (basename(x) != "None" && dirname(x) == ".") {
+      file.path(tmp_dir, x)
+    } else {
+      x
+    }
+  })
+  
   # set the bbox in the case of GRASS functions if it hasn't already been 
   # provided (if there are more of these 3rd-party based specifics, put them in
   # a new function)
-  
-  # find out the argument which correspond to the output names
-  out_names <- get_output_names(alg = alg, qgis_env = qgis_env)
-  out_names <- out_names$outnames
-
   
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
@@ -941,22 +952,22 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # but let's use an already existing function
       my_layer <- tools::file_path_sans_ext(basename(as.character(x)))
       # determine bbox in the case of a vector layer
-      tmp <- try(expr = rgdal::ogrInfo(dsn = x, layer = my_layer)$extent,
+      tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
                  silent = TRUE)
       if (!inherits(tmp, "try-error")) {
         # check if this is always this way (xmin, ymin, xmax, ymax...)
-        raster::extent(tmp[c(1, 3, 2, 4)])
+        extent(tmp[c(1, 3, 2, 4)])
       } else {
         # determine bbox in the case of a raster
-        ext <- try(expr = rgdal::GDALinfo(x, returnStats = FALSE),
+        ext <- try(expr = GDALinfo(x, returnStats = FALSE),
                    silent = TRUE)
         # check if it is still an error
         if (!inherits(ext, "try-error")) {
           # xmin, xmax, ymin, ymax
-          raster::extent(c(ext["ll.x"], 
-                           ext["ll.x"] + ext["columns"] * ext["res.x"],
-                           ext["ll.y"],
-                           ext["ll.y"] + ext["rows"] * ext["res.y"]))
+          extent(c(ext["ll.x"], 
+                 ext["ll.x"] + ext["columns"] * ext["res.x"],
+                 ext["ll.y"],
+                 ext["ll.y"] + ext["rows"] * ext["res.y"]))
         } else {
           NA
         }
@@ -1007,34 +1018,35 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     message(msg)
   }
   
-  
   # load output
-  if (!is.null(load_output)) {
-    ls_1 <- lapply(load_output, function(x) {
-      
-      fname <- ifelse(dirname(x) == ".", 
-                      file.path(tmp_dir, x),
-                      x)
-       if (!file.exists(fname)) {
+  if (load_output) {
+    # just keep the output files
+    params_out <- params[out_names]
+    # just keep the files which were actually specified by the user
+    out_files <- params_out[params_out != "None"]
+
+    ls_1 <- lapply(out_files, function(x) {
+      # even if the user only specified an output name without an output
+      # directory, we have made sure above that the output is written to the
+      # temporary folder
+      if (!file.exists(x)) {
         stop("Unfortunately, QGIS did not produce: ", x)
       }
-     
-      test <- try(expr = 
-                    rgdal::readOGR(dsn = dirname(fname),
-                                   layer = gsub("\\..*", "", 
-                                                basename(fname)),
-                                   verbose = FALSE),
-                  silent = TRUE
-      )
+      
+      test <- try(expr = readOGR(dsn = dirname(x),
+                                 layer = gsub("\\..*", "", 
+                                              basename(x)),
+                                 verbose = FALSE),
+                  silent = TRUE)
       
       # stop the function if the output exists but is empty
       if (inherits(test, "try-error") && 
           grepl("no features found", attr(test, "condition"))) {
-        stop("The output-file ", fname, " is empty, i.e. it has no features.")
+        stop("The output-file ", x, " is empty, i.e. it has no features.")
       }
       # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
-        raster::raster(fname)
+        raster(x)
         # well, well, if this doesn't work, you need to do something...
       } else {
         test

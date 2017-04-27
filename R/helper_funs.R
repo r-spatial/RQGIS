@@ -165,7 +165,7 @@ check_apps <- function(root, ...) {
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
-    if (length(dots) > 0 && isTRUE(dots$ltr)) {
+    if (length(dots) > 0 && !dots$dev) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
