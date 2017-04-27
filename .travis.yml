@@ -12,8 +12,9 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      env: R_CODECOV=true
-      env: LTR_Linux=true
+      env: 
+        - R_CODECOV=true
+        - LTR_Linux=true
       #r:
       # - oldrel
       #  - release
