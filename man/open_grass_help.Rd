@@ -7,12 +7,12 @@
 open_grass_help(alg)
 }
 \arguments{
-\item{alg}{The name of the algorithm for which one wishes to retrieve
-arguments and default values.}
+\item{alg}{The name of the GRASS geoalgorithm for which one wishes to open
+the online help.}
 }
 \description{
-\code{open_grass_help} opens the GRASS online help for a
-specific GRASS geoalgorithm.
+\code{open_grass_help} opens the GRASS online help for a specific
+GRASS geoalgorithm.
 }
 \examples{
 \dontrun{

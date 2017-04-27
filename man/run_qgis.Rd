@@ -5,7 +5,7 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, params = NULL, check_params = TRUE,
-  show_msg = TRUE, load_output = NULL, qgis_env = set_env())
+  show_msg = TRUE, load_output = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see
@@ -23,10 +23,10 @@ geoalgorithm function arguments were provided in the correct order.}
 \item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during
 the algorithm execution will be shown.}
 
-\item{load_output}{Character vector containing paths to (an) output file(s) in
-order to load the QGIS output directly into R (optional). If
-\code{load_output} consists of more than one element, a list will be
-returned. See the example section for more details.}
+\item{load_output}{If \code{TRUE}, all QGIS output files as specified in
+\code{get_args_man} will be loaded directly into R. A list will be returned if
+there is more than one output file (e.g., `grass7:r.slope.aspect). See the
+example section for more details.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
