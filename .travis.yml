@@ -2,6 +2,9 @@
 language: r		 
 cache: packages	
 
+# currently travis-ci builds on osx take longer than 50 min. However, we only have 50 min building time
+# on a free-plan -> currently disabling osx-travis tests :( https://github.com/travis-ci/travis-ci/issues/7664#issuecomment-297722415
+
 matrix:
   include:
     # build QGIS LTR on Linux
@@ -25,23 +28,23 @@ matrix:
       #  - oldrel
       #  - release
       #  - devel
-    # build QGIS LTR on macOS
-    - os: osx
-      osx_image: xcode8.3
-      latex: false
-      sudo: required
-      env: LTR_mac=true
-      r:
+    ### build QGIS LTR on macOS
+    #- os: osx
+    #  osx_image: xcode8.3
+    #  latex: false
+    #  sudo: required
+    #  env: LTR_mac=true
+    #  r:
       #  - oldrel
       #  - release
       #  - devel
-    # build QGIS DEV on macOS
-    - os: osx
-      osx_image: xcode8.3
-      latex: false
-      sudo: required
-      env: DEV_mac=true
-      r:
+    ### build QGIS DEV on macOS
+    #- os: osx
+    #  osx_image: xcode8.3
+    #  latex: false
+    #  sudo: required
+    #  env: DEV_mac=true
+    #  r:
       #  - oldrel
       #  - release
       #  - devel
