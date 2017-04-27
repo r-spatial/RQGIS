@@ -9,7 +9,7 @@
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R even if you
 #'   used new values for function arguments `root` and/or `dev`.
-#' @param dev If set to `TRUE`, `set_env` will use the development version of 
+#' @param dev If set to `TRUE`, `set_env` will use the development version of
 #'   QGIS (if available).
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
@@ -31,9 +31,11 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   
   dots <- list(...)
   if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
-    warning("argument 'ltr' is deprecated; please use 'dev' instead.", 
+    warning("Function argument 'ltr' is deprecated. Please use 'dev' instead.", 
             call. = FALSE)
-    dev <- FALSE
+    # we have to reverse the specified input, e.g., if ltr = TRUE, then dev 
+    # has to be FALSE
+    dev <- !isTRUE(dots$ltr)
   }
   
   # load cached qgis_env if possible
@@ -101,7 +103,6 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       if (length(path) == 1) {
         root <- path
       }
-        
       # check for multiple homebrew installations
       if (length(path) == 2) {
         
@@ -156,12 +157,12 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   if (any(grepl("/Applications", qgis_env))) {
     warning(
       paste0("We recognized that you are using the Kyngchaos QGIS binary.\n",
-      "Please consider installing QGIS from homebrew:", 
-      "'https://github.com/OSGeo/homebrew-osgeo4mac'.",
-      " Run 'vignette(install_guide)' for installation instructions.\n",
-      "The Kyngchaos installation throws some warnings during processing.",
-      " However, usage/outcome is not affected and you can continue using the", 
-      "Kyngchaos installation."))
+             "Please consider installing QGIS from homebrew:", 
+             "'https://github.com/OSGeo/homebrew-osgeo4mac'.",
+             " Run 'vignette(install_guide)' for installation instructions.\n",
+             "The Kyngchaos installation throws some warnings during ", 
+             "processing. However, usage/outcome is not affected and you can ", 
+             "continue using the Kyngchaos installation."))
   }
   
   # return your result
@@ -247,7 +248,6 @@ open_app <- function(qgis_env = set_env()) {
   py_run_string("RQGIS = RQGIS()")
 }
 
-
 #' @title QGIS session info
 #' @description `qgis_session_info` reports the version of QGIS and
 #'   installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
@@ -303,14 +303,14 @@ qgis_session_info <- function(qgis_env = set_env()) {
     if (length(my_grass) > 0) {
       install <- lapply(seq(length(my_grass)), function(i) {
         cmd <- grep(readLines(my_grass), pattern = "cmd_name = \"", 
-                value = TRUE)
+                    value = TRUE)
         cmd <- substr(cmd, gregexpr(pattern = "\"", cmd)[[1]][1] + 
-                    1, nchar(cmd) - 1)
-        })
+                        1, nchar(cmd) - 1)
+      })
     }
     out$grass7 <- grep("7", unlist(install), value = TRUE)
   }
-    
+  
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(my_session_info)\nexcept:\  pass")
@@ -370,7 +370,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
     algs <- gsub('\\\\|"', "", algs)
   }
   algs <- algs[algs != ""]
-
+  
   # use regular expressions to query all available algorithms
   if (!is.null(search_term)) {
     algs <- grep(search_term, algs, value = TRUE)
@@ -393,7 +393,6 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   
   # return your result
   algs
-
 }
 
 
@@ -598,7 +597,7 @@ get_args_man <- function(alg = "", options = FALSE,
 #'  `get_args_man` will be loaded directly into R. A list will be returned if 
 #'  there is more than one output file (e.g., `grass7:r.slope.aspect). See the 
 #'  example section for more details.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
+#'@param qgis_env Environment containing all the paths to run the QGIS API. For
 #'  more information, refer to [set_env()].
 #'@details This workhorse function calls the QGIS Python API through the command
 #'  line. Specifically, it calls `processing.runalg`.
@@ -611,16 +610,16 @@ get_args_man <- function(alg = "", options = FALSE,
 #'  [sp::SpatialPolygonsDataFrame()]- and [raster::raster()]-objects. See the 
 #'  example section for more details.
 #'  
-#'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will 
+#'  GRASS users do not have to specify manually the GRASS region extent
+#'  (function argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will
 #'  automatically retrieve the region extent based on the input layers.
-#'@author Jannes Muenchow, Victor Olaya, QGIS core team
-#'@export
-#'@importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
-#'@importFrom sp SpatialLinesDataFrame
-#'@importFrom raster raster
-#'@importFrom reticulate py_run_string
-#'@importFrom rgdal readOGR writeOGR
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
+#' @importFrom sp SpatialLinesDataFrame
+#' @importFrom raster raster writeRaster extent
+#' @importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
+#' @importFrom reticulate py_run_string
 #' @examples
 #' \dontrun{
 #' # find out how a function is called
@@ -649,6 +648,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
     qgis_session_info(qgis_env)
   }
+
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -703,15 +703,13 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       suppressWarnings(
         file.remove(list.files(path = tmp_dir, pattern = names(params)[[i]], 
                                full.names = TRUE)))
-      rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
-                      layer = names(params)[[i]],
-                      driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+      writeOGR(params[[i]], dsn = tmp_dir, layer = names(params)[[i]],
+               driver = "ESRI Shapefile", overwrite_layer = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
-      raster::writeRaster(params[[i]], filename = fname, format = "ascii", 
+      writeRaster(params[[i]], filename = fname, format = "ascii", 
                           prj = TRUE, overwrite = TRUE)
       # return the result
       fname
@@ -727,7 +725,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(out_names)\nexcept:\  pass")  
-  
+
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
   # so could sometimes save the output in the temporary QGIS folder)
@@ -760,22 +758,22 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # but let's use an already existing function
       my_layer <- tools::file_path_sans_ext(basename(as.character(x)))
       # determine bbox in the case of a vector layer
-      tmp <- try(expr = rgdal::ogrInfo(dsn = x, layer = my_layer)$extent,
+      tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
                  silent = TRUE)
       if (!inherits(tmp, "try-error")) {
         # check if this is always this way (xmin, ymin, xmax, ymax...)
-        raster::extent(tmp[c(1, 3, 2, 4)])
+        extent(tmp[c(1, 3, 2, 4)])
       } else {
         # determine bbox in the case of a raster
-        ext <- try(expr = rgdal::GDALinfo(x, returnStats = FALSE),
+        ext <- try(expr = GDALinfo(x, returnStats = FALSE),
                    silent = TRUE)
         # check if it is still an error
         if (!inherits(ext, "try-error")) {
           # xmin, xmax, ymin, ymax
-          raster::extent(c(ext["ll.x"], 
-                           ext["ll.x"] + ext["columns"] * ext["res.x"],
-                           ext["ll.y"],
-                           ext["ll.y"] + ext["rows"] * ext["res.y"]))
+          extent(c(ext["ll.x"], 
+                   ext["ll.x"] + ext["columns"] * ext["res.x"],
+                   ext["ll.y"],
+                   ext["ll.y"] + ext["rows"] * ext["res.y"]))
         } else {
           NA
         }
@@ -789,6 +787,9 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # final bounding box in GRASS notation
     params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
   }
+  
+  
+  
   
   # run QGIS
   
@@ -817,13 +818,10 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   
   # load output
   if (load_output) {
-    # find out which of the output files where specified by the user
-    params_inp <- normalizePath(unlist(params[out_names]), mustWork = FALSE)
-    # ordering QGIS output files in accordance with the order in params
-    params_out <- normalizePath(unlist(res[out_names]), mustWork = FALSE)
+    # just keep the output files
+    params_out <- params[out_names]
     # just keep the files which were actually specified by the user
-    out_files <- params_out[params_out == params_inp]
-    
+    out_files <- params_out[params_out != "None"]
     ls_1 <- lapply(out_files, function(x) {
       # even if the user only specified an output name without an output
       # directory, we have made sure above that the output is written to the
@@ -845,7 +843,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       }
       # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
-        raster::raster(x)
+        raster(x)
         # well, well, if this doesn't work, you need to do something...
       } else {
         test
@@ -859,5 +857,3 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   }
 }
-
-

@@ -10,14 +10,14 @@
   * `set_env()` now caches its output, so calling it a second time, will load the cached output. 
   
   * When having multiple homebrew installations on mac (LTR and dev), the user can select which one to use with the `dev` argument in `set_env()`. Default uses the LTR version.
+  
+  * `find_algorithms` now also accepts regular expressions as search term
+  
+  * new helper function `get_output_names` used in `run_qgis`
 
 ## Miscellaneous
 
   * Added new tests.
-  
-  
-  
-  
 
 # RQGIS 0.2.0
 
@@ -54,10 +54,6 @@
   * bug fix: There was a problem when using QGIS/Grass on a MacOS. Deleting one bash statement (`paste0("export PATH='", qgis_env$root, "/Contents/MacOS/bin:$PATH'"))`) solved the problem.
   
   * bug fix: `qgis_session_info` now also runs on MacOS (#34)
-
-
-
-
 
 # RQGIS 0.1.0
 
