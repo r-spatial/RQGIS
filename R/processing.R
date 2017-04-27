@@ -7,8 +7,9 @@
 #'   `set_env` assumes that the root path is "/usr".
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
-#'   again. Otherwise, the cached output will be loaded back into R.
-#' @param dev If set to `TRUE`, `set_env` will use the development version of
+#'   again. Otherwise, the cached output will be loaded back into R even if you
+#'   used new values for function arguments `root` and/or `dev`.
+#' @param dev If set to `TRUE`, `set_env` will use the development version of 
 #'   QGIS (if available).
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
@@ -719,17 +720,28 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   })
   
-  # set the bbox in the case of GRASS functions if it hasn't already been 
-  # provided (if there are more of these 3rd-party based specifics, put them in
-  # a new function)
-  
-  # first, find out what the output names are
+  # Find out what the output names are (we will also need them for load_output)
   out_names <- 
     py_run_string(
       sprintf("out_names = RQGIS.get_output_names('%s')", alg))$out_names
   # clean up after yourself!!
   py_run_string(
-    "try:\n  del(out_names)\nexcept:\  pass")
+    "try:\n  del(out_names)\nexcept:\  pass")  
+  
+  # if the user has only specified an output filename without a directory path,
+  # make sure that the output will be saved to the temporary R folder (not doing
+  # so could sometimes save the output in the temporary QGIS folder)
+  params[out_names] <- lapply(params[out_names], function(x) {
+    if (basename(x) != "None" && dirname(x) == ".") {
+      file.path(tmp_dir, x)
+    } else {
+      x
+    }
+  })
+  
+  # set the bbox in the case of GRASS functions if it hasn't already been 
+  # provided (if there are more of these 3rd-party based specifics, put them in
+  # a new function)
   
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
@@ -737,7 +749,7 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # dismiss the output arguments. Not doing so could cause R to crash since 
     # the output-file might already exist. For instance, the already existing
     # output might have another CRS.
-    ext <-params[setdiff(names(params), out_names)]
+    ext <- params[setdiff(names(params), out_names)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
       # We cannot simply use gsub as we have done before (gsub("[.].*",
@@ -797,41 +809,43 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
   # add the  algorithm name
   args <- paste0(paste(start, args, sep = ", "))
   # finally, put the QGIS Python function in front of our arguments
-  cmd <- paste0("res = processing.runalg(", args, ")")
+  cmd <- sprintf("res = processing.runalg(%s)", args)
   
   # run QGIS
-  res = py_run_string(cmd)$res
+  res <- py_run_string(cmd)$res
+  # res contains all the output paths of the files created by QGIS
   
   # load output
   if (load_output) {
-    int <- intersect(names(params), names(res))
-    params_inp <- normalizePath(unlist(params[int]), mustWork = FALSE)
-    params_out <- normalizePath(unlist(res[int]), mustWork = FALSE)
+    # find out which of the output files where specified by the user
+    params_inp <- normalizePath(unlist(params[out_names]), mustWork = FALSE)
+    # ordering QGIS output files in accordance with the order in params
+    params_out <- normalizePath(unlist(res[out_names]), mustWork = FALSE)
+    # just keep the files which were actually specified by the user
     out_files <- params_out[params_out == params_inp]
     
     ls_1 <- lapply(out_files, function(x) {
-      
-      fname <- ifelse(dirname(x) == ".", 
-                      file.path(tmp_dir, x),
-                      x)
-      if (!file.exists(fname)) {
+      # even if the user only specified an output name without an output
+      # directory, we have made sure above that the output is written to the
+      # temporary folder
+      if (!file.exists(x)) {
         stop("Unfortunately, QGIS did not produce: ", x)
       }
       
-      test <- try(expr = readOGR(dsn = dirname(fname),
+      test <- try(expr = readOGR(dsn = dirname(x),
                                  layer = gsub("\\..*", "", 
-                                              basename(fname)),
+                                              basename(x)),
                                  verbose = FALSE),
                   silent = TRUE)
       
       # stop the function if the output exists but is empty
       if (inherits(test, "try-error") && 
           grepl("no features found", attr(test, "condition"))) {
-        stop("The output-file ", fname, " is empty, i.e. it has no features.")
+        stop("The output-file ", x, " is empty, i.e. it has no features.")
       }
       # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
-        raster::raster(fname)
+        raster::raster(x)
         # well, well, if this doesn't work, you need to do something...
       } else {
         test
