@@ -1,5 +1,3 @@
-library("testthat")
-library("RQGIS")
 library("sp")
 library("raster")
 
@@ -81,7 +79,7 @@ if (Sys.info()["sysname"] == "Windows") {
     # skip_if_no_python can be found under: 
     # rstudio/reticulate/blob/master/tests/testthat/utils.R
     
-    qgis_env <- set_env(ltr = FALSE)
+    qgis_env <- set_env(dev = TRUE, new = TRUE)
     info <- qgis_session_info()
     # check if the output is a list of length 5
     expect_that(str(info), prints_text("List of 5"))
@@ -94,7 +92,7 @@ if (Sys.info()["sysname"] == "Windows") {
     testthat::skip_on_cran()
     # skip_if_no_python() 
     
-    qgis_env <- set_env(ltr = FALSE)
+    qgis_env <- set_env(dev = TRUE, new = TRUE)
     algs <- find_algorithms()
     # just retrieve QGIS geoalgorithms
     test <- grep("qgis:", algs, value = TRUE)
@@ -110,7 +108,7 @@ if (Sys.info()["sysname"] == "Windows") {
     testthat::skip_on_cran()
     # skip_if_no_python()
     
-    qgis_env <- set_env(ltr = FALSE)
+    qgis_env <- set_env(dev = TRUE, new = TRUE)
     # get the usage of v.voronoi (intern: you have to change that for reticulate)
     usage <- get_usage("grass7:v.voronoi", intern = TRUE)
     expect_match(paste(usage, collapse = "\n"), "ALGORITHM: v.voronoi")
@@ -123,7 +121,7 @@ if (Sys.info()["sysname"] == "Windows") {
     testthat::skip_on_cran()
     # skip_if_no_python()
     
-    qgis_env <- set_env(ltr = FALSE) 
+    qgis_env <- set_env(dev = TRUE, new = TRUE) 
     # write a test for get_options
     opts <- get_options("grass7:r.slope.aspect",  
                         intern = TRUE)  # intern has to be deleted with reticulate
