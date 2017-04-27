@@ -9,7 +9,11 @@
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R even if you
 #'   used new values for function arguments `root` and/or `dev`.
+<<<<<<< HEAD
 #' @param dev If set to `TRUE`, `set_env` will use the development version of
+=======
+#' @param dev If set to `TRUE`, `set_env` will use the development version of 
+>>>>>>> f36af07fe9ffbd10cc02e08291d31c4af36d9d4e
 #'   QGIS (if available).
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
@@ -103,7 +107,8 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       if (length(path) == 1) {
         root <- path
       }
-      # check for multiple homebrew installations
+
+            # check for multiple homebrew installations
       if (length(path) == 2) {
         
         # extract version out of root path
@@ -163,7 +168,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
              "The Kyngchaos installation throws some warnings during ", 
              "processing. However, usage/outcome is not affected and you can ", 
              "continue using the Kyngchaos installation."))
-  }
+    }
   
   # return your result
   qgis_env
