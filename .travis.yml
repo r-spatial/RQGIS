@@ -29,21 +29,21 @@ matrix:
       #  - release
       #  - devel
     ### build QGIS LTR on macOS
-    #- os: osx
-    #  osx_image: xcode8.3
-    #  latex: false
-    #  sudo: required
-    #  env: LTR_mac=true
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: LTR_mac=true
     #  r:
       #  - oldrel
       #  - release
       #  - devel
     ### build QGIS DEV on macOS
-    #- os: osx
-    #  osx_image: xcode8.3
-    #  latex: false
-    #  sudo: required
-    #  env: DEV_mac=true
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: DEV_mac=true
     #  r:
       #  - oldrel
       #  - release
@@ -99,8 +99,8 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
-  - if [[ "${LTR_mac}" ]]; then travis_wait 100 brew install -v qgis2-ltr --with-saga-gis -with-grass; fi
-  - if [[ "${DEV_mac}" ]]; then travis_wait 100 brew install -v qgis2 --with-saga-gis -with-grass; fi
+  - if [[ "${LTR_mac}" ]]; then brew install saga-gis && brew install grass7 && brew install qgis2-ltr ; fi
+  - if [[ "${DEV_mac}" ]]; then brew install saga-gis && brew install grass7 && brew install qgis2; fi
     
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
