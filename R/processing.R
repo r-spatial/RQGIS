@@ -668,6 +668,13 @@ run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
     qgis_session_info(qgis_env)
   }
 
+  if (!missing(show_msg)) {
+    warning(paste("Argument show_msg is deprecated; please do not use it", 
+                  "any longer. run_qgis now always return any Python (error)", 
+                  "output"), 
+            call. = FALSE)
+  }
+  
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -701,7 +708,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
       writeRaster(params[[i]], filename = fname, format = "ascii", 
-                          prj = TRUE, overwrite = TRUE)
+                  prj = TRUE, overwrite = TRUE)
       # return the result
       fname
     } else {
@@ -803,7 +810,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
   # run QGIS
   res <- py_run_string(cmd)$res
   # res contains all the output paths of the files created by QGIS
-  
+
   # load output
   if (load_output) {
     # just keep the output files
