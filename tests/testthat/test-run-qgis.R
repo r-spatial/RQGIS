@@ -39,6 +39,14 @@ test_that("Test, if QGIS-algorithms are working?", {
   
   # check if the output is spatial object
   expect_is(out, "SpatialPointsDataFrame")
+  
+  # now use ...-notation
+  out <- run_qgis(alg = "qgis:polygoncentroids",
+                  INPUT_LAYER = polys,
+                  OUTPUT_LAYER = "coords.shp",
+                  load_output = TRUE)
+  # check if the output is spatial object
+  expect_is(out, "SpatialPointsDataFrame")
   })
 
 
@@ -56,6 +64,13 @@ test_that("Test, if SAGA-algorithms are working?", {
   params$ELEVATION <- dem
   params$SLOPE <- file.path(tempdir(), "slope.asc")
   out <- run_qgis("saga:slopeaspectcurvature", params = params, 
+                  load_output = TRUE)
+  # check if the output is a raster
+  expect_is(out, "RasterLayer")
+  # now use ...-notation
+  out <- run_qgis("saga:slopeaspectcurvature", 
+                  ELEVATION = dem,
+                  SLOPE = "slope.asc",
                   load_output = TRUE)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
@@ -77,6 +92,13 @@ test_that("Test, if GRASS7-algorithms are working?", {
   params$elevation <- dem
   params$slope <- file.path(tempdir(), "slope.asc")
   out <- run_qgis("grass7:r.slope.aspect", params = params, 
+                  load_output = TRUE)
+  # check if the output is a raster
+  expect_is(out, "RasterLayer")
+  # now use ...-notation
+  out <- run_qgis("grass7:r.slope.aspect", 
+                  elevation = dem,
+                  slope = "slope.asc",
                   load_output = TRUE)
   # check if the output is a raster
   expect_is(out, "RasterLayer")

@@ -4,11 +4,14 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(alg = NULL, params = NULL, check_params = TRUE,
+run_qgis(alg = NULL, ..., params = NULL, check_params = TRUE,
   show_msg = TRUE, load_output = FALSE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
+
+\item{...}{Triple dots can be used to specify QGIS geoalgorithm arguments as
+R named arguments. For more details, please refer to \code{\link[=pass_args]{pass_args()}}.}
 
 \item{params}{Parameter argument list for a specific geoalgorithm, see
 \code{\link[=get_args_man]{get_args_man()}} for more details. Please note that you can either specify
@@ -29,9 +32,6 @@ details.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
-
-\item{...}{Triple dots can be used to specify QGIS geoalgorithm arguments as
-R named arguments. For more details, please refer to \code{\link[=pass_args]{pass_args()}}.}
 }
 \value{
 If not otherwise specified, the function saves the QGIS generated
@@ -72,8 +72,8 @@ slope <- run_qgis(alg, elevation = dem, slope = "slope.asc",
                   load_output = TRUE)
 # 2. doing the same with a parameter argument list
 params <- get_args_man(alg)
-params$elevation = dem
-params$slope = "slope.asc"
+params$elevation <- dem
+params$slope <- "slope.asc"
 slope <- run_qgis(alg, params = params, load_output = TRUE)
 # 3. calculate the slope, the aspect and the pcurvature. 
 terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
