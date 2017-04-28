@@ -630,7 +630,6 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
          sprintf("'%s'", alg), " allows following function arguments: ",
          paste(sprintf("'%s'", names(params_all)), collapse = ", "))
     }
-  
   # if function arguments are missing, use the default
   ind <- setdiff(names(params_all), names(params))
   if (length(ind) > 0) {
@@ -645,3 +644,4 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # return your result
   params
 }
+
