@@ -22,6 +22,9 @@ please refer to \code{\link[=pass_args]{pass_args()}}.}
 \item{check_params}{If \code{TRUE} (default), it will be checked if all
 geoalgorithm function arguments were provided in the correct order.}
 
+\item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during the
+algorithm execution will be shown.}
+
 \item{load_output}{If \code{TRUE}, all calculated QGIS output files will be loaded
 directly into R. A list will be returned if there is more than one output
 file (e.g., \code{grass7:r.slope.aspect}). See the example section for more
