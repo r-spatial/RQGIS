@@ -862,6 +862,13 @@ run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
             call. = FALSE)
   }
   
+  if (!missing(show_msg)) {
+    warning(paste("Argument show_msg is deprecated; please do not use it", 
+                  "any longer. run_qgis now always return any Python (error)", 
+                  "output"), 
+            call. = FALSE)
+  }
+  
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -996,7 +1003,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
     stop(msg)
   }
   # if a message was produced, show it in the console
-  if (show_msg && length(msg) > 0 && !identical(msg, tempdir())) {
+  if (length(msg) > 0 && !identical(msg, tempdir())) {
     message(msg)
   }
   
