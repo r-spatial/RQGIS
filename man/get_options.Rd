@@ -10,7 +10,7 @@ get_options(alg = "", intern = FALSE, qgis_env = set_env())
 \item{alg}{Name of the GIS function for which options should be returned.}
 
 \item{intern}{Logical, if \code{TRUE} the function captures the command line
-output as an \code{R} character vector\code{. If}FALSE`, the default, the ouptut is
+output as an \code{R} character vector. If \code{FALSE}, the default, the ouptut is
 printed to the console in a pretty way.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
