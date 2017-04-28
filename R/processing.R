@@ -439,7 +439,7 @@ get_usage <- function(alg = NULL, intern = FALSE,
 #'   required GIS function.
 #' @param alg Name of the GIS function for which options should be returned.
 #' @param intern Logical, if `TRUE` the function captures the command line 
-#'   output as an `R` character vector`. If `FALSE`, the default, the ouptut is
+#'   output as an `R` character vector. If `FALSE`, the default, the ouptut is
 #'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
