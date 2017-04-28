@@ -600,6 +600,8 @@ get_args_man <- function(alg = "", options = FALSE,
 #'   details.
 #' @param check_params If `TRUE` (default), it will be checked if all 
 #'   geoalgorithm function arguments were provided in the correct order.
+#' @param show_msg Logical, if `TRUE`, Python messages that occured during the
+#'   algorithm execution will be shown.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
 #' @details This workhorse function calls the QGIS Python API. Specifically, it 
