@@ -2,6 +2,9 @@
 language: r		 
 cache: packages	
 
+# currently travis-ci builds on osx take longer than 50 min. However, we only have 50 min building time
+# on a free-plan -> currently disabling osx-travis tests :( https://github.com/travis-ci/travis-ci/issues/7664#issuecomment-297722415
+
 matrix:
   include:
     # build QGIS LTR on Linux
@@ -9,8 +12,9 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      env: R_CODECOV=true
-      env: LTR_Linux=true
+      env: 
+        - R_CODECOV=true
+        - LTR_Linux=true
       #r:
       # - oldrel
       #  - release
@@ -25,23 +29,23 @@ matrix:
       #  - oldrel
       #  - release
       #  - devel
-    # build QGIS LTR on macOS
+    ### build QGIS LTR on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
       env: LTR_mac=true
-      r:
+    #  r:
       #  - oldrel
       #  - release
       #  - devel
-    # build QGIS DEV on macOS
+    ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
       env: DEV_mac=true
-      r:
+    #  r:
       #  - oldrel
       #  - release
       #  - devel
@@ -96,13 +100,14 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
-  - if [[ "${LTR_mac}" ]]; then travis_wait 100 brew install -v qgis2-ltr --with-saga-gis -with-grass; fi
-  - if [[ "${DEV_mac}" ]]; then travis_wait 100 brew install -v qgis2 --with-saga-gis -with-grass; fi
+  - if [[ "${LTR_mac}" ]]; then travis_wait 30 brew install saga-gis && brew install grass7 && brew install qgis2-ltr ; fi
+  - if [[ "${DEV_mac}" ]]; then travis_wait 30 brew install saga-gis && brew install grass7 && brew install qgis2; fi
     
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then /etc/init.d/xvfb start; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
   - sleep 3 # give xvfb some time to start
   
 notifications:
