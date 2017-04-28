@@ -258,8 +258,9 @@ out_files <- params[int]
 # link2GI--------------------------------------------------
 #**********************************************************
 # get meuse data as sp object
+# devtools::install_github("gisma/link2GI")
 library(link2GI)
-require(sp)
+library("sp")
 data(meuse) 
 coordinates(meuse) <- ~x+y 
 proj4string(meuse) <-CRS("+init=epsg:28992") 
