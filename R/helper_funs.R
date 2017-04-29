@@ -157,7 +157,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
 #' check_apps()
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-#' @export
+
 check_apps <- function(root, ...) { 
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -165,7 +165,7 @@ check_apps <- function(root, ...) {
     my_qgis <- grep("qgis", dir(path_apps), value = TRUE)
     # use the LTR (default), if available
     dots <- list(...)
-    if (length(dots) > 0 && isTRUE(dots$ltr)) {
+    if (length(dots) > 0 && !dots$dev) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])  
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
@@ -199,7 +199,7 @@ check_apps <- function(root, ...) {
   names(out) <- c("qgis_prefix_path", "python_plugins")
   # return your result
   out
-  }
+}
 
 #' @title Little helper function to construct the Python-skeleton
 #' @description This helper function simply constructs the Python-skeleton 
@@ -280,16 +280,16 @@ build_py <- function(qgis_env = set_env()) {
 }
 
 #' @title Open the GRASS online help
-#' @description `open_grass_help` opens the GRASS online help for a 
-#'   specific GRASS geoalgorithm.
-#' @param alg The name of the algorithm for which one wishes to retrieve
-#'   arguments and default values.
+#' @description `open_grass_help` opens the GRASS online help for a specific
+#'   GRASS geoalgorithm.
+#' @param alg The name of the GRASS geoalgorithm for which one wishes to open
+#'   the online help.
 #' @keywords internal
 #' @examples 
 #' \dontrun{
 #' open_grass_help("grass7:r.sunmask")
 #' }
-#' @author Jannes Muenchow 
+#' @author Jannes Muenchow
 #' @keywords export
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
@@ -321,3 +321,155 @@ open_grass_help <- function(alg) {
   utils::browseURL(url)
 }
 
+#' @title Get output function argument for a specific  QGIS geoalgorithm
+#' @description The function retrieves the function arguments corresponding to
+#'   the output names for a specific QGIS geoalgorithm.
+#' @param alg The name of the algorithm for which one wishes to retrieve 
+#'   the output arguments.
+#' @param qgis_env Environment settings containing all the paths to run the QGIS
+#'   API. For more information, refer to [set_env()].
+#' @keywords internal
+#' @examples 
+#' \dontrun{
+#' get_output_names("grass7:r.slope.aspect")
+#' }
+#' @author Jannes Muenchow
+
+get_output_names <- function(alg, qgis_env = set_env()) {
+  # set the paths
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  tmp_dir <- tempdir()
+  setwd(tmp_dir)
+  
+  # build the raw scripts
+  cmds <- build_cmds(qgis_env = qgis_env)
+  # extend the python command
+  py_cmd <- 
+    c(cmds$py_cmd,
+      "import csv",
+      "from itertools import izip",
+      sprintf("alg = Processing.getAlgorithm('%s')", alg),
+      # not sure if really necessary but just in case...
+      "alg = alg.getCopy()",
+      "params = []",
+      "for out in alg.outputs:",
+      "  params.append(out.name)",
+      "if len(params) is 0:",
+      "  params.append('no output names')",
+      
+      # write the three lists (arguments, defaults, options) to a csv-file
+      paste0("with open('", tmp_dir, "\\output.csv'", ", 'wb') as f:"),
+      "  writer = csv.writer(f)",
+      "  writer.writerow(['outnames'])",
+      "  writer.writerows(izip(params))",
+      "  f.close()"
+    )
+  
+  py_cmd <- paste(py_cmd, collapse = "\n")
+  # harmonize slashes
+  py_cmd <- gsub("\\\\", "/", py_cmd)
+  py_cmd <- gsub("//", "/", py_cmd)
+  # save the Python script
+  cat(py_cmd, file = "py_cmd.py")
+  
+  # build the batch/shell command to run the Python script
+  if (Sys.info()["sysname"] == "Windows") {
+    cmd <- c(cmds$cmd, "python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.cmd"
+    batch_call <- f_name
+  } else {
+    cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
+    # filename
+    f_name <- "batch_cmd.sh"
+    batch_call <- "sh batch_cmd.sh"
+  }
+  # put each element on its own line
+  cmd <- paste(cmd, collapse = "\n")
+  # save the batch file to the temporary location
+  cat(cmd, file = f_name)
+  # run Python via the command line
+  test <- try(system(batch_call, intern = TRUE))
+  message(test)
+  # retrieve the output
+  utils::read.csv(file.path(tempdir(), "output.csv"), header = TRUE,
+                  stringsAsFactors = FALSE) 
+}
+
+#' @title Helper function to specify QGIS geoalgorithm parameters the R way
+#' @description The function lets the user specify QGIS geoalgorithm parameters 
+#'   as R named arguments. When omitting required parameters, defaults will be 
+#'   used if available as derived from [get_args_man()].
+#' @param alg The name of the geoalgorithm to use.
+#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as 
+#'   R named arguments.
+#' @param params Parameter argument list for a specific geoalgorithm, see 
+#'   [get_args_man()] for more details. Please note that you can either specify 
+#'   R arguments directly via the triple dots (see above) or via the parameter 
+#'   argument list. However, you may not mix the two methods.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to [set_env()].
+#' @return The function returns the complete parameter argument list for a given
+#'   QGIS geoalgorithm. The parameters are ordered as expected by the QGIS API.
+#'   The list is constructed with the help of [get_args_man()] while considering
+#'   the R named arguments or the `params`-parameter specified by the user as
+#'   additional input.
+#' @note The function was inspired by [rgrass7::doGRASS()].
+#' @author Jannes Muenchow
+#' @export
+#' @examples
+#' \dontrun{
+#' data(dem, package = "RQGIS")
+#' get_usage("grass7:r.slope.aspect")
+#' # 1. using R named arguments
+#' pass_args("grass7:r.slope.aspect", elevation = dem, 
+#'           slope = file.path(tempdir(), "slope.asc"))
+#' # 2. doing the same with a parameter argument list
+#' pass_args("grass7:r.slope.aspect", 
+#'           params = list(elevation = dem, 
+#'                         slope = file.path(tempdir(), "slope.asc")))
+#' }
+
+pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
+  dots <- list(...)
+  if (!is.null(params) && (length(dots) > 0))
+    stop(paste("Use either QGIS parameters as R arguments,",
+               "or as a parameter argument list object, but not both"))
+  if (length(dots) > 0) {
+    params <- dots
+  }
+  
+  dups <- duplicated(names(params))
+  if (any(dups)) {
+    stop("You have specified following parameter(s) more than once: ",
+         paste(names(params)[dups], collapse = ", "))
+  }
+  
+  # collect all the function arguments and respective default values for the
+  # specified geoalgorithm
+  params_all <- get_args_man(alg, options = TRUE)
+  
+  # check if there are too few/many function arguments
+  ind <- setdiff(names(params), names(params_all))
+  if (length(ind) > 0) {
+    stop(paste(sprintf("'%s'", ind), collapse = ", "), 
+         " is/are (an) invalid function argument(s). \n\n",
+         sprintf("'%s'", alg), " allows following function arguments: ",
+         paste(sprintf("'%s'", names(params_all)), collapse = ", "))
+  }
+  
+  # if function arguments are missing, use the default
+  ind <- setdiff(names(params_all), names(params))
+  if (length(ind) > 0) {
+    params_2 <- params_all
+    params_2[names(params)] <- params
+    params <- params_2
+    rm(params_2)
+  }
+  
+  # make sure function arguments are in the correct order
+  params <- params[names(params_all)]
+  # return your result
+  params
+}

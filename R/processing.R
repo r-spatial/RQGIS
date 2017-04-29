@@ -1,13 +1,17 @@
 #' @title Retrieve the environment settings to run QGIS from within R
-#' @description `set_env` tries to find all the paths necessary to run QGIS
-#'   from within R.
-#' @param root Root path to the QGIS-installation. If left empty, the function
-#'   looks for `qgis.bat` on the C: drive under Windows. On a
-#'   Mac, it looks for `QGIS.app` under "Applications" and
-#'   "/usr/local/Cellar/". On Linux, `set_env` assumes that the root path
-#'   is "/usr".
-#' @param ltr If `TRUE`, `set_env` will use the long term release of 
-#'   QGIS, if available (only for Windows).
+#' @description `set_env` tries to find all the paths necessary to run QGIS from
+#'   within R.
+#' @param root Root path to the QGIS-installation. If left empty, the function 
+#'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
+#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
+#'   `set_env` assumes that the root path is "/usr".
+#' @param new When called for the first time in an R session, `set_env` caches 
+#'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
+#'   again. Otherwise, the cached output will be loaded back into R even if you
+#'   used new values for function arguments `root` and/or `dev`.
+#' @param dev If set to `TRUE`, `set_env` will use the development version of
+#'   QGIS (if available).
+#' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
 #'   path to the Python plugins.
@@ -23,8 +27,23 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, ltr = TRUE) {
-
+set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
+  
+  dots <- list(...)
+  if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
+    warning("Function argument 'ltr' is deprecated. Please use 'dev' instead.", 
+            call. = FALSE)
+    # we have to reverse the specified input, e.g., if ltr = TRUE, then dev 
+    # has to be FALSE
+    dev <- !dots$ltr
+  }
+  
+  # load cached qgis_env if possible
+  if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
+    load(file.path(tempdir(), "qgis_env.Rdata"))
+    return(qgis_env)
+  }
+  
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(root)) {
@@ -70,22 +89,54 @@ set_env <- function(root = NULL, ltr = TRUE) {
       }
     }
     # harmonize root syntax
-    root <- gsub("/|//", "\\\\", root)
+    root <- normalizePath(root)
     # make sure that the root path does not end with some sort of slash
-    root <- gsub("/$|//$|\\$|\\\\$", "", root)
+    root <- gsub("\\\\$", "", root)
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
+      
       # check for homebrew QGIS installation
-      path <- system("find /usr/local/Cellar/ -name 'QGIS.app'", intern = TRUE)
-      if (length(path) > 0) {
+      path <- system("find /usr/local/Cellar -name 'QGIS.app'", intern = TRUE)
+      
+      if (length(path) == 1) {
         root <- path
       }
+      
+      # check for multiple homebrew installations
+      if (length(path) == 2) {
+        
+        # extract version out of root path
+        path1 <- 
+          as.numeric(regmatches(path[1], gregexpr("[0-9]+", path[1]))[[1]][3])
+        path2 <- 
+          as.numeric(regmatches(path[2], gregexpr("[0-9]+", path[2]))[[1]][3])
+        
+        # account for 'dev' arg installations are not constant within path ->
+        # depend on which version was installed first/last hence we have to
+        # catch all possibilites
+        if (dev == TRUE && path1 > path2) {
+          root <- path[1]
+        } else if (dev == TRUE && path1 < path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 > path2) {
+          root <- path[2]
+        } else if (dev == FALSE && path1 < path2) {
+          root <- path[1]
+        }
+      }
+      # just in case if someone has more than 2 QGIS homebrew installations
+      # (very unlikely though)
+      if (length(path) > 2) {
+        stop(paste("We recognized more than 2 QGIS homebrew installations on ", 
+                   "your System. Please clean up or set 'set_env()' manually."))
+      }
+      
+      # check for Kyngchaos installation
       if (is.null(root)) {
-        # check for binary QGIS installation
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
-        if(length(path) > 0) {
+        if (length(path) > 0) {
           root <- path
         }
       }
@@ -99,8 +150,24 @@ set_env <- function(root = NULL, ltr = TRUE) {
     }
   }
   qgis_env <- list(root = root)
+  qgis_env <- c(qgis_env, check_apps(root = root, dev = dev))
+  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
+  
+  
+  # write warning if Kyngchaos QGIS for Mac is installed
+  if (any(grepl("/Applications", qgis_env))) {
+    warning(
+      paste0("We recognized that you are using the Kyngchaos QGIS binary.\n",
+             "Please consider installing QGIS from homebrew:", 
+             "'https://github.com/OSGeo/homebrew-osgeo4mac'.",
+             " Run 'vignette(install_guide)' for installation instructions.\n",
+             "The Kyngchaos installation throws some warnings during ", 
+             "processing. However, usage/outcome is not affected and you can ", 
+             "continue using the Kyngchaos installation."))
+  }
+  
   # return your result
-  c(qgis_env, check_apps(root = root, ltr = ltr))
+  qgis_env
 }
 
 #' @title QGIS session info
@@ -264,9 +331,10 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #'   which can be used accessed through the command line.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @param search_term A character to query QGIS functions, i.e. to list only 
-#'   functions which contain the indicated string. If empty (`""`), the
-#'   default, all available functions will be returned.
+#' @param search_term If (`NULL`), the default, all available functions will be 
+#'   returned. If `search_term` is a character, all available functions will be
+#'   queried accordingly. The character string might also contain a regular
+#'   expression (see examples).
 #' @param name_only If `TRUE`, the function returns only the name(s) of the
 #'   found algorithms. Otherwise, a short function description will be returned
 #'   as well (default).
@@ -283,14 +351,16 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' # list all available QGIS algorithms on your system
 #' algs <- find_algorithms()
 #' algs[1:15]
-#' # just find all native, i.e. QGIS-algorithms
-#' grep("qgis:", algs, value = TRUE)
 #' # find a function which adds coordinates
 #' find_algorithms(search_term = "add")
+#' # find only QGIS functions
+#' find_algorithms(search_term = "qgis:")
+#' # find QGIS and SAGA functions related to centroid computations
+#' find_algorithms(search_term = "centroid.+(qgis:|saga:)")
 #' }
 
 #' @export
-find_algorithms <- function(search_term = "",
+find_algorithms <- function(search_term = NULL,
                             qgis_env = set_env(),
                             name_only = FALSE,
                             intern = 
@@ -298,9 +368,15 @@ find_algorithms <- function(search_term = "",
                                      TRUE, FALSE)) {
   
     algs <- execute_cmds(processing_name = "processing.alglist",
-                         params = shQuote(search_term),
+                         params = shQuote(""),
                          qgis_env = qgis_env,
                          intern = intern)
+    algs <- algs[algs != ""]
+    # use regular expressions to query all available algorithms
+    if (!is.null(search_term)) {
+      algs <- grep(search_term, algs, value = TRUE)
+    }
+    
     if (name_only) {
       algs <- gsub(".*>", "", algs)
     }
@@ -371,7 +447,7 @@ get_options <- function(alg = NULL,
                intern = intern)
 }
 
-#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm
+#' @title Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm
 #' @description `open_help` opens the online help for a specific (Q)GIS 
 #'   geoalgorithm. This is the online help one also encounters in the QGIS GUI.
 #'   In the case of GRASS algorithms this is actually the GRASS online
@@ -709,77 +785,91 @@ get_args_man <- function(alg = NULL, options = FALSE, qgis_env = set_env()) {
   args
 }
 
-#'@title Interface to QGIS commands
-#'@description `run_qgis` calls QGIS algorithms from within R while passing
-#'  the corresponding function arguments.
-#'@param alg Name of the GIS function to be used (see 
-#'  [find_algorithms()]).
-#'@param params A list of geoalgorithm function arguments that should be used in
-#'  conjunction with the selected (Q)GIS function (see 
-#'  [get_args_man()]). Please make sure to provide all function 
-#'  arguments in the correct order. To make sure this is the case, it is 
-#'  recommended to use the convenience function [get_args_man()].
-#'@param check_params If `TRUE` (default), it will be checked if all 
-#'  geoalgorithm function arguments were provided in the correct order.
-#'@param show_msg Logical, if `TRUE`, Python messages that occured during
-#'  the algorithm execution will be shown.
-#'@param load_output Character vector containing paths to (an) output file(s) in
-#'  order to load the QGIS output directly into R (optional). If 
-#'  `load_output` consists of more than one element, a list will be 
-#'  returned. See the example section for more details.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For
-#'  more information, refer to [set_env()].
-#'@details This workhorse function calls the QGIS Python API through the command
-#'  line. Specifically, it calls `processing.runalg`.
-#'@return If not otherwise specified, the function saves the QGIS generated 
-#'  output files in a temporary folder. Optionally, function parameter 
-#'  `load_output` loads spatial QGIS output (vector and raster data) into
-#'  R.
-#'@note Please note that one can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are
-#'  [sp::SpatialPointsDataFrame()]-, 
-#'  [sp::SpatialLinesDataFrame()]-, 
-#'  [sp::SpatialPolygonsDataFrame()]- and 
-#'  [raster::raster()]-objects. See the example section for more 
-#'  details.
-#'  
-#' GRASS users do not have to specify manually the GRASS region extent (function
-#' argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will
-#' automatically retrieve the region extent based on the input layers.
+#' @title Interface to QGIS commands
+#' @description `run_qgis` calls QGIS algorithms from within R while passing the
+#'   corresponding function arguments.
+#' @param alg Name of the GIS function to be used (see [find_algorithms()]).
+#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as
+#'   R named arguments. For more details, please refer to [pass_args()].
+#' @param params Parameter argument list for a specific geoalgorithm, see 
+#'   [get_args_man()] for more details. Please note that you can either specify
+#'   R arguments directly via the triple dots (see above) or via the parameter 
+#'   argument list. However, you may not mix the two methods. For more details, 
+#'   please refer to [pass_args()].
+#' @param load_output If `TRUE`, all calculated QGIS output files will be loaded
+#'   directly into R. A list will be returned if there is more than one output 
+#'   file (e.g., `grass7:r.slope.aspect`). See the example section for more 
+#'   details.
+#' @param check_params If `TRUE` (default), it will be checked if all 
+#'   geoalgorithm function arguments were provided in the correct order.
+#' @param show_msg Logical, if `TRUE`, Python messages that occured during the
+#'   algorithm execution will be shown.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to [set_env()].
+#' @details This workhorse function calls the QGIS Python API through the
+#'   command line. Specifically, it calls `processing.runalg`.
+#' @return If not otherwise specified, the function saves the QGIS generated 
+#'   output files in a temporary folder. Optionally, function parameter 
+#'   `load_output` loads spatial QGIS output (vector and raster data) into R.
+#' @note Please note that one can also pass spatial R objects as input
+#'   parameters where suitable (e.g., input layer, input raster). Supported
+#'   formats are [sp::SpatialPointsDataFrame()]-, 
+#'   [sp::SpatialLinesDataFrame()]-, [sp::SpatialPolygonsDataFrame()]- and 
+#'   [raster::raster()]-objects. See the example section for more details.
+#'   
+#'   GRASS users do not have to specify manually the GRASS region extent
+#'   (function argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will 
+#'   automatically retrieve the region extent based on the input layers.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @export
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
 #' @importFrom sp SpatialLinesDataFrame
-#' @importFrom raster raster
-#' @importFrom raster writeRaster
-#' @importFrom sf st_write
-#' @importFrom sf st_read
-#' @importFrom rgdal writeOGR
-#' @importFrom rgdal readOGR
+#' @importFrom raster raster writeRaster extent
+#' @importFrom sf st_write st_read
+#' @importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
 #' @examples
 #' \dontrun{
-#' # set the environment
-#' my_env <- set_env()
-#' # find out how a function is called
-#' find_algorithms(search_term = "add", qgis_env = my_env)
-#' # specify parameters
-#' params <- get_args_man("saga:addcoordinatestopoints", qgis_env = my_env)
-#' # load random_points - a SpatialPointsDataFrame
-#' data(random_points, package = "RQGIS")
-#' params$INPUT <- random_points
-#' # Here I specify a SpatialPointsDataFrame as input, but one could also
-#' # specify the path to a spatial object file (e.g., shapefile), e.g.;
-#' # params$INPUT <- "random_points.shp"
-#' params$OUTPUT <- "output.shp"
-#' # Run the QGIS API and load its output into R
-#' run_qgis(alg = "saga:addcoordinatestopoints",
-#'          params = params,
-#'          load_output = params$OUTPUT,
-#'          qgis_env = my_env)
+#' # calculate the slope of a DEM
+#' # load dem - a raster object
+#' data(dem, package = "RQGIS")
+#' # find out the name of a GRASS function with which to calculate the slope
+#' find_algorithms(search_term = "grass7.*slope")
+#' # find out how to use the function
+#' alg <- "grass7:r.slope.aspect"
+#' get_usage(alg)
+#' # 1. run QGIS using R named arguments, and load the QGIS output back into R
+#' slope <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
+#'                   load_output = TRUE)
+#' # 2. doing the same with a parameter argument list
+#' params <- get_args_man(alg)
+#' params$elevation <- dem
+#' params$slope <- "slope.asc"
+#' slope <- run_qgis(alg, params = params, load_output = TRUE)
+#' # 3. calculate the slope, the aspect and the pcurvature. 
+#' terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
+#'                     aspect = "aspect.asc", pcurvature = "pcurv.asc",
+#'                     load_output = TRUE)
+#' # the three output rasters are returned in a list of length 3
+#' terrain
 #'}
-run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
-                     show_msg = TRUE, load_output = NULL,
+
+run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
+                     show_msg = TRUE, load_output = FALSE,
                      qgis_env = set_env()) {
+  if (!missing(check_params)) {
+    warning(paste("Argument check_params is deprecated; please do not use it", 
+                  "any longer. run_qgis now automatically checks all given", 
+                  "QGIS parameters."), 
+            call. = FALSE)
+  }
+  
+  if (!missing(show_msg)) {
+    warning(paste("Argument show_msg is deprecated; please do not use it", 
+                  "any longer. run_qgis now always return any Python (error)", 
+                  "output"), 
+            call. = FALSE)
+  }
+  
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -791,44 +881,10 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                "Please use 'grass7:v.extract' instead."))
   }
   
-  # check if all necessary function arguments were supplied
-  args <- list(alg, params)
-  ind <- mapply(is.null, args)
-  if (any(ind)) {
-    stop("Please specify: ", paste(args[ind], collapse = ", "))
-  }
-  
-  # check if all arguments were specified in the correct order
-  if (check_params) {
-    test <- get_args_man(alg, qgis_env = qgis_env)  
-    
-    # check if there are too few/many function arguments
-    if (length(params) != length(test)) {
-      ifelse(length(params) > length(test),
-             stop("Unknown function argument(s): ", 
-                  paste(setdiff(names(params), names(test)), collapse = ", ")),
-             stop("Function argument(s) ", 
-                  paste(setdiff(names(test), names(params)), collapse = ", "),
-                  "are missing"))
-    }
-    
-    # check if all function arguments are in the correct order
-    ind <- names(test) != names(params)
-    if (any(ind)) {
-      stop("Function argument(s) ", 
-           paste(names(params)[ind], collapse = ", "),
-           " should be ",
-           paste(names(test)[ind], collapse = ", "))
-    }
-    
-    # Make sure boolean operators are in Python form
-    params <- sapply(seq_along(params), function(i) {
-      ifelse(params[i] == "TRUE", "True",
-             ifelse(params[i] == "FALSE", "False", params[i]))
-    })
-  }
-  
-  # Save Spatial-Objects (sp, sf and raster)
+  # construct a parameter-argument list using get_args_man and user input
+  params <- pass_args(alg, ..., params = params, qgis_env = qgis_env)
+
+    # Save Spatial-Objects (sp, sf and raster)
   # Define temporary folder
   tmp_dir <- tempdir()
   # List classes of objects supplied to parameters
@@ -854,10 +910,8 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     # check if the function argument is a SpatialObject
     if (grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp) && 
         attr(tmp, "package") == "sp") {
-      rgdal::writeOGR(params[[i]], dsn = tmp_dir, 
-                      layer = names(params)[[i]],
-                      driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+      writeOGR(params[[i]], dsn = tmp_dir, layer = names(params)[[i]],
+               driver = "ESRI Shapefile", overwrite_layer = TRUE)
       # return the result
       file.path(tmp_dir, paste0(names(params)[[i]], ".shp"))
     } else if (any(tmp %in% c("sf", "sfc", "sfg"))) {
@@ -882,14 +936,31 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     }
   })
   
+  # Find out what the output names are (we will also need them for load_output)
+  out_names <- get_output_names(alg = alg, qgis_env = qgis_env)
+  out_names <- out_names$outnames
+  # if the user has only specified an output filename without a directory path,
+  # make sure that the output will be saved to the temporary R folder (not doing
+  # so could sometimes save the output in the temporary QGIS folder)
+  params[out_names] <- lapply(params[out_names], function(x) {
+    if (basename(x) != "None" && dirname(x) == ".") {
+      file.path(tmp_dir, x)
+    } else {
+      x
+    }
+  })
+  
   # set the bbox in the case of GRASS functions if it hasn't already been 
   # provided (if there are more of these 3rd-party based specifics, put them in
   # a new function)
+  
   if ("GRASS_REGION_PARAMETER" %in% names(params) && 
       grepl("None", params$GRASS_REGION_PARAMETER)) {
-    # dismiss the last argument since it frequently corresponds to the output if
-    # the output was created before using another CRS, the function might crash
-    ext <- params[-length(params)]
+    
+    # dismiss the output arguments. Not doing so could cause R to crash since 
+    # the output-file might already exist. For instance, the already existing
+    # output might have another CRS.
+    ext <- params[setdiff(names(params), out_names)]
     # run through the arguments and check if we can extract a bbox
     ext <- lapply(ext, function(x) {
       # We cannot simply use gsub as we have done before (gsub("[.].*",
@@ -900,22 +971,22 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
       # but let's use an already existing function
       my_layer <- tools::file_path_sans_ext(basename(as.character(x)))
       # determine bbox in the case of a vector layer
-      tmp <- try(expr = rgdal::ogrInfo(dsn = x, layer = my_layer)$extent,
+      tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
                  silent = TRUE)
       if (!inherits(tmp, "try-error")) {
         # check if this is always this way (xmin, ymin, xmax, ymax...)
-        raster::extent(tmp[c(1, 3, 2, 4)])
+        extent(tmp[c(1, 3, 2, 4)])
       } else {
         # determine bbox in the case of a raster
-        ext <- try(expr = rgdal::GDALinfo(x, returnStats = FALSE),
+        ext <- try(expr = GDALinfo(x, returnStats = FALSE),
                    silent = TRUE)
         # check if it is still an error
         if (!inherits(ext, "try-error")) {
           # xmin, xmax, ymin, ymax
-          raster::extent(c(ext["ll.x"], 
-                           ext["ll.x"] + ext["columns"] * ext["res.x"],
-                           ext["ll.y"],
-                           ext["ll.y"] + ext["rows"] * ext["res.y"]))
+          extent(c(ext["ll.x"], 
+                 ext["ll.x"] + ext["columns"] * ext["res.x"],
+                 ext["ll.y"],
+                 ext["ll.y"] + ext["rows"] * ext["res.y"]))
         } else {
           NA
         }
@@ -962,43 +1033,38 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
     stop(msg)
   }
   # if a message was produced, show it in the console
-  if (show_msg && length(msg) > 0 && !identical(msg, tempdir())) {
+  if (length(msg) > 0 && !identical(msg, tempdir())) {
     message(msg)
   }
   
   # load output
-  if (!is.null(load_output)) {
-    ls_1 <- lapply(load_output, function(x) {
-      
-      fname <- ifelse(dirname(x) == ".", 
-                      file.path(tmp_dir, x),
-                      x)
-      if (!file.exists(fname)) {
+  if (load_output) {
+    # just keep the output files
+    params_out <- params[out_names]
+    # just keep the files which were actually specified by the user
+    out_files <- params_out[params_out != "None"]
+
+    ls_1 <- lapply(out_files, function(x) {
+      # even if the user only specified an output name without an output
+      # directory, we have made sure above that the output is written to the
+      # temporary folder
+      if (!file.exists(x)) {
         stop("Unfortunately, QGIS did not produce: ", x)
       }
       
-      if (input.sf == FALSE) {
-        test <- try(expr = readOGR(dsn = dirname(fname),
-                                   layer = gsub("\\..*", "", 
-                                                basename(fname)),
-                                   verbose = FALSE),
-                    silent = TRUE)
-      } else {
-        test <- try(expr = st_read(dsn = dirname(fname),
-                                   layer = gsub("\\..*", "",
-                                                basename(fname)),
-                                   quiet = TRUE),
-                    silent = TRUE)
-        }
-      
+      test <- try(expr = readOGR(dsn = dirname(x),
+                                 layer = gsub("\\..*", "", 
+                                              basename(x)),
+                                 verbose = FALSE),
+                  silent = TRUE)
       # stop the function if the output exists but is empty
       if (inherits(test, "try-error") && 
           grepl("no features found", attr(test, "condition"))) {
-        stop("The output-file ", fname, " is empty, i.e. it has no features.")
+        stop("The output-file ", x, " is empty, i.e. it has no features.")
       }
       # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
-        raster::raster(fname)
+        raster(x)
         # well, well, if this doesn't work, you need to do something...
       } else {
         test
