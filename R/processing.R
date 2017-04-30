@@ -583,46 +583,48 @@ get_args_man <- function(alg = "", options = FALSE,
   out
 }
 
-#'@title Interface to QGIS commands
-#'@description `run_qgis` calls QGIS algorithms from within R while passing the 
-#'  corresponding function arguments.
-#'@param alg Name of the GIS function to be used (see [find_algorithms()]).
-#'@param ... Triple dots can be used to specify QGIS geoalgorithm arguments as R
-#'  named arguments. For more details, please refer to [pass_args()].
-#'@param params Parameter argument list for a specific geoalgorithm, see 
-#'  [get_args_man()] for more details. Please note that you can either specify R
-#'  arguments directly via the triple dots (see above) or via the parameter 
-#'  argument list. However, you may not mix the two methods. For more details, 
-#'  please refer to [pass_args()].
-#'@param load_output If `TRUE`, all calculated QGIS output files will be loaded 
-#'  directly into R. A list will be returned if there is more than one output 
-#'  file (e.g., `grass7:r.slope.aspect`). See the example section for more 
-#'  details.
-#'@param check_params If `TRUE` (default), it will be checked if all 
-#'  geoalgorithm function arguments were provided in the correct order.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
-#'  more information, refer to [set_env()].
-#'@details This workhorse function calls the QGIS Python API. Specifically, it
-#'  calls `processing.runalg`.
-#'@return If not otherwise specified, the function saves the QGIS generated 
-#'  output files in a temporary folder. Optionally, function parameter 
-#'  `load_output` loads spatial QGIS output (vector and raster data) into R.
-#'@note Please note that one can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are 
-#'  [sp::SpatialPointsDataFrame()]-, [sp::SpatialLinesDataFrame()]-, 
-#'  [sp::SpatialPolygonsDataFrame()]- and [raster::raster()]-objects. See the 
-#'  example section for more details.
-#'  
-#'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will 
-#'  automatically retrieve the region extent based on the input layers.
-#'@author Jannes Muenchow, Victor Olaya, QGIS core team
-#'@export
-#'@importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
-#'@importFrom sp SpatialLinesDataFrame
-#'@importFrom raster raster writeRaster extent
-#'@importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
-#'@importFrom reticulate py_run_string
+#' @title Interface to QGIS commands
+#' @description `run_qgis` calls QGIS algorithms from within R while passing the
+#'   corresponding function arguments.
+#' @param alg Name of the GIS function to be used (see [find_algorithms()]).
+#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as
+#'   R named arguments. For more details, please refer to [pass_args()].
+#' @param params Parameter argument list for a specific geoalgorithm, see 
+#'   [get_args_man()] for more details. Please note that you can either specify
+#'   R arguments directly via the triple dots (see above) or via the parameter 
+#'   argument list. However, you may not mix the two methods. For more details, 
+#'   please refer to [pass_args()].
+#' @param load_output If `TRUE`, all calculated QGIS output files will be loaded
+#'   directly into R. A list will be returned if there is more than one output 
+#'   file (e.g., `grass7:r.slope.aspect`). See the example section for more 
+#'   details.
+#' @param check_params If `TRUE` (default), it will be checked if all 
+#'   geoalgorithm function arguments were provided in the correct order.
+#' @param show_msg Logical, if `TRUE`, Python messages that occured during the
+#'   algorithm execution will be shown.
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to [set_env()].
+#' @details This workhorse function calls the QGIS Python API. Specifically, it 
+#'   calls `processing.runalg`.
+#' @return If not otherwise specified, the function saves the QGIS generated 
+#'   output files in a temporary folder. Optionally, function parameter 
+#'   `load_output` loads spatial QGIS output (vector and raster data) into R.
+#' @note Please note that one can also pass spatial R objects as input
+#'   parameters where suitable (e.g., input layer, input raster). Supported
+#'   formats are [sp::SpatialPointsDataFrame()]-,
+#'   [sp::SpatialLinesDataFrame()]-, [sp::SpatialPolygonsDataFrame()]- and
+#'   [raster::raster()]-objects. See the example section for more details.
+#'   
+#'   GRASS users do not have to specify manually the GRASS region extent 
+#'   (function argument GRASS_REGION_PARAMETER). If "None", `run_qgis` will 
+#'   automatically retrieve the region extent based on the input layers.
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
+#' @importFrom sp SpatialLinesDataFrame
+#' @importFrom raster raster writeRaster extent
+#' @importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
+#' @importFrom reticulate py_run_string
 #' @examples
 #' \dontrun{
 #' # calculate the slope of a DEM
@@ -638,8 +640,8 @@ get_args_man <- function(alg = "", options = FALSE,
 #'                   load_output = TRUE)
 #' # 2. doing the same with a parameter argument list
 #' params <- get_args_man(alg)
-#' params$elevation = dem
-#' params$slope = "slope.asc"
+#' params$elevation <- dem
+#' params$slope <- "slope.asc"
 #' slope <- run_qgis(alg, params = params, load_output = TRUE)
 #' # 3. calculate the slope, the aspect and the pcurvature. 
 #' terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
@@ -649,8 +651,10 @@ get_args_man <- function(alg = "", options = FALSE,
 #' terrain
 #'}
 
-run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
-                     check_params = TRUE, qgis_env = set_env()) {
+run_qgis <- function(alg = NULL, ..., params = NULL, check_params = TRUE,
+                     show_msg = TRUE, load_output = FALSE,
+                     qgis_env = set_env()) {
+
   if (!missing(check_params)) {
     warning(paste("Argument check_params is deprecated; please do not use it", 
                   "any longer. run_qgis now automatically checks all given", 
@@ -666,6 +670,13 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
     qgis_session_info(qgis_env)
   }
 
+  if (!missing(show_msg)) {
+    warning(paste("Argument show_msg is deprecated; please do not use it", 
+                  "any longer. run_qgis now always return any Python (error)", 
+                  "output"), 
+            call. = FALSE)
+  }
+  
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -699,7 +710,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tmp_dir, paste0(names(params)[[i]], ".asc"))
       writeRaster(params[[i]], filename = fname, format = "ascii", 
-                          prj = TRUE, overwrite = TRUE)
+                  prj = TRUE, overwrite = TRUE)
       # return the result
       fname
     } else {
@@ -801,7 +812,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # run QGIS
   res <- py_run_string(cmd)$res
   # res contains all the output paths of the files created by QGIS
-  
+
   # load output
   if (load_output) {
     # just keep the output files

@@ -38,7 +38,15 @@ test_that("Test, if QGIS-algorithms are working?", {
   
   # check if the output is spatial object
   expect_is(out, "SpatialPointsDataFrame")
-})
+  # now use ...-notation
+  out <- run_qgis(alg = "qgis:polygoncentroids",
+                  INPUT_LAYER = polys,
+                  OUTPUT_LAYER = "coords.shp",
+                  load_output = TRUE)
+  # check if the output is spatial object
+  expect_is(out, "SpatialPointsDataFrame")
+  })
+
 
 
 test_that("Test, if SAGA-algorithms are working?", {
@@ -58,8 +66,14 @@ test_that("Test, if SAGA-algorithms are working?", {
                   load_output = TRUE)
   # check if the output is a raster
   expect_is(out, "RasterLayer")
-})
-
+  # now use ...-notation
+  out <- run_qgis("saga:slopeaspectcurvature", 
+                  ELEVATION = dem,
+                  SLOPE = "slope.asc",
+                  load_output = TRUE)
+  # check if the output is a raster
+  expect_is(out, "RasterLayer")
+  })
 
 
 test_that("Test, if GRASS7-algorithms are working?", {
@@ -81,7 +95,16 @@ test_that("Test, if GRASS7-algorithms are working?", {
   # check if the output is a raster
   expect_is(out[[1]], "RasterLayer")
   expect_is(out[[2]], "RasterLayer")
-})
+
+  # now use ...-notation
+  out <- run_qgis("grass7:r.slope.aspect", 
+                  elevation = dem,
+                  slope = "slope.asc",
+                  load_output = TRUE)
+  # check if the output is a raster
+  expect_is(out, "RasterLayer")
+  })
+
 
 #********************************************************************
 # CHECKING developer QGIS release (Windows)--------------------------
