@@ -12,20 +12,20 @@ matrix:
       env: 
         - R_CODECOV=true
         - LTR_Linux=true
-      r:
-        - oldrel
-        - release
-        - devel
+      #r:
+        #- oldrel
+        #- release
+        #- devel
     # build QGIS DEV on Linux
     - os: linux
       dist: trusty
       sudo: required
       latex: false
       env: DEV_Linux=true
-      r:
-        - oldrel
-        - release
-        - devel
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
     ### build QGIS LTR on macOS
     - os: osx
       osx_image: xcode8.3
@@ -34,20 +34,20 @@ matrix:
       env: 
         - LTR_mac=true
         - R_CODECOV=true
-      r:
-        - oldrel
-        - release
-        - devel
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
     ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
       env: DEV_mac=true
-      r:
-        - oldrel
-        - release
-        - devel
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
 
 warnings_are_errors: false
 
