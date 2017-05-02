@@ -17,12 +17,15 @@ environment:
   global:
     R_ARCH: x64
   matrix:
-    - qgis: 2.14.14
-    - qgis: 2.18.7
+    - qgis: http://qgis.org/downloads/QGIS-OSGeo4W-2.14.14-1-Setup-x86_64.exe
+    - qgis: http://qgis.org/downloads/QGIS-OSGeo4W-2.18.7-1-Setup-x86_64.exe
 
 # install qgis
 before_build:
-  -  start "" /wait "http://qgis.org/downloads/QGIS-OSGeo4W-%qgis%-1-Setup-x86_64.exe" /S 
+   - start "" /wait "%qgis%" /S 
+   - dir /s /b /o:gn
+#ps: "curl $env:%qgis% -OutFile $env:TMP\\$env:qgis_file"
+#ps: "& $env:TMP\\$env:qgis_file \S | Out-Null"
 
 build_script:
   - travis-tool.sh install_deps
