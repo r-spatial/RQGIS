@@ -14,24 +14,13 @@ install:
 
 # set environment variables
 environment:
-  qgis_ltr: true
-  qgis_dev: true
-
-# init build matrix
-matrix:
-  - qgis_ltr: true
-  - qgis_dev: true
-
-# import script from repo
-init:
-  ps: |
-        $ErrorActionPreference = "Stop"
-        Invoke-WebRequest http://raw.github.com/jannes-m/RQGIS/inst/appveyor/qgis-install.ps1 -OutFile "..\..\qgis-install.ps1"
-        Import-Module '..\..\qgis-install.ps1'
+  matrix:
+    - qgis: 2.14.14
+    - qgis: 2.18.7
 
 # install qgis
 before_build:
-  ps: qgis-install
+  -  start "" /wait "http://qgis.org/downloads/QGIS-OSGeo4W-%qgis%-1-Setup-x86_64.exe" /S 
 
 build_script:
   - travis-tool.sh install_deps
