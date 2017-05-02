@@ -14,6 +14,8 @@ install:
 
 # set environment variables
 environment:
+  global:
+    R_ARCH: x64
   matrix:
     - qgis: 2.14.14
     - qgis: 2.18.7
