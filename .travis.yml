@@ -119,10 +119,10 @@ before_script:
   # install required python package psycopg2
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip install psycopg2; fi
   
-notifications:
-  slack:
-      rooms:
-        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
+#notifications:
+#  slack:
+#      rooms:
+#        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
     
 after_success:
   - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
