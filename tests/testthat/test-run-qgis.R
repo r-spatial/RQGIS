@@ -9,6 +9,8 @@ test_that("Test, if QGIS-algorithms are working?", {
   # testthat::skip_on_travis()
   testthat::skip_on_cran()
   
+  print(set_env())
+  
   coords_1 <- 
     matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
            ncol = 2, byrow = TRUE)
