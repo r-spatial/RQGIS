@@ -12,6 +12,14 @@ install:
   
 # Adapt as necessary starting from here
 
+# try installing qgis
+
+before_build:
+  - start "" /wait "https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi" /S
+  - start "" /wait "http://cygwin.com/setup-x86_64.exe" /S
+  - start "" /wait "http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe" /S
+  - start "" /wait "https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip" /S
+
 build_script:
   - travis-tool.sh install_deps
 
