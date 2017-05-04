@@ -163,3 +163,31 @@ class RQGIS:
     for out in alg.outputs:
       params.append(out.name)
     return params
+  
+  # function inspired by processing.algoptions  
+  def get_options(self, alg):
+    alg = Processing.getAlgorithm(alg)
+    # create a dictionary
+    d = dict()
+    for param in alg.parameters:
+      if isinstance(param, ParameterSelection):
+        # keys of the dictionary are the function parameters for which one can
+        # specify a selection
+        d[param.name] = []
+        for option in param.options:
+          # the values are the several options for a specific parameter
+          d[param.name].append(option)
+    return d
+  
+  # check if all necessary function arguments were provided
+  # inspired by runAlgorithm from processing/core/Processing 
+  def check_args(self, alg, args):
+    alg = Processing.getAlgorithm(alg)
+    i = 0
+    d = dict()
+    for param in alg.parameters:
+      if not param.hidden:
+        if not param.setValue(args[i]):
+          d[param.name] = args[i]
+        i = i + 1
+    return d
