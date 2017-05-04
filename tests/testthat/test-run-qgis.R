@@ -19,8 +19,6 @@ test_that("Test, if QGIS-algorithms are working?", {
                   Polygons(list(Polygon(coords_2)), 2)) 
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
   
-  # let's set the environment 
-  set_env()
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
   params <- get_args_man(alg = "qgis:polygoncentroids")
@@ -48,15 +46,12 @@ test_that("Test, if QGIS-algorithms are working?", {
   })
 
 
-
 test_that("Test, if SAGA-algorithms are working?", {
   
   testthat::skip_on_appveyor()
   # testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  # let's set the environment 
-  set_env()  
   # attach data
   data("dem")
   params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
@@ -82,8 +77,6 @@ test_that("Test, if GRASS7-algorithms are working?", {
   #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  # let's set the environment 
-  set_env()  
   # attach data
   data("dem")
   params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE)
