@@ -364,7 +364,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   algs <- unlist(strsplit(algs, '", '))
   algs <- gsub("\\['|'\\]|'", "", algs)
   
-  # quick-and-dirty, maybe there is more elegant approach...
+  # quick-and-dirty, maybe there is a more elegant approach...
   if (Sys.info()["sysname"] == "Windows") {
     algs <- gsub('\\\\|"', "", shQuote(algs))
   } else {
@@ -380,18 +380,6 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   if (name_only) {
     algs <- gsub(".*>", "", algs)
   }
-  
-  # py_run_string(sprintf("text = '%s'", search_term))
-  # py_file <- system.file("python", "alglist.py", package = "RQGIS")
-  # algs_2 <- py_run_file(py_file)
-  # algs_2 <- strsplit(algs_2$s, split = "\n")[[1]]
-  # if (name_only) {
-  #   algs_2 <- gsub(".*>", "", algs_2)
-  # }
-  # all.equal(algs, algs_2)  # TRUE for name_only, perfect!
-  # # clean up after yourself, just in case
-  # py_run_string("del(text, s)")
-  
   # return your result
   algs
 }
@@ -555,14 +543,6 @@ get_args_man <- function(alg = "", options = FALSE,
   if (!alg %in% algs) {
     stop("The specified algorithm ", alg, " does not exist.")
   }
-  
-  # you have to be careful here, if you want to preserve True and False in
-  # Python language... -> check!!!!!!!!!!! or maybe not, because reticulate is
-  # taking care of it???
-  
-  # args <- py_run_string(
-  #   sprintf("algorithm_params = get_args_man('%s')", alg))$algorithm_params
-  # using the RQGIS class
   
   args <- py_run_string(
     sprintf("algorithm_params = RQGIS.get_args_man('%s')",
