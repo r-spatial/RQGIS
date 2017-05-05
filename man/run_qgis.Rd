@@ -4,38 +4,41 @@
 \alias{run_qgis}
 \title{Interface to QGIS commands}
 \usage{
-run_qgis(alg = NULL, ..., params = NULL, check_params = TRUE,
-  show_msg = TRUE, load_output = FALSE, qgis_env = set_env())
+run_qgis(alg = NULL, ..., params = NULL, load_output = FALSE,
+  check_params = TRUE, show_msg = TRUE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
 
-\item{...}{Triple dots can be used to specify QGIS geoalgorithm arguments as
-R named arguments. For more details, please refer to \code{\link[=pass_args]{pass_args()}}.}
+\item{...}{Triple dots can be used to specify QGIS geoalgorithm arguments as R
+named arguments. For more details, please refer to \code{\link[=pass_args]{pass_args()}}.}
 
-\item{params}{Parameter argument list for a specific geoalgorithm, see
-\code{\link[=get_args_man]{get_args_man()}} for more details. Please note that you can either specify
-R arguments directly via the triple dots (see above) or via the parameter
-argument list. However, you may not mix the two methods. For more details,
-please refer to \code{\link[=pass_args]{pass_args()}}.}
+\item{params}{Parameter-argument list for a specific geoalgorithm. Please note
+that you can either specify R named arguments directly via the triple dots
+(see above) or via a parameter-argument list. However, you may not mix the
+two methods. See the example section, \code{\link[=pass_args]{pass_args()}} and \code{\link[=get_args_man]{get_args_man()}} for
+more details.}
+
+\item{load_output}{If \code{TRUE}, all QGIS output files (vector and raster data)
+specified by the user (i.e. the user has to indicate output files) will be
+loaded into R. A list will be returned if there is more than one output file
+(e.g., \code{grass7:r.slope.aspect}). See the example section for more details.}
 
 \item{check_params}{If \code{TRUE} (default), it will be checked if all
-geoalgorithm function arguments were provided in the correct order.}
+geoalgorithm function arguments were provided in the correct order
+(deprecated).}
 
 \item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during the
-algorithm execution will be shown.}
-
-\item{load_output}{If \code{TRUE}, all calculated QGIS output files will be loaded
-directly into R. A list will be returned if there is more than one output
-file (e.g., \code{grass7:r.slope.aspect}). See the example section for more
-details.}
+algorithm execution will be shown (deprecated).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
 }
 \value{
-If not otherwise specified, the function saves the QGIS generated
-output files in a temporary folder. Optionally, function parameter
+The function prints a list (named according to the output parameters)
+containing the paths to the files created by QGIS. If not otherwise
+specified, the function saves the QGIS generated output files in the
+temporary folder (created by QGIS). Optionally, function parameter
 \code{load_output} loads spatial QGIS output (vector and raster data) into R.
 }
 \description{
@@ -43,19 +46,20 @@ output files in a temporary folder. Optionally, function parameter
 corresponding function arguments.
 }
 \details{
-This workhorse function calls the QGIS Python API through the
-command line. Specifically, it calls \code{processing.runalg}.
+This workhorse function calls the QGIS Python API, and specifically
+\code{processing.runalg}.
 }
 \note{
-Please note that one can also pass spatial R objects as input
-parameters where suitable (e.g., input layer, input raster). Supported
-formats are \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-,
-\code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-, \code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and
-\code{\link[raster:raster]{raster::raster()}}-objects. See the example section for more details.
+Please note that one can also pass spatial R objects as input parameters
+where suitable (e.g., input layer, input raster). Supported formats are
+\code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-, \code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-,
+\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and \code{\link[raster:raster]{raster::raster()}}-objects. See the
+example section for more details.
 
 GRASS users do not have to specify manually the GRASS region extent
-(function argument GRASS_REGION_PARAMETER). If "None", \code{run_qgis} will
-automatically retrieve the region extent based on the input layers.
+(function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),
+\code{run_qgis} (see \code{\link[=pass_args]{pass_args()}} for more details) will automatically determine
+the region extent based on the user-specified input layers.
 }
 \examples{
 \dontrun{
@@ -70,10 +74,8 @@ get_usage(alg)
 # 1. run QGIS using R named arguments, and load the QGIS output back into R
 slope <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
                   load_output = TRUE)
-# 2. doing the same with a parameter argument list
-params <- get_args_man(alg)
-params$elevation <- dem
-params$slope <- "slope.asc"
+# 2. doing the same with a parameter-argument list
+params <- list(elevation = dem, slope = "slope.asc")
 slope <- run_qgis(alg, params = params, load_output = TRUE)
 # 3. calculate the slope, the aspect and the pcurvature. 
 terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc", 

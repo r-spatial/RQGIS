@@ -32,7 +32,9 @@ Imports:
          sp,
          XML,
          tools,
-         sf (>= 0.3-4)
+         sf (>= 0.3-4),
+         reticulate,
+         readr
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,

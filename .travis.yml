@@ -1,37 +1,128 @@
-
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
-## See https://github.com/metacran/r-builder for details.
-## settings from edzer/gstat
-
-language: R		 
-sudo: required
+language: r		 
 cache: packages	
-dist: trusty
+
+matrix:
+  include:
+    # build QGIS LTR on Linux
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      env: 
+        - R_CODECOV=true
+        - LTR_Linux=true
+      #r:
+        #- oldrel
+        #- release
+        #- devel
+    # build QGIS DEV on Linux
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      env: DEV_Linux=true
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
+    ### build QGIS LTR on macOS
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: 
+        - LTR_mac=true
+        - R_CODECOV=true
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
+    ### build QGIS DEV on macOS
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: DEV_mac=true
+      #r:
+      #  - oldrel
+      #  - release
+      #  - devel
 
 warnings_are_errors: false
 
-env:
-  global:
-    - R_CHECK_ARGS = "--no-tests"
-    
-r_github_packages: 
-  - hadley/devtools
+r_github_packages:
   - jimhester/covr
-    
-before_install:
-  - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
-  - sudo apt-get --yes --force-yes update -qq
-  ## saga and grass need to be installed from source and not using ubuntugis
-  # install qgis and qgis-plugin-grass from 'ubuntugis'
-  - sudo apt-get install --yes libudunits2-dev libproj-dev libgeos-dev libgdal-dev qgis python-qgis qgis-plugin-grass
 
-notifications:
-  email:
-    on_success: change
-    on_failure: change
-  slack:
-    rooms:
-      - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
+# if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.3
+# if we install everything from ubuntugis-ltr deb, we get most recent QGIS but only GDAL1 -> error in tests 
+# because GDAL2 is required 
+before_install:
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get -y --force-yes update -qq; fi
+  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'; fi
+  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main " >> /etc/apt/sources.list'; fi
+  - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'; fi
+  - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint 073D307A618E5811 && gpg --export --armor 073D307A618E5811 | sudo apt-key add -; fi
+  
+  # remove postgresql installations causing upgrade errors otherwise
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.1; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.2; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.3; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.4; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.5; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.6; fi
+  
+  # install gdal and proj4 from ubuntugis ppa (gdal2.1)
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt upgrade -y; fi # if you already have gdal 1.11 installed
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal; fi
+    
+  # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
+  # see https://gis.stackexchange.com/questions/216780/cannot-install-qgis-2-18-from-repository-on-debian-stretch-package-gdal-abi-2
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update -y && sudo apt-get install equivs; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then chmod ugo+x inst/travis/gdal-abi.sh; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi.control; fi
+    
+  # install saga 2.2.2 on Linux
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get install libwxgtk3.0-dev libtiff5-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev g++ make automake libtool git; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz > /dev/null && rm saga-2.2.2.tar.gz; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH && cd /home/travis/build/jannes-m/RQGIS && sudo rm -rf saga-2.2.2; fi
+  
+  # install latest qgis-ltr using aptitude to resolve dependencies
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
+  
+  # make directory writable for osgeo4mac installations
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
+  
+  # tap osgeo4mac tap
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
+   
+  # install saga4 from url
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/saga-test/Formula/saga4.rb; fi
+  # install qgis
+  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr ; fi
+  - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
+  
+# imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
+before_script:
+  - "export DISPLAY=:99.0"
+  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then sh -e /etc/init.d/xvfb start; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
+  - sleep 3 # give xvfb some time to start
+  
+  # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')"; fi
+  # install required python package psycopg2
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip install psycopg2; fi
+  
+#notifications:
+#  slack:
+#      rooms:
+#        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
     
 after_success:
-  - Rscript -e 'covr::codecov()'
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi

@@ -5,17 +5,55 @@ Important news
 
 -   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on.
 
--   You might encounter `segfault` errors using SAGA algorithms on macOS. See [this issue](http://hub.qgis.org/issues/16332).
+-   You might encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS. See [this issue](http://hub.qgis.org/issues/16332). Using SAGA 3.0.0 or SAGA 4.0.1 should solve the issue.
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--03--12-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--01-yellowgreen.svg)](/commits/master)
 
-| Resource:     | CRAN                                                                                                                                                             | Travis CI                                                                                                                                                | Appveyor                                                                                                                                                               |
-|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| *Platforms:*  | *Multiple*                                                                                                                                                       | *Linux & macOS*                                                                                                                                          | *Windows*                                                                                                                                                              |
-| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | <a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://travis-ci.org/jannes-m/RQGIS.svg?branch=master" alt="Build status"></a>                 | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
-| Test coverage |                                                                                                                                                                  | <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a> |                                                                                                                                                                        |
+<table style="width:100%;">
+<colgroup>
+<col width="16%" />
+<col width="23%" />
+<col width="19%" />
+<col width="20%" />
+<col width="20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Resource:</th>
+<th>CRAN</th>
+<th>Travis CI</th>
+<th>Travis CI</th>
+<th>Appveyor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Platforms:</em></td>
+<td><em>Multiple</em></td>
+<td><em>Linux</em></td>
+<td><em>macOS</em></td>
+<td><em>Windows</em></td>
+</tr>
+<tr class="even">
+<td>R CMD check</td>
+<td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=rPython" alt="LTR_Linux=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=rPython" alt="DEV_Linux=true Status" /></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=rPython" alt="LTR_mac=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=rPython" alt="DEV_mac=true Status" /></a></td>
+<td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
+</tr>
+<tr class="odd">
+<td>Test coverage</td>
+<td><a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/rPython/graph/badge.svg" alt="Coverage Status"/></a></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 
 #### CRAN
 
@@ -56,7 +94,7 @@ install.packages("RQGIS")
 -   the latest RQGIS development version from Github with:
 
 ``` r
-ghit::install_github("jannes-m/RQGIS")
+devtools::install_github("jannes-m/RQGIS")
 ```
 
 RQGIS usage
@@ -78,35 +116,12 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 
 Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
+Let's say we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
+
 ``` r
-# attach RQGIS
 library("RQGIS")
-
-# set the environment, i.e. specify all the paths necessary to run QGIS from 
-# within R
-my_env <- set_env()
-# under Windows set_env would be much faster if you specify the root path:
-# my_env <- set_env("C:/OSGeo4W~1")
-# have a look at the paths necessary to run QGIS from within R
-
-my_env
-
-## $root
-## [1] "C:\\OSGeo4W64"
-##
-## $qgis_prefix_path
-## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
-##
-## $python_plugins
-## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
-```
-
-Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
-
-``` r
 # look for a function that contains the words "polygon" and "centroid"
-find_algorithms(search_term = "polygon centroid", 
-                qgis_env = my_env)
+find_algorithms(search_term = "polygoncentroid")
 
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"                       
 ## [2] "Polygon centroids------------------------------------>qgis:polygoncentroids"
@@ -116,9 +131,7 @@ find_algorithms(search_term = "polygon centroid",
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
-get_usage(alg = "qgis:polygoncentroids",
-          qgis_env = my_env,
-          intern = TRUE)
+get_usage(alg = "qgis:polygoncentroids", intern = TRUE)
 
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"
 ## [2] "ALGORITHM: Polygon centroids"                        
@@ -132,8 +145,7 @@ get_usage(alg = "qgis:polygoncentroids",
 Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
 
 ``` r
-params <- get_args_man(alg = "qgis:polygoncentroids", 
-                       qgis_env = my_env)
+params <- get_args_man(alg = "qgis:polygoncentroids")
 params
 ## $INPUT_LAYER
 ## [1] "None"
@@ -156,8 +168,7 @@ Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with th
 ``` r
 out <- run_qgis(alg = "qgis:polygoncentroids",
                 params = params,
-                load_output = params$OUTPUT_LAYER,
-                qgis_env = my_env)
+                load_output = params$OUTPUT_LAYER)
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.
