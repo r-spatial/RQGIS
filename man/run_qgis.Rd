@@ -19,7 +19,8 @@ that you can either specify R named arguments directly via the triple dots
 two methods. See the example section, \code{\link[=pass_args]{pass_args()}} and \code{\link[=get_args_man]{get_args_man()}} for
 more details.}
 
-\item{load_output}{If \code{TRUE}, all QGIS output files (vector and raster data)
+\item{load_output}{If \code{TRUE}, all QGIS output files (\code{\link[sf:sf]{sf::sf()}}-object in the
+case of vector data and \code{\link[raster:raster]{raster::raster()}}-object in the case of a raster)
 specified by the user (i.e. the user has to indicate output files) will be
 loaded into R. A list will be returned if there is more than one output file
 (e.g., \code{grass7:r.slope.aspect}). See the example section for more details.}
@@ -53,8 +54,9 @@ This workhorse function calls the QGIS Python API, and specifically
 Please note that one can also pass spatial R objects as input parameters
 where suitable (e.g., input layer, input raster). Supported formats are
 \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}}-, \code{\link[sp:SpatialLinesDataFrame]{sp::SpatialLinesDataFrame()}}-,
-\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}- and \code{\link[raster:raster]{raster::raster()}}-objects. See the
-example section for more details.
+\code{\link[sp:SpatialPolygonsDataFrame]{sp::SpatialPolygonsDataFrame()}}-, \code{\link[sf:sf]{sf::sf()}}- (of class \code{sf}, \code{sfc} as
+well as \code{sfg}), and \code{\link[raster:raster]{raster::raster()}}-objects. See the example section for
+more details.
 
 GRASS users do not have to specify manually the GRASS region extent
 (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),

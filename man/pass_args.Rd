@@ -44,10 +44,10 @@ parameter-argument checks:
 \item The function collects all necessary arguments (to run QGIS) and
 respective default values which were not set by the user with the help of
 \code{\link[=get_args_man]{get_args_man()}}.
-\item If an argument value corresponds to a spatial object residing in R,
-the function will save the spatial object to a temporary folder, and use
-the corresponding file path to replace the spatial object in the
-parameter-argument list.
+\item If an argument value corresponds to a spatial object residing in R
+(\code{sp}-, \code{sf}- or \code{raster}-objects are supported), the function will save
+the spatial object to a temporary folder, and use the corresponding file
+path to replace the spatial object in the parameter-argument list.
 \item If the user only specified the name of an output file (e.g.
 "slope.asc") and not a complete path, the function will save the output
 in the temporary folder, i.e. to \code{file.path(tempdir(), "slope.asc")}.

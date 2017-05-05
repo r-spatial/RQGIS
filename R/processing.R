@@ -592,10 +592,10 @@ get_args_man <- function(alg = "", options = FALSE,
 #'     \item The function collects all necessary arguments (to run QGIS) and 
 #'     respective default values which were not set by the user with the help of
 #'     [get_args_man()].
-#'     \item If an argument value corresponds to a spatial object residing in R,
-#'     the function will save the spatial object to a temporary folder, and use
-#'     the corresponding file path to replace the spatial object in the 
-#'     parameter-argument list.
+#'     \item If an argument value corresponds to a spatial object residing in R 
+#'     (`sp`-, `sf`- or `raster`-objects are supported), the function will save 
+#'     the spatial object to a temporary folder, and use the corresponding file 
+#'     path to replace the spatial object in the parameter-argument list.
 #'     \item If the user only specified the name of an output file (e.g. 
 #'     "slope.asc") and not a complete path, the function will save the output
 #'     in the temporary folder, i.e. to `file.path(tempdir(), "slope.asc")`.
@@ -844,50 +844,52 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   params
 }
 
-#' @title Interface to QGIS commands
-#' @description `run_qgis` calls QGIS algorithms from within R while passing the 
+#'@title Interface to QGIS commands
+#'@description `run_qgis` calls QGIS algorithms from within R while passing the 
 #'  corresponding function arguments.
-#' @param alg Name of the GIS function to be used (see [find_algorithms()]).
-#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as R
+#'@param alg Name of the GIS function to be used (see [find_algorithms()]).
+#'@param ... Triple dots can be used to specify QGIS geoalgorithm arguments as R
 #'  named arguments. For more details, please refer to [pass_args()].
-#' @param params Parameter-argument list for a specific geoalgorithm. Please note
+#'@param params Parameter-argument list for a specific geoalgorithm. Please note
 #'  that you can either specify R named arguments directly via the triple dots 
 #'  (see above) or via a parameter-argument list. However, you may not mix the 
 #'  two methods. See the example section, [pass_args()] and [get_args_man()] for
 #'  more details.
-#' @param load_output If `TRUE`, all QGIS output files (vector and raster data) 
+#'@param load_output If `TRUE`, all QGIS output files ([sf::sf()]-object in the 
+#'  case of vector data and [raster::raster()]-object in the case of a raster) 
 #'  specified by the user (i.e. the user has to indicate output files) will be 
 #'  loaded into R. A list will be returned if there is more than one output file
 #'  (e.g., `grass7:r.slope.aspect`). See the example section for more details.
-#' @param check_params If `TRUE` (default), it will be checked if all 
+#'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order 
 #'  (deprecated).
-#' @param show_msg Logical, if `TRUE`, Python messages that occured during the 
+#'@param show_msg Logical, if `TRUE`, Python messages that occured during the 
 #'  algorithm execution will be shown (deprecated).
-#' @param qgis_env Environment containing all the paths to run the QGIS API. For 
+#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to [set_env()].
-#' @details This workhorse function calls the QGIS Python API, and specifically 
+#'@details This workhorse function calls the QGIS Python API, and specifically 
 #'  `processing.runalg`.
-#' @return The function prints a list (named according to the output parameters)
-#'  containing the paths to the files created by QGIS. If not otherwise
-#'  specified, the function saves the QGIS generated output files in the
-#'  temporary folder (created by QGIS). Optionally, function parameter
+#'@return The function prints a list (named according to the output parameters) 
+#'  containing the paths to the files created by QGIS. If not otherwise 
+#'  specified, the function saves the QGIS generated output files in the 
+#'  temporary folder (created by QGIS). Optionally, function parameter 
 #'  `load_output` loads spatial QGIS output (vector and raster data) into R.
-#' @note Please note that one can also pass spatial R objects as input parameters
+#'@note Please note that one can also pass spatial R objects as input parameters
 #'  where suitable (e.g., input layer, input raster). Supported formats are 
 #'  [sp::SpatialPointsDataFrame()]-, [sp::SpatialLinesDataFrame()]-, 
-#'  [sp::SpatialPolygonsDataFrame()]- and [raster::raster()]-objects. See the 
-#'  example section for more details.
+#'  [sp::SpatialPolygonsDataFrame()]-, [sf::sf()]- (of class `sf`, `sfc` as
+#'  well as `sfg`), and [raster::raster()]-objects. See the example section for
+#'  more details.
 #'  
 #'  GRASS users do not have to specify manually the GRASS region extent 
 #'  (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default), 
 #'  `run_qgis` (see [pass_args()] for more details) will automatically determine
 #'  the region extent based on the user-specified input layers.
-#' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @export
-#' @importFrom sf st_read
-#' @importFrom raster raster
-#' @importFrom reticulate py_run_string py_capture_output r_to_py
+#'@author Jannes Muenchow, Victor Olaya, QGIS core team
+#'@export
+#'@importFrom sf st_read
+#'@importFrom raster raster
+#'@importFrom reticulate py_run_string py_capture_output r_to_py
 #' @examples
 #' \dontrun{
 #' # calculate the slope of a DEM
