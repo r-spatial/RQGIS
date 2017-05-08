@@ -1,6 +1,7 @@
 #' @title Retrieve the environment settings to run QGIS from within R
 #' @description `set_env` tries to find all the paths necessary to run QGIS from
 #'   within R.
+#' @importFrom stringr str_detect
 #' @param root Root path to the QGIS-installation. If left empty, the function 
 #'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
 #'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
@@ -97,14 +98,23 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   if (Sys.info()["sysname"] == "Darwin") {
     if (is.null(root)) {
       
+      message("Checking for homebrew osgeo4mac installation on your system. \n")
       # check for homebrew QGIS installation
-      path <- system("find /usr/local/Cellar -name 'QGIS.app'", intern = TRUE)
+      path <- suppressWarnings(system2('find', c('/usr/local/Cellar', '-name', 'QGIS.app'), 
+                                       stdout = TRUE, stderr = TRUE))
       
-      if (length(path) == 1) {
-        root <- path
+      no_homebrew <- str_detect(path, "find: /usr/local")
+      
+      if (no_homebrew[1] == TRUE) {
+        message("Found no QGIS homebrew installation. 
+                Checking for QGIS Kyngchaos version now.")
       }
-
-            # check for multiple homebrew installations
+      if (no_homebrew == FALSE && length(path) == 1) {
+        root <- path
+        message("Found QGIS osgeo4mac installation. Setting environment...")
+      } 
+      
+      # check for multiple homebrew installations
       if (length(path) == 2) {
         
         # extract version out of root path
@@ -118,19 +128,23 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
         # catch all possibilites
         if (dev == TRUE && path1 > path2) {
           root <- path[1]
+          message("Found QGIS osgeo4mac DEV installation. Setting environment...")
         } else if (dev == TRUE && path1 < path2) {
           root <- path[2]
+          message("Found QGIS osgeo4mac DEV installation. Setting environment...")
         } else if (dev == FALSE && path1 > path2) {
           root <- path[2]
+          message("Found QGIS osgeo4mac LTR installation. Setting environment...")
         } else if (dev == FALSE && path1 < path2) {
           root <- path[1]
+          message("Found QGIS osgeo4mac LTR installation. Setting environment...")
         }
       }
       # just in case if someone has more than 2 QGIS homebrew installations
       # (very unlikely though)
       if (length(path) > 2) {
-        stop(paste("We recognized more than 2 QGIS homebrew installations on ", 
-                   "your System. Please clean up or set 'set_env()' manually."))
+        stop("Found more than 2 QGIS homebrew installations. 
+             Please clean up or set 'set_env()' manually.")
       }
       
       # check for Kyngchaos installation
@@ -138,10 +152,11 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
         if (length(path) > 0) {
           root <- path
+          message("Found QGIS Kyngchaos installation. Setting environment...")
         }
       }
+      }
     }
-  }
   
   if (Sys.info()["sysname"] == "Linux") {
     if (is.null(root)) {
@@ -164,11 +179,11 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
              "The Kyngchaos installation throws some warnings during ", 
              "processing. However, usage/outcome is not affected and you can ", 
              "continue using the Kyngchaos installation."))
-    }
+  }
   
   # return your result
   qgis_env
-}
+  }
 
 #' @title Open a QGIS application
 #' @description `open_app` first sets all the correct paths to the QGIS Python

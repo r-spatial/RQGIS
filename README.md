@@ -5,11 +5,11 @@ Important news
 
 -   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on.
 
--   You might encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS. See [this issue](http://hub.qgis.org/issues/16332). Using SAGA 3.0.0 or SAGA 4.0.1 should solve the issue.
+-   If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -&gt; please reinstall `saga-gis-lts` (v2.3.1) to fix the issue.
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--01-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--08-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -67,13 +67,14 @@ Important news
 /usr/share/qgis/python/plugins/processing-->
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/r_qgis_puzzle.png", width="40%" height="40%" style="display: block; margin: auto;" />
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/r_qgis_puzzle.png" width="40%"/>
+</p>
 The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
 2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
-3.  R users can just use one package (RQGIS) instead of using RSAGA and spgrass to access SAGA and GRASS functions. This, however, does not mean that RSAGA and spgrass are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
+3.  R users can just use one package (RQGIS) instead of using RSAGA and rgrass7 to access SAGA and GRASS functions. This, however, does not mean that RSAGA and rgrass7 are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 Installation
 ============
@@ -119,9 +120,33 @@ Now that we have a spatial object, we can move on to using RQGIS. First of all, 
 Let's say we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
 
 ``` r
+# attach RQGIS
 library("RQGIS")
-# look for a function that contains the words "polygon" and "centroid"
-find_algorithms(search_term = "polygoncentroid")
+
+# set the environment, i.e. specify all the paths necessary to run QGIS from 
+# within R
+set_env()
+# under Windows set_env would be much faster if you specify the root path:
+# set_env("C:/OSGeo4W~1")
+
+
+## $root
+## [1] "C:\\OSGeo4W64"
+##
+## $qgis_prefix_path
+## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr"
+##
+## $python_plugins
+## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
+```
+
+Please note, that `set_env` caches its output in a temporary folder, i.e., each time we call `set_env` again, it checks if there is already a cached version available. If so, the cache will be used.
+
+Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Note that you can use regular expressions. Here, we look for a geoalgorithm that contains the words "polygon" and "centroid".
+
+``` r
+library("RQGIS")
+find_algorithms(search_term = "([Pp]olygon)(centroid)")
 
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"                       
 ## [2] "Polygon centroids------------------------------------>qgis:polygoncentroids"
@@ -180,8 +205,9 @@ plot(ger)
 plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/10_plot_ger.png", width="60%" height="60%" style="display: block; margin: auto;" />
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/10_plot_ger.png" width="60%"/>
+</p>
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
 (R)QGIS modifications (v. 2.16-2.18.1)
