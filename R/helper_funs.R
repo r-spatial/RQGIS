@@ -593,6 +593,7 @@ check_for_server <- function() {
         
       }
       if (platform == "Ubuntu") {
+        system("export DISPLAY=:99")
         system2("/etc/init.d/xvfb", "start")
         system2("sleep", "3")
       }
