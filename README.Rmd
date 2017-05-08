@@ -29,8 +29,7 @@ rvers <- "3.2.0"
 * **Please update to QGIS version >= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. 
 This version contains a major bug fix which RQGIS relies on.
 
-* You might encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS. 
-See [this issue](http://hub.qgis.org/issues/16332). Using SAGA 3.0.0 or SAGA 4.0.1 should solve the issue.
+* If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -> please reinstall `saga-gis-lts` (v2.3.1) to fix the issue. 
 
 #### General
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
@@ -104,7 +103,7 @@ Now that we have a spatial object, we can move on to using RQGIS. First of all, 
 If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
 
 Let's say we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
-=======
+
 ```{r, warning = FALSE, error = FALSE}
 # attach RQGIS
 library("RQGIS")
@@ -127,10 +126,6 @@ set_env()
 ```
 
 Please note, that `set_env` caches its output in a temporary folder, i.e., each time we call `set_env` again, it checks if there is already a cached version available. If so, the cache will be used.
-
-Secondly, we would like to establish a tunnel to the Python QGIS API
-
-# GO ON FROM HERE--------
 
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Note that you can use regular expressions. Here, we look for a geoalgorithm that contains the words "polygon" and "centroid".
 
