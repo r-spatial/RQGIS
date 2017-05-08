@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,24 +83,27 @@
     </div>
 
     
-    <p><code>open_grass_help</code> opens the GRASS online help for a 
-  specific GRASS geoalgorithm.</p>
+    <p><code>open_grass_help</code> opens the GRASS online help for a specific
+GRASS geoalgorithm.</p>
     
 
-    <pre><span class='fu'>open_grass_help</span>(<span class='no'>alg</span>)</pre>
+    <pre class="usage"><span class='fu'>open_grass_help</span>(<span class='no'>alg</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>alg</dt>
-      <dd>The name of the algorithm for which one wishes to retrieve
-arguments and default values.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>alg</th>
+      <td><p>The name of the GRASS geoalgorithm for which one wishes to open
+the online help.</p></td>
+    </tr>
+    </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># open_grass_help("grass7:r.sunmask")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='fu'>open_grass_help</span>(<span class='st'>"grass7:r.sunmask"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

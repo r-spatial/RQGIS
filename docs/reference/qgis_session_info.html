@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -82,46 +84,44 @@
 
     
     <p><code>qgis_session_info</code> reports the version of QGIS and
-  installed third-party providers (so far GRASS 6, GRASS 7, and SAGA). 
-  Additionally, it figures out with which SAGA versions the QGIS installation
-  is compatible.</p>
+installed third-party providers (so far GRASS 6, GRASS 7, and SAGA).
+Additionally, it figures out with which SAGA versions the QGIS installation
+is compatible.</p>
     
 
-    <pre><span class='fu'>qgis_session_info</span>(<span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>qgis_session_info</span>(<span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>qgis_env</dt>
-      <dd>Environment settings containing all the paths to run the QGIS
-API. For more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment settings containing all the paths to run the QGIS
+API. For more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list with following elements:
-<ol>
-<li>qgis_version: Name and version of QGIS used by RQGIS.
- </li>
-<li>grass6: GRASS 6 version number. Under Linux, the function only checks if
- GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
- a version number.
- </li>
-<li>grass7: GRASS 7 version number. Under Linux, the function only checks if
- GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
- a version number
- </li>
-<li>saga: The installed SAGA version used by QGIS.
- </li>
-<li>supported_saga_versions: character vector representing the SAGA
- versions supported by the QGIS installation.
-</li>
-</ol></p>
+    <p>The function returns a list with following elements:</p><ol>
+<li><p>qgis_version: Name and version of QGIS used by RQGIS.</p></li>
+<li><p>grass6: GRASS 6 version number. Under Linux, the function only checks if
+GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+a version number.</p></li>
+<li><p>grass7: GRASS 7 version number. Under Linux, the function only checks if
+GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
+a version number</p></li>
+<li><p>saga: The installed SAGA version used by QGIS.</p></li>
+<li><p>supported_saga_versions: character vector representing the SAGA
+versions supported by the QGIS installation.</p></li>
+</ol>
+
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># qgis_session_info()</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='fu'>qgis_session_info</span>()
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

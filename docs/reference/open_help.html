@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm — open_help • RQGIS</title>
+<title>Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm — open_help • RQGIS</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -77,52 +79,57 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorihm</h1>
+    <h1>Access the QGIS/GRASS online help for a specific (Q)GIS geoalgorithm</h1>
     </div>
 
     
-    <p><code>open_help</code> opens the online help for a specific (Q)GIS 
-  geoalgorithm. This is the online help one also encounters in the QGIS GUI.
-  In the case of GRASS algorithms this is actually the GRASS online
-  documentation.</p>
+    <p><code>open_help</code> opens the online help for a specific (Q)GIS
+geoalgorithm. This is the online help one also encounters in the QGIS GUI.
+In the case of GRASS algorithms this is actually the GRASS online
+documentation.</p>
     
 
-    <pre><span class='fu'>open_help</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>open_help</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>alg</dt>
-      <dd>The name of the algorithm for which one wishes to retrieve 
-arguments and default values.</dd>
-      <dt>qgis_env</dt>
-      <dd>Environment containing all the paths to run the QGIS API. For
-more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>alg</th>
+      <td><p>The name of the algorithm for which one wishes to retrieve
+arguments and default values.</p></td>
+    </tr>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment containing all the paths to run the QGIS API. For
+more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The function opens the default web browser, and displays the help for
-  the specified algorithm.</p>
+the specified algorithm.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>Bar a few exceptions <code>open_help</code> works for all QGIS, GRASS and
-  SAGA geoalgorithms. The online help of other third-party providers,
-  however, has not been tested so far.</p>
+SAGA geoalgorithms. The online help of other third-party providers,
+however, has not been tested so far.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Please note that <code>open_help</code> requires a <strong>working Internet 
-  connection</strong>.</p>
+    <p>Please note that <code>open_help</code> requires a <strong>working Internet
+connection</strong>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># # QGIS example</span>
-<span class='co'># open_help(alg = "qgis:addfieldtoattributestable")</span>
-<span class='co'># # GRASS example</span>
-<span class='co'># open_help(alg = "grass:v.overlay")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='co'># QGIS example</span>
+  <span class='fu'>open_help</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"qgis:addfieldtoattributestable"</span>)
+  <span class='co'># GRASS example</span>
+  <span class='fu'>open_help</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"grass:v.overlay"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,87 +83,107 @@
     </div>
 
     
-    <p><code>run_qgis</code> calls QGIS algorithms from within R while passing
- the corresponding function arguments.</p>
+    <p><code>run_qgis</code> calls QGIS algorithms from within R while passing the
+corresponding function arguments.</p>
     
 
-    <pre><span class='fu'>run_qgis</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>check_params</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>show_msg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>run_qgis</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>check_params</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>show_msg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>alg</dt>
-      <dd>Name of the GIS function to be used (see 
-<code><a href='find_algorithms.html'>find_algorithms</a></code>).</dd>
-      <dt>params</dt>
-      <dd>A list of geoalgorithm function arguments that should be used in
-conjunction with the selected (Q)GIS function (see 
-<code><a href='get_args_man.html'>get_args_man</a></code>). Please make sure to provide all function 
-arguments in the correct order. To make sure this is the case, it is 
-recommended to use the convenience function <code><a href='get_args_man.html'>get_args_man</a></code>.</dd>
-      <dt>check_params</dt>
-      <dd>If <code>TRUE</code> (default), it will be checked if all 
-geoalgorithm function arguments were provided in the correct order.</dd>
-      <dt>show_msg</dt>
-      <dd>Logical, if <code>TRUE</code>, Python messages that occured during
-the algorithm execution will be shown.</dd>
-      <dt>load_output</dt>
-      <dd>Character vector containing paths to (an) output file(s) in
-order to load the QGIS output directly into R (optional). If 
-<code>load_output</code> consists of more than one element, a list will be 
-returned. See the example section for more details.</dd>
-      <dt>qgis_env</dt>
-      <dd>Environment containing all the paths to run the QGIS API. For
-more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>alg</th>
+      <td><p>Name of the GIS function to be used (see <code><a href='find_algorithms.html'>find_algorithms()</a></code>).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Triple dots can be used to specify QGIS geoalgorithm arguments as R
+named arguments. For more details, please refer to <code><a href='pass_args.html'>pass_args()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>params</th>
+      <td><p>Parameter-argument list for a specific geoalgorithm. Please note
+that you can either specify R named arguments directly via the triple dots
+(see above) or via a parameter-argument list. However, you may not mix the
+two methods. See the example section, <code><a href='pass_args.html'>pass_args()</a></code> and <code><a href='get_args_man.html'>get_args_man()</a></code> for
+more details.</p></td>
+    </tr>
+    <tr>
+      <th>load_output</th>
+      <td><p>If <code>TRUE</code>, all QGIS output files (vector and raster data)
+specified by the user (i.e. the user has to indicate output files) will be
+loaded into R. A list will be returned if there is more than one output file
+(e.g., <code>grass7:r.slope.aspect</code>). See the example section for more details.</p></td>
+    </tr>
+    <tr>
+      <th>check_params</th>
+      <td><p>If <code>TRUE</code> (default), it will be checked if all
+geoalgorithm function arguments were provided in the correct order
+(deprecated).</p></td>
+    </tr>
+    <tr>
+      <th>show_msg</th>
+      <td><p>Logical, if <code>TRUE</code>, Python messages that occured during the
+algorithm execution will be shown (deprecated).</p></td>
+    </tr>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment containing all the paths to run the QGIS API. For
+more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>If not otherwise specified, the function saves the QGIS generated 
- output files in a temporary folder. Optionally, function parameter 
- <code>load_output</code> loads spatial QGIS output (vector and raster data) into
- R.</p>
+    <p>The function prints a list (named according to the output parameters)
+containing the paths to the files created by QGIS. If not otherwise
+specified, the function saves the QGIS generated output files in the
+temporary folder (created by QGIS). Optionally, function parameter
+<code>load_output</code> loads spatial QGIS output (vector and raster data) into R.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>This workhorse function calls the QGIS Python API through the command
- line. Specifically, it calls <code>processing.runalg</code>.</p>
+    <p>This workhorse function calls the QGIS Python API, and specifically
+<code>processing.runalg</code>.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
     <p>Please note that one can also pass spatial R objects as input parameters
- where suitable (e.g., input layer, input raster). Supported formats are
- <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>SpatialPointsDataFrame</a></code>-, 
- <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialLines'>SpatialLinesDataFrame</a></code>-, 
- <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPolygons'>SpatialPolygonsDataFrame</a></code>- and 
- <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster</a></code>-objects. See the example section for more 
- details.</p>
-    <p>GRASS users do not have to specify manually the GRASS region extent (function
-argument GRASS_REGION_PARAMETER). If &quot;None&quot;, <code>run_qgis</code> will
-automatically retrieve the region extent based on the input layers.</p>
+where suitable (e.g., input layer, input raster). Supported formats are
+<code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>sp::SpatialPointsDataFrame()</a></code>-, <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialLines'>sp::SpatialLinesDataFrame()</a></code>-,
+<code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPolygons'>sp::SpatialPolygonsDataFrame()</a></code>- and <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code>-objects. See the
+example section for more details.</p>
+<p>GRASS users do not have to specify manually the GRASS region extent
+(function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),
+<code>run_qgis</code> (see <code><a href='pass_args.html'>pass_args()</a></code> for more details) will automatically determine
+the region extent based on the user-specified input layers.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># # set the environment</span>
-<span class='co'># my_env &lt;- set_env()</span>
-<span class='co'># # find out how a function is called</span>
-<span class='co'># find_algorithms(search_term = "add", qgis_env = my_env)</span>
-<span class='co'># # specify parameters</span>
-<span class='co'># params &lt;- get_args_man("saga:addcoordinatestopoints", qgis_env = my_env)</span>
-<span class='co'># # load random_points - a SpatialPointsDataFrame</span>
-<span class='co'># data(random_points, package = "RQGIS")</span>
-<span class='co'># params$INPUT &lt;- random_points</span>
-<span class='co'># # Here I specify a SpatialPointsDataFrame as input, but one could also</span>
-<span class='co'># # specify the path to a spatial object file (e.g., shapefile), e.g.;</span>
-<span class='co'># # params$INPUT &lt;- "random_points.shp"</span>
-<span class='co'># params$OUTPUT &lt;- "output.shp"</span>
-<span class='co'># # Run the QGIS API and load its output into R</span>
-<span class='co'># run_qgis(alg = "saga:addcoordinatestopoints",</span>
-<span class='co'>#          params = params,</span>
-<span class='co'>#          load_output = params$OUTPUT,</span>
-<span class='co'>#          qgis_env = my_env)</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='co'># calculate the slope of a DEM</span>
+  <span class='co'># load dem - a raster object</span>
+  <span class='fu'>data</span>(<span class='no'>dem</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"RQGIS"</span>)
+  <span class='co'># find out the name of a GRASS function with which to calculate the slope</span>
+  <span class='fu'><a href='find_algorithms.html'>find_algorithms</a></span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='st'>"grass7.*slope"</span>)
+  <span class='co'># find out how to use the function</span>
+  <span class='no'>alg</span> <span class='kw'>&lt;-</span> <span class='st'>"grass7:r.slope.aspect"</span>
+  <span class='fu'><a href='get_usage.html'>get_usage</a></span>(<span class='no'>alg</span>)
+  <span class='co'># 1. run QGIS using R named arguments, and load the QGIS output back into R</span>
+  <span class='no'>slope</span> <span class='kw'>&lt;-</span> <span class='fu'>run_qgis</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>,
+                    <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='co'># 2. doing the same with a parameter-argument list</span>
+  <span class='no'>params</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>)
+  <span class='no'>slope</span> <span class='kw'>&lt;-</span> <span class='fu'>run_qgis</span>(<span class='no'>alg</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='no'>params</span>, <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='co'># 3. calculate the slope, the aspect and the pcurvature. </span>
+  <span class='no'>terrain</span> <span class='kw'>&lt;-</span> <span class='fu'>run_qgis</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>,
+                      <span class='kw'>aspect</span> <span class='kw'>=</span> <span class='st'>"aspect.asc"</span>, <span class='kw'>pcurvature</span> <span class='kw'>=</span> <span class='st'>"pcurv.asc"</span>,
+                      <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+  <span class='co'># the three output rasters are returned in a list of length 3</span>
+  <span class='no'>terrain</span>
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,57 +83,63 @@
     </div>
 
     
-    <p><code>get_args_man</code> retrieves automatically function arguments 
-and respective default values for a given QGIS geoalgorithm.</p>
+    <p><code>get_args_man</code> retrieves automatically function arguments and
+respective default values for a given QGIS geoalgorithm.</p>
     
 
-    <pre><span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>alg</dt>
-      <dd>The name of the algorithm for which one wishes to retrieve
-arguments and default values.</dd>
-      <dt>options</dt>
-      <dd>Sometimes one can choose between various options for a 
-function argument. Setting option to <code>TRUE</code> will automatically assume 
-one wishes to use the first option (default: <code>FALSE</code>).</dd>
-      <dt>qgis_env</dt>
-      <dd>Environment containing all the paths to run the QGIS API. For
-more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>alg</th>
+      <td><p>The name of the algorithm for which one wishes to retrieve
+arguments and default values.</p></td>
+    </tr>
+    <tr>
+      <th>options</th>
+      <td><p>Sometimes one can choose between various options for a
+function argument. Setting option to <code>TRUE</code> will automatically assume one
+wishes to use the first option (default: <code>FALSE</code>).</p></td>
+    </tr>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment containing all the paths to run the QGIS API. For
+more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list whose names correspond to the function 
-  arguments one needs to specify. The list elements correspond to the argument
-  specifications. The specified function arguments can serve as input for 
-  <code><a href='run_qgis.html'>run_qgis</a></code>&#39;s params argument. Please note that although 
-  <code>get_args_man</code> tries to retrieve default values, one still needs to 
-  specify some function arguments manually such as the input and the output 
-  layer.</p>
+    <p>The function returns a list whose names correspond to the function
+arguments one needs to specify. The list elements correspond to the
+argument specifications. The specified function arguments can serve as
+input for <code><a href='run_qgis.html'>run_qgis()</a></code>'s params argument. Please note that although
+<code>get_args_man</code> tries to retrieve default values, one still needs to specify
+some function arguments manually such as the input and the output layer.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p><code>get_args_man</code> basically mimics the behavior of the QGIS GUI. 
-  That means, for a given GIS algorithm, it captures automatically all 
-  arguments and default values. In the case that a function argument has
-  several options, one can indicate to use the first option (see also
-  <code><a href='get_options.html'>get_options</a></code>), which is the QGIS GUI default behavior.</p>
+    <p><code>get_args_man</code> basically mimics the behavior of the QGIS GUI. That
+means, for a given GIS algorithm, it captures automatically all arguments
+and default values. In the case that a function argument has several
+options, one can indicate to use the first option (see also
+<code><a href='get_options.html'>get_options()</a></code>), which is the QGIS GUI default behavior.</p>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>Please note that some default values can only be set after the user&#39;s 
-  input. For instance, the GRASS region extent will be determined 
-  automatically by <code><a href='run_qgis.html'>run_qgis</a></code> if left blank.</p>
+    <p>Please note that some default values can only be set after the user's
+input. For instance, the GRASS region extent will be determined
+automatically by <code><a href='run_qgis.html'>run_qgis()</a></code> if left blank.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># get_args_man(alg = "qgis:addfieldtoattributestable")</span>
-<span class='co'># # and using the option argument</span>
-<span class='co'># get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"qgis:addfieldtoattributestable"</span>)
+  <span class='co'># and using the option argument</span>
+  <span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>"qgis:addfieldtoattributestable"</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

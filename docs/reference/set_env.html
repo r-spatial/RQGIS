@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,41 +83,56 @@
     </div>
 
     
-    <p><code>set_env</code> tries to find all the paths necessary to run QGIS
-  from within R.</p>
+    <p><code>set_env</code> tries to find all the paths necessary to run QGIS from
+within R.</p>
     
 
-    <pre><span class='fu'>set_env</span>(<span class='kw'>root</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>ltr</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
+    <pre class="usage"><span class='fu'>set_env</span>(<span class='kw'>root</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>new</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>dev</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>root</dt>
-      <dd>Root path to the QGIS-installation. If left empty, the function
-looks for <code>qgis.bat</code> on the C: drive under Windows. On a
-Mac, it looks for <code>QGIS.app</code> under &quot;Applications&quot; and
-&quot;/usr/local/Cellar/&quot;. On Linux, <code>set_env</code> assumes that the root path
-is &quot;/usr&quot;.</dd>
-      <dt>ltr</dt>
-      <dd>If <code>TRUE</code>, <code>set_env</code> will use the long term release of 
-QGIS, if available (only for Windows).</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>root</th>
+      <td><p>Root path to the QGIS-installation. If left empty, the function
+looks for <code>qgis.bat</code> on the C: drive under Windows. On a Mac, it looks for
+<code>QGIS.app</code> under "Applications" and "/usr/local/Cellar/". On Linux,
+<code>set_env</code> assumes that the root path is "/usr".</p></td>
+    </tr>
+    <tr>
+      <th>new</th>
+      <td><p>When called for the first time in an R session, <code>set_env</code> caches
+its output. Setting <code>new</code> to <code>TRUE</code> resets the cache when calling <code>set_env</code>
+again. Otherwise, the cached output will be loaded back into R even if you
+used new values for function arguments <code>root</code> and/or <code>dev</code>.</p></td>
+    </tr>
+    <tr>
+      <th>dev</th>
+      <td><p>If set to <code>TRUE</code>, <code>set_env</code> will use the development version of
+QGIS (if available).</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Currently not in use.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>The function returns a list containing all the path necessary to run 
-  QGIS from within R. This is the root path, the QGIS prefix path and the 
-  path to the Python plugins.</p>
+    <p>The function returns a list containing all the path necessary to run
+QGIS from within R. This is the root path, the QGIS prefix path and the
+path to the Python plugins.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># # Letting set_env look for the QGIS installation might take a while depending</span>
-<span class='co'># # on how full the C: drive is (Windows)</span>
-<span class='co'># set_env()</span>
-<span class='co'># # It is much faster (0 sec) to explicitly state the root path to the QGIS </span>
-<span class='co'># # installation</span>
-<span class='co'># set_env("C:/OSGEO4~1")  # Windows example</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='co'># Letting set_env look for the QGIS installation might take a while depending</span>
+  <span class='co'># on how full the C: drive is (Windows)</span>
+  <span class='fu'>set_env</span>()
+  <span class='co'># It is much faster (0 sec) to explicitly state the root path to the QGIS </span>
+  <span class='co'># installation</span>
+  <span class='fu'>set_env</span>(<span class='st'>"C:/OSGEO4~1"</span>)  <span class='co'># Windows example</span>
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
