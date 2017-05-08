@@ -568,3 +568,34 @@ get_output_names <- function(alg, qgis_env = set_env()) {
   utils::read.csv(file.path(tempdir(), "output.csv"), header = TRUE,
                   stringsAsFactors = FALSE) 
 }
+
+
+#' @import magrittr
+#' @importFrom parallel detectCores
+check_for_server <- function() {
+  
+  # check if x-server is running
+  is_running <- suppressWarnings(system2("pidof", "X", stdout = TRUE, stderr = TRUE))
+  
+  # if x-server is not detected...
+  if (!length(is_running) >= 1) {
+    
+    # check for Debian | Ubuntu
+    if (.Platform$OS.type == "unix") {
+      suppressWarnings(system2("lsb_release", "-a", stdout = TRUE,
+                               stderr = TRUE)) %>% 
+        grep("Distributor ID:", ., value = TRUE) %>% 
+        gsub("Distributor ID:\t", "", .) -> platform
+      
+      if (platform == "Debian") {
+        system("export DISPLAY=:99")
+        system("xdpyinfo -display $DISPLAY > /dev/null || Xvfb $DISPLAY -screen 99 1024x768x16 &")
+        
+      }
+      if (platform == "Ubuntu") {
+        system2("/etc/init.d/xvfb", "start")
+        system2("sleep", "3")
+      }
+    }
+  }
+}

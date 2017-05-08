@@ -201,6 +201,8 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
 #' @export
 open_app <- function(qgis_env = set_env()) {
   
+  check_for_server()
+  
   settings <- as.list(Sys.getenv())
   # since we are adding quite a few new environment variables these will remain
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
