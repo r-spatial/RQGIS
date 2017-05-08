@@ -34,7 +34,8 @@ Imports:
          tools,
          sf (>= 0.3-4),
          reticulate,
-         readr
+         readr,
+         stringr
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,

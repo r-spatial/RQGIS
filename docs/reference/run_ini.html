@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Normalized difference vegetation index for the Mongón study area. — ndvi • RQGIS</title>
+<title>Reproduce o4w_env.bat script in R — run_ini • RQGIS</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,41 +79,50 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Normalized difference vegetation index for the Mongón study area.</h1>
+    <h1>Reproduce o4w_env.bat script in R</h1>
     </div>
 
     
-    <p>NDVI <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code> (EPSG:32717) computed from a
-Landsat scene (path 9, row 67, acquisition date: 09/22/2000; USGS 2013).
-For more details, please refer to Muenchow et al. (2013).</p>
+    <p>Windows helper function to start QGIS application. Basically,
+the code found in all .bat files found in etc/ini (most likely
+"C:/OSGEO4~1/etc/ini") is reproduced within R.</p>
     
 
-        
-    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
-
-    <p>A <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code> with 117 rows and 117 columns:</p><dl class='dl-horizontal'>
-<dt>ndvi</dt><dd><p>Normalized difference vegetation index.</p></dd>
-</dl>
+    <pre class="usage"><span class='fu'>run_ini</span>(<span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
-    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment settings containing all the paths to run the QGIS
+API. For more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
+    
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Muenchow, J., Bräuning, A., Rodríguez, E.F. &amp; von Wehrden, H. (2013):
-Predictive mapping of species richness and plant species' distributions of a
-Peruvian fog oasis along an altitudinal gradient. Biotropica 45, 5, 557-566,
-doi: 10.1111/btp.12049.</p>
-<p>USGS (2013): U.S. Geological Survey. Earth Explorer. Available at:
-http://earthexplorer.usgs.gov/ (last accessed 1 March 2013).</p>
+    <p>The function changes the system settings using <code><a href='http://www.rdocumentation.org/packages/base/topics/Sys.setenv'>base::Sys.setenv()</a></code>.</p>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='fu'>run_ini</span>()
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
       
-      <li><a href="#format">Format</a></li>
+      <li><a href="#value">Value</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
-      <li><a href="#references">References</a></li>
-          </ul>
+    <h2>Author</h2>
+    
+Jannes Muenchow
 
   </div>
 </div>

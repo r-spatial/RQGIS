@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -82,27 +84,36 @@
 
     
     <p>This helper function constructs the batch and Python scripts
-  which are necessary to run QGIS from the command line.</p>
+which are necessary to run QGIS from the command line.</p>
     
 
-    <pre><span class='fu'>execute_cmds</span>(<span class='kw'>processing_name</span> <span class='kw'>=</span> <span class='st'>"processing.alglist"</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='st'>""</span>,
+    <pre class="usage"><span class='fu'>execute_cmds</span>(<span class='kw'>processing_name</span> <span class='kw'>=</span> <span class='st'>"processing.alglist"</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>(), <span class='kw'>intern</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>processing_name</dt>
-      <dd>Name of the function from the processing library that
-should be used.</dd>
-      <dt>params</dt>
-      <dd>Parameter to be used with the processing function.</dd>
-      <dt>qgis_env</dt>
-      <dd>Environment containing all the paths to run the QGIS API. For
-more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-      <dt>intern</dt>
-      <dd>Logical, if <code>TRUE</code> the function captures the command line
-output as an <code>R</code> character vector (see also 
-<code><a href='http://www.rdocumentation.org/packages/base/topics/system'>system</a></code>).</dd>
-    </dl>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>processing_name</th>
+      <td><p>Name of the function from the processing library that
+should be used.</p></td>
+    </tr>
+    <tr>
+      <th>params</th>
+      <td><p>Parameter to be used with the processing function.</p></td>
+    </tr>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment containing all the paths to run the QGIS API. For
+more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>intern</th>
+      <td><p>Logical, if <code>TRUE</code> the function captures the command line
+output as an <code>R</code> character vector (see also
+<code><a href='http://www.rdocumentation.org/packages/base/topics/system'>base::system()</a></code>).</p></td>
+    </tr>
+    </table>
     
 
   </div>

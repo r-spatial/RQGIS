@@ -25,12 +25,14 @@
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
-<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
 <!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
+
+
   </head>
 
   <body>
@@ -81,53 +83,59 @@
     </div>
 
     
-    <p><code>find_algorithms</code> lists or queries all QGIS algorithms
-  which can be used accessed through the command line.</p>
+    <p><code>find_algorithms</code> lists or queries all QGIS algorithms which can
+be accessed via the QGIS Python API.</p>
     
 
-    <pre><span class='fu'>find_algorithms</span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>(), <span class='kw'>name_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>intern</span> <span class='kw'>=</span> <span class='fu'>ifelse</span>(<span class='fu'>Sys.info</span>()[<span class='st'>"sysname"</span>] <span class='kw'>==</span> <span class='st'>"Windows"</span>, <span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>))</pre>
+    <pre class="usage"><span class='fu'>find_algorithms</span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>name_only</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
-    <dl class="dl-horizontal">
-      <dt>search_term</dt>
-      <dd>A character to query QGIS functions, i.e. to list only 
-functions which contain the indicated string. If empty (<code>&quot;&quot;</code>), the
-default, all available functions will be returned.</dd>
-      <dt>qgis_env</dt>
-      <dd>Environment containing all the paths to run the QGIS API. For
-more information, refer to <code><a href='set_env.html'>set_env</a></code>.</dd>
-      <dt>name_only</dt>
-      <dd>If <code>TRUE</code>, the function returns only the name(s) of the
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>search_term</th>
+      <td><p>If (<code>NULL</code>), the default, all available functions will be
+returned. If <code>search_term</code> is a character, all available functions will be
+queried accordingly. The character string might also contain a regular
+expression (see examples).</p></td>
+    </tr>
+    <tr>
+      <th>name_only</th>
+      <td><p>If <code>TRUE</code>, the function returns only the name(s) of the
 found algorithms. Otherwise, a short function description will be returned
-as well (default).</dd>
-      <dt>intern</dt>
-      <dd>Logical, if <code>TRUE</code> the function captures the command line
-output as an <code>R</code> character vector (see also 
-<code><a href='http://www.rdocumentation.org/packages/base/topics/system'>system</a></code>).</dd>
-    </dl>
+as well (default).</p></td>
+    </tr>
+    <tr>
+      <th>qgis_env</th>
+      <td><p>Environment settings containing all the paths to run the QGIS
+API. For more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p></td>
+    </tr>
+    </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>The function returns QGIS function names and short descriptions as an
-  R character vector.</p>
+R character vector.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Function <code>find_algorithms</code> simply calls 
-  <code>processing.alglist</code> using Python.</p>
+    <p>Function <code>find_algorithms</code> simply calls <code>processing.alglist</code> using
+Python.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
-<span class='co'># # list all available QGIS algorithms on your system</span>
-<span class='co'># algs &lt;- find_algorithms()</span>
-<span class='co'># algs[1:15]</span>
-<span class='co'># # just find all native, i.e. QGIS-algorithms</span>
-<span class='co'># grep("qgis:", algs, value = TRUE)</span>
-<span class='co'># # find a function which adds coordinates</span>
-<span class='co'># find_algorithms(search_term = "add")</span>
-<span class='co'>## ---------------------------------------------</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
+  <span class='co'># list all available QGIS algorithms on your system</span>
+  <span class='no'>algs</span> <span class='kw'>&lt;-</span> <span class='fu'>find_algorithms</span>()
+  <span class='no'>algs</span>[<span class='fl'>1</span>:<span class='fl'>15</span>]
+  <span class='co'># find a function which adds coordinates</span>
+  <span class='fu'>find_algorithms</span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='st'>"add"</span>)
+  <span class='co'># find only QGIS functions</span>
+  <span class='fu'>find_algorithms</span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='st'>"qgis:"</span>)
+  <span class='co'># find QGIS and SAGA functions related to centroid computations</span>
+  <span class='fu'>find_algorithms</span>(<span class='kw'>search_term</span> <span class='kw'>=</span> <span class='st'>"centroid.+(qgis:|saga:)"</span>)
+})</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
