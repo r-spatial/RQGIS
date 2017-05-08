@@ -99,7 +99,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
   # tap osgeo4mac tap
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
    
   # install saga4 from url
   # - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/saga-test/Formula/saga4.rb; fi
