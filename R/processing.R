@@ -3,14 +3,15 @@
 #'   within R.
 #' @importFrom stringr str_detect
 #' @param root Root path to the QGIS-installation. If left empty, the function 
-#'   looks for `qgis.bat` on the C: drive under Windows. On a Mac, it looks for 
+#'   looks for `qgis.bat` first in the most likely locations (C:/OSGEO4~1, 
+#'   C:/OSGEO4~2) and else on the C: drive under Windows. On a Mac, it looks for
 #'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
 #'   `set_env` assumes that the root path is "/usr".
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
-#'   again. Otherwise, the cached output will be loaded back into R even if you
+#'   again. Otherwise, the cached output will be loaded back into R even if you 
 #'   used new values for function arguments `root` and/or `dev`.
-#' @param dev If set to `TRUE`, `set_env` will use the development version of
+#' @param dev If set to `TRUE`, `set_env` will use the development version of 
 #'   QGIS (if available).
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
@@ -48,8 +49,6 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   if (Sys.info()["sysname"] == "Windows") {
     
     if (is.null(root)) {
-      message("Trying to find OSGeo4W on your C: drive.")
-      
       # raw command
       # change to C: drive and (&) list all subfolders of C:
       # /b bare format (no heading, file sizes or summary)
@@ -61,20 +60,24 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       # to the directory when exiting the function
       cwd <- getwd()
       on.exit(setwd(cwd))
-      setwd("C:/")
+      # Look first in the most likely location
+      osgeo <- c("C:/OSGEO4~1", "C:/OSGEO4~2")
+      ind <- dir.exists(osgeo)
+      # just keep the existing directories
+      osgeo <- osgeo[ind]
+      # if there in fact is a 32- and a 64-bit version, take the 64-bit
+      # ("C:/OSGEO~1")
+      wd <- ifelse(length(osgeo) > 0, osgeo[1], "C:/")
+      message(sprintf("Trying to find QGIS in %s.", wd))
+      setwd(wd)
       # raw <- "dir /s /b | findstr"
       # make it more general, since C:/WINDOWS/System32 might not be part of
       # PATH on every Windows machine
-      raw <- "dir /s /b | %SystemRoot%\\System32\\findstr"
+      raw <- "dir /s /b | %SystemRoot%\\System32\\findstr /r"
       # search QGIS on the the C: drive
       cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
       root <- shell(cmd, intern = TRUE)
-      # # search GRASS
-      # cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
-      # tmp <- shell(cmd, intern = TRUE)
-      # # look for Python27
-      # cmd <- paste(raw, shQuote("Python27$"))
-      # shell(cmd, intern = TRUE)
+
       
       if (length(root) == 0) {
         stop("Sorry, I could not find QGIS on your C: drive.",
@@ -100,8 +103,9 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       
       message("Checking for homebrew osgeo4mac installation on your system. \n")
       # check for homebrew QGIS installation
-      path <- suppressWarnings(system2('find', c('/usr/local/Cellar', '-name', 'QGIS.app'), 
-                                       stdout = TRUE, stderr = TRUE))
+      path <- suppressWarnings(
+        system2('find', c('/usr/local/Cellar', '-name', 'QGIS.app'), 
+                stdout = TRUE, stderr = TRUE))
       
       no_homebrew <- str_detect(path, "find: /usr/local")
       
