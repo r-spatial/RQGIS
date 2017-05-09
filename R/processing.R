@@ -4,9 +4,9 @@
 #' @importFrom stringr str_detect
 #' @param root Root path to the QGIS-installation. If left empty, the function 
 #'   looks for `qgis.bat` first in the most likely locations (C:/OSGEO4~1, 
-#'   C:/OSGEO4~2) and secondly on the C: drive under Windows. On a Mac, it looks for
-#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
-#'   `set_env` assumes that the root path is "/usr".
+#'   C:/OSGEO4~2), and secondly on the C: drive under Windows. On a Mac, it
+#'   looks for `QGIS.app` under "Applications" and "/usr/local/Cellar/". On
+#'   Linux, `set_env` assumes that the root path is "/usr".
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R even if you 

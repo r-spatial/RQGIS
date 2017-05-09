@@ -9,9 +9,9 @@ set_env(root = NULL, new = FALSE, dev = FALSE, ...)
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
 looks for \code{qgis.bat} first in the most likely locations (C:/OSGEO4~1,
-C:/OSGEO4~2) and secondly on the C: drive under Windows. On a Mac, it looks for
-\code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On Linux,
-\code{set_env} assumes that the root path is "/usr".}
+C:/OSGEO4~2), and secondly on the C: drive under Windows. On a Mac, it
+looks for \code{QGIS.app} under "Applications" and "/usr/local/Cellar/". On
+Linux, \code{set_env} assumes that the root path is "/usr".}
 
 \item{new}{When called for the first time in an R session, \code{set_env} caches
 its output. Setting \code{new} to \code{TRUE} resets the cache when calling \code{set_env}
