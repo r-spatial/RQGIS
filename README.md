@@ -3,13 +3,13 @@
 Important news
 ==============
 
--   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on.
+-   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on. However, we strongly recommend to use the QGIS long-term release, currently 2.14.14!
 
 -   If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -&gt; please reinstall `saga-gis-lts` (v2.3.1) to fix the issue.
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--08-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--09-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -73,7 +73,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 The main advantages of RQGIS are:
 
 1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
-2.  It offers a broad suite of geoalgorithms making it possible to solve virtually any GIS problem.
+2.  It offers a broad suite of geoalgorithms making it possible to solve most GIS problem.
 3.  R users can just use one package (RQGIS) instead of using RSAGA and rgrass7 to access SAGA and GRASS functions. This, however, does not mean that RSAGA and rgrass7 are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 Installation
@@ -115,7 +115,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 # ger is of class "SpatialPolygonsDataFrame"
 ```
 
-Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation on your C: drive (Windows) though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R.
+Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. If you do not specify a path, `set_env` tries to find the OSGeo4W-installation first in the 'C:/OSGeo4W'-folders. If this is unsuccessful, it will search your C: drive though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R. This is why, `set_env` caches its result in a temporary folder, and loads it back into R when called again (to turn off this behavior set parameter `new` to `TRUE`).
 
 Let's say we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
 
@@ -140,17 +140,14 @@ set_env()
 ## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
 ```
 
-Please note, that `set_env` caches its output in a temporary folder, i.e., each time we call `set_env` again, it checks if there is already a cached version available. If so, the cache will be used.
-
 Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Note that you can use regular expressions. Here, we look for a geoalgorithm that contains the words "polygon" and "centroid".
 
 ``` r
 library("RQGIS")
 find_algorithms(search_term = "([Pp]olygon)(centroid)")
 
-## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"                       
-## [2] "Polygon centroids------------------------------------>qgis:polygoncentroids"
-## [3] "Polygon centroids------------------------------------>saga:polygoncentroids"
+## [1] "Polygon centroids------------------------------------>qgis:polygoncentroids"
+## [2] "Polygon centroids------------------------------------>saga:polygoncentroids"
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
@@ -158,13 +155,9 @@ This gives us two functions we could use. Here, we'll choose the QGIS function n
 ``` r
 get_usage(alg = "qgis:polygoncentroids", intern = TRUE)
 
-## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmp4Q9ylK"
-## [2] "ALGORITHM: Polygon centroids"                        
-## [3] "\tINPUT_LAYER <ParameterVector>"                      
-## [4] "\tOUTPUT_LAYER <OutputVector>"                        
-## [5] ""                                                    
-## [6] ""                                                    
-## [7] ""
+## ALGORITHM: Polygon centroids
+##  INPUT_LAYER <ParameterVector>
+##  OUTPUT_LAYER <OutputVector>
 ```
 
 Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
@@ -193,7 +186,20 @@ Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with th
 ``` r
 out <- run_qgis(alg = "qgis:polygoncentroids",
                 params = params,
-                load_output = params$OUTPUT_LAYER)
+                load_output = TRUE)
+## $OUTPUT_LAYER
+## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
+```
+
+Please note that you can also provide R named arguments instead of a parameter-argument list:
+
+``` r
+out <- run_qgis(alg = "qgis:polygoncentroids",
+                INPUT_LAYER = ger,
+                OUTPUT_LAYER = "ger_coords.shp",
+                load_output = TRUE)
+## $OUTPUT_LAYER
+## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
 ```
 
 Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations.
@@ -208,7 +214,7 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 <p align="center">
 <img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/10_plot_ger.png" width="60%"/>
 </p>
-Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
+Of course, this is a very simple example. We could have achieved the same using `sp::coordinates()`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
 (R)QGIS modifications (v. 2.16-2.18.1)
 ======================================
