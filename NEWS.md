@@ -1,7 +1,7 @@
 # RQGIS 0.2.0.9000
 
 ## Features
-  * RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `python_funs` contains two classes. The first, `Capture`,  was written by Barry Rowlingson and captures the printed output of `processing.alglist()`. The second, `RQGIS`, contains several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`).
+  * RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, `get_output_names`, etc.).
 
   * You can now use regular expression with `find_algorithms()`.
   
@@ -14,8 +14,6 @@
   * Under Windows `set_env()` now first searches the most likely places to find a QGIS installation.
   
   * `find_algorithms` now also accepts regular expressions as search term
-  
-  * new helper function `get_output_names` used in `run_qgis`
 
 ## Miscellaneous
 
