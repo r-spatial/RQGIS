@@ -11,6 +11,8 @@
   
   * When having multiple homebrew installations on mac (LTR and dev), the user can select which one to use with the `dev` argument in `set_env()`. Default uses the LTR version.
   
+  * Under Windows `set_env()` now first searches the most likely places to find a QGIS installation.
+  
   * `find_algorithms` now also accepts regular expressions as search term
   
   * new helper function `get_output_names` used in `run_qgis`
