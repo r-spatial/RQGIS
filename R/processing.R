@@ -29,7 +29,7 @@
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
 set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
-  
+  # ok, let's try to find QGIS first in the most likely place!
   dots <- list(...)
   if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
     warning("Function argument 'ltr' is deprecated. Please use 'dev' instead.", 
