@@ -5,7 +5,7 @@ Important news
 
 -   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on. However, we strongly recommend to use the QGIS long-term release, currently 2.14.14!
 
--   If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -&gt; please reinstall `saga-gis-lts` (v2.3.1) to fix the issue.
+-   If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -&gt; please re-install `saga-gis-lts` (v2.3.1) to fix the issue.
 
 #### General
 
@@ -72,9 +72,9 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 </p>
 The main advantages of RQGIS are:
 
-1.  It provides access to QGIS functionalities. Thereby, it calls Python from the command line (QGIS API) but R users can stay in their programming environment of choice without having to touch Python.
-2.  It offers a broad suite of geoalgorithms making it possible to solve most GIS problem.
-3.  R users can just use one package (RQGIS) instead of using RSAGA and rgrass7 to access SAGA and GRASS functions. This, however, does not mean that RSAGA and rgrass7 are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
+1.  It provides access to QGIS functionalities. Thereby, it calls Python QGIS API but R users can stay in their programming environment of choice without having to touch Python.
+2.  It offers a broad suite of geoalgorithms making it possible to solve most GIS problems.
+3.  R users can use just one package (RQGIS) instead of using RSAGA and rgrass7 to access SAGA and GRASS functions. This, however, does not mean that RSAGA and rgrass7 are obsolete since both packages offer various other advantages. For instance, RSAGA provides many user-friendly and ready-to-use GIS functions such as `rsaga.slope.asp.curv` and `multi.focal.function`.
 
 Installation
 ============
@@ -108,8 +108,6 @@ Subsequently, we will show you a typical workflow of how to use RQGIS. Basically
 library("raster")
 library("rgdal")
 
-# define path to a temporary folder
-dir_tmp <- tempdir()
 # download German administrative areas 
 ger <- getData(name = "GADM", country = "DEU", level = 1)
 # ger is of class "SpatialPolygonsDataFrame"
@@ -174,7 +172,7 @@ In our case, `qgis:polygoncentroids` has only two function arguments and no defa
 
 ``` r
 params$INPUT_LAYER  <- ger
-params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
+params$OUTPUT_LAYER <- file.path(tempdir(), "ger_coords.shp")
 out <- run_qgis(alg = "qgis:polygoncentroids",
                 params = params,
                 load_output = TRUE)
@@ -187,13 +185,13 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
 ``` r
 out <- run_qgis(alg = "qgis:polygoncentroids",
                 INPUT_LAYER = ger,
-                OUTPUT_LAYER = "ger_coords.shp",
+                OUTPUT_LAYER = file.path(tempdir(), "ger_coords.shp"),
                 load_output = TRUE)
 ## $OUTPUT_LAYER
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
 ```
 
-Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specifiy `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somehwere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R. Naturally, we would like to check if the result meets our expectations.
+Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specify `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somewhere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R. Naturally, we would like to check if the result meets our expectations.
 
 ``` r
 # first, plot the federal states of Germany
@@ -207,8 +205,16 @@ plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 </p>
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates()`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
+Advanced topics
+===============
+
+Calling the QGIS Python API
+---------------------------
+
+Internally, `open_app` first sets all necessary paths (among others the path to the QGIS Python binary) to run QGIS, and secondly opens a QGIS application with the help of [reticulate](https://github.com/rstudio/reticulate). Please note that `open_app` establishes a tunnel to the QGIS Pyton API which can only be closed by starting a new R session (see <https://github.com/rstudio/reticulate/issues/27>). On the one hand this means that we only have to set up the Python environment once and consequently subsequent processing is faster. Additionally, you can use your own Python commands to customize RQGIS as you wish. On the other hand, it also means that once you have run the first RQGIS command interacting with the QGIS Python API (e.g., `find_algorithms`, `get_usage`, etc.), you have to stay with the chosen QGIS version for this session. For instance, if you are using QGIS 2.14.14 (`qgis_session_info`), and you would like to use the developer version QGIS 2.18.7, you have to restart R. Then you can call `set_env(dev = TRUE)` and `open_app()` to use the QGIS developer version.
+
 (R)QGIS modifications (v. 2.16-2.18.1)
-======================================
+--------------------------------------
 
 If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
