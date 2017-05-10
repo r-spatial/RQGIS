@@ -19,9 +19,11 @@
   
   * The user can now specify QGIS geoalgorihm parameters as R named arguments using the ellipse-argument `...` (#58).
   
-  * Extensive error-/misspecification checking. To do so, we now submit a Python-dictionary - containing all parameters and arguments - to `processing.runalg` which allows also to check parameter names. Before the **args-argument simply converted our input in a list containing the arguments (but not the parameter names). We now also make sure that the user can only specify available options. And if the user provides the verbal notation, `pass_args` internally converts this input in the corresponding number notation as required by the QGIS API (#64, @tim-salabim; #65).
+  * Extensive error-/misspecification checking. To do so, we now submit a Python-dictionary - containing all parameters and arguments - to `processing.runalg` which allows also to check parameter names. Before the **args-argument simply converted our input in a list containing the arguments (but not the parameter names). Using the Python dictionary has the additional benefit that we no longer have to take care of the order in which the function parameters are specified. Besides, we now also make sure that the user can only specify available options. And if the user provides the verbal notation, `pass_args` internally converts this input in the corresponding number notation as required by the QGIS API (#64, @tim-salabim; #65).
   
   * We rewrote the `load_output`-argument of `run_qgis`. It now is a locigal argument. If `TRUE`, `run_qgis()` will automatically load all the output explicitly specified by the user (via the triple-dot argument) back into R.
+  
+  * changing the default for parameter `options` from `FALSE` to `TRUE` in `get_args_man`
 
 ## Miscellaneous
 
