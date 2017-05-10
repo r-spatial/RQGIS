@@ -55,7 +55,7 @@ This version contains a major bug fix which RQGIS relies on. However, we strongl
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 
-RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by using the QGIS API via the command line. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also [https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
+RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by establishing a tunnel to the Python QGIS API via the [reticulate-package](https://github.com/rstudio/reticulate). This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also [https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/r_qgis_puzzle.png" width="40%"/>
@@ -102,9 +102,7 @@ ger <- getData(name = "GADM", country = "DEU", level = 1)
 ```
 
 Now that we have a spatial object, we can move on to using RQGIS. First of all, we need to specify all the paths necessary to run the QGIS-API. Fortunately, `set_env` does this for us (assuming that QGIS and all necessary dependencies were installed correctly). The only thing we need to do is: specify the root path to the QGIS-installation. 
-If you do not specify a path, `set_env` tries to find the OSGeo4W-installation first in the 'C:/OSGeo4W'-folders. If this is unsuccessful, it will search your C: drive though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R. This is why, `set_env` caches its result in a temporary folder, and loads it back into R when called again (to turn off this behavior set parameter `new` to `TRUE`).
-
-Let's say we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*.
+If you do not specify a path, `set_env` tries to find the OSGeo4W-installation first in the 'C:/OSGeo4W'-folders. If this is unsuccessful, it will search your C: drive though this might take a while. If you are running RQGIS under Linux or on a Mac, `set_env` assumes that your root path is "/usr" and "/applications/QGIS.app/Contents", respectively. Please note, that most of the RQGIS functions, you are likely to work with (such as `find_algorithms`, `get_args_man` and `run_qgis`), require the output list (as returned by `set_env`) containing the paths to the various installations necessary to run QGIS from within R. This is why, `set_env` caches its result in a temporary folder, and loads it back into R when called again (to overwrite an existing cache, set parameter `new` to `TRUE`).
 
 ```{r, warning = FALSE, error = FALSE}
 # attach RQGIS
@@ -127,7 +125,7 @@ set_env()
 ## [1] "C:\\OSGeo4W64\\apps\\qgis-ltr\\python\\plugins"
 ```
 
-Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. We suspect that the function we are looking for contains the words *polygon* and *centroid*. Note that you can use regular expressions. Here, we look for a geoalgorithm that contains the words "polygon" and "centroid".
+Secondly, we would like to find out how the function in QGIS is called which gives us the centroids of a polygon shapefile. To do so, we use `find_algorithms`. Here, we look for a geoalgorithm that contains the words "polygon" and "centroid".  Note that you can use regular expressions.
 
 
 ```{r, warning = FALSE, error = FALSE}
@@ -148,7 +146,7 @@ get_usage(alg = "qgis:polygoncentroids", intern = TRUE)
 ##	OUTPUT_LAYER <OutputVector>
 ```
 
-Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function named `get_args_man`. This function basically mimics the behavior of the QGIS GUI, i.e. it retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list, i.e. exactly in the format as expected by `run_qgis` (see further below). If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
+Consequently `qgis:polygoncentroids` only expects a parameter called `INPUT_LAYER`, i.e. the path to a polygon shapefile whose centroid coordinates we wish to extract, and a parameter called `OUTPUT_LAYER`, i.e. the path to the output shapefile. Since it would be tedious to specify manually each and every function argument, especially if a function has more than two or three arguments, we have written a convenience function, named `get_args_man`, that retrieves all function arguments and respective default values for a given GIS function. It returns these values in the form of a list. If a function argument lets you choose between several options (drop-down menu in a GUI), setting `get_arg_man`'s `options`-argument to `TRUE` makes sure that the first option will be selected (QGIS GUI behavior). For example, `qgis:addfieldtoattributestable` has three options for the `FIELD_TYPE`-parameter, namely integer, float and string. Setting `options` to `TRUE` means that the field type of your new column will be of type integer.
 
 ```{r, error = FALSE}
 params <- get_args_man(alg = "qgis:polygoncentroids")
@@ -160,18 +158,12 @@ params
 ## [1] "None"
 ```
 
-In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. Tab-completion, as for instance provided by the wonderful RStudio IDE, greatly fascilitates this task. Please note that instead of specifying a path to INPUT\_LAYER (e.g. "ger.shp") you can also use a spatial object that resides in the global environment of R. Conveniently, `run_qgis` will save this spatial object to a temporary location for you later on (see below). Here, we use the SpatialPolygonsDataFrame `ger` as input layer.
+In our case, `qgis:polygoncentroids` has only two function arguments and no default values. Naturally, we need to specify manually our input and output layer. We can do so in two ways. Either we use directly our parameter-argument list... 
+
 
 ```{r}
-# specify input layer
 params$INPUT_LAYER  <- ger
-# path to the output shapefile
 params$OUTPUT_LAYER <- file.path(dir_tmp, "ger_coords.shp")
-```
-
-Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Aside from accepting spatial objects living in R as input, `run_qgis` also loads the result directly into R, if desired. Here, we would like to load the OUTPUT\_LAYER into R. To do so, we simply specify the desired file(s) in function argument `load_output` while assigning it/them to an object called `out`.
-
-```{r, error = FALSE, message = FALSE, warning = FALSE}
 out <- run_qgis(alg = "qgis:polygoncentroids",
                 params = params,
                 load_output = TRUE)
@@ -179,7 +171,7 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
 ```
 
-Please note that you can also provide R named arguments instead of a parameter-argument list:
+... or we can use R named arguments in `run_qgis`
 
 ```{r, eval = FALSE}
 out <- run_qgis(alg = "qgis:polygoncentroids",
@@ -190,7 +182,8 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
 ```
 
-Excellent! No error message occured, that means QGIS created a points shapefile containing the centroids of our polygons shapefile. Naturally, we would like to check if the result meets our expectations. 
+
+Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specifiy `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somehwere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R. Naturally, we would like to check if the result meets our expectations. 
 
 ```{r, fig.width = 5, fig.height = 5, align = "center"}
 # first, plot the federal states of Germany
