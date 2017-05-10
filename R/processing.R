@@ -553,7 +553,7 @@ open_help <- function(alg = "", qgis_env = set_env()) {
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 #' }
-get_args_man <- function(alg = "", options = FALSE, 
+get_args_man <- function(alg = "", options = TRUE, 
                          qgis_env = set_env()) {
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
