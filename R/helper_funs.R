@@ -160,7 +160,7 @@ setup_win <- function(qgis_env = set_env()) {
   a <- py_config()
   py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
   if (!identical(py_path, qgis_env$root)) {
-    stop("Wrong Python binary. Restart R and check!")
+    stop("Wrong Python binary. Restart R and check again!")
   }
 }
 
@@ -201,11 +201,20 @@ run_ini <- function(qgis_env = set_env()) {
       tmp <- strsplit(tmp, "=")[[1]]
       args <- list(tmp[2])
       names(args) <- tmp[1]
+      # if the environment variable exists but does not contain our path, add it
+      # to the already existing one
       if (Sys.getenv(names(args)) != "" &
           !grepl(gsub("\\\\", "\\\\\\\\", args[[1]]), 
                  Sys.getenv((names(args))))) {
         args[[1]] <- paste(args[[1]], Sys.getenv(names(args)), sep = ";")
-      } 
+        
+      } else if (Sys.getenv(names(args)) != "" &
+                 grepl(gsub("\\\\", "\\\\\\\\", args[[1]]), 
+                        Sys.getenv((names(args))))) {
+        # if the environment variable already exists and already contains the
+        # correct path, do nothing
+        next
+      }
       do.call(Sys.setenv, args)
     }
     if (grepl("^(path|PATH)", i)) {

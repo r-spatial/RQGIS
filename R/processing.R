@@ -4,9 +4,9 @@
 #' @importFrom stringr str_detect
 #' @param root Root path to the QGIS-installation. If left empty, the function 
 #'   looks for `qgis.bat` first in the most likely locations (C:/OSGEO4~1, 
-#'   C:/OSGEO4~2) and else on the C: drive under Windows. On a Mac, it looks for
-#'   `QGIS.app` under "Applications" and "/usr/local/Cellar/". On Linux, 
-#'   `set_env` assumes that the root path is "/usr".
+#'   C:/OSGEO4~2), and secondly on the C: drive under Windows. On a Mac, it
+#'   looks for `QGIS.app` under "Applications" and "/usr/local/Cellar/". On
+#'   Linux, `set_env` assumes that the root path is "/usr".
 #' @param new When called for the first time in an R session, `set_env` caches 
 #'   its output. Setting `new` to `TRUE` resets the cache when calling `set_env`
 #'   again. Otherwise, the cached output will be loaded back into R even if you 
@@ -190,11 +190,15 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   }
 
 #' @title Open a QGIS application
-#' @description `open_app` first sets all the correct paths to the QGIS Python
-#'   binary, and secondly opens a QGIS application while importing the most
+#' @description `open_app` first sets all the correct paths to the QGIS Python 
+#'   binary, and secondly opens a QGIS application while importing the most 
 #'   common Python modules.
+#' @note Please note that the function changes your environment settings via 
+#'   [base::Sys.getenv()] which is necessary to run the QGIS Python API.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
+#'   API. For more information, refer to [set_env()]. Basically, the function
+#'   defines a few new environment variables which should not interfere with
+#'   other settings.
 #' @return The function enables a 'tunnel' to the Python QGIS API.
 #' @author Jannes Muenchow
 #' @importFrom reticulate py_run_string py_run_file
@@ -205,7 +209,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
 #' @export
 open_app <- function(qgis_env = set_env()) {
   
-  settings <- as.list(Sys.getenv())
+  # settings <- as.list(Sys.getenv())
   # since we are adding quite a few new environment variables these will remain
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
@@ -218,17 +222,29 @@ open_app <- function(qgis_env = set_env()) {
   # resetting system settings causes that SAGA algorithms cannot be processed
   # anymore, find out why this is!!!
   
+  # Ok, basically, we added a few new paths (especially under Windows) but 
+  # that's about it, we don't have to change that back. Only under Windows we 
+  # start with a clean, i.e. empty PATH, and delete everything what was in there
+  # before, so maybe we should at least add the old PATH to our newly created
+  # one?
+  
   if (Sys.info()["sysname"] == "Windows") {
+    settings <- as.list(Sys.getenv())
     # run Windows setup
     setup_win(qgis_env = qgis_env)
+    on.exit( Sys.setenv(PATH = paths))
   } else if (Sys.info()["sysname"] == "Linux") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     setup_mac(qgis_env = qgis_env)
   }
   
-  # make sure that QGIS is not already running (this would crash R)
-  # app = QgsApplication([], True)  # see below
+  # make sure that QGIS is not already running (this would crash R) app =
+  # QgsApplication([], True)  # see below 
+  # We can only run the test after we have set all the paths. Otherwise
+  # reticulate would use another Python interpreter (e.g, Anaconda Python
+  # instead of the Python interpreter delivered with QGIS) when running open_app
+  # for the first time
   tmp <- try(expr =  py_run_string("app")$app,
              silent = TRUE)
   if (!inherits(tmp, "try-error")) {
@@ -553,7 +569,7 @@ open_help <- function(alg = "", qgis_env = set_env()) {
 #' # and using the option argument
 #' get_args_man(alg = "qgis:addfieldtoattributestable", options = TRUE)
 #' }
-get_args_man <- function(alg = "", options = FALSE, 
+get_args_man <- function(alg = "", options = TRUE, 
                          qgis_env = set_env()) {
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
