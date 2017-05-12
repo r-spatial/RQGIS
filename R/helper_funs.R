@@ -106,7 +106,6 @@ open_grass_help <- function(alg) {
 #'   API. For more information, refer to [set_env()].
 #' @return The function changes the system settings using [base::Sys.setenv()].
 #' @keywords internal
-#' @importFrom reticulate use_python
 #' @author Jannes Muenchow
 #' @examples 
 #' \dontrun{
@@ -233,6 +232,48 @@ run_ini <- function(qgis_env = set_env()) {
   }
 }
 
+#' @title Reset PATH
+#' @description Since [run_ini()] starts with a clean PATH, this function makes 
+#'   sure to add the original paths to PATH. Note that this function is a
+#'   Windows-only function.
+#' @param settings A list as derived from `as.list(Sys.getenv())`.
+#' @author Jannes Muenchow
+reset_path <- function(settings) {
+  # PATH re-setting: not the most elegant solution...
+  
+  if (Sys.info()["sysname"] == "Windows") {
+    # first delete any other Anaconda or Python installations from PATH
+    tmp <- grep("Anaconda|Python", unlist(strsplit(settings$PATH, ";")),
+                value = TRUE)
+    # we don't want to delete any paths containing OSGEO (and Python)
+    if (any(grepl("OSGeo", tmp))) {
+      tmp <- tmp[-grep("OSGeo", tmp)]  
+    }
+      # replace \\ by \\\\ and collapse by |
+    tmp <- paste(gsub("\\\\", "\\\\\\\\", tmp), collapse = "|")
+    # delete it from settings
+    repl <- gsub(tmp, "", settings$PATH)
+    # get rid off repeated semi-colons
+    settings$PATH <- gsub(";+", ";", repl)
+    
+    # We need to make sure to not append over and over again the same paths
+    # when running open_app several times
+    if (grepl(gsub("\\\\", "\\\\\\\\", Sys.getenv("PATH")), settings$PATH)) {
+      # if the OSGeo stuff is already in PATH (which is the case after having
+      # run open_app for the fist time), use exactly this PATH
+      Sys.setenv(PATH = settings$PATH)
+    } else {
+      # if the OSGeo stuff has not already been appended (as is the case when
+      # running open_app for the first time), append it
+      paths <- paste(Sys.getenv("PATH"), settings$PATH, sep = ";")  
+      Sys.setenv(PATH = paths)
+    }  
+  }
+}
+
+
+
+
 #' @title Set all Linux paths necessary to start QGIS
 #' @description Helper function to start QGIS application under Linux.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS
@@ -240,7 +281,6 @@ run_ini <- function(qgis_env = set_env()) {
 #' @return The function changes the system settings using [base::Sys.setenv()].
 #' @keywords internal
 #' @author Jannes Muenchow
-#' @importFrom reticulate py_config
 #' @examples 
 #' \dontrun{
 #' setup_linux()
