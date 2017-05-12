@@ -137,7 +137,7 @@ find_algorithms(search_term = "([Pp]olygon)(centroid)")
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ```{r, error = FALSE}
-get_usage(alg = "qgis:polygoncentroids", intern = TRUE)
+get_usage(alg = "qgis:polygoncentroids")
 
 ## ALGORITHM: Polygon centroids
 ##	INPUT_LAYER <ParameterVector>
@@ -187,7 +187,7 @@ Please note that our `INPUT_LAYER` is a spatial object residing in R's global en
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
-plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+plot(out$geometry, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
 <p align="center">

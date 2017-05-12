@@ -9,7 +9,7 @@ Important news
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--11-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--12-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -149,7 +149,7 @@ find_algorithms(search_term = "([Pp]olygon)(centroid)")
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
 
 ``` r
-get_usage(alg = "qgis:polygoncentroids", intern = TRUE)
+get_usage(alg = "qgis:polygoncentroids")
 
 ## ALGORITHM: Polygon centroids
 ##  INPUT_LAYER <ParameterVector>
@@ -197,7 +197,7 @@ Please note that our `INPUT_LAYER` is a spatial object residing in R's global en
 # first, plot the federal states of Germany
 plot(ger)
 # next plot the centroids created by QGIS
-plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
+plot(out$geometry, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
 <p align="center">
