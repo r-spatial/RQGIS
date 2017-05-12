@@ -41,9 +41,8 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   }
   
   # load cached qgis_env if possible
-  if (file.exists(file.path(tempdir(), "qgis_env.Rdata")) && new == FALSE) {
-    load(file.path(tempdir(), "qgis_env.Rdata"))
-    return(qgis_env)
+  if ("qgis_env" %in% ls(.RQGIS_cache) && new == FALSE) {
+    return(get("qgis_env", envir = .RQGIS_cache))
   }
   
   if (Sys.info()["sysname"] == "Windows") {
@@ -170,7 +169,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   }
   qgis_env <- list(root = root)
   qgis_env <- c(qgis_env, check_apps(root = root, dev = dev))
-  save(qgis_env, file = file.path(tempdir(), "qgis_env.Rdata"))
+  assign("qgis_env", qgis_env, envir = .RQGIS_cache)
   
   
   # write warning if Kyngchaos QGIS for Mac is installed
@@ -201,45 +200,45 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
 #'   other settings.
 #' @return The function enables a 'tunnel' to the Python QGIS API.
 #' @author Jannes Muenchow
-#' @importFrom reticulate py_run_string py_run_file
 #' @examples 
 #' \dontrun{
 #' open_app()
 #' }
 #' @export
 open_app <- function(qgis_env = set_env()) {
-  
-  # settings <- as.list(Sys.getenv())
+  # be a good citizen and restore the PATH
+  settings <- as.list(Sys.getenv())
   # since we are adding quite a few new environment variables these will remain
   # (PYTHONPATH, QT_PLUGIN_PATH, etc.). We could unset these before exiting the
   # function but I am not sure if this is necessary
   
   # Well, well, not sure if we should change it back or if we at least have to 
-  # get rid off Anaconda Python or other Python binaries (I guess not) 
+  # get rid off Anaconda Python or other Python binaries - yes, we do, otherwise
+  # reticulate might run into problems when loading modules because it might try
+  # to load them first from the other binaries indicated in PATH
   
   # on.exit(do.call(Sys.setenv, settings))
   
-  # resetting system settings causes that SAGA algorithms cannot be processed
-  # anymore, find out why this is!!!
-  
-  # Ok, basically, we added a few new paths (especially under Windows) but 
-  # that's about it, we don't have to change that back. Only under Windows we 
-  # start with a clean, i.e. empty PATH, and delete everything what was in there
-  # before, so maybe we should at least add the old PATH to our newly created
-  # one?
+  # resetting system settings on exit causes that SAGA algorithms cannot be
+  # processed anymore, find out why this is!!!
   
   if (Sys.info()["sysname"] == "Windows") {
-    settings <- as.list(Sys.getenv())
     # run Windows setup
     setup_win(qgis_env = qgis_env)
-    paths <- paste(Sys.getenv("PATH"), settings$PATH, sep = ";")
-    on.exit( Sys.setenv(PATH = paths))
+    
+    # Ok, basically, we added a few new paths (especially under Windows) but 
+    # that's about it, we don't have to change that back. Only under Windows we 
+    # start with a clean, i.e. empty PATH, and delete everything what was in 
+    # there before, so we should at least add the old PATH to our newly created
+    # one
+    reset_path(settings)
   } else if (Sys.info()["sysname"] == "Linux") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     setup_mac(qgis_env = qgis_env)
   }
-  
+
+
   # make sure that QGIS is not already running (this would crash R) app =
   # QgsApplication([], True)  # see below 
   # We can only run the test after we have set all the paths. Otherwise
@@ -306,7 +305,6 @@ open_app <- function(qgis_env = set_env()) {
 #'  versions supported by the QGIS installation.}
 #' }
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_run_string
 #' @export
 #' @examples 
 #' \dontrun{
@@ -371,7 +369,6 @@ qgis_session_info <- function(qgis_env = set_env()) {
 #' @return The function returns QGIS function names and short descriptions as an
 #'   R character vector.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_run_string py_run_file py_capture_output
 #' @examples
 #' \dontrun{
 #' # list all available QGIS algorithms on your system
@@ -433,7 +430,6 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #' @details Function `get_usage` simply calls
 #'   `processing.alghelp` of the QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_capture_output py_run_string
 #' @export
 #' @examples
 #' \dontrun{
@@ -470,7 +466,6 @@ get_usage <- function(alg = NULL, intern = FALSE,
 #' @details Function `get_options` simply calls `processing.algoptions` of the 
 #'   QGIS Python API.
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
-#' @importFrom reticulate py_capture_output py_run_string
 #' @examples
 #' \dontrun{
 #' get_options(alg = "saga:slopeaspectcurvature")
@@ -561,7 +556,6 @@ open_help <- function(alg = "", qgis_env = set_env()) {
 #' @note Please note that some default values can only be set after the user's 
 #'   input. For instance, the GRASS region extent will be determined
 #'   automatically by [run_qgis()] if left blank.
-#' @importFrom reticulate py_run_string py_run_file
 #' @export
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
 #' @examples 
@@ -827,7 +821,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
       # We could use regexp to cut off the file extension
       # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
       # but let's use an already existing function
-      my_layer <- tools::file_path_sans_ext(basename(as.character(x)))
+      my_layer <- file_path_sans_ext(basename(as.character(x)))
       # determine bbox in the case of a vector layer
       tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
                  silent = TRUE)
@@ -926,7 +920,6 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'@export
 #'@importFrom sf st_read
 #'@importFrom raster raster
-#'@importFrom reticulate py_run_string py_capture_output r_to_py
 #' @examples
 #' \dontrun{
 #' # calculate the slope of a DEM
