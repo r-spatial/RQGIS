@@ -8,7 +8,9 @@ open_app(qgis_env = set_env())
 }
 \arguments{
 \item{qgis_env}{Environment settings containing all the paths to run the QGIS
-API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
+API. For more information, refer to \code{\link[=set_env]{set_env()}}. Basically, the function
+defines a few new environment variables which should not interfere with
+other settings.}
 }
 \value{
 The function enables a 'tunnel' to the Python QGIS API.
@@ -17,6 +19,10 @@ The function enables a 'tunnel' to the Python QGIS API.
 \code{open_app} first sets all the correct paths to the QGIS Python
 binary, and secondly opens a QGIS application while importing the most
 common Python modules.
+}
+\note{
+Please note that the function changes your environment settings via
+\code{\link[base:Sys.getenv]{base::Sys.getenv()}} which is necessary to run the QGIS Python API.
 }
 \examples{
 \dontrun{

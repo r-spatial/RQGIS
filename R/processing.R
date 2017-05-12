@@ -232,6 +232,7 @@ open_app <- function(qgis_env = set_env()) {
     settings <- as.list(Sys.getenv())
     # run Windows setup
     setup_win(qgis_env = qgis_env)
+    paths <- paste(Sys.getenv("PATH"), settings$PATH, sep = ";")
     on.exit( Sys.setenv(PATH = paths))
   } else if (Sys.info()["sysname"] == "Linux") {
     setup_linux(qgis_env = qgis_env)
@@ -770,8 +771,9 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
         )
         })
       if (inherits(test, "try-error")) {
-        # quick-and-dirty solution -> fix
-        outpath <- paste0(gsub(".shp", "", outpath), sample(1:10^6, 1), ".shp")
+        while (basename(outpath) %in% dir(tempdir())) {
+          outpath <- paste0(gsub(".shp", "", outpath), 1, ".shp")  
+        }
         write_sf(params[[i]], outpath, quiet = TRUE)
       }
       # return the result

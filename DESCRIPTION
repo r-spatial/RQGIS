@@ -32,7 +32,7 @@ Imports:
          sp,
          XML,
          tools,
-         sf (>= 0.3-4),
+         sf (>= 0.4-2),
          reticulate,
          readr,
          stringr
