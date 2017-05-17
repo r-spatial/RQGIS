@@ -2,7 +2,12 @@ from processing.core.Processing import Processing
 Processing.initialize()
 import processing
 # ParameterSelection required by get_args_man.py, algoptions, alghelp
-from processing.core.parameters import ParameterSelection
+from processing.core.parameters import (
+  ParameterSelection,
+  ParameterRaster,
+  ParameterVector,
+  ParameterMultipleInput
+)
 from processing.gui.Postprocessing import handleAlgorithmResults
 # needed for open_help
 from processing.tools.help import createAlgorithmHelp
@@ -16,4 +21,3 @@ from processing.algs.otb.OTBUtils import getInstalledVersion
 from processing.algs.taudem.TauDEMUtils import TauDEMUtils
 from osgeo import gdal
 from processing.tools.system import isWindows, isMac
-  

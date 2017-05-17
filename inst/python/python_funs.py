@@ -18,6 +18,8 @@ class RQGIS:
     alg = Processing.getAlgorithm(alg)
     vals = []
     params = []
+    output = []
+    type_name = []
     opts = list()
     if alg is None:
       sys.exit('Specified algorithm does not exist!')
@@ -27,11 +29,17 @@ class RQGIS:
       params.append(param.name)
       vals.append(param.getValueAsCommandLineParameter())
       opts.append(isinstance(param, ParameterSelection))
+      output.append(False)
+      type_name.append(param.typeName())
     for out in alg.outputs:
       params.append(out.name)
       vals.append(out.getValueAsCommandLineParameter())
       opts.append(isinstance(out, ParameterSelection))
-    args = [params, vals, opts]
+      output.append(True)
+      type_name.append(param.typeName())
+    # args = [params, vals, opts, type_name]
+    args = dict(zip(["params", "vals", "opts", "output", "type_name"], \
+                    [params, vals, opts, output, type_name]))
     return args      
     
   # Author: Victor Olaya, Jannes Muenchow
@@ -154,16 +162,6 @@ class RQGIS:
     ### Taudem version in 'TauDEMUtils')
     # "TauDEMUtils.taudemMultifilePath()",
 
-  def get_output_names(self, alg):
-    alg = Processing.getAlgorithm(alg)
-    if alg is None:
-      sys.exit('Specified algorithm does not exist!')
-    alg = alg.getCopy()
-    params = []
-    for out in alg.outputs:
-      params.append(out.name)
-    return params
-  
   # function inspired by processing.algoptions  
   def get_options(self, alg):
     alg = Processing.getAlgorithm(alg)
