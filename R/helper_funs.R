@@ -363,3 +363,171 @@ setup_mac <- function(qgis_env = set_env()) {
   # suppress verbose QGIS output for homebrew
   Sys.setenv(QGIS_DEBUG = -1)
 }
+
+#' @title Save spatial objects
+#' @description The function saves spatial objects (`sp`, `sf` and `raster`) to 
+#'   a temporary folder on the computer's hard drive.
+#' @param params A parameter-argument list as returned by [pass_args()].
+#' @param type_name A character string containing the QGIS parameter type for
+#'   each parameter (boolean, multipleinput, extent, number, etc.) of `params`.
+#'   The Python method `RQGIS.get_args_man` returns a Python dictionary with one
+#'   of its elements corresponding to the type_name (see also the example
+#'   section).
+#' @keywords internal
+#' @examples 
+#' \dontrun{
+#' library("RQGIS")
+#' library("raster")
+#' library("reticulate")
+#' r <- raster(ncol = 100, nrow = 100)
+#' r1 <- crop(r, extent(-10, 11, -10, 11))
+#' r2 <- crop(r, extent(0, 20, 0, 20))
+#' r3 <- crop(r, extent(9, 30, 9, 30))
+#' r1[] <- 1:ncell(r1)
+#' r2[] <- 1:ncell(r2)
+#' r3[] <- 1:ncell(r3)
+#' alg <- "grass7:r.patch"
+#' out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
+#' params <- get_args_man(alg)
+#' params$input <- list(r1, r2, r3)
+#' params[] <- save_spatial_objects(params = params, 
+#'                                  type_name = out$type_name)
+#' }
+#' @author Jannes Muenchow
+save_spatial_objects <- function(params, type_name) {
+
+  lapply(seq_along(params), function(i) {
+    tmp <- class(params[[i]])
+    if (tmp == "list" && type_name[i] == "multipleinput") {
+      names(params[[i]]) <- paste0("inp", 1:length(params[[i]]))
+      out <- save_spatial_objects(params = params[[i]])
+      return(paste(unlist(out), collapse = ";"))
+    }
+    
+    # GEOMETRY and GEOMETRYCOLLECTION not supported
+    if (any(tmp %in% c("sfc_GEOMETRY", "sfc_GEOMETRYCOLLECTION"))) {
+      stop("RQGIS does not support GEOMETRY or GEOMETRYCOLLECTION classes")
+    }
+    # check if the function argument is a SpatialObject
+    if (any(grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp)) | 
+        any(tmp %in% c("sf", "sfc", "sfg"))) {
+      # if it is an sp-object convert it into sf, if it already is an attributed
+      # sf-object, nothing happens
+      params[[i]] <- st_as_sf(params[[i]])
+      # write sf as a shapefile to a temporary location while overwriting any
+      # previous versions, I don't know why but sometimes the overwriting does 
+      # not work...
+      fname <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
+      cap <- capture.output({
+        suppressWarnings(
+          test <- 
+            try(write_sf(params[[i]], fname, quiet = TRUE), silent = TRUE)
+        )
+      })
+      if (inherits(test, "try-error")) {
+        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+          fname <- paste0(gsub(".shp", "", fname), 1, ".shp")  
+        }
+        write_sf(params[[i]], fname, quiet = TRUE)
+      }
+      # return the result
+      fname
+    } else if (tmp == "RasterLayer") {
+      fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
+      suppressWarnings(
+        test <- 
+          try(writeRaster(params[[i]], filename = fname, format = "GTiff", 
+                          prj = TRUE, overwrite = TRUE), silent = TRUE)
+      )
+      if (inherits(test, "try-error")) {
+        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+          fname <- paste0(gsub(".tif", "", fname), 1, ".tif")  
+        }
+        writeRaster(params[[i]], filename = fname, format = "GTiff", 
+                    prj = TRUE, overwrite = TRUE)
+      }
+      # return the result
+      fname
+    }  else {
+      params[[i]]
+    }
+  })
+}
+
+#' @title Retrieve the `GRASS_REGION_PARAMETER`
+#' @description Retrieve the `GRASS_REGION_PARAMETER` by running through a 
+#'   parameter-argument list while merging the extents of all spatial objects.
+#' @param params A parameter-argument list as returned by [pass_args()].
+#' @param type_name A character string containing the QGIS parameter type for 
+#'   each parameter (boolean, multipleinput, extent, number, etc.) of `params`. 
+#'   The Python method `RQGIS.get_args_man` returns a Python dictionary with one
+#'   of its elements corresponding to the type_name (see also the example
+#'   section).
+#' @keywords internal
+#' @examples 
+#' \dontrun{
+#' library("RQGIS")
+#' library("raster")
+#' library("reticulate")
+#' r <- raster(ncol = 100, nrow = 100)
+#' r1 <- crop(r, extent(-10, 11, -10, 11))
+#' r2 <- crop(r, extent(0, 20, 0, 20))
+#' r3 <- crop(r, extent(9, 30, 9, 30))
+#' r1[] <- 1:ncell(r1)
+#' r2[] <- 1:ncell(r2)
+#' r3[] <- 1:ncell(r3)
+#' alg <- "grass7:r.patch"
+#' out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
+#' params <- get_args_man(alg)
+#' params$input <- list(r1, r2, r3)
+#' params[] <- save_spatial_objects(alg = alg, params = params, 
+#'                                  type_name = out$type_name)
+#' get_grp(params = params, type_name = out$type_name)
+#' }
+#' @author Jannes Muenchow
+get_grp <- function(params, type_name) {
+  ext <- mapply(function(x, y) {
+    if (y == "multipleinput") {
+      get_grp(unlist(strsplit(x, split = ";")), "")
+    } else {
+      # We cannot simply use gsub as we have done before (gsub("[.].*",
+      # "",basename(x))) if the filename itself also contains dots, e.g.,
+      # gis.osm_roads_free_1.shp 
+      # We could use regexp to cut off the file extension
+      # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
+      # but let's use an already existing function
+      my_layer <- file_path_sans_ext(basename(as.character(x)))
+      # determine bbox in the case of a vector layer
+      tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
+                 silent = TRUE)
+      if (!inherits(tmp, "try-error")) {
+        # check if this is always this way (xmin, ymin, xmax, ymax...)
+        extent(tmp[c(1, 3, 2, 4)])
+      } else {
+        # determine bbox in the case of a raster
+        ext <- try(expr = GDALinfo(x, returnStats = FALSE),
+                   silent = TRUE)
+        # check if it is still an error
+        if (!inherits(ext, "try-error")) {
+          # xmin, xmax, ymin, ymax
+          extent(c(ext["ll.x"], 
+                   ext["ll.x"] + ext["columns"] * ext["res.x"],
+                   ext["ll.y"],
+                   ext["ll.y"] + ext["rows"] * ext["res.y"]))
+        } else {
+          NA
+        }
+      }
+    }
+  }, x = params, y = type_name)
+  # now that we have possibly several extents, union them
+  ext <- ext[!is.na(ext)]
+  ext <- Reduce(raster::merge, ext)
+  if (is.null(ext)) {
+    stop("Either you forgot to specify an input shapefile/raster or the", 
+         " input file does not exist")
+  }
+  # sometimes the extent is given back with dec = ","; you need to change that
+  ext <- gsub(",", ".", ext[1:4])
+  ext
+}
