@@ -181,7 +181,7 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
 ```
 
 
-Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specify `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somewhere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R. Naturally, we would like to check if the result meets our expectations. 
+Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specify `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somewhere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R (an `sf`-object in the case of vector data and a `raster`-object in the case of raster data). Naturally, we would like to check if the result meets our expectations. 
 
 ```{r, fig.width = 5, fig.height = 5, align = "center"}
 # first, plot the federal states of Germany
