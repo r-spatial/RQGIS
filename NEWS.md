@@ -1,7 +1,7 @@
 # RQGIS 0.2.0.9000
 
 ## Features
-  * RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class (#32) containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, `get_output_names`, etc.).
+  * RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class (#32) containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, etc.).
 
   * `find_algorithms` now accepts regular expressions as argument for its `search_term` parameter
 
@@ -22,10 +22,13 @@
   * We rewrote the `load_output`-argument of `run_qgis`. It is now a logical argument. If `TRUE`, `run_qgis()` will automatically load all the output explicitly specified by the user (via the triple-dot argument) back into R.
   
   * changing the default for parameter `options` from `FALSE` to `TRUE` in `get_args_man`
+  
+  * support for MultiParameterInput through two new helper functions `save_spatial_objects` and `get_grp`
 
 ## Miscellaneous
 
   * Added new tests.
+  * `reset_paths` tries to restore the PATH environment variable, i.e. at least to make sure that all paths within PATH will still be available after having run `open_app`
 
 # RQGIS 0.2.0
 
