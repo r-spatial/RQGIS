@@ -531,3 +531,56 @@ get_grp <- function(params, type_name) {
   ext <- gsub(",", ".", ext[1:4])
   ext
 }
+
+
+#' @title Check if RQGIS is loaded on a server 
+#' @description Performs cross-platform (Unix, Windows) and OS (Debian/Ubuntu) checks for a server infrastructure 
+#' @importFrom parallel detectCores
+#' @keywords internal
+#' @author Patrick Schratz
+#' @export
+check_for_server <- function() {
+  
+  # try to get an output of 'lsb_release -a'
+  if (detectCores() > 10 && .Platform$OS.type == "unix") {
+    test <- try(suppressWarnings(system2("lsb_release", "-a", stdout = TRUE,
+                                         stderr = TRUE)), 
+                silent = TRUE)
+    if (!inherits(test, "try-error")) { 
+      get_regex <- grep("Distributor ID:", test, value = TRUE) 
+      platform <- gsub("Distributor ID:\t", "", get_regex) 
+      
+      # check for Debian | Ubuntu
+      if (platform == "Debian") {
+        warning(paste0("Hey there! According to our internal checks, you are trying to run RQGIS on a server.\n", 
+                       "Please note that this is only possible if you imitate a x-display.\n", 
+                       "QGIS needs this in the background to be able to execute its processing modules.\n", 
+                       "Since we detected you are running a Debian server, the following R command should solve the problem:\n",
+                       "system('export DISPLAY=:99 && xdpyinfo -display $DISPLAY > /dev/null || Xvfb $DISPLAY -screen 99 1024x768x16 &').\n", 
+                       "Note that you need to run this as root.", collapse = "\n"))
+        # set warn = -1 to only display this warning once per session (warn = -1 ignores warnings commands)
+        options(warn = -1)
+      }
+      if (platform == "Ubuntu") {
+        warning(paste0("Hey there! According to our internal checks, you are trying to run RQGIS on a server.\n", 
+                       "Please note that this is only possible if you imitate a x-display.\n", 
+                       "QGIS needs this in the background to be able to execute its processing modules.\n", 
+                       "Since we detected you are running a Debian server, the following R command should solve the problem:\n",
+                       "system('export DISPLAY=:99 && /etc/init.d/xvfb && start && sleep 3').\n", 
+                       "Note that you need to run this as root.", collapse = "\n"))
+        # set warn = -1 to only display this warning once per session (warn = -1 ignores warnings commands)
+        options(warn = -1)
+      }
+    } 
+  }
+  if (detectCores() > 10 && Sys.info()["sysname"] == "Windows") {
+    warning(paste0("Hey there! According to our internal checks, you are trying to run RQGIS on a Windows server.\n", 
+                   "Please note that this is only possible if you imitate a x-display.\n", 
+                   "QGIS needs this in the background to be able to execute its processing modules.\n", 
+                   "Note that you need to start the x-display with admin rights", collapse = "\n"))
+    # set warn = -1 to only display this warning once per session (warn = -1 ignores warnings commands)
+    options(warn = -1)
+  }
+}
+
+

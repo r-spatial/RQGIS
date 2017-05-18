@@ -206,6 +206,10 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
 #' }
 #' @export
 open_app <- function(qgis_env = set_env()) {
+  
+  # check for server infrastructure 
+  check_for_server()
+  
   # be a good citizen and restore the PATH
   settings <- as.list(Sys.getenv())
   # since we are adding quite a few new environment variables these will remain
@@ -655,6 +659,7 @@ get_args_man <- function(alg = "", options = TRUE,
 #' @importFrom raster raster writeRaster extent
 #' @importFrom sf write_sf st_as_sf
 #' @importFrom rgdal ogrInfo writeOGR readOGR GDALinfo
+#' @importFrom utils capture.output
 #' @examples
 #' \dontrun{
 #' data(dem, package = "RQGIS")
