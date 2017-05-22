@@ -29,7 +29,7 @@ loaded into R. A list will be returned if there is more than one output file
 geoalgorithm function arguments were provided in the correct order
 (deprecated).}
 
-\item{show_msg}{Logical, if \code{TRUE}, Python messages that occured during the
+\item{show_msg}{Logical, if \code{TRUE}, Python messages that occurred during the
 algorithm execution will be shown (deprecated).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For

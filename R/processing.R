@@ -427,7 +427,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #'   QGIS geoalgorithm.
 #' @param alg Name of the function whose parameters are being searched for.
 #' @param intern Logical, if `TRUE` the function captures the command line 
-#'   output as an `R` character vector`. If `FALSE`, the default, the ouptut is
+#'   output as an `R` character vector`. If `FALSE`, the default, the output is
 #'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
@@ -537,28 +537,29 @@ open_help <- function(alg = "", qgis_env = set_env()) {
 }
 
 #' @title Get GIS arguments and respective default values
-#' @description`get_args_man` retrieves automatically function arguments and
+#' @description`get_args_man` retrieves automatically function arguments and 
 #' respective default values for a given QGIS geoalgorithm.
 #' @param alg The name of the algorithm for which one wishes to retrieve 
 #'   arguments and default values.
 #' @param options Sometimes one can choose between various options for a 
-#'   function argument. Setting option to `TRUE` will automatically assume one
-#'   wishes to use the first option (default: `FALSE`).
+#'   function argument. Setting option to `TRUE`, the default,  will
+#'   automatically assume one wishes to use the first option (QGIS GUI
+#'   behavior).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. That
-#'   means, for a given GIS algorithm, it captures automatically all arguments
-#'   and default values. In the case that a function argument has several
+#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. That 
+#'   means, for a given GIS algorithm, it captures automatically all arguments 
+#'   and default values. In the case that a function argument has several 
 #'   options, one can indicate to use the first option (see also 
 #'   [get_options()]), which is the QGIS GUI default behavior.
 #' @return The function returns a list whose names correspond to the function 
-#'   arguments one needs to specify. The list elements correspond to the
-#'   argument specifications. The specified function arguments can serve as
+#'   arguments one needs to specify. The list elements correspond to the 
+#'   argument specifications. The specified function arguments can serve as 
 #'   input for [run_qgis()]'s params argument. Please note that although 
 #'   `get_args_man` tries to retrieve default values, one still needs to specify
 #'   some function arguments manually such as the input and the output layer.
 #' @note Please note that some default values can only be set after the user's 
-#'   input. For instance, the GRASS region extent will be determined
+#'   input. For instance, the GRASS region extent will be determined 
 #'   automatically by [run_qgis()] if left blank.
 #' @export
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
@@ -646,7 +647,7 @@ get_args_man <- function(alg = "", options = TRUE,
 #'  \item If `GRASS_REGION_PARAMETER` is "None" (the QGIS default), `run_qgis`
 #'  will automatically determine the region extent based on the user-specified
 #'  input layers. If you do want to specify the `GRASS_REGION_PARAMETER`
-#'  yourself, please do it in accorcance with the [QGIS 
+#'  yourself, please do it in accordance with the [QGIS 
 #'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
 #'  i.e., use a character string and separate the coordinates with a comma: 
 #'  "xmin, xmax, ymin, ymax".
@@ -833,7 +834,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order 
 #'  (deprecated).
-#'@param show_msg Logical, if `TRUE`, Python messages that occured during the 
+#'@param show_msg Logical, if `TRUE`, Python messages that occurred during the 
 #'  algorithm execution will be shown (deprecated).
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to [set_env()].

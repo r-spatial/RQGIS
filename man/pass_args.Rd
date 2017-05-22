@@ -64,7 +64,7 @@ to \code{\link[=get_options]{get_options()}} for valid options for a given geoal
 \item If \code{GRASS_REGION_PARAMETER} is "None" (the QGIS default), \code{run_qgis}
 will automatically determine the region extent based on the user-specified
 input layers. If you do want to specify the \code{GRASS_REGION_PARAMETER}
-yourself, please do it in accorcance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation},
+yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation},
 i.e., use a character string and separate the coordinates with a comma:
 "xmin, xmax, ymin, ymax".
 }
