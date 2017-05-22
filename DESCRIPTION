@@ -28,14 +28,15 @@ Depends:
 Imports:
          raster,
          RCurl,
-         rgdal, 
-         sp,
-         XML,
-         tools,
-         sf (>= 0.4-2),
-         reticulate,
          readr,
-         stringr
+         reticulate,
+         rgdal,
+         sf (>= 0.4-2),
+         sp,
+         stringr,
+         tools,
+         XML
+         
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,
