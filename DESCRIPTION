@@ -36,7 +36,6 @@ Imports:
          stringr,
          tools,
          XML
-         
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,
