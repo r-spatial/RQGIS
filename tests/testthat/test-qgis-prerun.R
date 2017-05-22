@@ -3,7 +3,7 @@ context("prerun")
 test_that("qgis_session_info yields a list as output", {
   
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  # testthat::skip_on_travis()
   testthat::skip_on_cran()
   # skip_if_no_python()
   # skip_if_no_python can be found under: 
@@ -17,7 +17,7 @@ test_that("qgis_session_info yields a list as output", {
 test_that("find_algorithms finds QGIS geoalgorithms", {
   
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  # testthat::skip_on_travis()
   testthat::skip_on_cran()
   # skip_if_no_python() 
 
