@@ -804,8 +804,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # here has also the advantage that the function tells the user all missing
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",
-                                 alg, r_to_py(unlist(params))))$check
+  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",alg, 
+                                 py_unicode(r_to_py(unlist(params)))))$check
   # stop the function if required arguments were not supplied
   if (length(check) > 0) {
     stop(sprintf("Invalid argument value %s for parameter %s\n", 
@@ -954,7 +954,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
 
   # convert R parameter-argument list into a Python dictionary
   py_run_string(paste("args = ", r_to_py(args)))
-  py_run_string(paste0("params = ", r_to_py(names(params))))
+  py_run_string(paste0("params = ", py_unicode(r_to_py(names(params)))))
   py_run_string("params = dict((x, y) for x, y in zip(params, args))")
   
   cmd <- paste(sprintf("res = processing.runalg('%s', params)", alg))

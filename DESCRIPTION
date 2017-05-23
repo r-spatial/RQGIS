@@ -29,7 +29,7 @@ Imports:
          raster,
          RCurl,
          readr,
-         reticulate,
+         reticulate (>= 0.8),
          rgdal,
          sf (>= 0.4-2),
          sp,
