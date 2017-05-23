@@ -470,7 +470,7 @@ get_usage <- function(alg = NULL, intern = FALSE,
 #'   required GIS function.
 #' @param alg Name of the GIS function for which options should be returned.
 #' @param intern Logical, if `TRUE` the function captures the command line 
-#'   output as an `R` character vector. If `FALSE`, the default, the ouptut is
+#'   output as an `R` character vector. If `FALSE`, the default, the output is
 #'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
@@ -863,7 +863,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'  (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default), 
 #'  `run_qgis` (see [pass_args()] for more details) will automatically determine
 #'  the region extent based on the user-specified input layers. If you do want 
-#'  to specify it yourself, please do it in accorcance with the [QGIS 
+#'  to specify it yourself, please do it in accordance with the [QGIS 
 #'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
 #'  i.e. use a character string and separate the coordinates with a comma: 
 #'  "xmin, xmax, ymin, ymax".
