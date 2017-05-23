@@ -2,20 +2,20 @@
 
 ## General
   * RQGIS now uses [reticulate](https://github.com/rstudio/reticulate) to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called; #59). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class (#32) containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, etc.).
-  
+
+## Features
   * The user can now specify QGIS geoalgorithm parameters as R named arguments using the ellipsis-argument `...` (#58).
   
   * We rewrote the `load_output`-argument of `run_qgis`. It is now a logical argument. If `TRUE`, `run_qgis()` will automatically load all the output layers explicitly specified by the user back into R (#60).
   
   * Extensive error-/misspecification checking. To do so, we now submit a Python-dictionary - containing all parameters and arguments - to `processing.runalg`. This also allows to check parameter names. Before the **args-argument simply converted our input in a list containing the arguments (but not the parameter names). Using the Python dictionary has the additional benefit that we no longer have to take care of the order in which the function parameters are specified. Besides, we now also make sure that the user can only specify available options. And if the user provides the verbal notation, `pass_args` internally converts this input in the corresponding number notation as required by the QGIS API (#64, @tim-salabim; #65).
   
-  * RQGIS now support simple features (`sf`; #43, @einvindhammers).
+  * RQGIS now supports simple features (`sf`; #43, @einvindhammers).
   
   * support for MultiParameterInput through two new helper functions `save_spatial_objects` and `get_grp` (https://gis.stackexchange.com/questions/240303/defining-grass-region-in-rqgis)
   
   * RQGIS now supports QGIS `osgeo4mac` homebrew installations. This is also the recommended installation way from now on as it does not cause irritating error messages like the Kyngchaos QGIS binary. 
   
-## Minor changes and new functionality
   * `find_algorithms` now accepts regular expressions as argument for its `search_term` parameter
   
   * `set_env()` now caches its output, so calling it a second time, will load the cached output. 
