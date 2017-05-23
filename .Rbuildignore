@@ -11,3 +11,4 @@ dem.prj
 appveyor.yml
 docs/
 LICENSE
+^revdep$
