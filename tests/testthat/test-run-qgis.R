@@ -31,17 +31,21 @@ test_that("Test, if QGIS-algorithms are working?", {
   params$OUTPUT_LAYER <- file.path(tempdir(), "coords.shp")
 
   # finally, let QGIS do the work!!
-  out <- run_qgis(alg, params = params,
-                  # let's load the QGIS output directly into R!
-                  load_output = TRUE)
+  a <- capture.output(
+    out <- run_qgis(alg, params = params,
+                    # let's load the QGIS output directly into R!
+                    load_output = TRUE)
+  )
   
   # check if the output is spatial object
   expect_is(out, "sf")
   # now use ...-notation and sf as input
-  out <- run_qgis(alg = "qgis:polygoncentroids",
-                  INPUT_LAYER = st_as_sf(polys),
-                  OUTPUT_LAYER = "coords.shp",
-                  load_output = TRUE)
+  a <- capture.output({
+    out <- run_qgis(alg = "qgis:polygoncentroids",
+                    INPUT_LAYER = st_as_sf(polys),
+                    OUTPUT_LAYER = "coords.shp",
+                    load_output = TRUE)
+  })
   # check if the output is spatial object
   expect_is(out, "sf")
   })
@@ -59,15 +63,19 @@ test_that("Test, if SAGA-algorithms are working?", {
   params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
   params$ELEVATION <- dem
   params$SLOPE <- file.path(tempdir(), "slope.asc")
-  out <- run_qgis("saga:slopeaspectcurvature", params = params, 
-                  load_output = TRUE)
+  a <- capture.output(
+    out <- run_qgis("saga:slopeaspectcurvature", params = params, 
+                    load_output = TRUE)
+  )
   # check if the output is a raster
   expect_is(out, "RasterLayer")
   # now use ...-notation
-  out <- run_qgis("saga:slopeaspectcurvature", 
-                  ELEVATION = dem,
-                  SLOPE = "slope.asc",
-                  load_output = TRUE)
+  a <- capture.output(
+    out <- run_qgis("saga:slopeaspectcurvature", 
+                    ELEVATION = dem,
+                    SLOPE = "slope.asc",
+                    load_output = TRUE)
+  )
   # check if the output is a raster
   expect_is(out, "RasterLayer")
   })
@@ -87,17 +95,21 @@ test_that("Test, if GRASS7-algorithms are working?", {
   params$elevation <- dem
   params$slope <- file.path(tempdir(), "slope.asc")
   params$aspect <- file.path(tempdir(), "aspect.asc")
-  out <- run_qgis("grass7:r.slope.aspect", params = params, 
-                  load_output = TRUE)
+  a <- capture.output(
+    out <- run_qgis("grass7:r.slope.aspect", params = params, 
+                   load_output = TRUE)
+  )
   # check if the output is a raster
   expect_is(out[[1]], "RasterLayer")
   expect_is(out[[2]], "RasterLayer")
 
   # now use ...-notation
-  out <- run_qgis("grass7:r.slope.aspect", 
-                  elevation = dem,
-                  slope = "slope.asc",
-                  load_output = TRUE)
+  a <- capture.output(
+    out <- run_qgis("grass7:r.slope.aspect", 
+                    elevation = dem,
+                    slope = "slope.asc",
+                    load_output = TRUE)
+  )
   # check if the output is a raster
   expect_is(out, "RasterLayer")
   })
