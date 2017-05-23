@@ -322,20 +322,27 @@ qgis_session_info <- function(qgis_env = set_env()) {
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
+  
+  
   if (Sys.info()["sysname"] == "Linux" && out$grass7) {
     # find out which GRASS version is available
     # my_grass <- searchGRASSX()
-    my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ", 
+    suppressWarnings(
+      my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ",
                               "-executable -iname 'grass??' -print"),
                        intern = TRUE)
-    if (grepl("72", my_grass)) {
-      warning(paste0("QGIS might be still pointing to grass70. In this case ",
-                     "you might want to consider using a softlink by running: ",
-                     "'sudo ln -s /usr/bin/grass72 /usr/bin/grass70' on the ",
-                     "commandline. See also ", 
-                     "'https://lists.osgeo.org/pipermail/qgis-user/2017-", 
-                     "January/038907.html'. Then restart R again."))
-    }
+    )
+    
+    # QGIS developer team took care of this issue, so we can eventually delete 
+    # it
+    # if (grepl("72", my_grass)) {
+    #   warning(paste0("QGIS might be still pointing to grass70. In this case ",
+    #                  "you might want to consider using a softlink by running: ",
+    #                  "'sudo ln -s /usr/bin/grass72 /usr/bin/grass70' on the ",
+    #                  "commandline. See also ",
+    #                  "'https://lists.osgeo.org/pipermail/qgis-user/2017-",
+    #                  "January/038907.html'. Then restart R again."))
+    # }
     
     # more or less copied from link2GI::searchGRASSX
     # Problem: sometimes the batch command is interrupted or does not finish...
@@ -902,11 +909,14 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
-  # check under Linux which GRASS version is in use. If its GRASS72 the user
-  # might have to add a softlink due to as QGIS bug
-  if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
-    qgis_session_info(qgis_env)
-  }
+  # check under Linux which GRASS version is in use. If its GRASS72 the user 
+  # might have to add a softlink due to as QGIS bug 
+  # QGIS developer core team took care of this issue (at least since QGIS
+  # 2.14.13), so we can eventually delete this
+  
+  # if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
+  #   qgis_session_info(qgis_env)
+  # }
 
   if (!missing(show_msg)) {
     warning(paste("Argument show_msg is deprecated; please do not use it", 
