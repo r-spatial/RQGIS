@@ -39,6 +39,7 @@ Imports:
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,
+    rgrass7,
     rmarkdown,
     testthat
 VignetteBuilder: knitr
