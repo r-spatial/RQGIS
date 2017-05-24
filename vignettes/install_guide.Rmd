@@ -79,12 +79,12 @@ Two options exist installing QGIS on macOS
 
 1. Compile from source from [osgeo4mac](https://github.com/OSGeo/homebrew-osgeo4mac) **(recommended)**
 
-The `osgeo4mac` tap supports the most recent QGIS versions for both the development version and the long term release (LTR). You can compile with various options, e.g. `--with-grass` or `--with-saga-gis`. Check `brew info qgis2` for all available options. We recommend to compile QGIS using 
+The `osgeo4mac` tap supports the most recent QGIS versions for both the development version and the long term release (LTR). You can compile with various options, e.g. `--with-grass` or `--with-saga-gis-lts`. Check `brew info qgis2` for all available options. We recommend to compile QGIS using 
 
-`brew install qgis2 --with-grass --with-saga-gis`. 
+`brew install qgis2 --with-grass --with-saga-gis-lts`. 
 
-The installation will take some time (30-45 mins, depending on your system). 
-If you want to install the LTR version, simply replace `qgis` by `qgis2-ltr`. 
+The installation will take some time (30-45 mins, depending on your system) if you build from source. You can also install the bottled versions (= binary) step by step which will reduce installation time to a few minutes.
+If you want to install the LTR version, simply replace `qgis2` by `qgis2-ltr`. 
 
 2. Install QGIS binary from Kyngchaos
 
@@ -122,7 +122,7 @@ The binary GRASS installation can be found [here](https://grass.osgeo.org/downlo
 ## SAGA
 The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.  
 
-Using homebrew, SAGA can be compiled via `brew install saga-gis`. If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.
+Using homebrew, SAGA can be compiled via `brew install saga-gis-lts`. If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.
 
 There is no binary install of SAGA for Mac. Therefore, we recommended to use the bottle installation from `homebrew`. Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do so using `qgis_session_info()` in RQGIS.
 
