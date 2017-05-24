@@ -637,12 +637,12 @@ get_args_man <- function(alg = "", options = TRUE,
 #'   (`sp`-, `sf`- or `raster`-objects are supported), the function will save 
 #'   the spatial object to a temporary folder, and use the corresponding file 
 #'   path to replace the spatial object in the parameter-argument list. If the 
-#'   QGIS geoalgorithm parameter belongs to the
-#'   `ParameterMultipleInput`-instance class (see for example
-#'   `get_usage(grass7:v.patch)`) you may either use a character-string
-#'   containing the paths to the spatial objects separated by a semi-colon
+#'   QGIS geoalgorithm parameter belongs to the 
+#'   `ParameterMultipleInput`-instance class (see for example 
+#'   `get_usage(grass7:v.patch)`) you may either use a character-string 
+#'   containing the paths to the spatial objects separated by a semi-colon 
 #'   (e.g., "shape1.shp;shape2.shp;shape3.shp" - see also [QGIS 
-#'   documentation]((https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html)))
+#'   documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html))
 #'   or provide a [base::list()] containing the spatial objects.
 #'   \item If the user only specified the name of an output file (e.g.
 #'   "slope.asc") and not a complete path, the function will save the output in
@@ -651,9 +651,9 @@ get_args_man <- function(alg = "", options = TRUE,
 #'   function replaces verbal input by the corresponding number (required by the
 #'   QGIS Python API). Please refer to the example section for more details, and
 #'   to [get_options()] for valid options for a given geoalgorithm.
-#'  \item If `GRASS_REGION_PARAMETER` is "None" (the QGIS default), `run_qgis`
-#'  will automatically determine the region extent based on the user-specified
-#'  input layers. If you do want to specify the `GRASS_REGION_PARAMETER`
+#'  \item If `GRASS_REGION_PARAMETER` is "None" (the QGIS default), `run_qgis` 
+#'  will automatically determine the region extent based on the user-specified 
+#'  input layers. If you do want to specify the `GRASS_REGION_PARAMETER` 
 #'  yourself, please do it in accordance with the [QGIS 
 #'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
 #'  i.e., use a character string and separate the coordinates with a comma: 

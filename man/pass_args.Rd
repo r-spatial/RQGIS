@@ -52,7 +52,7 @@ QGIS geoalgorithm parameter belongs to the
 \code{ParameterMultipleInput}-instance class (see for example
 \code{get_usage(grass7:v.patch)}) you may either use a character-string
 containing the paths to the spatial objects separated by a semi-colon
-(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also \href{(https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html)}{QGISdocumentation})
+(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation})
 or provide a \code{\link[base:list]{base::list()}} containing the spatial objects.
 \item If the user only specified the name of an output file (e.g.
 "slope.asc") and not a complete path, the function will save the output in
