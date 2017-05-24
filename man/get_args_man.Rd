@@ -11,8 +11,9 @@ get_args_man(alg = "", options = TRUE, qgis_env = set_env())
 arguments and default values.}
 
 \item{options}{Sometimes one can choose between various options for a
-function argument. Setting option to \code{TRUE} will automatically assume one
-wishes to use the first option (default: \code{FALSE}).}
+function argument. Setting option to \code{TRUE}, the default,  will
+automatically assume one wishes to use the first option (QGIS GUI
+behavior).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}

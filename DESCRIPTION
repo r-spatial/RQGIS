@@ -1,8 +1,8 @@
 Package: RQGIS
-Date: 2017-01-18
+Date: 2017-05-24
 Type: Package
 Title: Integrating R with QGIS
-Version: 0.2.0.9000
+Version: 1.0.0
 Authors@R: c(
     person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
     person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut")
@@ -28,14 +28,14 @@ Depends:
 Imports:
          raster,
          RCurl,
-         rgdal, 
-         sp,
-         XML,
-         tools,
-         sf (>= 0.4-2),
-         reticulate,
          readr,
-         stringr
+         reticulate (>= 0.8),
+         rgdal,
+         sf (>= 0.4-2),
+         sp,
+         stringr,
+         tools,
+         XML
 SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
 Suggests:
     knitr,

@@ -1,33 +1,37 @@
-# RQGIS 0.2.0.9000
+# RQGIS 1.0.0
+
+## General
+  * RQGIS now uses [reticulate](https://github.com/rstudio/reticulate) to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called; #59). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class (#32) containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, etc.).
 
 ## Features
-  * RQGIS now uses reticulate to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function `open_app`. `open_app` in turn makes advantage of various new helper functions (`setup_win()`, `run_ini()`, `setup_linux()`, `setup_mac()`). Additionally, we put much of the Python code into inst/python. `import_setup` contains much of the necessary import statements to run QGIS from within R. `python_funs` contains the RQGIS class (#32) containing several methods to call from within R (`get_args_man()`, `open_help()`, `qgis_session_info()`, `get_output_names`, etc.).
-
-  * You can now use regular expression with `find_algorithms()`.
+  * The user can now specify QGIS geoalgorithm parameters as R named arguments using the ellipsis-argument `...` (#58).
+  
+  * We rewrote the `load_output`-argument of `run_qgis`. It is now a logical argument. If `TRUE`, `run_qgis()` will automatically load all the output layers explicitly specified by the user back into R (#60).
+  
+  * Extensive error-/misspecification checking. To do so, we now submit a Python-dictionary - containing all parameters and arguments - to `processing.runalg`. This also allows to check parameter names. Before the **args-argument simply converted our input in a list containing the arguments (but not the parameter names). Using the Python dictionary has the additional benefit that we no longer have to take care of the order in which the function parameters are specified. Besides, we now also make sure that the user can only specify available options. And if the user provides the verbal notation, `pass_args` internally converts this input in the corresponding number notation as required by the QGIS API (#64, @tim-salabim; #65).
+  
+  * RQGIS now supports simple features (`sf`; #43, @einvindhammers).
+  
+  * support for MultiParameterInput through two new helper functions `save_spatial_objects` and `get_grp` (https://gis.stackexchange.com/questions/240303/defining-grass-region-in-rqgis)
   
   * RQGIS now supports QGIS `osgeo4mac` homebrew installations. This is also the recommended installation way from now on as it does not cause irritating error messages like the Kyngchaos QGIS binary. 
   
-  * `set_env()` now caches its output, so calling it a second time, will load the cached output. 
+  * `find_algorithms` now accepts regular expressions as argument for its `search_term` parameter
   
-  * When having multiple homebrew installations on mac (LTR and dev), the user can select which one to use with the `dev` argument in `set_env()`. Default uses the LTR version.
+  * `set_env()` now caches its output, so calling it a second time, will load the cached output. 
   
   * Under Windows `set_env()` now first searches the most likely places to find a QGIS installation.
   
-  * `find_algorithms` now also accepts regular expressions as search term
+  * changing `set_env`'s parameter name from `ltr` to `dev`. When having multiple homebrew installations on mac (LTR and dev), the user can select which one to use with the `dev` argument in `set_env()`. Default uses the LTR version.
   
   * `qgis_session_info()` now warns Linux users that they might have to use a softlink when using grass7 in conjunction with QGIS (#52, @thengl)
   
-  * The user can now specify QGIS geoalgorihm parameters as R named arguments using the ellipse-argument `...` (#58).
-  
-  * Extensive error-/misspecification checking. To do so, we now submit a Python-dictionary - containing all parameters and arguments - to `processing.runalg` which allows also to check parameter names. Before the **args-argument simply converted our input in a list containing the arguments (but not the parameter names). Using the Python dictionary has the additional benefit that we no longer have to take care of the order in which the function parameters are specified. Besides, we now also make sure that the user can only specify available options. And if the user provides the verbal notation, `pass_args` internally converts this input in the corresponding number notation as required by the QGIS API (#64, @tim-salabim; #65).
-  
-  * We rewrote the `load_output`-argument of `run_qgis`. It now is a locigal argument. If `TRUE`, `run_qgis()` will automatically load all the output explicitly specified by the user (via the triple-dot argument) back into R.
-  
   * changing the default for parameter `options` from `FALSE` to `TRUE` in `get_args_man`
+  
+  * `reset_paths` tries to restore the PATH environment variable, i.e. at least to make sure that all paths within PATH will still be available after having run `open_app`.
 
 ## Miscellaneous
-
-  * Added new tests.
+  * Adding new tests.
 
 # RQGIS 0.2.0
 
@@ -57,7 +61,7 @@
   
   * bug fix: when constructing the cmd-command (in `run_qgis`), we need to avoid "double" shell quotes. This happened e.g., with `grass7:r.viewshed`. Additionally, we made sure that None, True and False are not shellquoted.
   
-  * bug fix: when determining the GRASS REGION PARAMETER in `run_qgis`. To extract the extent of a spatial object `ogrInfo` needs the layer name without the file extension. To do that we now use the `file_path_sans_ext` of the `tools` package instead of a simple `gsub`-command. Previously, we simply returned everything in front of a colon. This caused problems with filenames such as gis.osm_roads_free_1.shp.
+  * bug fix: when determining the GRASS REGION PARAMETER in `run_qgis`. To extract the extent of a spatial object `ogrInfo` needs the layer name without the file extension. To do that we now use the `file_path_sans_ext` of the `tools` package instead of a simple `gsub`-command. Previously, we simply returned everything in front of a colon. This caused problems with file names such as gis.osm_roads_free_1.shp.
   
   * bug fix: `run_qgis` function argument `load_output` now checks if the QGIS output was really created before trying to load it.
   

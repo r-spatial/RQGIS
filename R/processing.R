@@ -322,20 +322,27 @@ qgis_session_info <- function(qgis_env = set_env()) {
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
   names(out) <- c("qgis_version", "grass6", "grass7", "saga",
                   "supported_saga_versions")
+  
+  
   if (Sys.info()["sysname"] == "Linux" && out$grass7) {
     # find out which GRASS version is available
     # my_grass <- searchGRASSX()
-    my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ", 
+    suppressWarnings(
+      my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ",
                               "-executable -iname 'grass??' -print"),
                        intern = TRUE)
-    if (grepl("72", my_grass)) {
-      warning(paste0("QGIS might be still pointing to grass70. In this case ",
-                     "you might want to consider using a softlink by running: ",
-                     "'sudo ln -s /usr/bin/grass72 /usr/bin/grass70' on the ",
-                     "commandline. See also ", 
-                     "'https://lists.osgeo.org/pipermail/qgis-user/2017-", 
-                     "January/038907.html'. Then restart R again."))
-    }
+    )
+    
+    # QGIS developer team took care of this issue, so we can eventually delete 
+    # it
+    # if (grepl("72", my_grass)) {
+    #   warning(paste0("QGIS might be still pointing to grass70. In this case ",
+    #                  "you might want to consider using a softlink by running: ",
+    #                  "'sudo ln -s /usr/bin/grass72 /usr/bin/grass70' on the ",
+    #                  "commandline. See also ",
+    #                  "'https://lists.osgeo.org/pipermail/qgis-user/2017-",
+    #                  "January/038907.html'. Then restart R again."))
+    # }
     
     # more or less copied from link2GI::searchGRASSX
     # Problem: sometimes the batch command is interrupted or does not finish...
@@ -427,7 +434,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 #'   QGIS geoalgorithm.
 #' @param alg Name of the function whose parameters are being searched for.
 #' @param intern Logical, if `TRUE` the function captures the command line 
-#'   output as an `R` character vector`. If `FALSE`, the default, the ouptut is
+#'   output as an `R` character vector`. If `FALSE`, the default, the output is
 #'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
@@ -463,7 +470,7 @@ get_usage <- function(alg = NULL, intern = FALSE,
 #'   required GIS function.
 #' @param alg Name of the GIS function for which options should be returned.
 #' @param intern Logical, if `TRUE` the function captures the command line 
-#'   output as an `R` character vector. If `FALSE`, the default, the ouptut is
+#'   output as an `R` character vector. If `FALSE`, the default, the output is
 #'   printed to the console in a pretty way.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
@@ -537,28 +544,29 @@ open_help <- function(alg = "", qgis_env = set_env()) {
 }
 
 #' @title Get GIS arguments and respective default values
-#' @description`get_args_man` retrieves automatically function arguments and
+#' @description`get_args_man` retrieves automatically function arguments and 
 #' respective default values for a given QGIS geoalgorithm.
 #' @param alg The name of the algorithm for which one wishes to retrieve 
 #'   arguments and default values.
 #' @param options Sometimes one can choose between various options for a 
-#'   function argument. Setting option to `TRUE` will automatically assume one
-#'   wishes to use the first option (default: `FALSE`).
+#'   function argument. Setting option to `TRUE`, the default,  will
+#'   automatically assume one wishes to use the first option (QGIS GUI
+#'   behavior).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
-#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. That
-#'   means, for a given GIS algorithm, it captures automatically all arguments
-#'   and default values. In the case that a function argument has several
+#' @details `get_args_man` basically mimics the behavior of the QGIS GUI. That 
+#'   means, for a given GIS algorithm, it captures automatically all arguments 
+#'   and default values. In the case that a function argument has several 
 #'   options, one can indicate to use the first option (see also 
 #'   [get_options()]), which is the QGIS GUI default behavior.
 #' @return The function returns a list whose names correspond to the function 
-#'   arguments one needs to specify. The list elements correspond to the
-#'   argument specifications. The specified function arguments can serve as
+#'   arguments one needs to specify. The list elements correspond to the 
+#'   argument specifications. The specified function arguments can serve as 
 #'   input for [run_qgis()]'s params argument. Please note that although 
 #'   `get_args_man` tries to retrieve default values, one still needs to specify
 #'   some function arguments manually such as the input and the output layer.
 #' @note Please note that some default values can only be set after the user's 
-#'   input. For instance, the GRASS region extent will be determined
+#'   input. For instance, the GRASS region extent will be determined 
 #'   automatically by [run_qgis()] if left blank.
 #' @export
 #' @author Jannes Muenchow, Victor Olaya, QGIS core team
@@ -581,7 +589,6 @@ get_args_man <- function(alg = "", options = TRUE,
   args <- py_run_string(
     sprintf("algorithm_params = RQGIS.get_args_man('%s')",
             alg))$algorithm_params
-  names(args) <- c("params", "vals", "opts")
   
   # If desired, select the first option if a function argument has several
   # options to choose from
@@ -601,14 +608,14 @@ get_args_man <- function(alg = "", options = TRUE,
 #' @description The function lets the user specify QGIS geoalgorithm parameters 
 #'   as R named arguments or a a parameter-argument list. When omitting required
 #'   parameters, defaults will be used if available as derived from 
-#'   [get_args_man()]. Additionally, the function checks thoroughly the
+#'   [get_args_man()]. Additionally, the function checks thoroughly the 
 #'   user-provided parameters and arguments.
 #' @param alg The name of the geoalgorithm to use.
 #' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as 
 #'   R named arguments.
 #' @param params Parameter-argument list for a specific geoalgorithm, see 
 #'   [get_args_man()] for more details. Please note that you can either specify 
-#'   R arguments directly via the triple dots (see above) or via the
+#'   R arguments directly via the triple dots (see above) or via the 
 #'   parameter-argument list. However, you may not mix the two methods.
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
@@ -618,28 +625,39 @@ get_args_man <- function(alg = "", options = TRUE,
 #'   `params`-parameter specified by the user as additional input. If available,
 #'   the function returns the default values for all parameters which were not 
 #'   specified.
-#' @details In detail, the function performs following actions and
-#'   parameter-argument checks:
+#' @details In detail, the function performs following actions and 
+#'   parameter-argument checks: 
 #'   \itemize{
-#'     \item Were the right parameter names used?
-#'     \item Were the correct argument values provided?
-#'     \item The function collects all necessary arguments (to run QGIS) and 
-#'     respective default values which were not set by the user with the help of
-#'     [get_args_man()].
-#'     \item If an argument value corresponds to a spatial object residing in R 
-#'     (`sp`-, `sf`- or `raster`-objects are supported), the function will save 
-#'     the spatial object to a temporary folder, and use the corresponding file 
-#'     path to replace the spatial object in the parameter-argument list.
-#'     \item If the user only specified the name of an output file (e.g. 
-#'     "slope.asc") and not a complete path, the function will save the output
-#'     in the temporary folder, i.e. to `file.path(tempdir(), "slope.asc")`.
-#'     \item If a parameter accepts as arguments values from a selection, the 
-#'     function replaces verbal input by the corresponding number (required by 
-#'     the QGIS Python API). Please refer to the example section for more
-#'     details, and to [get_options()] for valid options for a given
-#'     geoalgorithm.
-#'     \item In case of a GRASS-geoalgorithm, the function determines the
-#'     `GRASS_REGION_PARAMETER` based on the user input.
+#'   \item Were the right parameter names used? 
+#'   \item Were the correct argument values provided? 
+#'   \item The function collects all necessary arguments (to run QGIS) and
+#'   respective default values which were not set by the user with the help of
+#'   [get_args_man()].
+#'   \item If an argument value corresponds to a spatial object residing in R 
+#'   (`sp`-, `sf`- or `raster`-objects are supported), the function will save 
+#'   the spatial object to a temporary folder, and use the corresponding file 
+#'   path to replace the spatial object in the parameter-argument list. If the 
+#'   QGIS geoalgorithm parameter belongs to the
+#'   `ParameterMultipleInput`-instance class (see for example
+#'   `get_usage(grass7:v.patch)`) you may either use a character-string
+#'   containing the paths to the spatial objects separated by a semi-colon
+#'   (e.g., "shape1.shp;shape2.shp;shape3.shp" - see also [QGIS 
+#'   documentation]((https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html)))
+#'   or provide a [base::list()] containing the spatial objects.
+#'   \item If the user only specified the name of an output file (e.g.
+#'   "slope.asc") and not a complete path, the function will save the output in
+#'   the temporary folder, i.e. to `file.path(tempdir(), "slope.asc")`.
+#'   \item If a parameter accepts as arguments values from a selection, the
+#'   function replaces verbal input by the corresponding number (required by the
+#'   QGIS Python API). Please refer to the example section for more details, and
+#'   to [get_options()] for valid options for a given geoalgorithm.
+#'  \item If `GRASS_REGION_PARAMETER` is "None" (the QGIS default), `run_qgis`
+#'  will automatically determine the region extent based on the user-specified
+#'  input layers. If you do want to specify the `GRASS_REGION_PARAMETER`
+#'  yourself, please do it in accordance with the [QGIS 
+#'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
+#'  i.e., use a character string and separate the coordinates with a comma: 
+#'  "xmin, xmax, ymin, ymax".
 #'   }
 #' @note The function was inspired by [rgrass7::doGRASS()].
 #' @author Jannes Muenchow
@@ -747,51 +765,14 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   params[int] <- ls_1
   
   # Save Spatial-Objects (sp, sf and raster)
-  params[] <- lapply(seq_along(params), function(i) {
-    tmp <- class(params[[i]])
-    # GEOMETRY and GEOMETRYCOLLECTION not supported
-    if (any(tmp %in% c("sfc_GEOMETRY", "sfc_GEOMETRYCOLLECTION"))) {
-      stop("RQGIS does not support GEOMETRY or GEOMETRYCOLLECTION classes")
-    }
-    # check if the function argument is a SpatialObject
-    if (any(grepl("^Spatial(Points|Lines|Polygons)DataFrame$", tmp)) | 
-        any(tmp %in% c("sf", "sfc", "sfg"))) {
-      # if it is an sp-object convert it into sf, if it already is an sf-object,
-      # nothing happens
-      params[[i]] <- st_as_sf(params[[i]])
-      # write sf as a shapefile to a temporary location while overwriting any
-      # previous versions, I don't know why but sometimes the overwriting does 
-      # not work...
-      outpath <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
-      cap <- capture.output({
-        suppressWarnings(
-          test <- 
-            try(write_sf(params[[i]], outpath, quiet = TRUE), silent = TRUE)
-        )
-        })
-      if (inherits(test, "try-error")) {
-        while (basename(outpath) %in% dir(tempdir())) {
-          outpath <- paste0(gsub(".shp", "", outpath), 1, ".shp")  
-        }
-        write_sf(params[[i]], outpath, quiet = TRUE)
-      }
-      # return the result
-      outpath
-    } else if (tmp == "RasterLayer") {
-      fname <- file.path(tempdir(), paste0(names(params)[[i]], ".asc"))
-      writeRaster(params[[i]], filename = fname, format = "ascii", 
-                  prj = TRUE, overwrite = TRUE)
-      # return the result
-      fname
-    }  else {
-      params[[i]]
-    }
-  })
+  # here, we would like to retrieve the type type of the argument (which is list
+  # element 4)
+  out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
+  params[] <- save_spatial_objects(params = params, 
+                                   type_name = out$type_name)
   
   # Find out what the output names are
-  out_names <- 
-    py_run_string(
-      sprintf("out_names = RQGIS.get_output_names('%s')", alg))$out_names
+  out_names <- out$params[out$output]
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(out_names)\nexcept:\  pass")  
@@ -814,63 +795,24 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # a new function)
   if (grepl("grass7?:", alg) &&
       grepl("None", params$GRASS_REGION_PARAMETER)) {
-    # dismiss the output arguments. Not doing so could cause R to crash since 
-    # the output-file might already exist. For instance, the already existing
-    # output might have another CRS.
-    ext <- params[setdiff(names(params), out_names)]
-    # run through the arguments and check if we can extract a bbox
-    ext <- lapply(ext, function(x) {
-      # We cannot simply use gsub as we have done before (gsub("[.].*",
-      # "",basename(x))) if the filename itself also contains dots, e.g.,
-      # gis.osm_roads_free_1.shp 
-      # We could use regexp to cut off the file extension
-      # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
-      # but let's use an already existing function
-      my_layer <- file_path_sans_ext(basename(as.character(x)))
-      # determine bbox in the case of a vector layer
-      tmp <- try(expr = ogrInfo(dsn = x, layer = my_layer)$extent, 
-                 silent = TRUE)
-      if (!inherits(tmp, "try-error")) {
-        # check if this is always this way (xmin, ymin, xmax, ymax...)
-        extent(tmp[c(1, 3, 2, 4)])
-      } else {
-        # determine bbox in the case of a raster
-        ext <- try(expr = GDALinfo(x, returnStats = FALSE),
-                   silent = TRUE)
-        # check if it is still an error
-        if (!inherits(ext, "try-error")) {
-          # xmin, xmax, ymin, ymax
-          extent(c(ext["ll.x"], 
-                   ext["ll.x"] + ext["columns"] * ext["res.x"],
-                   ext["ll.y"],
-                   ext["ll.y"] + ext["rows"] * ext["res.y"]))
-        } else {
-          NA
-        }
-      }
-    })
-    # now that we have possibly several extents, union them
-    ext <- ext[!is.na(ext)]
-    ext <- Reduce(raster::merge, ext)
-    if (is.null(ext)) {
-      stop("Either you forgot to specify an input shapefile/raster or the", 
-           " input file does not exist")
-    }
-    # sometimes the extent is given back with dec = ","; you need to change that
-    ext <- gsub(",", ".", c(ext@xmin, ext@xmax, ext@ymin, ext@ymax))
-    # final bounding box in GRASS notation
-    params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
+    # run through the arguments and check if we can extract a bbox. While doing
+    # so, dismiss the output arguments. Not doing so could cause R to crash
+    # since the output-file might already exist. For instance, the already
+    # existing output might have another CRS.
+    ext <- get_grp(params = params[!out$output], 
+                   type_name = out$type_name[!out$output])
+  # final bounding box in the QGIS/GRASS notation
+   params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
   }
-  
-  # make sure function arguments are in the correct order not longer necessary
-  # since we use a Python dictionary to pass our arguments however, otherwise,
-  # the user might become confused... and for RQGIS.check_args the correct order
-  # is important as well! Doing the check here has also the advantage that the
-  # function tells the user all missing function arguments, QGIS returns only
-  # one at a time
+  # make sure function arguments are in the correct order is not srictly
+  # necessary any longer since we use a Python dictionary to pass our arguments.
+  # However, otherwise, the user might become confused... and for
+  # RQGIS.check_args the correct order is important as well! Doing the check
+  # here has also the advantage that the function tells the user all missing
+  # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",
-                                 alg, r_to_py(unlist(params))))$check
+  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",alg, 
+                                 py_unicode(r_to_py(unlist(params)))))$check
   # stop the function if required arguments were not supplied
   if (length(check) > 0) {
     stop(sprintf("Invalid argument value %s for parameter %s\n", 
@@ -899,7 +841,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order 
 #'  (deprecated).
-#'@param show_msg Logical, if `TRUE`, Python messages that occured during the 
+#'@param show_msg Logical, if `TRUE`, Python messages that occurred during the 
 #'  algorithm execution will be shown (deprecated).
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to [set_env()].
@@ -907,20 +849,25 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'  `processing.runalg`.
 #'@return The function prints a list (named according to the output parameters) 
 #'  containing the paths to the files created by QGIS. If not otherwise 
-#'  specified, the function saves the QGIS generated output files in the 
+#'  specified, the function saves the QGIS generated output files to a 
 #'  temporary folder (created by QGIS). Optionally, function parameter 
 #'  `load_output` loads spatial QGIS output (vector and raster data) into R.
 #'@note Please note that one can also pass spatial R objects as input parameters
 #'  where suitable (e.g., input layer, input raster). Supported formats are 
 #'  [sp::SpatialPointsDataFrame()]-, [sp::SpatialLinesDataFrame()]-, 
-#'  [sp::SpatialPolygonsDataFrame()]-, [sf::sf()]- (of class `sf`, `sfc` as
-#'  well as `sfg`), and [raster::raster()]-objects. See the example section for
-#'  more details.
+#'  [sp::SpatialPolygonsDataFrame()]-, [sf::sf()]- (of class `sf`, `sfc` as well
+#'  as `sfg`), and [raster::raster()]-objects. See the example section for more 
+#'  details.
 #'  
 #'  GRASS users do not have to specify manually the GRASS region extent 
 #'  (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default), 
 #'  `run_qgis` (see [pass_args()] for more details) will automatically determine
-#'  the region extent based on the user-specified input layers.
+#'  the region extent based on the user-specified input layers. If you do want 
+#'  to specify it yourself, please do it in accordance with the [QGIS 
+#'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
+#'  i.e. use a character string and separate the coordinates with a comma: 
+#'  "xmin, xmax, ymin, ymax".
+#'  
 #'@author Jannes Muenchow, Victor Olaya, QGIS core team
 #'@export
 #'@importFrom sf st_read
@@ -962,11 +909,14 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
-  # check under Linux which GRASS version is in use. If its GRASS72 the user
-  # might have to add a softlink due to as QGIS bug
-  if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
-    qgis_session_info(qgis_env)
-  }
+  # check under Linux which GRASS version is in use. If its GRASS72 the user 
+  # might have to add a softlink due to as QGIS bug 
+  # QGIS developer core team took care of this issue (at least since QGIS
+  # 2.14.13), so we can eventually delete this
+  
+  # if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
+  #   qgis_session_info(qgis_env)
+  # }
 
   if (!missing(show_msg)) {
     warning(paste("Argument show_msg is deprecated; please do not use it", 
@@ -1014,7 +964,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
 
   # convert R parameter-argument list into a Python dictionary
   py_run_string(paste("args = ", r_to_py(args)))
-  py_run_string(paste0("params = ", r_to_py(names(params))))
+  py_run_string(paste0("params = ", py_unicode(r_to_py(names(params)))))
   py_run_string("params = dict((x, y) for x, y in zip(params, args))")
   
   cmd <- paste(sprintf("res = processing.runalg('%s', params)", alg))
@@ -1041,7 +991,8 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
     # Find out what the output names are
     out_names <- 
       py_run_string(
-        sprintf("out_names = RQGIS.get_output_names('%s')", alg))$out_names
+        sprintf("out_names = RQGIS.get_args_man('%s')", alg))$out_names
+    out_names <- out_names$params[out_names$output]
     # clean up after yourself!!
     py_run_string(
       "try:\n  del(out_names)\nexcept:\  pass")  

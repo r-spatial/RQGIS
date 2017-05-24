@@ -9,7 +9,7 @@ Important news
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--12-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--18-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -191,7 +191,7 @@ out <- run_qgis(alg = "qgis:polygoncentroids",
 ## [1] "C:\\Users\\pi37pat\\AppData\\Local\\Temp\\Rtmpeil4bS/ger_coords.shp"
 ```
 
-Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specify `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somewhere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R. Naturally, we would like to check if the result meets our expectations.
+Please note that our `INPUT_LAYER` is a spatial object residing in R's global environment. Of course, you can also use a path to specify `INPUT_LAYER` (e.g. "ger.shp") which is the better option if your data is somewhere stored on your hard drive. Finally, `run_qgis` calls the QGIS API to run the specified geoalgorithm with the corresponding function arguments. Since we set `load_output` to `TRUE`, `run_qgis` automatically loads the QGIS output back into R (an `sf`-object in the case of vector data and a `raster`-object in the case of raster data). Naturally, we would like to check if the result meets our expectations.
 
 ``` r
 # first, plot the federal states of Germany

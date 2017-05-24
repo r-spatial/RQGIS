@@ -47,17 +47,26 @@ respective default values which were not set by the user with the help of
 \item If an argument value corresponds to a spatial object residing in R
 (\code{sp}-, \code{sf}- or \code{raster}-objects are supported), the function will save
 the spatial object to a temporary folder, and use the corresponding file
-path to replace the spatial object in the parameter-argument list.
+path to replace the spatial object in the parameter-argument list. If the
+QGIS geoalgorithm parameter belongs to the
+\code{ParameterMultipleInput}-instance class (see for example
+\code{get_usage(grass7:v.patch)}) you may either use a character-string
+containing the paths to the spatial objects separated by a semi-colon
+(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also \href{(https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html)}{QGISdocumentation})
+or provide a \code{\link[base:list]{base::list()}} containing the spatial objects.
 \item If the user only specified the name of an output file (e.g.
-"slope.asc") and not a complete path, the function will save the output
-in the temporary folder, i.e. to \code{file.path(tempdir(), "slope.asc")}.
+"slope.asc") and not a complete path, the function will save the output in
+the temporary folder, i.e. to \code{file.path(tempdir(), "slope.asc")}.
 \item If a parameter accepts as arguments values from a selection, the
-function replaces verbal input by the corresponding number (required by
-the QGIS Python API). Please refer to the example section for more
-details, and to \code{\link[=get_options]{get_options()}} for valid options for a given
-geoalgorithm.
-\item In case of a GRASS-geoalgorithm, the function determines the
-\code{GRASS_REGION_PARAMETER} based on the user input.
+function replaces verbal input by the corresponding number (required by the
+QGIS Python API). Please refer to the example section for more details, and
+to \code{\link[=get_options]{get_options()}} for valid options for a given geoalgorithm.
+\item If \code{GRASS_REGION_PARAMETER} is "None" (the QGIS default), \code{run_qgis}
+will automatically determine the region extent based on the user-specified
+input layers. If you do want to specify the \code{GRASS_REGION_PARAMETER}
+yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation},
+i.e., use a character string and separate the coordinates with a comma:
+"xmin, xmax, ymin, ymax".
 }
 }
 \note{
