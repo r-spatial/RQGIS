@@ -212,7 +212,7 @@ info <- qgis_session_info()
 info$supported_saga_versions
 ```
 
-This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions that QGIS supports from source. This will automatically add SAGA to the processing toolbox of QGIS (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this [page](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
+This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions from source supported by QGIS. After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this [page](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/) for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.
 
 First of all, install all necessary SAGA dependencies and a few compilation and configuration tools:
 
@@ -223,12 +223,13 @@ sudo apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjas
 sudo apt-get install g++ make automake libtool git
 ```
 
-Next, we would like to download a specific SAGA version. Check out the various available versions [here](https://sourceforge.net/projects/saga-gis/files/). Here, we will download SAGA 2.2.0 into our home directory, unpack it and change the working directory to the unpacked folder:
+Next, we would like to download a specific SAGA version. Check out the various available versions [here](https://sourceforge.net/projects/saga-gis/files/). Here, we will download SAGA 2.3.1 into our home directory, unpack it and change the working directory to the unpacked folder:
 
 ```sh
-wget -O /home/jannes/saga-git "https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.2/SAGA%202.2.0/saga_2.2.0.tar.gz"
+wget -O /home/jannes/saga-git "https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.3/SAGA%202.3.1/saga_2.3.1.tar.gz"
+cd /home/jannes
 sudo tar -xvzf saga-git
-cd saga 2.2.0
+cd saga-2.3.1
 ```
 Having done so, we are ready to compile SAGA:
 
@@ -258,9 +259,9 @@ saga_gui
 ```
 
 Using SAGA >= 2.2.1 you might encounter following message in the Processing log when opening QGIS: 
-`Problem with SAGA installation: installed SAGA version (2.2.1) is not supported`. 
+`Problem with SAGA installation: installed SAGA version (2.3.1) is not supported`. 
 Though in this case SAGA is not available in the processing toolbox, you might still able to use it 
-via the QGIS Python API and therefore also with RQGIS. Please note that SAGA 2.2.3 is the latest SAGA version supported by QGIS (2.14 and 2.18).
+via the QGIS Python API and therefore also with RQGIS. Please note that SAGA 2.3.1 is the latest SAGA version supported by QGIS (2.14 and 2.18).
 
 In case you would like to uninstall SAGA, type:
 
