@@ -2,7 +2,7 @@ Package: RQGIS
 Date: 2017-05-24
 Type: Package
 Title: Integrating R with QGIS
-Version: 1.0.0
+Version: 1.0.0.9000
 Authors@R: c(
     person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
     person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut")
