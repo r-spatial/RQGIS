@@ -9,11 +9,7 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      jdk: oraclejdk9
-      addons:
-        apt:
-          packages:
-            - oracle-java9-installer
+      jdk: oraclejdk8
       env: 
         - R_CODECOV=true
         - LTR_Linux=true
@@ -26,11 +22,7 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      jdk: oraclejdk9
-      addons:
-        apt:
-          packages:
-            - oracle-java9-installer
+      jdk: oraclejdk8
       env: DEV_Linux=true
       #r:
       #  - oldrel
