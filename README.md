@@ -9,7 +9,7 @@ Important news
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--28-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--29-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -218,6 +218,7 @@ Internally, `open_app` first sets all necessary paths (among others the path to 
 
 If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
-
+<p align="center">
+<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/rewrite_algexecutor.PNG" width="80%"/>
+</p>
 The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS &gt;= 2.18.2.
