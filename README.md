@@ -9,7 +9,7 @@ Important news
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--28-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--05--28-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
@@ -39,10 +39,10 @@ Important news
 <tr class="even">
 <td>R CMD check</td>
 <td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
-<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=rPython" alt="LTR_Linux=true Status" /></a><br />
-<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=rPython" alt="DEV_Linux=true Status" /></a></td>
-<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=rPython" alt="LTR_mac=true Status" /></a><br />
-<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=rPython" alt="DEV_mac=true Status" /></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="LTR_Linux=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=master" alt="DEV_Linux=true Status" /></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="LTR_mac=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=master" alt="DEV_mac=true Status" /></a></td>
 <td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
 </tr>
 <tr class="odd">
@@ -61,7 +61,7 @@ Important news
 
 #### Github
 
-[![packageversion](https://img.shields.io/badge/Package%20version-0.2.0.9000-orange.svg?style=flat-square)](commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-1.0.0.9000-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->

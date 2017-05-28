@@ -78,7 +78,7 @@ before_install:
   
   # install gdal and proj4 from ubuntugis ppa (gdal2.1)
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y && sudo apt-mark hold oracle-java8-installer oracle-java8-unlimited-jce-policy oracle-java9-set-default oracle-java9-unlimited-jce-policy; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y && sudo apt-mark hold oracle-java8-installer oracle-java8-unlimited-jce-policy oracle-java9-set-default oracle-java9-unlimited-jce-policy oracle-java9-installer; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt upgrade -y; fi # if you already have gdal 1.11 installed
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal; fi
     
