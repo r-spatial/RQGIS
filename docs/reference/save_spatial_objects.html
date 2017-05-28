@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Open a QGIS application — open_app • RQGIS</title>
+<title>Save spatial objects — save_spatial_objects • RQGIS</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -79,53 +79,59 @@
       <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Open a QGIS application</h1>
+    <h1>Save spatial objects</h1>
     </div>
 
     
-    <p><code>open_app</code> first sets all the correct paths to the QGIS Python
-binary, and secondly opens a QGIS application while importing the most
-common Python modules.</p>
+    <p>The function saves spatial objects (<code>sp</code>, <code>sf</code> and <code>raster</code>) to
+a temporary folder on the computer's hard drive.</p>
     
 
-    <pre class="usage"><span class='fu'>open_app</span>(<span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>save_spatial_objects</span>(<span class='no'>params</span>, <span class='no'>type_name</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>qgis_env</th>
-      <td><p>Environment settings containing all the paths to run the QGIS
-API. For more information, refer to <code><a href='set_env.html'>set_env()</a></code>. Basically, the function
-defines a few new environment variables which should not interfere with
-other settings.</p></td>
+      <th>params</th>
+      <td><p>A parameter-argument list as returned by <code><a href='pass_args.html'>pass_args()</a></code>.</p></td>
+    </tr>
+    <tr>
+      <th>type_name</th>
+      <td><p>A character string containing the QGIS parameter type for
+each parameter (boolean, multipleinput, extent, number, etc.) of <code>params</code>.
+The Python method <code>RQGIS.get_args_man</code> returns a Python dictionary with one
+of its elements corresponding to the type_name (see also the example
+section).</p></td>
     </tr>
     </table>
-    
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>The function enables a 'tunnel' to the Python QGIS API.</p>
-    
-    <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
-
-    <p>Please note that the function changes your environment settings via
-<code><a href='http://www.rdocumentation.org/packages/base/topics/Sys.getenv'>base::Sys.getenv()</a></code> which is necessary to run the QGIS Python API.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
-  <span class='fu'>open_app</span>()
+  <span class='fu'>library</span>(<span class='st'>"RQGIS"</span>)
+  <span class='fu'>library</span>(<span class='st'>"raster"</span>)
+  <span class='fu'>library</span>(<span class='st'>"reticulate"</span>)
+  <span class='no'>r</span> <span class='kw'>&lt;-</span> <span class='fu'>raster</span>(<span class='kw'>ncol</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='fl'>100</span>)
+  <span class='no'>r1</span> <span class='kw'>&lt;-</span> <span class='fu'>crop</span>(<span class='no'>r</span>, <span class='fu'>extent</span>(-<span class='fl'>10</span>, <span class='fl'>11</span>, -<span class='fl'>10</span>, <span class='fl'>11</span>))
+  <span class='no'>r2</span> <span class='kw'>&lt;-</span> <span class='fu'>crop</span>(<span class='no'>r</span>, <span class='fu'>extent</span>(<span class='fl'>0</span>, <span class='fl'>20</span>, <span class='fl'>0</span>, <span class='fl'>20</span>))
+  <span class='no'>r3</span> <span class='kw'>&lt;-</span> <span class='fu'>crop</span>(<span class='no'>r</span>, <span class='fu'>extent</span>(<span class='fl'>9</span>, <span class='fl'>30</span>, <span class='fl'>9</span>, <span class='fl'>30</span>))
+  <span class='no'>r1</span>[] <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fu'>ncell</span>(<span class='no'>r1</span>)
+  <span class='no'>r2</span>[] <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fu'>ncell</span>(<span class='no'>r2</span>)
+  <span class='no'>r3</span>[] <span class='kw'>&lt;-</span> <span class='fl'>1</span>:<span class='fu'>ncell</span>(<span class='no'>r3</span>)
+  <span class='no'>alg</span> <span class='kw'>&lt;-</span> <span class='st'>"grass7:r.patch"</span>
+  <span class='no'>out</span> <span class='kw'>&lt;-</span> <span class='fu'>py_run_string</span>(<span class='fu'>sprintf</span>(<span class='st'>"out = RQGIS.get_args_man('%s')"</span>, <span class='no'>alg</span>))$<span class='no'>out</span>
+  <span class='no'>params</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_args_man.html'>get_args_man</a></span>(<span class='no'>alg</span>)
+  <span class='no'>params</span>$<span class='no'>input</span> <span class='kw'>&lt;-</span> <span class='fu'>list</span>(<span class='no'>r1</span>, <span class='no'>r2</span>, <span class='no'>r3</span>)
+  <span class='no'>params</span>[] <span class='kw'>&lt;-</span> <span class='fu'>save_spatial_objects</span>(<span class='kw'>params</span> <span class='kw'>=</span> <span class='no'>params</span>,
+                                   <span class='kw'>type_name</span> <span class='kw'>=</span> <span class='no'>out</span>$<span class='no'>type_name</span>)
 })</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
       <li><a href="#arguments">Arguments</a></li>
-      
-      <li><a href="#value">Value</a></li>
-
-      <li><a href="#note">Note</a></li>
-      
+            
       <li><a href="#examples">Examples</a></li>
     </ul>
 

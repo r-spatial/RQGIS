@@ -95,9 +95,10 @@ within R.</p>
     <tr>
       <th>root</th>
       <td><p>Root path to the QGIS-installation. If left empty, the function
-looks for <code>qgis.bat</code> on the C: drive under Windows. On a Mac, it looks for
-<code>QGIS.app</code> under "Applications" and "/usr/local/Cellar/". On Linux,
-<code>set_env</code> assumes that the root path is "/usr".</p></td>
+looks for <code>qgis.bat</code> first in the most likely locations (C:/OSGEO4~1,
+C:/OSGEO4~2), and secondly on the C: drive under Windows. On a Mac, it
+looks for <code>QGIS.app</code> under "Applications" and "/usr/local/Cellar/". On
+Linux, <code>set_env</code> assumes that the root path is "/usr".</p></td>
     </tr>
     <tr>
       <th>new</th>
