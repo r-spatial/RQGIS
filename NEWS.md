@@ -2,7 +2,8 @@
 
 ## Features
 
-*
+  * merging python_funs.py and import_setup.py into python_funs.py
+  * New function parameter `show_output_paths` in `run_qgis`. Setting it to `FALSE` suppresses the printing of the output file paths.
 
 # RQGIS 1.0.0
 
