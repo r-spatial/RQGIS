@@ -981,7 +981,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # res contains all the output paths of the files created by QGIS
   res <- py_run_string("res")$res
   # show the output files to the user
-  if (show_output) {
+  if (show_output_paths) {
     print(res)  
   }
   # if there is a message, show it (if msg = "", nothing will be shown)
