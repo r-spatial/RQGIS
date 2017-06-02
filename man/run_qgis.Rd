@@ -5,7 +5,8 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, ..., params = NULL, load_output = FALSE,
-  check_params = TRUE, show_msg = TRUE, qgis_env = set_env())
+  check_params = TRUE, show_msg = TRUE, show_output_paths = TRUE,
+  qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
@@ -29,8 +30,14 @@ loaded into R. A list will be returned if there is more than one output file
 geoalgorithm function arguments were provided in the correct order
 (deprecated).}
 
-\item{show_msg}{Logical, if \code{TRUE}, Python messages that occurred during the
-algorithm execution will be shown (deprecated).}
+\item{show_msg}{Logical, if \code{TRUE} (default), Python messages that occurred
+during the algorithm execution will be shown (deprecated).}
+
+\item{show_output_paths}{Logical. QGIS computes all possible output files for
+a given geoalgorithm, and saves them to a temporary location in case the
+user has not specified explicitly another output location. Setting
+\code{show_output} to \code{TRUE} (the default) will print all output paths to the
+console after the successful geoprocessing.}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}
@@ -38,9 +45,9 @@ more information, refer to \code{\link[=set_env]{set_env()}}.}
 \value{
 The function prints a list (named according to the output parameters)
 containing the paths to the files created by QGIS. If not otherwise
-specified, the function saves the QGIS generated output files to a
-temporary folder (created by QGIS). Optionally, function parameter
-\code{load_output} loads spatial QGIS output (vector and raster data) into R.
+specified, the function saves the QGIS generated output files to a temporary
+folder (created by QGIS). Optionally, function parameter \code{load_output} loads
+spatial QGIS output (vector and raster data) into R.
 }
 \description{
 \code{run_qgis} calls QGIS algorithms from within R while passing the

@@ -839,17 +839,22 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order 
 #'  (deprecated).
-#'@param show_msg Logical, if `TRUE` (default), Python messages that occurred during the 
-#'  algorithm execution will be shown.
+#'@param show_msg Logical, if `TRUE` (default), Python messages that occurred 
+#'  during the algorithm execution will be shown (deprecated).
+#'@param show_output_paths Logical. QGIS computes all possible output files for
+#'  a given geoalgorithm, and saves them to a temporary location in case the
+#'  user has not specified explicitly another output location. Setting
+#'  `show_output` to `TRUE` (the default) will print all output paths to the
+#'  console after the successful geoprocessing.
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to [set_env()].
 #'@details This workhorse function calls the QGIS Python API, and specifically 
 #'  `processing.runalg`.
 #'@return The function prints a list (named according to the output parameters) 
 #'  containing the paths to the files created by QGIS. If not otherwise 
-#'  specified, the function saves the QGIS generated output files to a 
-#'  temporary folder (created by QGIS). Optionally, function parameter 
-#'  `load_output` loads spatial QGIS output (vector and raster data) into R.
+#'  specified, the function saves the QGIS generated output files to a temporary
+#'  folder (created by QGIS). Optionally, function parameter `load_output` loads
+#'  spatial QGIS output (vector and raster data) into R.
 #'@note Please note that one can also pass spatial R objects as input parameters
 #'  where suitable (e.g., input layer, input raster). Supported formats are 
 #'  [sp::SpatialPointsDataFrame()]-, [sp::SpatialLinesDataFrame()]-, 
@@ -863,7 +868,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'  the region extent based on the user-specified input layers. If you do want 
 #'  to specify it yourself, please do it in accordance with the [QGIS 
 #'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
-#'  i.e. use a character string and separate the coordinates with a comma: 
+#'   i.e. use a character string and separate the coordinates with a comma: 
 #'  "xmin, xmax, ymin, ymax".
 #'  
 #'@author Jannes Muenchow, Victor Olaya, QGIS core team
@@ -895,8 +900,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'}
 
 run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
-                     check_params = TRUE, show_msg = TRUE,
-                     qgis_env = set_env()) {
+                     check_params = TRUE, show_msg = TRUE, 
+                     show_output_paths = TRUE, qgis_env = set_env()) {
 
   if (!missing(check_params)) {
     warning(paste("Argument check_params is deprecated; please do not use it", 
@@ -915,6 +920,13 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # if (Sys.info()["sysname"] == "Linux" & grepl("grass7", alg)) {
   #   qgis_session_info(qgis_env)
   # }
+  
+  if (!missing(show_msg)) {
+    warning(paste("Argument show_msg is deprecated; please do not use it", 
+                  "any longer. run_qgis now always return any Python (error)", 
+                  "output"), 
+            call. = FALSE)
+  }
 
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
@@ -969,11 +981,11 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # res contains all the output paths of the files created by QGIS
   res <- py_run_string("res")$res
   # show the output files to the user
-  print(res)
-  # if there is a message, show it (if msg = "", nothing will be shown)
-  if (show_msg) {
-    message(msg)  
+  if (show_output) {
+    print(res)  
   }
+  # if there is a message, show it (if msg = "", nothing will be shown)
+  message(msg)
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(res, args, params)\nexcept:\  pass")
