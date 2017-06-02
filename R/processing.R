@@ -839,8 +839,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'@param check_params If `TRUE` (default), it will be checked if all 
 #'  geoalgorithm function arguments were provided in the correct order 
 #'  (deprecated).
-#'@param show_msg Logical, if `TRUE`, Python messages that occurred during the 
-#'  algorithm execution will be shown (deprecated).
+#'@param show_msg Logical, if `TRUE` (default), Python messages that occurred during the 
+#'  algorithm execution will be shown.
 #'@param qgis_env Environment containing all the paths to run the QGIS API. For 
 #'  more information, refer to [set_env()].
 #'@details This workhorse function calls the QGIS Python API, and specifically 
@@ -916,13 +916,6 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   #   qgis_session_info(qgis_env)
   # }
 
-  if (!missing(show_msg)) {
-    warning(paste("Argument show_msg is deprecated; please do not use it", 
-                  "any longer. run_qgis now always return any Python (error)", 
-                  "output"), 
-            call. = FALSE)
-  }
-  
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
@@ -978,7 +971,9 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # show the output files to the user
   print(res)
   # if there is a message, show it (if msg = "", nothing will be shown)
-  message(msg)
+  if (show_msg) {
+    message(msg)  
+  }
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(res, args, params)\nexcept:\  pass")
