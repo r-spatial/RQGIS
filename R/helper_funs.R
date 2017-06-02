@@ -271,9 +271,6 @@ reset_path <- function(settings) {
   }
 }
 
-
-
-
 #' @title Set all Linux paths necessary to start QGIS
 #' @description Helper function to start QGIS application under Linux.
 #' @param qgis_env Environment settings containing all the paths to run the QGIS

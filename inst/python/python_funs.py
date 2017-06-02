@@ -1,3 +1,48 @@
+"""
+***************************************************************************
+    python_funs.py
+    ---------------------
+    Date                 : May 2017
+    Copyright            : (C) 2017 by Jannes Muenchow
+    Email                : jannes dot muenchow at uni minus jena dot de
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Jannes Muenchow'
+__date__ = 'May 2017'
+__copyright__ = '(C) 2017, Jannes Muenchow'
+
+from processing.core.Processing import Processing
+Processing.initialize()
+import processing
+# ParameterSelection required by get_args_man.py, algoptions, alghelp
+from processing.core.parameters import (
+  ParameterSelection,
+  ParameterRaster,
+  ParameterVector,
+  ParameterMultipleInput
+)
+from processing.gui.Postprocessing import handleAlgorithmResults
+# needed for open_help
+from processing.tools.help import createAlgorithmHelp
+# needed for qgis_session_info
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from processing.algs.saga import SagaUtils
+from processing.algs.grass.GrassUtils import GrassUtils
+from processing.algs.grass7.Grass7Utils import Grass7Utils
+from processing.algs.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
+from processing.algs.otb.OTBUtils import getInstalledVersion
+from processing.algs.taudem.TauDEMUtils import TauDEMUtils
+from osgeo import gdal
+from processing.tools.system import isWindows, isMac
+
 # RQGIS class should make it unlikely that somebody accidentally overwrites our
 # methods defined within this class.
 # A basic class consists only of the class keyword, the name of the class, and

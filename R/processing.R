@@ -278,10 +278,8 @@ open_app <- function(qgis_env = set_env()) {
   code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
   py_run_string(code)
   
-  # attach further modules 
-  py_file <- system.file("python", "import_setup.py", package = "RQGIS")
-  py_run_file(py_file)
-  # attach our RQGIS class (needed for alglist, algoptions, alghelp)
+  # attach further modules, our RQGIS class (needed for alglist, algoptions,
+  # alghelp)
   py_file <- system.file("python", "python_funs.py", package = "RQGIS")
   py_run_file(py_file)
   # initialize our RQGIS class
