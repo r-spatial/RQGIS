@@ -9,11 +9,7 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      jdk: oraclejdk9
-      addons:
-        apt:
-          packages:
-            - oracle-java9-installer
+      #jdk: oraclejdk8
       env: 
         - R_CODECOV=true
         - LTR_Linux=true
@@ -26,11 +22,7 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      jdk: oraclejdk9
-      addons:
-        apt:
-          packages:
-            - oracle-java9-installer
+      #jdk: oraclejdk8
       env: DEV_Linux=true
       #r:
       #  - oldrel
@@ -86,9 +78,9 @@ before_install:
   
   # install gdal and proj4 from ubuntugis ppa (gdal2.1)
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y && sudo apt-mark hold oracle-java8-installer oracle-java8-unlimited-jce-policy oracle-java9-set-default oracle-java9-unlimited-jce-policy oracle-java9-installer; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt upgrade -y; fi # if you already have gdal 1.11 installed
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev; fi
     
   # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
   # see https://gis.stackexchange.com/questions/216780/cannot-install-qgis-2-18-from-repository-on-debian-stretch-package-gdal-abi-2
@@ -119,6 +111,8 @@ before_install:
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr ; fi
   - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
   
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
+  
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
   - "export DISPLAY=:99.0"
@@ -127,7 +121,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2 && R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
   # install required python package psycopg2
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip install psycopg2; fi
   

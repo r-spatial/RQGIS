@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 
 ```{r, echo = FALSE, eval = TRUE}
-version <- "0.2.0.9000"
+version <- "1.0.0.9000"
 ```
 
 ```{r, echo = FALSE, eval = TRUE}
@@ -39,9 +39,9 @@ This version contains a major bug fix which RQGIS relies on. However, we strongl
 | Resource:     | CRAN                | Travis CI       | Travis CI        | Appveyor         |
 | ------------- | ------------------- | --------------- | ---------------- | ---------------- |
 | _Platforms:_  | _Multiple_          | _Linux_         | _macOS_          | _Windows_        |
-| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | [![LTR_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS LTR (2.14.14)&branch=rPython)](https://travis-ci.org/jannes-m/RQGIS) \
-[![DEV_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS DEV (2.18.7)&branch=rPython)](https://travis-ci.org/jannes-m/RQGIS)   | [![LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS LTR (2.14.14)&branch=rPython)](https://travis-ci.org/jannes-m/RQGIS) \
-[![DEV_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS DEV (2.18.7)&branch=rPython)](https://travis-ci.org/jannes-m/RQGIS) | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
+| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | [![LTR_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS LTR (2.14.14)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
+[![DEV_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS DEV (2.18.7)&branch=master)](https://travis-ci.org/jannes-m/RQGIS)   | [![LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS LTR (2.14.14)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
+[![DEV_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS DEV (2.18.7)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
 | Test coverage | <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/rPython/graph/badge.svg" alt="Coverage Status"/></a>     |                  |                  |
 
 #### CRAN
@@ -204,6 +204,8 @@ Internally, `open_app` first sets all necessary paths (among others the path to 
 ## (R)QGIS modifications (v. 2.16-2.18.1)
 If you would like to use QGIS versions 2.16-2.18.1, you need to fix manually a Processing error in order to make RQGIS work. First, add one `import` statement (SilentProgress) to `../processing/gui/AlgorithmExecutor.py`. Secondly replace `python alg.execute(progress)` by `python alg.execute(progress or SilentProgress())`:
 
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/rewrite_algexecutor.PNG", width="80%" height="80%" style="display: block; margin: auto;" />
+<p align="center">
+  <img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/rewrite_algexecutor.PNG" width="80%"/>
+</p>
 
 The QGIS core team fixed this bug, and starting with QGIS 2.18.2 this manual adjustment is no longer necessary (see also this [post](http://gis.stackexchange.com/questions/204321/qgis-2-16-processing-runalg-fails-when-run-outside-of-qgis-in-a-custom-applicat)). However, we would strongly recommend to either use the QGIS LTR (2.14) or QGIS >= 2.18.2.

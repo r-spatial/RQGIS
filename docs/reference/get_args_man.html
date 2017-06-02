@@ -87,7 +87,7 @@
 respective default values for a given QGIS geoalgorithm.</p>
     
 
-    <pre class="usage"><span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+    <pre class="usage"><span class='fu'>get_args_man</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>options</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -100,8 +100,9 @@ arguments and default values.</p></td>
     <tr>
       <th>options</th>
       <td><p>Sometimes one can choose between various options for a
-function argument. Setting option to <code>TRUE</code> will automatically assume one
-wishes to use the first option (default: <code>FALSE</code>).</p></td>
+function argument. Setting option to <code>TRUE</code>, the default,  will
+automatically assume one wishes to use the first option (QGIS GUI
+behavior).</p></td>
     </tr>
     <tr>
       <th>qgis_env</th>

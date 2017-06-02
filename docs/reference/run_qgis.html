@@ -112,7 +112,8 @@ more details.</p></td>
     </tr>
     <tr>
       <th>load_output</th>
-      <td><p>If <code>TRUE</code>, all QGIS output files (vector and raster data)
+      <td><p>If <code>TRUE</code>, all QGIS output files (<code><a href='http://www.rdocumentation.org/packages/sf/topics/sf'>sf::sf()</a></code>-object in the
+case of vector data and <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code>-object in the case of a raster)
 specified by the user (i.e. the user has to indicate output files) will be
 loaded into R. A list will be returned if there is more than one output file
 (e.g., <code>grass7:r.slope.aspect</code>). See the example section for more details.</p></td>
@@ -125,7 +126,7 @@ geoalgorithm function arguments were provided in the correct order
     </tr>
     <tr>
       <th>show_msg</th>
-      <td><p>Logical, if <code>TRUE</code>, Python messages that occured during the
+      <td><p>Logical, if <code>TRUE</code>, Python messages that occurred during the
 algorithm execution will be shown (deprecated).</p></td>
     </tr>
     <tr>
@@ -139,7 +140,7 @@ more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p
 
     <p>The function prints a list (named according to the output parameters)
 containing the paths to the files created by QGIS. If not otherwise
-specified, the function saves the QGIS generated output files in the
+specified, the function saves the QGIS generated output files to a
 temporary folder (created by QGIS). Optionally, function parameter
 <code>load_output</code> loads spatial QGIS output (vector and raster data) into R.</p>
     
@@ -153,12 +154,16 @@ temporary folder (created by QGIS). Optionally, function parameter
     <p>Please note that one can also pass spatial R objects as input parameters
 where suitable (e.g., input layer, input raster). Supported formats are
 <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPoints'>sp::SpatialPointsDataFrame()</a></code>-, <code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialLines'>sp::SpatialLinesDataFrame()</a></code>-,
-<code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPolygons'>sp::SpatialPolygonsDataFrame()</a></code>- and <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code>-objects. See the
-example section for more details.</p>
+<code><a href='http://www.rdocumentation.org/packages/sp/topics/SpatialPolygons'>sp::SpatialPolygonsDataFrame()</a></code>-, <code><a href='http://www.rdocumentation.org/packages/sf/topics/sf'>sf::sf()</a></code>- (of class <code>sf</code>, <code>sfc</code> as well
+as <code>sfg</code>), and <code><a href='http://www.rdocumentation.org/packages/raster/topics/raster'>raster::raster()</a></code>-objects. See the example section for more
+details.</p>
 <p>GRASS users do not have to specify manually the GRASS region extent
 (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),
 <code>run_qgis</code> (see <code><a href='pass_args.html'>pass_args()</a></code> for more details) will automatically determine
-the region extent based on the user-specified input layers.</p>
+the region extent based on the user-specified input layers. If you do want
+to specify it yourself, please do it in accordance with the <a href = 'https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>,
+i.e. use a character string and separate the coordinates with a comma:
+"xmin, xmax, ymin, ymax".</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

@@ -136,25 +136,34 @@ parameter-argument checks:</p><ul>
 <li><p>The function collects all necessary arguments (to run QGIS) and
 respective default values which were not set by the user with the help of
 <code><a href='get_args_man.html'>get_args_man()</a></code>.</p></li>
-<li><p>If an argument value corresponds to a spatial object residing in R,
-the function will save the spatial object to a temporary folder, and use
-the corresponding file path to replace the spatial object in the
-parameter-argument list.</p></li>
+<li><p>If an argument value corresponds to a spatial object residing in R
+(<code>sp</code>-, <code>sf</code>- or <code>raster</code>-objects are supported), the function will save
+the spatial object to a temporary folder, and use the corresponding file
+path to replace the spatial object in the parameter-argument list. If the
+QGIS geoalgorithm parameter belongs to the
+<code>ParameterMultipleInput</code>-instance class (see for example
+<code>get_usage(grass7:v.patch)</code>) you may either use a character-string
+containing the paths to the spatial objects separated by a semi-colon
+(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also <a href = 'https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>)
+or provide a <code><a href='http://www.rdocumentation.org/packages/base/topics/list'>base::list()</a></code> containing the spatial objects.</p></li>
 <li><p>If the user only specified the name of an output file (e.g.
-"slope.asc") and not a complete path, the function will save the output
-in the temporary folder, i.e. to <code>file.path(tempdir(), "slope.asc")</code>.</p></li>
+"slope.asc") and not a complete path, the function will save the output in
+the temporary folder, i.e. to <code>file.path(tempdir(), "slope.asc")</code>.</p></li>
 <li><p>If a parameter accepts as arguments values from a selection, the
-function replaces verbal input by the corresponding number (required by
-the QGIS Python API). Please refer to the example section for more
-details, and to <code><a href='get_options.html'>get_options()</a></code> for valid options for a given
-geoalgorithm.</p></li>
-<li><p>In case of a GRASS-geoalgorithm, the function determines the
-<code>GRASS_REGION_PARAMETER</code> based on the user input.</p></li>
+function replaces verbal input by the corresponding number (required by the
+QGIS Python API). Please refer to the example section for more details, and
+to <code><a href='get_options.html'>get_options()</a></code> for valid options for a given geoalgorithm.</p></li>
+<li><p>If <code>GRASS_REGION_PARAMETER</code> is "None" (the QGIS default), <code>run_qgis</code>
+will automatically determine the region extent based on the user-specified
+input layers. If you do want to specify the <code>GRASS_REGION_PARAMETER</code>
+yourself, please do it in accordance with the <a href = 'https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>,
+i.e., use a character string and separate the coordinates with a comma:
+"xmin, xmax, ymin, ymax".</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>The function was inspired by <code><a href='http://www.rdocumentation.org/packages/rgrass7/topics/execGRASS'>rgrass7::doGRASS()</a></code>.</p>
+    <p>The function was inspired by <code>rgrass7::doGRASS()</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
