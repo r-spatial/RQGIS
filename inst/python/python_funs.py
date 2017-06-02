@@ -3,7 +3,7 @@
     python_funs.py
     ---------------------
     Date                 : May 2017
-    Copyright            : (C) 2017 by Jannes Muenchow
+    Copyright            : (C) 2017 by Jannes Muenchow, Victor Olaya
     Email                : jannes dot muenchow at uni minus jena dot de
 ***************************************************************************
 *                                                                         *
@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Jannes Muenchow'
+__author__ = 'Jannes Muenchow, Victor Olaya'
 __date__ = 'May 2017'
-__copyright__ = '(C) 2017, Jannes Muenchow'
+__copyright__ = '(C) 2017, Jannes Muenchow, Victor Olaya'
 
 from processing.core.Processing import Processing
 Processing.initialize()
