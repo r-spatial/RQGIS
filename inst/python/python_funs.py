@@ -165,29 +165,30 @@ class RQGIS:
       g6 = GrassUtils.grassPath()
       g6 = re.findall('grass-.*', g6)
     if g6 is True and isMac():
-      g6 = GrassUtils.grassPath()
+      g6 = GrassUtils.grassPath()[0:21]
       g6 = os.listdir(g6)
       delim = ';'
       g6 = delim.join(g6)
-      g6 = re.findall(';(grass[0-9].);', g6)
+      g6 = re.findall('[0-9].[0-9].[0-9]', g6)
     Grass7Utils.checkGrass7IsInstalled()
     g7 = Grass7Utils.isGrass7Installed
     if g7 is True and isWindows():
       g7 = Grass7Utils.grassPath()
       g7 = re.findall('grass-.*', g7)
     if g7 is True and isMac():
-      g7 = Grass7Utils.grassPath()
+      g7 = Grass7Utils.grassPath()[0:21]
       g7 = os.listdir(g7)
       delim = ';'
       g7 = delim.join(g7)
-      g7 = re.findall(';(grass[0-9].);', g7)
+      #g7 = re.findall(';(grass[0-9].);', g7)
+      g7 = re.findall('[0-9].[0-9].[0-9]', g7)
     # installed SAGA version usable with QGIS
     saga = SagaUtils.getSagaInstalledVersion()
     # supported SAGA versions
     my_dict = SagaAlgorithmProvider.supportedVersions
     saga_versions = my_dict.keys()
     saga_versions.sort()
-     
+    
     # this is good to have for the future, but so far, I would not report 
     # these software versions since we don't know if they actually work
     # with QGIS (without additional functions such as run_taudem...)
