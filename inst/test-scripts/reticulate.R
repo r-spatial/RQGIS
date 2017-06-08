@@ -272,14 +272,14 @@ proj4string(meuse) <-CRS("+init=epsg:28992")
 #                       c("x", "y"), 
 #                     crs = 28992, 
 #                     agr = "constant")
-linkGRASS7(meuse, c("C:/OSGeo4W64","grass-7.2.0","osgeo4W"))
+linkGRASS7(meuse, c("C:/OSGeo4W64","grass-7.2.1","osgeo4W"))
 library("rgrass7")
 rgrass7::parseGRASS("r.slope.aspect")
 
 data("meuse", package = "sp")
 
 data("meuse", package = "sp")
-linkGRASS7(meuse, c("C:/OSGeo4W64", "grass-7.2.0", "osgeo4w"))
+linkGRASS7(meuse, c("C:/OSGeo4W64", "grass-7.2.1", "osgeo4w"))
 
 #**********************************************************
 # Tests----------------------------------------------------

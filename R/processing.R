@@ -985,7 +985,9 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
     print(res)  
   }
   # if there is a message, show it (if msg = "", nothing will be shown)
-  message(msg)
+  if (msg != "") {
+    message(msg)  
+  }
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(res, args, params)\nexcept:\  pass")
