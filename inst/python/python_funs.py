@@ -163,7 +163,8 @@ class RQGIS:
     g6 = GrassUtils.isGrassInstalled
     if g6 is True and isWindows():
       g6 = GrassUtils.grassPath()
-      g6 = re.findall('grass-.*', g6)
+      # extract everything followed by grass-, i.e. extract the version number
+      g6 = re.findall("grass-(.*)", g6)
     if g6 is True and isMac():
       g6 = GrassUtils.grassPath()[0:21]
       g6 = os.listdir(g6)
@@ -174,7 +175,7 @@ class RQGIS:
     g7 = Grass7Utils.isGrass7Installed
     if g7 is True and isWindows():
       g7 = Grass7Utils.grassPath()
-      g7 = re.findall('grass-.*', g7)
+      g7 = re.findall('grass-(.*)',  g7)
     if g7 is True and isMac():
       g7 = Grass7Utils.grassPath()[0:21]
       g7 = os.listdir(g7)
@@ -189,25 +190,27 @@ class RQGIS:
     saga_versions = my_dict.keys()
     saga_versions.sort()
     
-    # this is good to have for the future, but so far, I would not report 
-    # these software versions since we don't know if they actually work
-    # with QGIS (without additional functions such as run_taudem...)
-    # OTB versions
-    # "otb = getInstalledVersion()",
-    # "otb = OTBUtils.getInstalledVersion()",
-    
     # GDAL
-    # "gdal = gdal.VersionInfo('VERSION_NUM')",
-    # "gdal = '.'.join([gdal[0], gdal[2], gdal[4]])",
+    gdal_v = gdal.VersionInfo('VERSION_NUM')
+    gdal_v = '.'.join([gdal_v[0], gdal_v[2], gdal_v[4]])
     
-    # write list for 'out.csv'
-    return [qgis, g6, g7, saga, saga_versions]
+    ## this is good to have for the future, but so far, I would not report 
+    ## these software versions since we don't know if they actually work
+    ## with QGIS (without additional functions such as run_taudem...)
+    ## OTB versions
+    # otb = getInstalledVersion()
+    # otb = OTBUtils.getInstalledVersion()
+    ## TauDEM versions (currently not in use because no function to extract
+    ## Taudem version in 'TauDEMUtils')
+    # TauDEMUtils.taudemMultifilePath()
     
-    # ls = [qgis, g6, g7, saga, saga_versions, otb, gdal]
-    ### TauDEM versions (currently not in use because no function to extract
-    ### Taudem version in 'TauDEMUtils')
-    # "TauDEMUtils.taudemMultifilePath()",
-
+    # finally, put it all into a named dictionary
+    keys = ["qgis_version", "gdal", "grass6", "grass7", "saga",\
+            "supported_saga_versions"]
+    values = [qgis, gdal_v, g6, g7, saga, saga_versions]
+    info = dict(zip(keys, values))
+    return info
+      
   # function inspired by processing.algoptions  
   def get_options(self, alg):
     alg = Processing.getAlgorithm(alg)

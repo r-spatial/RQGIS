@@ -318,9 +318,6 @@ qgis_session_info <- function(qgis_env = set_env()) {
   # retrieve the output
   out <- 
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
-  names(out) <- c("qgis_version", "grass6", "grass7", "saga",
-                  "supported_saga_versions")
-  
   
   if (Sys.info()["sysname"] == "Linux" && out$grass7) {
     # find out which GRASS version is available
@@ -358,7 +355,9 @@ qgis_session_info <- function(qgis_env = set_env()) {
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(my_session_info)\nexcept:\  pass")
-  out
+  # sort it again since Python dictionary sorting is random
+  out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
+        "supported_saga_versions")]
 }
 
 #' @title Find and list available QGIS algorithms
