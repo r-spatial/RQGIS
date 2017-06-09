@@ -4,6 +4,10 @@
 
   * merging python_funs.py and import_setup.py into python_funs.py
   * New function parameter `show_output_paths` in `run_qgis`. Setting it to `FALSE` suppresses the printing of the output file paths.
+  * random_points is now a sf-object
+  * `run_qgis` doesn't print a space any longer if the Python message is empty
+  * developing and improving test coverage
+  * adding GDAL version to `qgis_session_info`
 
 # RQGIS 1.0.0
 
