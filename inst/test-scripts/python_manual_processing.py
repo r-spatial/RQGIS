@@ -5,6 +5,8 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.gui import *
 QgsApplication.setPrefixPath(r'C:\\OSGeo4W64\\apps\\qgis', True)
+QgsApplication.setPrefixPath(r'C:\\OSGeo4W64\\apps\\qgis', True)
+
 sys.path.append(r'C:\\OSGeo4W64\\apps\\qgis\\python\\plugins')
 from processing.core.Processing import Processing
 # Processing.initialize()
