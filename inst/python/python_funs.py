@@ -186,9 +186,16 @@ class RQGIS:
     # installed SAGA version usable with QGIS
     saga = SagaUtils.getSagaInstalledVersion()
     # supported SAGA versions
-    my_dict = SagaAlgorithmProvider.supportedVersions
-    saga_versions = my_dict.keys()
-    saga_versions.sort()
+    try:
+      # supportedVersions were deleted from SagaAlgorithmProvider since 
+      # QGIS 2.18.10. At least this is the case with custom applications...
+      my_dict = SagaAlgorithmProvider.supportedVersions
+      saga_versions = my_dict.keys()
+      saga_versions.sort()
+    except:
+      # with QGIS 2.18.10 only SAGA 2.3.0, 2.3.1, 2.3.2 is suppported 
+      # well, observe next QGIS releases and try to avoid the hard-coding!
+      saga_versions = ["2.3.0", "2.3.1", "2.3.2"]
     
     # GDAL
     gdal_v = gdal.VersionInfo('VERSION_NUM')
