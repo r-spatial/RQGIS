@@ -67,7 +67,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   data("dem")
   params <- get_args_man(alg = "saga:slopeaspectcurvature", options = TRUE)
   params$ELEVATION <- dem
-  params$SLOPE <- file.path(tempdir(), "slope.sdat")
+  params$SLOPE <- file.path(tempdir(), "slope.tif")
   saga_out_1 <- run_qgis("saga:slopeaspectcurvature", params = params, 
                          show_output_paths = FALSE, load_output = TRUE)
   # check if the output is a raster
@@ -75,7 +75,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   # now use ...-notation
   saga_out_2 <- run_qgis("saga:slopeaspectcurvature", 
                          ELEVATION = dem,
-                         SLOPE = "slope.sdat",
+                         SLOPE = "slope.tif",
                          show_output_paths = FALSE, load_output = TRUE)
   # check if the output is a raster
   expect_is(saga_out_2, "RasterLayer")
