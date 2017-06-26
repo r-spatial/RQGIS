@@ -1,8 +1,6 @@
 #' @importFrom tools file_ext file_path_sans_ext
 #' @importFrom reticulate py_run_string py_run_file py_capture_output r_to_py
 #' @importFrom reticulate py_config use_python py_unicode
-# read_sf is needed in our tests
-#' @importFrom sf read_sf
 NULL
 
 

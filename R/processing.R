@@ -870,7 +870,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'  
 #'@author Jannes Muenchow, Victor Olaya, QGIS core team
 #'@export
-#'@importFrom sf st_read
+#'@importFrom sf read_sf
 #'@importFrom raster raster
 #' @examples
 #' \dontrun{
