@@ -23,19 +23,14 @@ test_that("Test, if QGIS-algorithms are working?", {
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
   alg <- "qgis:polygoncentroids"
-  params <- get_args_man(alg)
-  # Define function arguments
-  # specify input layer
-  params$INPUT_LAYER <- polys  # please note that the input is an R object!!!
-  # path to the output shapefile
-  params$OUTPUT_LAYER <- file.path(tempdir(), "coords.shp")
-
   # finally, let QGIS do the work!!
-  out <- run_qgis(alg, params = params, show_output_paths = FALSE,
-                    # let's load the QGIS output directly into R!
-                    load_output = TRUE)
+  out <- run_qgis(alg, INPUT_LAYER = polys, 
+                  OUTPUT_LAYER = file.path(tempdir(), "coords.shp"),
+                  show_output_paths = FALSE,
+                  # let's load the QGIS output directly into R!
+                  load_output = TRUE)
   
-  # check if the output is spatial object
+  # check if the output is an spatial object
   expect_is(out, "sf")
   # now use ...-notation and sf as input
   out <- run_qgis(alg = "qgis:polygoncentroids",
@@ -43,6 +38,20 @@ test_that("Test, if QGIS-algorithms are working?", {
                     OUTPUT_LAYER = "coords.shp",
                     show_output_paths = FALSE, load_output = TRUE)
   # check if the output is spatial object
+  expect_is(out, "sf")
+  
+  # check geojson and gpkg
+  out <- run_qgis(alg, INPUT_LAYER = polys, 
+                  OUTPUT_LAYER = file.path(tempdir(), "coords.geojson"),
+                  show_output_paths = FALSE,
+                  # let's load the QGIS output directly into R!
+                  load_output = TRUE)
+  expect_is(out, "sf")
+  out <- run_qgis(alg, INPUT_LAYER = polys, 
+                  OUTPUT_LAYER = file.path(tempdir(), "coords.gpkg"),
+                  show_output_paths = FALSE,
+                  # let's load the QGIS output directly into R!
+                  load_output = TRUE)
   expect_is(out, "sf")
   })
 
