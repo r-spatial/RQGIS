@@ -1016,10 +1016,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
       # capture.output is necessary, since sf always reports (supposedly via
       # C++) if the data source cannot be opened
       capture.output({
-        test <- try(expr = st_read(dsn = dirname(x),
-                                 gsub("\\..*", "", basename(x)),
-                                 quiet = TRUE),
-                  silent = TRUE)
+        test <- try(expr = read_sf(x), silent = TRUE)
       })
       # if the output exists and is not a vector try to load it as a raster
       if (inherits(test, "try-error")) {
