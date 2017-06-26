@@ -296,12 +296,8 @@ open_app <- function(qgis_env = set_env()) {
 #' @return The function returns a list with following elements:
 #' \enumerate{
 #'  \item{qgis_version: Name and version of QGIS used by RQGIS.}
-#'  \item{grass6: GRASS 6 version number. Under Linux, the function only checks if
-#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-#'  a version number.}
-#'  \item{grass7: GRASS 7 version number. Under Linux, the function only checks if
-#'  GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-#'  a version number}
+#'  \item{grass6: GRASS 6 version number, if installed to use with QGIS.}
+#'  \item{grass7: GRASS 7 version number, if installed to use with QGIS.}
 #'  \item{saga: The installed SAGA version used by QGIS.}
 #'  \item{supported_saga_versions: character vector representing the SAGA
 #'  versions supported by the QGIS installation.}
@@ -316,19 +312,24 @@ qgis_session_info <- function(qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
   # retrieve the output
-  out <- 
+  out <-
     py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
+  # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(my_session_info)\nexcept:\  pass")
   
-  if (Sys.info()["sysname"] == "Linux" && out$grass7) {
+  if (Sys.info()["sysname"] == "Linux" && (out$grass6 | out$grass7)) {
     # find out which GRASS version is available
+    # inspired by link2GI::searchGRASSX
+    # Problem: sometimes the batch command is interrupted or does not finish...
     # my_grass <- searchGRASSX()
     suppressWarnings(
       my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ",
-                              "-executable -iname 'grass??' -print"),
-                       intern = TRUE)
+                                "-executable -iname 'grass??' -print"),
+                         intern = TRUE)
     )
     
-    # QGIS developer team took care of this issue, so we can eventually delete 
+    # QGIS developer team took care of this issue, so we can eventually delete
     # it
     # if (grepl("72", my_grass)) {
     #   warning(paste0("QGIS might be still pointing to grass70. In this case ",
@@ -339,22 +340,19 @@ qgis_session_info <- function(qgis_env = set_env()) {
     #                  "January/038907.html'. Then restart R again."))
     # }
     
-    # more or less copied from link2GI::searchGRASSX
-    # Problem: sometimes the batch command is interrupted or does not finish...
     if (length(my_grass) > 0) {
-      install <- lapply(seq(length(my_grass)), function(i) {
-        cmd <- grep(readLines(my_grass), pattern = "cmd_name = \"", 
-                    value = TRUE)
-        cmd <- substr(cmd, gregexpr(pattern = "\"", cmd)[[1]][1] + 
-                        1, nchar(cmd) - 1)
-      })
+      my_grass <- lapply(seq(length(my_grass)), function(i) {
+        version <- grep(readLines(my_grass), pattern = "grass_version = \"",
+                        value = TRUE)
+        version <- paste(unlist(stringr::str_extract_all(version, "\\d(\\.)?")), 
+                         collapse = "")
+        })
+      my_grass <- unlist(my_grass)
+      out$grass6 <- grep("6", my_grass, value = TRUE) 
+      out$grass7 <- grep("7", my_grass, value = TRUE)
     }
-    out$grass7 <- grep("7", unlist(install), value = TRUE)
   }
   
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(my_session_info)\nexcept:\  pass")
   # sort it again since Python dictionary sorting is random
   out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
         "supported_saga_versions")]
