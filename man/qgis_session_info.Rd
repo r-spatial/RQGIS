@@ -14,12 +14,8 @@ API. For more information, refer to \code{\link[=set_env]{set_env()}}.}
 The function returns a list with following elements:
 \enumerate{
 \item{qgis_version: Name and version of QGIS used by RQGIS.}
-\item{grass6: GRASS 6 version number. Under Linux, the function only checks if
-GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-a version number.}
-\item{grass7: GRASS 7 version number. Under Linux, the function only checks if
-GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-a version number}
+\item{grass6: GRASS 6 version number, if installed to use with QGIS.}
+\item{grass7: GRASS 7 version number, if installed to use with QGIS.}
 \item{saga: The installed SAGA version used by QGIS.}
 \item{supported_saga_versions: character vector representing the SAGA
 versions supported by the QGIS installation.}
