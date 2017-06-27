@@ -5,8 +5,7 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, ..., params = NULL, load_output = FALSE,
-  check_params = TRUE, show_msg = TRUE, show_output_paths = TRUE,
-  qgis_env = set_env())
+  show_output_paths = TRUE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
@@ -25,13 +24,6 @@ case of vector data and \code{\link[raster:raster]{raster::raster()}}-object in 
 specified by the user (i.e. the user has to indicate output files) will be
 loaded into R. A list will be returned if there is more than one output file
 (e.g., \code{grass7:r.slope.aspect}). See the example section for more details.}
-
-\item{check_params}{If \code{TRUE} (default), it will be checked if all
-geoalgorithm function arguments were provided in the correct order
-(deprecated).}
-
-\item{show_msg}{Logical, if \code{TRUE} (default), Python messages that occurred
-during the algorithm execution will be shown (deprecated).}
 
 \item{show_output_paths}{Logical. QGIS computes all possible output files for
 a given geoalgorithm, and saves them to a temporary location in case the
