@@ -250,9 +250,9 @@ saga_gui
 Sometimes `saga_gui` produces following error message:
 
 ```sh
-saga_gui: error while loading shared libraries: libsaga_gdi-2.2.0.so: cannot open shared object file: No such file or directory
+saga_gui: error while loading shared libraries: libsaga_gdi-2.3.1.so: cannot open shared object file: No such file or directory
 ```
-In this case, you have to enable the SAGA GUI by specifying the path where `libsaga_gdi-2.2.0.so` is located:
+In this case, you have to enable the SAGA GUI by specifying the path where `libsaga_gdi-2.3.1.so` is located:
 ```sh
 export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
 saga_gui
@@ -266,7 +266,7 @@ via the QGIS Python API and therefore also with RQGIS. Please note that SAGA 2.3
 In case you would like to uninstall SAGA, type:
 
 ```sh
-cd /home/jannes/saga 2.2.0
+cd /home/jannes/saga-2.3.1
 sudo make uninstall
 ```
 
