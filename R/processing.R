@@ -32,14 +32,6 @@
 set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   # ok, let's try to find QGIS first in the most likely place!
   dots <- list(...)
-  if (length(dots) > 0 && any(grepl("ltr", names(dots)))) {
-    warning("Function argument 'ltr' is deprecated. Please use 'dev' instead.", 
-            call. = FALSE)
-    # we have to reverse the specified input, e.g., if ltr = TRUE, then dev 
-    # has to be FALSE
-    dev <- !isTRUE(dots$ltr)
-  }
-  
   # load cached qgis_env if possible
   if ("qgis_env" %in% ls(.RQGIS_cache) && new == FALSE) {
     return(get("qgis_env", envir = .RQGIS_cache))
@@ -833,11 +825,6 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'  specified by the user (i.e. the user has to indicate output files) will be 
 #'  loaded into R. A list will be returned if there is more than one output file
 #'  (e.g., `grass7:r.slope.aspect`). See the example section for more details.
-#'@param check_params If `TRUE` (default), it will be checked if all 
-#'  geoalgorithm function arguments were provided in the correct order 
-#'  (deprecated).
-#'@param show_msg Logical, if `TRUE` (default), Python messages that occurred 
-#'  during the algorithm execution will be shown (deprecated).
 #'@param show_output_paths Logical. QGIS computes all possible output files for
 #'  a given geoalgorithm, and saves them to a temporary location in case the
 #'  user has not specified explicitly another output location. Setting
@@ -897,15 +884,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'}
 
 run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
-                     check_params = TRUE, show_msg = TRUE, 
                      show_output_paths = TRUE, qgis_env = set_env()) {
 
-  if (!missing(check_params)) {
-    warning(paste("Argument check_params is deprecated; please do not use it", 
-                  "any longer. run_qgis now automatically checks all given", 
-                  "QGIS parameters."), 
-            call. = FALSE)
-  }
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
@@ -918,13 +898,6 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   #   qgis_session_info(qgis_env)
   # }
   
-  if (!missing(show_msg)) {
-    warning(paste("Argument show_msg is deprecated; please do not use it", 
-                  "any longer. run_qgis now always return any Python (error)", 
-                  "output"), 
-            call. = FALSE)
-  }
-
   # check if alg is qgis:vectorgrid
   if (alg == "qgis:vectorgrid") {
     stop("Please use qgis:creategrid instead of qgis:vectorgrid!")
