@@ -65,7 +65,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   
   # attach data
   data("dem")
-  # params <- get_args_man(alg = "saga:sagawetnessindex", options = TRUE)
+  params <- get_args_man(alg = "saga:sagawetnessindex", options = TRUE)
   params$DEM <- dem
   params$TWI <- file.path(tempdir(), "twi.tif")
   saga_out_1 <- run_qgis("saga:sagawetnessindex", params = params, 
@@ -92,7 +92,7 @@ test_that("Test, if GRASS7-algorithms are working?", {
   
   # attach data
   data("dem")
-  # params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE)
+  params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE)
   params$elevation <- dem
   params$slope <- file.path(tempdir(), "slope.tif")
   params$aspect <- file.path(tempdir(), "aspect.tif")
