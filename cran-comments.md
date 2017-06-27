@@ -1,8 +1,3 @@
-## Resubmission
-This is a resubmission. In this version I have:
-
-* taken care of the invalid URI scheme.
-
 ## Test environments
 * local Windows installation, R 3.4.0 and win-builder (devel)
 * local Ubuntu 16.04 installation, R 3.4.0
