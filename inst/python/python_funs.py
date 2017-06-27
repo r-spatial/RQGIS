@@ -193,9 +193,9 @@ class RQGIS:
       saga_versions = my_dict.keys()
       saga_versions.sort()
     except:
-      # with QGIS 2.18.10 only SAGA 2.3.0, 2.3.1, 2.3.2 is suppported 
+      # with QGIS 2.18.10 only SAGA 2.3.0 and 2.3.1 is suppported 
       # well, observe next QGIS releases and try to avoid the hard-coding!
-      saga_versions = ["2.3.0", "2.3.1", "2.3.2"]
+      saga_versions = ["2.3.0", "2.3.1"]
     
     # GDAL
     gdal_v = gdal.VersionInfo('VERSION_NUM')
