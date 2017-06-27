@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -105,12 +106,8 @@ API. For more information, refer to <code><a href='set_env.html'>set_env()</a></
 
     <p>The function returns a list with following elements:</p><ol>
 <li><p>qgis_version: Name and version of QGIS used by RQGIS.</p></li>
-<li><p>grass6: GRASS 6 version number. Under Linux, the function only checks if
-GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-a version number.</p></li>
-<li><p>grass7: GRASS 7 version number. Under Linux, the function only checks if
-GRASS 6 modules can be executed, therefore it simply returns TRUE instead of
-a version number</p></li>
+<li><p>grass6: GRASS 6 version number, if installed to use with QGIS.</p></li>
+<li><p>grass7: GRASS 7 version number, if installed to use with QGIS.</p></li>
 <li><p>saga: The installed SAGA version used by QGIS.</p></li>
 <li><p>supported_saga_versions: character vector representing the SAGA
 versions supported by the QGIS installation.</p></li>
