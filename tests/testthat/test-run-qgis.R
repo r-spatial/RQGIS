@@ -60,7 +60,9 @@ test_that("Test, if QGIS-algorithms are working?", {
 test_that("Test, if SAGA-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  # testthat::skip_on_travis()
+  # we cannot install SAGA 2.3.1 on travis Linux Server, therefore skip until 
+  # we can
+  testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   # attach data
