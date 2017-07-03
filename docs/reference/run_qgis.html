@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -88,7 +89,7 @@ corresponding function arguments.</p>
     
 
     <pre class="usage"><span class='fu'>run_qgis</span>(<span class='kw'>alg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='no'>...</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>load_output</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>check_params</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>show_msg</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
+  <span class='kw'>show_output_paths</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>qgis_env</span> <span class='kw'>=</span> <span class='fu'><a href='set_env.html'>set_env</a></span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <table class="ref-arguments">
@@ -119,15 +120,12 @@ loaded into R. A list will be returned if there is more than one output file
 (e.g., <code>grass7:r.slope.aspect</code>). See the example section for more details.</p></td>
     </tr>
     <tr>
-      <th>check_params</th>
-      <td><p>If <code>TRUE</code> (default), it will be checked if all
-geoalgorithm function arguments were provided in the correct order
-(deprecated).</p></td>
-    </tr>
-    <tr>
-      <th>show_msg</th>
-      <td><p>Logical, if <code>TRUE</code>, Python messages that occurred during the
-algorithm execution will be shown (deprecated).</p></td>
+      <th>show_output_paths</th>
+      <td><p>Logical. QGIS computes all possible output files for
+a given geoalgorithm, and saves them to a temporary location in case the
+user has not specified explicitly another output location. Setting
+<code>show_output</code> to <code>TRUE</code> (the default) will print all output paths to the
+console after the successful geoprocessing.</p></td>
     </tr>
     <tr>
       <th>qgis_env</th>
@@ -140,9 +138,9 @@ more information, refer to <code><a href='set_env.html'>set_env()</a></code>.</p
 
     <p>The function prints a list (named according to the output parameters)
 containing the paths to the files created by QGIS. If not otherwise
-specified, the function saves the QGIS generated output files to a
-temporary folder (created by QGIS). Optionally, function parameter
-<code>load_output</code> loads spatial QGIS output (vector and raster data) into R.</p>
+specified, the function saves the QGIS generated output files to a temporary
+folder (created by QGIS). Optionally, function parameter <code>load_output</code> loads
+spatial QGIS output (vector and raster data) into R.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 

@@ -72,7 +72,7 @@
 <div id="general" class="section level4">
 <h4 class="hasAnchor">
 <a href="#general" class="anchor"></a>General</h4>
-<p><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a> <a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg" alt="minimal R version"></a> <a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--05--29-yellowgreen.svg" alt="Last-changedate"></a></p>
+<p><a href="http://www.repostatus.org/#active"><img src="http://www.repostatus.org/badges/latest/active.svg" alt="Project Status: Active – The project has reached a stable, usable state and is being actively developed."></a> <a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg" alt="minimal R version"></a> <a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2017--06--27-yellowgreen.svg" alt="Last-changedate"></a></p>
 <table style="width:100%;" class="table">
 <colgroup>
 <col width="16%">
@@ -100,10 +100,10 @@
 <td>R CMD check</td>
 <td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
 <td>
-<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="LTR_Linux=true Status"></a><br><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=master" alt="DEV_Linux=true Status"></a>
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.14.16)&amp;branch=master" alt="LTR_Linux=true Status"></a><br><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_Linux=true&amp;label=QGIS%20DEV%20(2.18.10)&amp;branch=master" alt="DEV_Linux=true Status"></a>
 </td>
 <td>
-<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="LTR_mac=true Status"></a><br><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=master" alt="DEV_mac=true Status"></a>
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="LTR_mac=true Status"></a><br><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_mac=true&amp;label=QGIS%20DEV%20(2.18.7)&amp;branch=master" alt="DEV_mac=true Status"></a>
 </td>
 <td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
 </tr>
@@ -125,7 +125,7 @@
 <div id="github" class="section level4">
 <h4 class="hasAnchor">
 <a href="#github" class="anchor"></a>Github</h4>
-<p><a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-1.0.0.9000-orange.svg?style=flat-square" alt="packageversion"></a></p>
+<p><a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-1.0.1.9000-orange.svg?style=flat-square" alt="packageversion"></a></p>
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 <p>RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by establishing a tunnel to the Python QGIS API via the <a href="https://github.com/rstudio/reticulate">reticulate-package</a>. This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html" class="uri">https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html</a>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.</p>
@@ -252,7 +252,8 @@ out &lt;-<span class="st"> </span><span class="kw"><a href="reference/run_qgis.h
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <h2>Links</h2>
+    <h2 class="hasAnchor">
+<a href="#sidebar" class="anchor"></a>Links</h2>
 <ul class="list-unstyled">
 <li>Download from CRAN at <br><a href="https://cran.r-project.org/package=RQGIS">https://​cran.r-project.org/​package=RQGIS</a>
 </li>

@@ -23,7 +23,8 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
-
+  
+  
 <!-- mathjax -->
 <script src='https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
 
@@ -84,14 +85,35 @@
     </div>
 
     <div class="contents">
-    <div id="rqgis-1-0-0-9000" class="section level1">
+    <div id="rqgis-1-0-1-9000" class="section level1">
 <h1 class="hasAnchor">
-<a href="#rqgis-1-0-0-9000" class="anchor"></a>RQGIS 1.0.0.9000</h1>
+<a href="#rqgis-1-0-1-9000" class="anchor"></a>RQGIS 1.0.1.9000</h1>
 <div id="features" class="section level2">
 <h2 class="hasAnchor">
 <a href="#features" class="anchor"></a>Features</h2>
-<ul><li>
-</li></ul>
+</div>
+</div>
+    <div id="rqgis-1-0-1" class="section level1">
+<h1 class="hasAnchor">
+<a href="#rqgis-1-0-1" class="anchor"></a>RQGIS 1.0.1</h1>
+<div id="features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#features-1" class="anchor"></a>Features</h2>
+<ul>
+<li>merging python_funs.py and import_setup.py into python_funs.py</li>
+<li>New function parameter <code>show_output_paths</code> in <code>run_qgis</code>. Setting it to <code>FALSE</code> suppresses the printing of the output file paths.</li>
+<li>
+<code>random_points</code> is now an sf-object (required also some adjustments in run_qgis and our tests)</li>
+<li>
+<code>run_qgis</code> doesn’t print a space any longer if the Python message is empty</li>
+<li>developing and improving test coverage</li>
+<li>adding GDAL version to <code>qgis_session_info</code>
+</li>
+<li>
+<code>load_output</code> now supports all GDAL-supported drivers. Of course, this depends on the system setup (#72).</li>
+<li>deleting deprecated function arguments <code>show_msg</code> and <code>check_params</code> (<code>run_qgis</code>)</li>
+<li>deleting deprecated function argument <code>ltr</code> (<code>set_env</code>)</li>
+</ul>
 </div>
 </div>
     <div id="rqgis-1-0-0" class="section level1">
@@ -104,9 +126,9 @@
 <li>RQGIS now uses <a href="https://github.com/rstudio/reticulate">reticulate</a> to establish a tunnel to the QGIS Python API (instead of starting a new Python session each time a function is called; #59). Consequently, we had to rewrite all RQGIS functions. Internally, the Python session is established by calling the new function <code>open_app</code>. <code>open_app</code> in turn makes advantage of various new helper functions (<code><a href="../reference/setup_win.html">setup_win()</a></code>, <code><a href="../reference/run_ini.html">run_ini()</a></code>, <code><a href="../reference/setup_linux.html">setup_linux()</a></code>, <code><a href="../reference/setup_mac.html">setup_mac()</a></code>). Additionally, we put much of the Python code into inst/python. <code>import_setup</code> contains much of the necessary import statements to run QGIS from within R. <code>python_funs</code> contains the RQGIS class (#32) containing several methods to call from within R (<code><a href="../reference/get_args_man.html">get_args_man()</a></code>, <code><a href="../reference/open_help.html">open_help()</a></code>, <code><a href="../reference/qgis_session_info.html">qgis_session_info()</a></code>, etc.).</li>
 </ul>
 </div>
-<div id="features-1" class="section level2">
+<div id="features-2" class="section level2">
 <h2 class="hasAnchor">
-<a href="#features-1" class="anchor"></a>Features</h2>
+<a href="#features-2" class="anchor"></a>Features</h2>
 <ul>
 <li><p>The user can now specify QGIS geoalgorithm parameters as R named arguments using the ellipsis-argument <code>...</code> (#58).</p></li>
 <li><p>We rewrote the <code>load_output</code>-argument of <code>run_qgis</code>. It is now a logical argument. If <code>TRUE</code>, <code><a href="../reference/run_qgis.html">run_qgis()</a></code> will automatically load all the output layers explicitly specified by the user back into R (#60).</p></li>
@@ -177,7 +199,8 @@
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#rqgis-1-0-0-9000">1.0.0.9000</a></li>
+        <li><a href="#rqgis-1-0-1-9000">1.0.1.9000</a></li>
+        <li><a href="#rqgis-1-0-1">1.0.1</a></li>
         <li><a href="#rqgis-1-0-0">1.0.0</a></li>
         <li><a href="#rqgis-0-2-0">0.2.0</a></li>
         <li><a href="#rqgis-0-1-0">0.1.0</a></li>
