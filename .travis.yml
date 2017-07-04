@@ -91,7 +91,7 @@ before_install:
     
   # install saga 2.2.2 on Linux
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get install libwxgtk3.0-dev libtiff5-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev g++ make automake libtool git; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202/SAGA%202.2.2/saga-2.2.2.tar.gz/download && tar xvzf saga-2.2.2.tar.gz > /dev/null && rm saga-2.2.2.tar.gz; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz > /dev/null && rm saga-2.2.2.tar.gz; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH && cd /home/travis/build/jannes-m/RQGIS && sudo rm -rf saga-2.2.2; fi
   
   # install latest qgis-ltr using aptitude to resolve dependencies
