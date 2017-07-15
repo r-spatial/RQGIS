@@ -108,8 +108,8 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install saga-gis-lts; fi
   
   # install qgis
-  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr ; fi
-  - if [[ "${DEV_mac}" ]]; then brew install grass7 && travis_wait 60 brew install qgis2; fi
+  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install https://github.com/pat-s/homebrew-osgeo4mac/blob/qgis/Formula/qgis2-ltr.rb ; fi
+  - if [[ "${DEV_mac}" ]]; then brew install grass7 && travis_wait 60 brew install https://github.com/pat-s/homebrew-osgeo4mac/blob/qgis/Formula/qgis2.rb; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   
