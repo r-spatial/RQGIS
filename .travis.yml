@@ -89,11 +89,11 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi.control; fi
     
-  # install saga 2.2.2 on Linux
+  # install saga 2.3.1 on Linux
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get install libwxgtk3.0-dev libtiff5-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev g++ make automake libtool git; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202/SAGA%202.2.2/saga-2.2.2.tar.gz && tar xvzf saga-2.2.2.tar.gz > /dev/null && rm saga-2.2.2.tar.gz; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then cd saga-2.2.2 && sudo autoreconf -i > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH && cd /home/travis/build/jannes-m/RQGIS && sudo rm -rf saga-2.2.2; fi
-  
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202/SAGA%202.3.1/saga_2.3.1.tar.gz && tar xvzf saga_2.3.1.tar.gz > /dev/null && rm saga_2.3.1.tar.gz; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then cd saga-2.3.1 && autoreconf -fi > /dev/null && ./configure > /dev/null && make > /dev/null && sudo make install > /dev/null && export SAGA_MLB=/usr/local/lib/saga && export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH && cd /home/travis/build/jannes-m/RQGIS && sudo rm -rf saga-2.3.1; fi
+
   # install latest qgis-ltr using aptitude to resolve dependencies
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
   
