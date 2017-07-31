@@ -100,9 +100,9 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       
       no_homebrew <- str_detect(path, "find: /usr/local")
       
-      if (no_homebrew[1] == TRUE) {
-        message("Found no QGIS homebrew installation. 
-                Checking for QGIS Kyngchaos version now.")
+      if (is.na(no_homebrew[1])) {
+        message(paste0("Found no QGIS homebrew installation. ", 
+                       "Checking for QGIS Kyngchaos version now."))
       }
       if (no_homebrew == FALSE && length(path) == 1) {
         root <- path
