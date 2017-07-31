@@ -118,7 +118,7 @@ before_script:
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
   # install required python package psycopg2
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip install psycopg2; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2; fi
   
 #notifications:
 #  slack:
