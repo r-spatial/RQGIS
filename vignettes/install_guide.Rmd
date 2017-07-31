@@ -200,9 +200,11 @@ Assuming we have installed QGIS 2.18 and wish to replace it by QGIS 2.14, one na
 
 ## SAGA
 
-We have asked the SAGA core team to make SAGA 2.3.1 the default download option. Therefore, to install SAGA has become as easy as:
+You can install the SAGA LTS 2.3.1 version from the [ubuntugis/unstable](https://launchpad.net/~ubuntugis/+archive/ubuntu/ubuntugis-unstable) repository.
+If you haven't done so yet, add the repository and then simply install SAGA via `apt-get`:
 
 ```sh
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 sudo apt-get update
 sudo apt-get install saga
 ```
