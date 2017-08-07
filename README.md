@@ -1,15 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Important news
-==============
+Attentation Mac Users
+=====================
 
--   **Please update to QGIS version &gt;= 2.18.2** (preferably by using our [install guide](https://jannes-m.github.io/RQGIS/articles/install_guide.html)) if you want to use *RQGIS in combination with the developer version of QGIS*. This version contains a major bug fix which RQGIS relies on. However, we strongly recommend to use the QGIS long-term release, currently 2.14.14!
-
--   If you encounter `segfault` errors using SAGA 2.2.2 and 2.2.3 on macOS with QGIS installed via `homebrew` -&gt; please re-install `saga-gis-lts` (v2.3.1) to fix the issue.
+-   There are currently known issues when using GRASS algorithms and the `osgeo4mac` QGIS installations (wrong GRASS path). If you want to use GRASS algs, please use the QGIS Kyngchaos version. Be aware that you will encounter a lot of warning messages when using the Kyngchaos version. Check the installation for more information on both installation options for Mac users.
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--07--25-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--08--07-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>

@@ -108,13 +108,17 @@ QSqlQuery::prepare: database not open
 These look quite ugly but **DO NOT affect RQGIS usage**. 
 
 ## GRASS
+
+**Attention**
+There are currently known issues when using GRASS algorithms and the `osgeo4mac` QGIS installations (wrong GRASS path). If you want to use GRASS algs, please use the QGIS Kyngchaos version. Be aware that you will encounter a lot of warning messages when using the Kyngchaos version. They do not affect usage and can be ignored. Check the installation guide for more information on both installation options for Mac users.
+
 If you install QGIS > 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
 GRASS6 is deprecated and does not work anymore in QGIS > 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
 If you installed QGIS using option 1 (osgeo4mac), GRASS 7 will also work with QGIS < 2.16. 
 
 You can still use GRASS6 if you 
 
-1. Install it via `brew install grass6` from the 'osgeo4mac' tap
+1. Install QGIS and GRASS via `brew install grass6` from the 'osgeo4mac' tap
 2. Link it in QGIS via "Processing - Options - Providers"
 
 The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
