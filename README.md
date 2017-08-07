@@ -1,9 +1,9 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Attentation Mac Users
-=====================
+Attention Mac Users
+===================
 
--   There are currently known issues when using GRASS algorithms and the `osgeo4mac` QGIS installations (wrong GRASS path). If you want to use GRASS algs, please use the QGIS Kyngchaos version. Be aware that you will encounter a lot of warning messages when using the Kyngchaos version. Check the installation for more information on both installation options for Mac users.
+There are currently known issues when using GRASS algorithms and the `osgeo4mac` QGIS installations (wrong GRASS path). If you want to use GRASS algs, please use the QGIS Kyngchaos version. Be aware that you will encounter a lot of warning messages when using the Kyngchaos version. They do not affect usage and can be ignored. Check the [installation guide](http://jannes-m.github.io/RQGIS/articles/install_guide.html) for more information on both installation options for Mac users.
 
 #### General
 

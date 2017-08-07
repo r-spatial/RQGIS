@@ -270,6 +270,11 @@ open_app <- function(qgis_env = set_env()) {
   code <- paste0("sys.path.append(r'", qgis_env$python_plugins, "')")
   py_run_string(code)
   
+  # starting from 2.14.17 and 2.18.11, QgsApplication.setPrefixPath changes the
+  # decimal separator, I don't know why...
+  # the next line should turn off locale-specific separators
+  Sys.setlocale("LC_NUMERIC", "C")  
+  
   # attach further modules, our RQGIS class (needed for alglist, algoptions,
   # alghelp)
   py_file <- system.file("python", "python_funs.py", package = "RQGIS")
