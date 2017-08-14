@@ -132,6 +132,7 @@ before_script:
 #  slack:
 #      rooms:
 #        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
+#        
     
 after_success:
   - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
