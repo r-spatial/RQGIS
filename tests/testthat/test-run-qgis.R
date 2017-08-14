@@ -13,6 +13,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   testthat::skip_on_cran()
   
   print(set_env())
+  print(py_config())
   qgis_session_info()
   
   coords_1 <- matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
