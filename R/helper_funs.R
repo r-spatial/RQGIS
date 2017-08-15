@@ -119,6 +119,22 @@ setup_win <- function(qgis_env = set_env()) {
   # shell("ECHO %OSGEO4W_ROOT%")
   # REM start with clean path
   windir <- shell("ECHO %WINDIR%", intern = TRUE)
+  # such error messages occurred:
+  # [1]"'\\\\helix.klient.uib.no\\BioHome\\nboga'" 
+  # Jannes: this was the working directory apparently a server
+  # [2] "CMD.EXE was started with the above path as the current directory."
+  # [3] "UNC paths are not supported. Defaulting to Windows directory."
+  # [4] "C:\\Windows"
+  # Therefore, pick the last element (not sure if this will always work, well,
+  # we will find out). Another solution would be to hard-code "C:/Windows" but
+  # I don't know if system32 can always be found there...
+  # windir <- windir[length(windir)]
+
+  # maybe this is a more generic approach
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  setwd("C:/")
+  
   Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
                           file.path(windir, "system32", fsep = "\\"),
                           windir,
