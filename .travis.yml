@@ -109,14 +109,16 @@ before_install:
    
   # install saga4 from url
   # - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/saga-test/Formula/saga4.rb; fi
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install saga-gis-lts; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
   
   # install qgis
   # - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/qgis/Formula/qgis2-ltr.rb; fi
   # - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/qgis/Formula/qgis2.rb; fi
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
   - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
-  
+  # does this fix the testing problems?
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then mkdir -p /Users/travis/Library/Python/2.7/lib/python/site-packages && echo 'import site; site.addsitedir("/usr/local/lib/python2.7/site-packages")' >> /Users/travis/Library/Python/2.7/lib/python/site-packages/homebrew.pth; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then export PYTHONPATH=/usr/local/opt/qgis2/libexec/python2.7/site-packages:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
