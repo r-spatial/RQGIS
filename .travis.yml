@@ -75,6 +75,7 @@ before_install:
   - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint 073D307A618E5811 && gpg --export --armor 073D307A618E5811 | sudo apt-key add -; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install numpy; fi
   
   # remove postgresql installations causing upgrade errors otherwise
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.1; fi
