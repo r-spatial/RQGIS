@@ -1,13 +1,8 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Attention Mac Users
-===================
-
-There are currently known issues when using GRASS algorithms and the `osgeo4mac` QGIS installations (wrong GRASS path). If you want to use GRASS algs, please use the QGIS Kyngchaos version. Be aware that you will encounter a lot of warning messages when using the Kyngchaos version. They do not affect usage and can be ignored. Check the [installation guide](http://jannes-m.github.io/RQGIS/articles/install_guide.html) for more information on both installation options for Mac users.
-
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--08--07-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--08--14-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
