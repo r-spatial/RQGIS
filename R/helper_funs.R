@@ -428,7 +428,7 @@ save_spatial_objects <- function(params, type_name) {
         write_sf(params[[i]], fname, quiet = TRUE)
       }
       # return the result
-      fname
+      normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
       suppressWarnings(
@@ -444,7 +444,7 @@ save_spatial_objects <- function(params, type_name) {
                     prj = TRUE, overwrite = TRUE)
       }
       # return the result
-      fname
+      normalizePath(fname, winslash = "/")
     }  else {
       params[[i]]
     }
