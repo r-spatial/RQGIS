@@ -118,7 +118,7 @@ setup_win <- function(qgis_env = set_env()) {
   Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
   # shell("ECHO %OSGEO4W_ROOT%")
   # REM start with clean path
-  windir <- shell("ECHO %WINDIR%", intern = TRUE)
+  # windir <- shell("ECHO %WINDIR%", intern = TRUE)
   # such error messages occurred:
   # [1]"'\\\\helix.klient.uib.no\\BioHome\\nboga'" 
   # Jannes: this was the working directory apparently a server
@@ -134,6 +134,7 @@ setup_win <- function(qgis_env = set_env()) {
   cwd <- getwd()
   on.exit(setwd(cwd))
   setwd("C:/")
+  windir <- shell("ECHO %WINDIR%", intern = TRUE)
   
   Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
                           file.path(windir, "system32", fsep = "\\"),
