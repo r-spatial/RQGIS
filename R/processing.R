@@ -776,7 +776,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   int <- intersect(names(params), out_names)
   params[int] <- lapply(params[int], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
-      file.path(tempdir(), x)
+      normalizePath(file.path(tempdir(), x), winslash = "/", mustWork = FALSE)
     } else {
       x
     }
