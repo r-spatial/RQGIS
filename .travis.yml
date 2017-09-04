@@ -103,6 +103,9 @@ before_install:
   # make directory writable for osgeo4mac installations
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
+  # https://travis-ci.org/jannes-m/RQGIS/jobs/264868713
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python3; fi
+  
   # tap osgeo4mac tap
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
    
