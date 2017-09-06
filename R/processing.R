@@ -765,10 +765,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   
   # Find out what the output names are
   out_names <- out$params[out$output]
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(out_names)\nexcept:\  pass")  
-  
+
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
   # so could sometimes save the output in the temporary QGIS folder)
@@ -803,13 +800,27 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # here has also the advantage that the function tells the user all missing
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",alg, 
+  
+  
+  ### Ok, HERE IS  A PROBLEM
+  # RQGIS.check_args actually sets arguments, so you have to reset to their 
+  # default again!! you need a on.exit Python equivalent...
+  # and maybe this is also the problem with getting the same output under Linux??
+  # "qgis:polygoncentroids"
+  # "gdalogr:rastercalculator"
+  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)", alg,
                                  py_unicode(r_to_py(unlist(params)))))$check
-  # stop the function if required arguments were not supplied
+  # stop the function if wrong arguments were supplied, e.g.,
+  # 'grass7:r.slope.aspect":
+  # format must be an integer, so you cannot supply "hallo", the same goes for
+  # the precision and the the GRASS_REGION_PARAMETER
   if (length(check) > 0) {
-    stop(sprintf("Invalid argument value %s for parameter %s\n", 
+    stop(sprintf("Invalid argument value '%s' for parameter '%s'\n",
                  check, names(check)))
   }
+  # # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(out, opts, check)\nexcept:\  pass")  
   # return your result
   params
 }
