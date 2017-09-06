@@ -73,8 +73,8 @@ before_install:
   - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main " >> /etc/apt/sources.list'; fi
   - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'; fi
   - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2016.gpg.key | gpg --import; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint 073D307A618E5811 && gpg --export --armor 073D307A618E5811 | sudo apt-key add -; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -; fi
   
   # remove postgresql installations causing upgrade errors otherwise
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.1; fi
@@ -98,7 +98,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi.control; fi
     
   # install latest qgis-ltr using aptitude to resolve dependencies
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo sudo DEBIAN_FRONTEND=noninteractive aptitude -y -o Dpkg::Options::="--force-confdef" -o Dpkg::Options::="--force-confnew" install -y qgis python-qgis; fi  
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
   
   # make directory writable for osgeo4mac installations
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
