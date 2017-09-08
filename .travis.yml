@@ -104,7 +104,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
   # https://travis-ci.org/jannes-m/RQGIS/jobs/264868713
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python3 && pip3 install numpy; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis wait 40 brew install python3 && pip3 install numpy; fi
   
   # tap osgeo4mac tap
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
