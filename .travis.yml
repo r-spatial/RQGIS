@@ -113,6 +113,9 @@ before_install:
   # - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/saga-test/Formula/saga4.rb; fi
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 40 brew install saga-gis-lts; fi
   
+  # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip uninstall numpy; fi
+  
   # install qgis
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
   - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
