@@ -25,7 +25,7 @@ Roxygen: list(markdown = TRUE)
 ByteCompile: true
 Depends:
     R (>= 3.2.0),
-    reticulate (<= 1.0)
+    reticulate (== 1.0)
 Imports:
          raster,
          RCurl,

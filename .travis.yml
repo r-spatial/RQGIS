@@ -134,6 +134,9 @@ before_script:
   # install required python package psycopg2
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2; fi
   
+  # temporary install reticulate v1.0
+  - R -e "devtools::install_version('reticulate', '1.0')"
+  
 #notifications:
 #  slack:
 #      rooms:
