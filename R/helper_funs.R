@@ -463,6 +463,9 @@ save_spatial_objects <- function(params, type_name) {
       # return the result
       normalizePath(fname, winslash = "/")
     }  else {
+      # make sure that provided paths are also normalized
+      # gsub(pattern = "\\\\|\\\\\\\\", "/", params[[i]])
+      # not sure, if gsub might lead to trouble...
       params[[i]]
     }
   })

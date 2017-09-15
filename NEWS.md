@@ -1,6 +1,10 @@
 # RQGIS 1.0.1.9000
 
-## Features
+## Bugs
+  * making sure that `setup_win()` works properly when the working directory is a server (commit  ccc1baa & 263a1cf)
+  * solving winslash problems occurring in conjunction with Python, e.g., when in tempdir() directory names start with \\n or \\t (see commit 484e1d3 and issue #71)
+  * making sure under Linux that the decimal operator is a colon not a comma with the help of Sys.setlocale (see commit f3c7e15)
+  * making sure that default parameter values will not be overwritten by `RQGIS.check_args`  (commit 29fb26a and issue #79)
 
 
 # RQGIS 1.0.1
