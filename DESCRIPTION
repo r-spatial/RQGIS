@@ -24,12 +24,12 @@ RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
 ByteCompile: true
 Depends:
-    R (>= 3.2.0)
+    R (>= 3.2.0),
+    reticulate (<= 1.0)
 Imports:
          raster,
          RCurl,
          readr,
-         reticulate (>= 0.8),
          rgdal,
          sf (>= 0.4-2),
          sp,
