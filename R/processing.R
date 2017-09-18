@@ -159,6 +159,12 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       root <- "/usr"
     }
   }
+  if (Sys.info()["sysname"] == "FreeBSD") {
+    if (is.null(root)) {
+      message("Assuming that your root path is '/usr/local'!")
+      root <- "/usr/local"
+    }
+  }
   qgis_env <- list(root = root)
   qgis_env <- c(qgis_env, check_apps(root = root, dev = dev))
   assign("qgis_env", qgis_env, envir = .RQGIS_cache)
@@ -228,7 +234,7 @@ open_app <- function(qgis_env = set_env()) {
     # there before, so we should at least add the old PATH to our newly created
     # one
     reset_path(settings)
-  } else if (Sys.info()["sysname"] == "Linux") {
+  } else if (Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     setup_mac(qgis_env = qgis_env)
@@ -315,7 +321,8 @@ qgis_session_info <- function(qgis_env = set_env()) {
   py_run_string(
     "try:\n  del(my_session_info)\nexcept:\  pass")
   
-  if (Sys.info()["sysname"] == "Linux" && (out$grass6 | out$grass7)) {
+  if ((Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") &&
+      (out$grass6 | out$grass7)) {
     # find out which GRASS version is available
     # inspired by link2GI::searchGRASSX
     # Problem: sometimes the batch command is interrupted or does not finish...

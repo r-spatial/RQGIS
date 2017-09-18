@@ -1,8 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+Attention Windows Users
+=======================
+
+`RQGIS` may not work correctly on Windows with the current CRAN version of `reticulate` (v1.1). Please install `reticulate` v.1.0 if you encounter errors: `devtools::install_version("reticulate", "1.0")`.
+
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--08--14-yellowgreen.svg)](/commits/master)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2017--09--15-yellowgreen.svg)](/commits/master)
 
 <table style="width:100%;">
 <colgroup>
