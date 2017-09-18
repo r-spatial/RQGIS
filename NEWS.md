@@ -5,6 +5,7 @@
   * solving winslash problems occurring in conjunction with Python, e.g., when in tempdir() directory names start with \\n or \\t (see commit 484e1d3 and issue #71)
   * making sure under Linux that the decimal operator is a colon not a comma with the help of Sys.setlocale (see commit f3c7e15)
   * making sure that default parameter values will not be overwritten by `RQGIS.check_args`  (commit 29fb26a and issue #79)
+  * reticulate 1.1 caused some trouble due to json parsing in `conda_list()`. JJAllaire fixed this (https://github.com/rstudio/reticulate/issues/100).
 
 
 # RQGIS 1.0.1
