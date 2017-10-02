@@ -80,13 +80,13 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
              paste(root, collapse = "\n"))
       } else {
         # define root, i.e. OSGeo4W-installation
-        root <- gsub("\\\\bin.*", "", root)
+        root <-  gsub("\\\\bin.*", "", root)
       }
     }
     # harmonize root syntax
-    root <- normalizePath(root, winslash = "/")
+    root <- normalizePath(root)
     # make sure that the root path does not end with some sort of slash
-    root <- gsub("/{1,}$", "", root)
+    root <- gsub("\\\\$", "", root)
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
