@@ -767,20 +767,20 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # here, we would like to retrieve the type type of the argument (which is list
   # element 4)
   out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
-  params[] <- save_spatial_objects(params = params, 
-                                   type_name = out$type_name)
-  
-  # Find out what the output names are
-  out_names <- out$params[out$output]
+  # just run through list elements which might be an input file (i.e. which are
+  # certainly not an output file)
+  params[!out$output] <- save_spatial_objects(params = params[!out$output], 
+                                              type_name = out$type_name)
 
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
   # so could sometimes save the output in the temporary QGIS folder)
   # if the user has not specified any output files, nothing happens
-  int <- intersect(names(params), out_names)
-  params[int] <- lapply(params[int], function(x) {
+  params[out$output] <- lapply(params[out$output], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
       normalizePath(file.path(tempdir(), x), winslash = "/", mustWork = FALSE)
+    } else if (basename(x) != "None") {
+      normalizePath(x, winslash = "/", mustWork = FALSE)
     } else {
       x
     }
@@ -808,13 +808,6 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
   
-  
-  ### Ok, HERE IS  A PROBLEM
-  # RQGIS.check_args actually sets arguments, so you have to reset to their 
-  # default again!! you need a on.exit Python equivalent...
-  # and maybe this is also the problem with getting the same output under Linux??
-  # "qgis:polygoncentroids"
-  # "gdalogr:rastercalculator"
   check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)", alg,
                                  py_unicode(r_to_py(unlist(params)))))$check
   # stop the function if wrong arguments were supplied, e.g.,

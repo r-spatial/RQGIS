@@ -462,10 +462,15 @@ save_spatial_objects <- function(params, type_name) {
       }
       # return the result
       normalizePath(fname, winslash = "/")
-    }  else {
-      # make sure that provided paths are also normalized
-      # gsub(pattern = "\\\\|\\\\\\\\", "/", params[[i]])
-      # not sure, if gsub might lead to trouble...
+    } else if (type_name[i] %in% c("vector", "raster") && 
+               file.exists(params[[i]])) {
+      # if the user provided a path to a vector or a raster (and its not an 
+      # output file: we use save_spatial_objects only for non-output files in 
+      # pass_args), then normalize this path in case a Windows user has 
+      # used backslashes which might lead to trouble when sth. like \t \n or
+      # alike appears in the path
+      normalizePath(params[[i]], winslash = "/")
+    } else {
       params[[i]]
     }
   })
