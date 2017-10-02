@@ -462,7 +462,7 @@ save_spatial_objects <- function(params, type_name) {
       }
       # return the result
       normalizePath(fname, winslash = "/")
-    } else if (type_name[i] %in% c("vector", "raster") && 
+    } else if (type_name[i] %in% c("vector", "raster", "table") && 
                file.exists(params[[i]])) {
       # if the user provided a path to a vector or a raster (and its not an 
       # output file: we use save_spatial_objects only for non-output files in 
