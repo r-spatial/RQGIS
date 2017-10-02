@@ -84,9 +84,9 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       }
     }
     # harmonize root syntax
-    root <- normalizePath(root)
+    root <- normalizePath(root, winslash = "/")
     # make sure that the root path does not end with some sort of slash
-    root <- gsub("\\\\$", "", root)
+    root <- gsub("/{1,}$", "", root)
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
