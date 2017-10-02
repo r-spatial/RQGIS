@@ -29,8 +29,7 @@ check_apps <- function(root, ...) {
       my_qgis <- my_qgis[1]
     }
     apps <- c(file.path(path_apps, my_qgis),
-              file.path(path_apps, my_qgis, "python\\plugins"))
-    apps <- gsub("//|/", "\\\\", apps)
+              file.path(path_apps, my_qgis, "python/plugins"))
   } else if (Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") {
     # paths to check
     apps <- file.path(root, c("bin/qgis", "share/qgis/python/plugins"))
