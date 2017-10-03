@@ -726,7 +726,7 @@ save_spatial_objects <- function(params, type_name) {
 
 qgis_load_geom <- function(params, type_name) {
   lapply(seq_along(params), function(i) {
-    if (type_name[i] == "vector") {
+    if (type_name[i] == "vector" && params[[i]] != "None") {
       # import raster into QGIS and register it
       file = params[[i]]
       layer = paste0("vlayer", i)
@@ -739,7 +739,7 @@ qgis_load_geom <- function(params, type_name) {
                 layer, file))
       # return layer
       layer
-    } else if (type_name[i] == "raster") {
+    } else if (type_name[i] == "raster" && params[[i]] != "None") {
       # import raster into QGIS and register it
       file = params[[i]]
       base_name = basename(file)
