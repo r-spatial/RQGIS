@@ -723,6 +723,7 @@ save_spatial_objects <- function(params, type_name) {
 #' # make sure to only use input parameters, and not output parameters
 #' params[!out$output] <- qgis_load_geom(params = params[!out$output], 
 #'                                       type_name = out$type_name[!out$output])
+#' }
 
 qgis_load_geom <- function(params, type_name) {
   lapply(seq_along(params), function(i) {
