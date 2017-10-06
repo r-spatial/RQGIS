@@ -729,7 +729,8 @@ qgis_load_geom <- function(params, type_name) {
     if (type_name[i] == "vector" && params[[i]] != "None") {
       # import raster into QGIS and register it
       file = params[[i]]
-      layer = paste0("vlayer", i)
+      # choose a name that is unlikely to be used
+      layer = paste0("qgisvlayer45653", i)
       py_run_string(sprintf("%s = QgsVectorLayer('%s', '%s', 'ogr')",
                             layer, file, layer))
       py_run_string(sprintf("QgsMapLayerRegistry.instance().addMapLayer(%s)",
@@ -743,7 +744,7 @@ qgis_load_geom <- function(params, type_name) {
       # import raster into QGIS and register it
       file = params[[i]]
       base_name = basename(file)
-      layer = paste0("rlayer", i)
+      layer = paste0("qgisrlayer45653", i)
       py_run_string(sprintf("%s = QgsRasterLayer('%s', '%s')",
                             layer, file, base_name))
       py_run_string(sprintf("QgsMapLayerRegistry.instance().addMapLayer(%s)",
