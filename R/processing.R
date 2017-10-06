@@ -760,8 +760,10 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(res, args, params)\nexcept:\  pass")
-  # remove the input vector and raster layer again
+  # remove the input vector and raster layers again (see qgis_load_geom)
   layers = grep("^qgis[r|v]layer45653\\d{1,}$", params, value = TRUE)
+  # find out about loaded layers
+# py_run_string("a = QgsMapLayerRegistry.instance().mapLayers()")$a
   lapply(layers, function(x) {
     py_run_string(
       sprintf("QgsMapLayerRegistry.instance().removeMapLayer(%s.id())", x))
