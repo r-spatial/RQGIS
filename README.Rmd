@@ -27,7 +27,7 @@ rvers <- "3.2.0"
 # Attention Windows Users
 
 `RQGIS` may not work correctly on Windows with the current CRAN version of `reticulate` (v1.1). 
-Please install `reticulate` v.1.0 if you encounter errors: `devtools::install_version("reticulate", "1.0")`. 
+Please update to version 1.2 of `reticulate`.
 
 #### General
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
