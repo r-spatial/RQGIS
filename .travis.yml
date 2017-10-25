@@ -115,10 +115,15 @@ before_install:
   
   # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip uninstall numpy; fi
+  # install required python packages
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
+  
   
   # install qgis
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
   - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
+  
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then sh -e export PYTHONPATH=/usr/local/opt/qgis2-ltr/libexec/python2.7/site-packages:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   
@@ -131,11 +136,6 @@ before_script:
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
-  # install required python package psycopg2
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2; fi
-  
-  # temporary install reticulate v1.0
-  - R -e "devtools::install_version('reticulate', '1.0')"
   
 #notifications:
 #  slack:
