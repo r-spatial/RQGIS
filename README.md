@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Attention Windows Users
-=======================
+Attention
+=========
 
 Please install the latest version of `reticulate` (v1.2):
 
