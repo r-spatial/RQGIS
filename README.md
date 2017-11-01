@@ -1,9 +1,13 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-Attention Windows Users
-=======================
+Attention
+=========
 
-`RQGIS` may not work correctly on Windows with the current CRAN version of `reticulate` (v1.1). Please update to version 1.2 of `reticulate`.
+Please install the latest version of `reticulate` (v1.2):
+
+``` r
+install.packages("reticulate")
+```
 
 #### General
 
