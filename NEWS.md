@@ -1,4 +1,4 @@
-# RQGIS 1.0.1.9000
+# RQGIS 1.0.2
 
 ## Bugs
   * making sure that `setup_win()` works properly when the working directory is a server (commit  ccc1baa & 263a1cf)
