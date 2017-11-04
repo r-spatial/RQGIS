@@ -36,7 +36,7 @@ Imports:
          stringr,
          tools,
          XML
-SystemRequirements: Python (>= 2.7), QGIS (>= 2.12)
+SystemRequirements: Python (>= 2.7), QGIS (>= 2.14)
 Suggests:
     knitr,
     rgrass7,
