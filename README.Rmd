@@ -17,19 +17,15 @@ knitr::opts_chunk$set(
 
 
 ```{r, echo = FALSE, eval = TRUE}
-version <- "1.0.1.9000"
+re = "^Version: "
+text = readLines("DESCRIPTION")
+text = grep(re, text, value = TRUE)
+version = gsub(re, "", text)
 ```
 
 ```{r, echo = FALSE, eval = TRUE}
-rvers <- "3.2.0"
-```
-
-# Attention
-
-Please install the latest version of `reticulate` (v1.2):
-
-```{r, eval = FALSE}
-install.packages("reticulate")
+v = R.Version()
+rvers = paste(v$major, v$minor, sep = ".")
 ```
 
 #### General
