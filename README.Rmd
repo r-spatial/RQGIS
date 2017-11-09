@@ -24,8 +24,9 @@ version = gsub(re, "", text)
 ```
 
 ```{r, echo = FALSE, eval = TRUE}
-v = R.Version()
-rvers = paste(v$major, v$minor, sep = ".")
+# v = R.Version()
+# rvers = paste(v$major, v$minor, sep = ".")
+rvers = "3.2.0"
 ```
 
 #### General
