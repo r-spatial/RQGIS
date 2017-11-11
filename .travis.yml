@@ -114,7 +114,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 40 brew install saga-gis-lts; fi
   
   # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip uninstall numpy; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip2 uninstall numpy; fi
   # install required python packages
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
   
