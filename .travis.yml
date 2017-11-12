@@ -137,6 +137,9 @@ before_script:
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
   
+after_script:
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "RQGIS::set_env()"; fi
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "reticulate::py_config()"; fi
 #notifications:
 #  slack:
 #      rooms:
