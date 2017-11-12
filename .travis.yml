@@ -5,33 +5,33 @@ language: r
 matrix:
   include:
     # build QGIS LTR on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
+    #- os: linux
+     # dist: trusty
+      #sudo: required
+      #latex: false
+      #jdk: oraclejdk9
      # addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-      env: 
-        - R_CODECOV=true
-        - LTR_Linux=true
+      #env: 
+      #  - R_CODECOV=true
+      #  - LTR_Linux=true
       #r:
         #- oldrel
         #- release
         #- devel
     # build QGIS DEV on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
+    #- os: linux
+    #  dist: trusty
+     # sudo: required
+    #  latex: false
+     # jdk: oraclejdk9
       #addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-      env: DEV_Linux=true
+     # env: DEV_Linux=true
       #r:
       #  - oldrel
       #  - release
@@ -108,6 +108,7 @@ before_install:
   # 
   # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip uninstall numpy; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install numpy; fi
   
   # tap osgeo4mac tap
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
