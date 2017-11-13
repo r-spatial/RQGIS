@@ -37,13 +37,13 @@ matrix:
       #  - release
       #  - devel
     ### build QGIS LTR on macOS
-    - os: osx
-      osx_image: xcode8.3
-      latex: false
-      sudo: required
-      env: 
-        - LTR_mac=true
-        - R_CODECOV=true
+    #- os: osx
+    #  osx_image: xcode8.3
+    #  latex: false
+    #  sudo: required
+    #  env: 
+     #   - LTR_mac=true
+     #   - R_CODECOV=true
       #r:
       #  - oldrel
       #  - release
@@ -136,10 +136,14 @@ before_script:
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
-  
-after_script:
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "RQGIS::set_env()"; fi
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "reticulate::py_config()"; fi
+
+script:
+        - |
+          R CMD build .
+          travis_wait 100 R CMD check mlr*.tar.gz --as-cran --no-tests
+          R -e 'RQGIS::set_env()'
+          R -e 'reticulate::py_config()'
+
 #notifications:
 #  slack:
 #      rooms:
