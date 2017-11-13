@@ -2,6 +2,10 @@
 language: r		 
 cache: packages	
 
+addons:
+  artifacts:
+    s3_region: "eu-central-1" # defaults to "us-east-1"
+
 matrix:
   include:
     # build QGIS LTR on Linux
