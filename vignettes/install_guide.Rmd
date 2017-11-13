@@ -169,6 +169,7 @@ Next add the correct repository to `/etc/apt/sources.list`. Here, we use the QGI
 sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 For Ubuntu 14.04, simply replace `xenial` with `trusty`. 
 
