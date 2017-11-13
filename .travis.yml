@@ -1,6 +1,6 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
-# cache: packages	
+cache: packages	
 
 matrix:
   include:
@@ -38,7 +38,7 @@ matrix:
       #  - devel
     ### build QGIS LTR on macOS
     - os: osx
-      osx_image: xcode8.1
+      osx_image: xcode8.3
       latex: false
       sudo: required
       env: 
@@ -50,7 +50,7 @@ matrix:
       #  - devel
     ### build QGIS DEV on macOS
     - os: osx
-      osx_image: xcode8.1
+      osx_image: xcode8.3
       latex: false
       sudo: required
       env: DEV_mac=true

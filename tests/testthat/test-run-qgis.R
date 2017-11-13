@@ -9,7 +9,7 @@ context("run_qgis")
 test_that("Test, if QGIS-algorithms are working?", {
 
   testthat::skip_on_appveyor()
-  # testthat::skip_on_travis()
+  testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   print(set_env())
@@ -65,7 +65,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   
   testthat::skip_on_appveyor()
   testthat::skip_on_cran()
-  testthat::skip_on_os("linux")
+  testthat::skip_on_travis()
   
   # attach data
   data("dem")
@@ -91,7 +91,7 @@ test_that("Test, if SAGA-algorithms are working?", {
 test_that("Test, if GRASS7-algorithms are working?", {
   
   testthat::skip_on_appveyor()
-  #testthat::skip_on_travis()
+  testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   # attach data
