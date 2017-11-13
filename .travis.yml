@@ -137,20 +137,6 @@ before_script:
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
 
-script:
-        - |
-          R CMD build .
-          travis_wait 100 R CMD check mlr*.tar.gz --as-cran --no-tests
-          R -e 'RQGIS::set_env()'
-          R -e 'reticulate::py_config()'
-          R -e 'system("$PYTHONPATH")'
-          R -e 'reticulate:py_run_string("import os, sys, re, webbrowser")'
-          R -e 'reticulate:py_run_string("from qgis.core import *")'
-          R -e 'reticulate:py_run_string("from osgeo import ogr")'
-          R -e 'reticulate:py_run_string("from PyQt4.QtCore import *")'
-          R -e 'reticulate:py_run_string("from PyQt4.QtGui import *")'
-          R -e 'reticulate:py_run_string("from qgis.gui import *")'
-
 #notifications:
 #  slack:
 #      rooms:
