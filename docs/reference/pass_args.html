@@ -52,10 +52,25 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../articles/install_guide.html">(R)QGIS installation guide for Windows, Mac &amp; Linux</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -143,9 +158,9 @@ the spatial object to a temporary folder, and use the corresponding file
 path to replace the spatial object in the parameter-argument list. If the
 QGIS geoalgorithm parameter belongs to the
 <code>ParameterMultipleInput</code>-instance class (see for example
-<code>get_usage(grass7:v.patch)</code>) you may either use a character-string
+<code><a href='get_usage.html'>get_usage(grass7:v.patch)</a></code>) you may either use a character-string
 containing the paths to the spatial objects separated by a semi-colon
-(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also <a href = 'https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>)
+(e.g., "shape1.shp;shape2.shp;shape3.shp" - see also <a href='https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>)
 or provide a <code><a href='http://www.rdocumentation.org/packages/base/topics/list'>base::list()</a></code> containing the spatial objects.</p></li>
 <li><p>If the user only specified the name of an output file (e.g.
 "slope.asc") and not a complete path, the function will save the output in
@@ -157,29 +172,29 @@ to <code><a href='get_options.html'>get_options()</a></code> for valid options f
 <li><p>If <code>GRASS_REGION_PARAMETER</code> is "None" (the QGIS default), <code>run_qgis</code>
 will automatically determine the region extent based on the user-specified
 input layers. If you do want to specify the <code>GRASS_REGION_PARAMETER</code>
-yourself, please do it in accordance with the <a href = 'https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>,
+yourself, please do it in accordance with the <a href='https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html'>QGISdocumentation</a>,
 i.e., use a character string and separate the coordinates with a comma:
 "xmin, xmax, ymin, ymax".</p></li>
 </ul>
     
     <h2 class="hasAnchor" id="note"><a class="anchor" href="#note"></a>Note</h2>
 
-    <p>The function was inspired by <code><a href='http://www.rdocumentation.org/packages/rgrass7/topics/execGRASS'>rgrass7::doGRASS()</a></code>.</p>
+    <p>The function was inspired by <code>rgrass7::doGRASS()</code>.</p>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>not_run</span>({
-  <span class='fu'>data</span>(<span class='no'>dem</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"RQGIS"</span>)
-  <span class='no'>alg</span> <span class='kw'>&lt;-</span> <span class='st'>"grass7:r.slope.aspect"</span>
-  <span class='fu'><a href='get_usage.html'>get_usage</a></span>(<span class='no'>alg</span>)
-  <span class='co'># 1. using R named arguments</span>
-  <span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>)
-  <span class='co'># 2. doing the same with a parameter argument list</span>
-  <span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>))
-  <span class='co'># 3. verbal input replacement (note that "degrees" will be replaced by 0)</span>
-  <span class='fu'><a href='get_options.html'>get_options</a></span>(<span class='no'>alg</span>)
-  <span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"degrees"</span>)
-})</div></pre>
+    <pre class="examples"><span class='co'># NOT RUN {</span>
+<span class='fu'>data</span>(<span class='no'>dem</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"RQGIS"</span>)
+<span class='no'>alg</span> <span class='kw'>&lt;-</span> <span class='st'>"grass7:r.slope.aspect"</span>
+<span class='fu'><a href='get_usage.html'>get_usage</a></span>(<span class='no'>alg</span>)
+<span class='co'># 1. using R named arguments</span>
+<span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>)
+<span class='co'># 2. doing the same with a parameter argument list</span>
+<span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>params</span> <span class='kw'>=</span> <span class='fu'>list</span>(<span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>slope</span> <span class='kw'>=</span> <span class='st'>"slope.asc"</span>))
+<span class='co'># 3. verbal input replacement (note that "degrees" will be replaced by 0)</span>
+<span class='fu'><a href='get_options.html'>get_options</a></span>(<span class='no'>alg</span>)
+<span class='fu'>pass_args</span>(<span class='no'>alg</span>, <span class='kw'>elevation</span> <span class='kw'>=</span> <span class='no'>dem</span>, <span class='kw'>format</span> <span class='kw'>=</span> <span class='st'>"degrees"</span>)
+<span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
