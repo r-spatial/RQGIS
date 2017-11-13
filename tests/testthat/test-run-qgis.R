@@ -12,16 +12,6 @@ test_that("Test, if QGIS-algorithms are working?", {
   #testthat::skip_on_travis()
   testthat::skip_on_cran()
   
-  print(set_env())
-  print(py_config())
-  print(system("$PYTHONPATH"))
-  print(py_run_string("import os, sys, re, webbrowser"))
-  print(py_run_string("from qgis.core import *"))
-  print(reticulate::py_run_string("from osgeo import ogr"))
-  print(reticulate:py_run_string("from PyQt4.QtCore import *"))
-  print(reticulate:py_run_string("from PyQt4.QtGui import *"))
-  print(reticulate:py_run_string("from qgis.gui import *"))
-  
   coords_1 <- matrix(data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
                      ncol = 2, byrow = TRUE)
   coords_2 <- coords_1 + 2
