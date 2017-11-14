@@ -4,6 +4,7 @@ test_that("qgis_session_info yields a list as output", {
   
   skip_on_appveyor()
   skip_on_cran()
+  # testthat::skip_on_travis()
   
   info <- qgis_session_info()
   
@@ -15,6 +16,7 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
   
   skip_on_appveyor()
   skip_on_cran()
+  # testthat::skip_on_travis()
 
   algs <- find_algorithms()
   # just retrieve QGIS geoalgorithms
