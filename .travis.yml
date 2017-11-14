@@ -9,30 +9,32 @@ language: r
 
 matrix:
   include:
+    # build QGIS OLD_LTR on Linux
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      jdk: oraclejdk9
+      env: 
+        - R_CODECOV=true
+        - OLD_LTR_Linux=true
+        
     # build QGIS LTR on Linux
     - os: linux
       dist: trusty
       sudo: required
       latex: false
       jdk: oraclejdk9
-     # addons:
-      #  apt:
-      #    packages:
-      #    - oracle-java9-installer
-      env: 
-        - R_CODECOV=true
-        - LTR_Linux=true
-    # build QGIS DEV on Linux
+      env: LTR_Linux=true
+      
+    # build QGIS NIGHTLY on Linux
     - os: linux
       dist: trusty
       sudo: required
       latex: false
       jdk: oraclejdk9
-      #addons:
-      #  apt:
-      #    packages:
-      #    - oracle-java9-installer
-      env: DEV_Linux=true
+      env: NIGHTLY_Linux=true
+      
     ### build QGIS LTR on macOS
     - os: osx
       osx_image: xcode8.3
@@ -56,10 +58,15 @@ r_github_packages:
 # because GDAL2 is required 
 before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get -y --force-yes update -qq; fi
-  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'; fi
-  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main " >> /etc/apt/sources.list'; fi
-  - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'; fi
-  - if [[ "${DEV_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
+  - if [[ "${OLD_LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'; fi
+  - if [[ "${OLD_LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr trusty main " >> /etc/apt/sources.list'; fi
+  
+  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis trusty main" >> /etc/apt/sources.list'; fi
+  - if [[ "${LTR_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis trusty main " >> /etc/apt/sources.list'; fi
+  
+  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-nightly trusty main" >> /etc/apt/sources.list'; fi
+  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-nightly trusty main " >> /etc/apt/sources.list'; fi
+  
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -; fi
   
