@@ -2,9 +2,10 @@
 language: r		 
 cache: packages	
 
-addons:
-  artifacts:
-    s3_region: "eu-central-1" # defaults to "us-east-1"
+# artifcats uploading to s3 bucket. times out sometimes for mac builds
+# addons:
+#  artifacts:
+#    s3_region: "eu-central-1" # defaults to "us-east-1"
 
 matrix:
   include:
