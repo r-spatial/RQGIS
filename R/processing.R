@@ -246,13 +246,7 @@ open_app <- function(qgis_env = set_env()) {
   # using a reticulate function already initializes the default python
   # so we can only force to use a default python2 that we hope to exist
   # in the specified location
-  
-  if (as.numeric(substr(qgis_session_info()$qgis_version, 3, 4)) <= 18) {
-    if (Sys.info()["sysname"] == "Linux") {
-      # tested on Ubuntu and Arch
-      use_python("/usr/bin/python2", required = TRUE)
-    }
-  }
+  set_py_config(qgis_env = qgis_env)
   
   # make sure that QGIS is not already running (this would crash R) app =
   # QgsApplication([], True)  # see below 
