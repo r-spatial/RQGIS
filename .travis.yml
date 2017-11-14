@@ -1,63 +1,50 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
-cache: packages	
+# cache: packages	
+
+# artifcats uploading to s3 bucket. times out sometimes for mac builds
+# addons:
+#  artifacts:
+#    s3_region: "eu-central-1" # defaults to "us-east-1"
 
 matrix:
   include:
     # build QGIS LTR on Linux
-    #- os: linux
-     # dist: trusty
-      #sudo: required
-      #latex: false
-      #jdk: oraclejdk9
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      jdk: oraclejdk9
      # addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-      #env: 
-      #  - R_CODECOV=true
-      #  - LTR_Linux=true
-      #r:
-        #- oldrel
-        #- release
-        #- devel
+      env: 
+        - R_CODECOV=true
+        - LTR_Linux=true
     # build QGIS DEV on Linux
-    #- os: linux
-    #  dist: trusty
-     # sudo: required
-    #  latex: false
-     # jdk: oraclejdk9
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      jdk: oraclejdk9
       #addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-     # env: DEV_Linux=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
+      env: DEV_Linux=true
     ### build QGIS LTR on macOS
-    #- os: osx
-    #  osx_image: xcode8.3
-    #  latex: false
-    #  sudo: required
-    #  env: 
-     #   - LTR_mac=true
-     #   - R_CODECOV=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: LTR_mac=true
     ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
       env: DEV_mac=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
 
 warnings_are_errors: false
 
@@ -86,7 +73,7 @@ before_install:
   
   # install gdal, saga and proj4 from ubuntugis ppa (gdal2.1)
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
-  # - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt update -y && sudo apt-mark hold oracle-java8-installer oracle-java8-unlimited-jce-policy oracle-java9-set-default oracle-java9-unlimited-jce-policy oracle-java9-installer; fi
+
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated; fi # if you already have gdal 1.11 installed
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga; fi
     
@@ -103,9 +90,6 @@ before_install:
   # make directory writable for osgeo4mac installations
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then sudo chown -R $(whoami) /usr/local; fi
   
-  # https://travis-ci.org/jannes-m/RQGIS/jobs/264868713
-  # - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 40 brew install python3; fi
-  # 
   # account for conflicting numpy installations https://github.com/travis-ci/travis-ci/issues/6688
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/bin/yes | pip2 uninstall numpy; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install numpy; fi
@@ -113,17 +97,14 @@ before_install:
   # tap osgeo4mac tap
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
    
-  # install saga4 from url
-  # - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then travis_wait 20 brew install https://raw.githubusercontent.com/pat-s/homebrew-osgeo4mac/saga-test/Formula/saga4.rb; fi
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
+  
   # install required python packages
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
 
   # install qgis
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
   - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
-  
-  #- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then sh -e export PYTHONPATH=/usr/local/opt/qgis2-ltr/libexec/python2.7/site-packages:/usr/local/lib/qt-4/python2.7/site-packages:/usr/local/lib/python2.7/site-packages:$PYTHONPATH; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   
@@ -137,24 +118,13 @@ before_script:
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
 
-script:
-        - |
-          R CMD build .
-          travis_wait 100 R CMD check mlr*.tar.gz --as-cran --no-tests
-          R -e 'RQGIS::set_env()'
-          R -e 'reticulate::py_config()'
-          R -e 'reticulate:py_run_string("import os, sys, re, webbrowser")'
-          R -e 'reticulate:py_run_string("from qgis.core import *")'
-          R -e 'reticulate:py_run_string("from osgeo import ogr")'
-          R -e 'reticulate:py_run_string("from PyQt4.QtCore import *")'
-          R -e 'reticulate:py_run_string("from PyQt4.QtGui import *")'
-          R -e 'reticulate:py_run_string("from qgis.gui import *")'
-
-#notifications:
-#  slack:
-#      rooms:
-#        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG#rqgis
-#        
+notifications:
+  slack:
+      rooms:
+        - giscience-fsu:3GsmuFR1hkVOUHOPwdra8NXG #rqgis
+  on_success: change # default: always
+  on_failure: change # default: always
+  email: false
     
 after_success:
   - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi

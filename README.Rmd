@@ -17,11 +17,16 @@ knitr::opts_chunk$set(
 
 
 ```{r, echo = FALSE, eval = TRUE}
-version <- "1.0.1.9000"
+re = "^Version: "
+text = readLines("DESCRIPTION")
+text = grep(re, text, value = TRUE)
+version = gsub(re, "", text)
 ```
 
 ```{r, echo = FALSE, eval = TRUE}
-rvers <- "3.2.0"
+# v = R.Version()
+# rvers = paste(v$major, v$minor, sep = ".")
+rvers = "3.2.0"
 ```
 
 #### General
@@ -32,9 +37,9 @@ rvers <- "3.2.0"
 | Resource:     | CRAN                | Travis CI       | Travis CI        | Appveyor         |
 | ------------- | ------------------- | --------------- | ---------------- | ---------------- |
 | _Platforms:_  | _Multiple_          | _Linux_         | _macOS_          | _Windows_        |
-| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | [![LTR_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS LTR (2.14.17)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
-[![DEV_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_Linux=true&label=QGIS DEV (2.18.11)&branch=master)](https://travis-ci.org/jannes-m/RQGIS)   | [![LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS LTR (2.14.17)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
-[![DEV_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_mac=true&label=QGIS DEV (2.18.11)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
+| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | [![LTR_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&label=QGIS LTR (2.14.20)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
+[![DEV_Linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_Linux=true&label=QGIS DEV (2.18.14)&branch=master)](https://travis-ci.org/jannes-m/RQGIS)   | [![LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS LTR (2.14.20)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
+[![DEV_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=DEV_mac=true&label=QGIS DEV (2.18.14)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
 | Test coverage | <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/rPython/graph/badge.svg" alt="Coverage Status"/></a>     |                  |                  |
 
 #### CRAN

@@ -5,7 +5,7 @@ context("pass_args")
 
 test_that("Test, if pass_args works correctly?", {
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  # testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   alg <- "grass7:r.slope.aspect"
@@ -32,7 +32,7 @@ test_that("Test, if pass_args works correctly?", {
 
 test_that("Test, if multiple input works with pass_args?", {
   testthat::skip_on_appveyor()
-  testthat::skip_on_travis()
+  # testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   r <- raster(ncol = 100, nrow = 100)

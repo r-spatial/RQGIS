@@ -1,3 +1,17 @@
+RQGIS 1.0.2
+--------------------------------------------------------------------------------
+
+Bugs:
+  * making sure that `setup_win()` works properly when the working directory is a server (commit  ccc1baa & 263a1cf)
+  * solving winslash problems occurring in conjunction with Python, e.g., when in tempdir() directory names start with \\n or \\t (see commits 484e1d3, 8befac3 and issue #71)
+  * `set_env()` now uses forward instead of backward slashes (commit 8befac3 and issue #83)
+  * making sure under Linux that the decimal operator is a colon not a comma with the help of Sys.setlocale (see commit f3c7e15)
+  * making sure that default parameter values will not be overwritten by `RQGIS.check_args`  (commit 29fb26a and issue #79)
+  * reticulate 1.1 caused some trouble due to json parsing in `conda_list()` (solved by: https://github.com/rstudio/reticulate/issues/100; @jjallaire).
+  
+Miscellaneous:
+  * RQGIS now supports FreeBSD (#78, @rhurlin)
+
 RQGIS 1.0.1
 --------------------------------------------------------------------------------
 
