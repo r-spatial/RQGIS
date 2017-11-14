@@ -61,7 +61,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   
   testthat::skip_on_appveyor()
   testthat::skip_on_cran()
-  testthat::skip_on_travis()
+  # testthat::skip_on_travis()
   
   # attach data
   data("dem")
@@ -88,7 +88,7 @@ test_that("Test, if GRASS7-algorithms are working?", {
   
   testthat::skip_on_appveyor()
   testthat::skip_on_travis()
-  testthat::skip_on_cran()
+  # testthat::skip_on_cran()
   
   # attach data
   data("dem")

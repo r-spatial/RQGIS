@@ -9,59 +9,43 @@ addons:
 matrix:
   include:
     # build QGIS LTR on Linux
-    #- os: linux
-     # dist: trusty
-      #sudo: required
-      #latex: false
-      #jdk: oraclejdk9
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      jdk: oraclejdk9
      # addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-      #env: 
-      #  - R_CODECOV=true
-      #  - LTR_Linux=true
-      #r:
-        #- oldrel
-        #- release
-        #- devel
+      env: 
+        - R_CODECOV=true
+        - LTR_Linux=true
     # build QGIS DEV on Linux
-    #- os: linux
-    #  dist: trusty
-     # sudo: required
-    #  latex: false
-     # jdk: oraclejdk9
+    - os: linux
+      dist: trusty
+      sudo: required
+      latex: false
+      jdk: oraclejdk9
       #addons:
       #  apt:
       #    packages:
       #    - oracle-java9-installer
-     # env: DEV_Linux=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
+      env: DEV_Linux=true
     ### build QGIS LTR on macOS
-    #- os: osx
-    #  osx_image: xcode8.3
-    #  latex: false
-    #  sudo: required
-    #  env: 
-     #   - LTR_mac=true
-     #   - R_CODECOV=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
+    - os: osx
+      osx_image: xcode8.3
+      latex: false
+      sudo: required
+      env: 
+        - LTR_mac=true
+        - R_CODECOV=true
     ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
       env: DEV_mac=true
-      #r:
-      #  - oldrel
-      #  - release
-      #  - devel
 
 warnings_are_errors: false
 
