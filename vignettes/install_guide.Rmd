@@ -169,6 +169,7 @@ Next add the correct repository to `/etc/apt/sources.list`. Here, we use the QGI
 sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 For Ubuntu 14.04, simply replace `xenial` with `trusty`. 
 
@@ -182,10 +183,10 @@ sudo apt-get install qgis python-qgis qgis-plugin-grass
 If this results in keyserver errors, add the qgis.org repository public key to your apt keyring:
 
 ```sh
-wget -O - http://qgis.org/downloads/qgis-2015.gpg.key | gpg --import
+wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import
 # to verify, run:
-# gpg --fingerprint 3FF5FFCAD71472C4
-gpg --export --armor 3FF5FFCAD71472C4 | sudo apt-key add -
+# gpg --fingerprint CAEB3DC3BDF7FB45
+gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install qgis python-qgis qgis-plugin-grass
 ```
