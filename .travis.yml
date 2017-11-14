@@ -82,6 +82,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
 
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated; fi # if you already have gdal 1.11 installed
+  - if [[ "${NIGTHLY_Linux}" ]]; then sudo apt install geos; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga; fi
     
   # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
