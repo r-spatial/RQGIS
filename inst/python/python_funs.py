@@ -61,6 +61,8 @@ class RQGIS:
   # Method to retrieve geoalgorithm arguments
   def get_args_man(self, alg):
     alg = Processing.getAlgorithm(alg)
+    # make sure you don't overwrite default values!
+    alg = alg.getCopy()
     vals = []
     params = []
     output = []
@@ -69,7 +71,6 @@ class RQGIS:
     if alg is None:
       sys.exit('Specified algorithm does not exist!')
       # return 'Specified algorithm does not exist!'
-    alg = alg.getCopy()
     for param in alg.parameters:
       params.append(param.name)
       vals.append(param.getValueAsCommandLineParameter())
@@ -94,6 +95,7 @@ class RQGIS:
   
   def open_help(self, alg):
     alg = Processing.getAlgorithm(alg)
+    alg = alg.getCopy()
     provider = alg.provider.getName().lower()
     # to which group does the algorithm belong (e.g., vector_table_tools)
     groupName = alg.group.lower()
@@ -221,6 +223,8 @@ class RQGIS:
   # function inspired by processing.algoptions  
   def get_options(self, alg):
     alg = Processing.getAlgorithm(alg)
+    # just in case, make sure to not overwrite any default values
+    alg = alg.getCopy()
     # create a dictionary
     d = dict()
     for param in alg.parameters:
@@ -237,8 +241,13 @@ class RQGIS:
   # inspired by runAlgorithm from processing/core/Processing 
   def check_args(self, alg, args):
     alg = Processing.getAlgorithm(alg)
+    # make sure to not overwrite any default values
+    # using param.setValue would do so
+    alg = alg.getCopy()
     i = 0
     d = dict()
+    # alg.parameters does not return output values
+    # alg.outputs would do so (see get_args_man)
     for param in alg.parameters:
       if not param.hidden:
         if not param.setValue(args[i]):

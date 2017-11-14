@@ -29,9 +29,8 @@ check_apps <- function(root, ...) {
       my_qgis <- my_qgis[1]
     }
     apps <- c(file.path(path_apps, my_qgis),
-              file.path(path_apps, my_qgis, "python\\plugins"))
-    apps <- gsub("//|/", "\\\\", apps)
-  } else if (Sys.info()["sysname"] == "Linux") {
+              file.path(path_apps, my_qgis, "python/plugins"))
+  } else if (Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") {
     # paths to check
     apps <- file.path(root, c("bin/qgis", "share/qgis/python/plugins"))
   } else if (Sys.info()["sysname"] == "Darwin") {
@@ -118,46 +117,63 @@ setup_win <- function(qgis_env = set_env()) {
   Sys.setenv(OSGEO4W_ROOT = qgis_env$root)
   # shell("ECHO %OSGEO4W_ROOT%")
   # REM start with clean path
+  # windir <- shell("ECHO %WINDIR%", intern = TRUE)
+  # such error messages occurred:
+  # [1]"'\\\\helix.klient.uib.no\\BioHome\\nboga'" 
+  # Jannes: this was the working directory apparently a server
+  # [2] "CMD.EXE was started with the above path as the current directory."
+  # [3] "UNC paths are not supported. Defaulting to Windows directory."
+  # [4] "C:\\Windows"
+  # Therefore, pick the last element (not sure if this will always work, well,
+  # we will find out). Another solution would be to hard-code "C:/Windows" but
+  # I don't know if system32 can always be found there...
+  # windir <- windir[length(windir)]
+
+  # maybe this is a more generic approach
+  cwd <- getwd()
+  on.exit(setwd(cwd))
+  setwd("C:/")
   windir <- shell("ECHO %WINDIR%", intern = TRUE)
-  Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin", fsep = "\\"), 
-                          file.path(windir, "system32", fsep = "\\"),
+  windir <- normalizePath(windir, "/")
+  
+  Sys.setenv(PATH = paste(file.path(qgis_env$root, "bin"), 
+                          file.path(windir, "system32"),
                           windir,
-                          file.path(windir, "WBem", fsep = "\\"),
+                          file.path(windir, "WBem"),
                           sep = ";"))
   # call all bat-files
   run_ini(qgis_env = qgis_env)
   
   # we need to make sure that qgis-ltr can also be used...
-  my_qgis <- gsub(".*\\\\", "", qgis_env$qgis_prefix_path)
+  my_qgis <- gsub(".*/", "", qgis_env$qgis_prefix_path)
   # add the directories where the QGIS libraries reside to search path 
   # of the dynamic linker
   Sys.setenv(PATH = paste(Sys.getenv("PATH"),
-                          file.path(qgis_env$root, "apps",
-                                    my_qgis, "bin", fsep = "\\"),
+                          file.path(qgis_env$root, "apps", my_qgis, "bin"),
                           sep = ";"))
   # set the PYTHONPATH variable, so that QGIS knows where to search for
   # QGIS libraries and appropriate Python modules
   python_path <- Sys.getenv("PYTHONPATH")
-  python_add <- file.path(qgis_env$root, "apps", my_qgis, "python", 
-                          fsep = "\\")
-  if (!grepl(gsub("\\\\", "\\\\\\\\", python_add), python_path)) {
+  python_add <- file.path(qgis_env$root, "apps", my_qgis, "python")
+  if (!grepl(python_add, python_path)) {
     python_path <- paste(python_path, python_add, sep = ";")    
     Sys.setenv(PYTHONPATH = python_path)
     }
 
   # defining QGIS prefix path (i.e. without bin)
-  Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis,
-                                          fsep = "\\"))
+  Sys.setenv(QGIS_PREFIX_PATH = file.path(qgis_env$root, "apps", my_qgis))
   # shell.exec("python")  # yeah, it works!!!
   # !!!Try to make sure that the right Python version is used!!!
-  use_python(file.path(qgis_env$root, "bin\\python.exe", fsep = "\\"), 
+  use_python(file.path(qgis_env$root, "bin/python.exe"), 
              required = TRUE)
   # We do not need the subsequent test for Linux & Mac since the Python 
   # binary should be always found under  /usr/bin
   
   # compare py_config path with set_env path!!
   a <- py_config()
-  py_path <- gsub("\\\\bin.*", "", normalizePath(a$python))
+  # py_config() adds following paths to PATH:
+  # "C:\\OSGeo4W64\\bin;C:\\OSGeo4W64\\bin\\Scripts;
+  py_path <- gsub("/bin.*", "", normalizePath(a$python, "/"))
   if (!identical(py_path, qgis_env$root)) {
     stop("Wrong Python binary. Restart R and check again!")
   }
@@ -182,10 +198,10 @@ setup_win <- function(qgis_env = set_env()) {
 run_ini <- function(qgis_env = set_env()) {
   files <- dir(file.path(qgis_env$root, "etc/ini"), full.names = TRUE)
   files <- files[-grep("msvcrt|rbatchfiles", files)]
-  root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
+  # root <- gsub("\\\\", "\\\\\\\\", qgis_env$root)
   ls <- lapply(files, function(file) {
     tmp <- read_file(file)
-    tmp <- gsub("%OSGEO4W_ROOT%", root, tmp)
+    tmp <- gsub("%OSGEO4W_ROOT%", qgis_env$root, tmp)
     tmp <- strsplit(tmp, split = "\r\n|\n")[[1]]
     tmp
   })
@@ -194,6 +210,7 @@ run_ini <- function(qgis_env = set_env()) {
   # by %PATH%
   cmds <- gsub(";%([^PATH]).*", "", cmds)
   cmds <- gsub(";%PYTHONPATH%", "", cmds)  # well, not really elegant...
+  cmds <- gsub("\\\\", "/", cmds)
   for (i in cmds) {
     if (grepl("^(SET|set)", i)) {
       tmp <- gsub("^(SET|set) ", "", i)
@@ -428,7 +445,7 @@ save_spatial_objects <- function(params, type_name) {
         write_sf(params[[i]], fname, quiet = TRUE)
       }
       # return the result
-      fname
+      normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
       fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
       suppressWarnings(
@@ -444,8 +461,16 @@ save_spatial_objects <- function(params, type_name) {
                     prj = TRUE, overwrite = TRUE)
       }
       # return the result
-      fname
-    }  else {
+      normalizePath(fname, winslash = "/")
+    } else if (type_name[i] %in% c("vector", "raster", "table") && 
+               file.exists(params[[i]])) {
+      # if the user provided a path to a vector or a raster (and its not an 
+      # output file: we use save_spatial_objects only for non-output files in 
+      # pass_args), then normalize this path in case a Windows user has 
+      # used backslashes which might lead to trouble when sth. like \t \n or
+      # alike appears in the path
+      normalizePath(params[[i]], winslash = "/")
+    } else {
       params[[i]]
     }
   })

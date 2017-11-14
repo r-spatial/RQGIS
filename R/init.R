@@ -19,7 +19,7 @@ NULL
 #     # created one?
 #     # There might be problems when importing later on Python modules...
 #     reset_path(as.list(get("settings", envir = .RQGIS_cache)))
-#   } else if (Sys.info()["sysname"] == "Linux") {
+#   } else if (Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") {
 #     setup_linux(qgis_env = qgis_env)
 #   } else if (Sys.info()["sysname"] == "Darwin") {
 #     setup_mac(qgis_env = qgis_env)

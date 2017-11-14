@@ -68,7 +68,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       # search QGIS on the the C: drive
       cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
       root <- shell(cmd, intern = TRUE)
-
+      
       
       if (length(root) == 0) {
         stop("Sorry, I could not find QGIS on your C: drive.",
@@ -84,9 +84,9 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       }
     }
     # harmonize root syntax
-    root <- normalizePath(root)
+    root <- normalizePath(root, winslash = "/")
     # make sure that the root path does not end with some sort of slash
-    root <- gsub("\\\\$", "", root)
+    root <- gsub("/{1,}$", "", root)
   }
   
   if (Sys.info()["sysname"] == "Darwin") {
@@ -151,12 +151,18 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
         }
       }
       }
-    }
+  }
   
   if (Sys.info()["sysname"] == "Linux") {
     if (is.null(root)) {
       message("Assuming that your root path is '/usr'!")
       root <- "/usr"
+    }
+  }
+  if (Sys.info()["sysname"] == "FreeBSD") {
+    if (is.null(root)) {
+      message("Assuming that your root path is '/usr/local'!")
+      root <- "/usr/local"
     }
   }
   qgis_env <- list(root = root)
@@ -178,7 +184,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
   
   # return your result
   qgis_env
-  }
+}
 
 #' @title Open a QGIS application
 #' @description `open_app` first sets all the correct paths to the QGIS Python 
@@ -228,13 +234,13 @@ open_app <- function(qgis_env = set_env()) {
     # there before, so we should at least add the old PATH to our newly created
     # one
     reset_path(settings)
-  } else if (Sys.info()["sysname"] == "Linux") {
+  } else if (Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") {
     setup_linux(qgis_env = qgis_env)
   } else if (Sys.info()["sysname"] == "Darwin") { 
     setup_mac(qgis_env = qgis_env)
   }
-
-
+  
+  
   # make sure that QGIS is not already running (this would crash R) app =
   # QgsApplication([], True)  # see below 
   # We can only run the test after we have set all the paths. Otherwise
@@ -309,22 +315,37 @@ qgis_session_info <- function(qgis_env = set_env()) {
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
   # retrieve the output
-  out <-
-    py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
+  suppressWarnings(
+    out <-
+      py_run_string("my_session_info = RQGIS.qgis_session_info()")$my_session_info
+  )
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(my_session_info)\nexcept:\  pass")
   
-  if (Sys.info()["sysname"] == "Linux" && (out$grass6 | out$grass7)) {
+  if ((Sys.info()["sysname"] == "Linux" | Sys.info()["sysname"] == "FreeBSD") &&
+      (out$grass6 | out$grass7)) {
     # find out which GRASS version is available
     # inspired by link2GI::searchGRASSX
     # Problem: sometimes the batch command is interrupted or does not finish...
     # my_grass <- searchGRASSX()
-    suppressWarnings(
-      my_grass <- system(paste0("find /usr ! -readable -prune -o -type f ",
-                                "-executable -iname 'grass??' -print"),
-                         intern = TRUE)
-    )
+    
+    # Problem: sometimes the shell command is interrupted, therefore run it
+    # 15 times to make sure to retrieve a result (not the most elegant solution)
+    cmd = paste0("find /usr ! -readable -prune -o -type f ",
+                 "-executable -iname 'grass??' -print")
+    suppressWarnings({
+      my_grass = system(cmd, intern = TRUE, ignore.stderr = TRUE)
+    })
+    iter = 15
+    while (length(my_grass) == 0 && iter > 0) {
+      suppressWarnings({
+        my_grass =
+          try(system(cmd, intern = TRUE, ignore.stderr = TRUE), silent = TRUE)
+      })
+    }
+    
+    
     
     # QGIS developer team took care of this issue, so we can eventually delete
     # it
@@ -343,10 +364,12 @@ qgis_session_info <- function(qgis_env = set_env()) {
                         value = TRUE)
         version <- paste(unlist(stringr::str_extract_all(version, "\\d(\\.)?")), 
                          collapse = "")
-        })
+      })
       my_grass <- unlist(my_grass)
-      out$grass6 <- grep("6", my_grass, value = TRUE) 
-      out$grass7 <- grep("7", my_grass, value = TRUE)
+      grass6 <- grep("6", my_grass, value = TRUE)
+      out$grass6 <- ifelse(length(grass6) == 0, out$grass6, grass6)
+      grass7 <- grep("7", my_grass, value = TRUE)
+      out$grass7 <- ifelse(length(grass7) == 0, out$grass7, grass7)
     }
   }
   
@@ -760,23 +783,20 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # here, we would like to retrieve the type type of the argument (which is list
   # element 4)
   out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
-  params[] <- save_spatial_objects(params = params, 
-                                   type_name = out$type_name)
-  
-  # Find out what the output names are
-  out_names <- out$params[out$output]
-  # clean up after yourself!!
-  py_run_string(
-    "try:\n  del(out_names)\nexcept:\  pass")  
+  # just run through list elements which might be an input file (i.e. which are
+  # certainly not an output file)
+  params[!out$output] <- save_spatial_objects(params = params[!out$output], 
+                                              type_name = out$type_name)
   
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
   # so could sometimes save the output in the temporary QGIS folder)
   # if the user has not specified any output files, nothing happens
-  int <- intersect(names(params), out_names)
-  params[int] <- lapply(params[int], function(x) {
+  params[out$output] <- lapply(params[out$output], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
-      file.path(tempdir(), x)
+      normalizePath(file.path(tempdir(), x), winslash = "/", mustWork = FALSE)
+    } else if (basename(x) != "None") {
+      normalizePath(x, winslash = "/", mustWork = FALSE)
     } else {
       x
     }
@@ -793,8 +813,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
     # existing output might have another CRS.
     ext <- get_grp(params = params[!out$output], 
                    type_name = out$type_name[!out$output])
-  # final bounding box in the QGIS/GRASS notation
-   params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
+    # final bounding box in the QGIS/GRASS notation
+    params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
   }
   # make sure function arguments are in the correct order is not srictly
   # necessary any longer since we use a Python dictionary to pass our arguments.
@@ -803,13 +823,20 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # here has also the advantage that the function tells the user all missing
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)",alg, 
+  
+  check <- py_run_string(sprintf("check = RQGIS.check_args('%s', %s)", alg,
                                  py_unicode(r_to_py(unlist(params)))))$check
-  # stop the function if required arguments were not supplied
+  # stop the function if wrong arguments were supplied, e.g.,
+  # 'grass7:r.slope.aspect":
+  # format must be an integer, so you cannot supply "hallo", the same goes for
+  # the precision and the the GRASS_REGION_PARAMETER
   if (length(check) > 0) {
-    stop(sprintf("Invalid argument value %s for parameter %s\n", 
+    stop(sprintf("Invalid argument value '%s' for parameter '%s'\n",
                  check, names(check)))
   }
+  # # clean up after yourself!!
+  py_run_string(
+    "try:\n  del(out, opts, check)\nexcept:\  pass")  
   # return your result
   params
 }
@@ -890,7 +917,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 
 run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
                      show_output_paths = TRUE, qgis_env = set_env()) {
-
+  
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
   
@@ -917,7 +944,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   
   # construct a parameter-argument list using get_args_man and user input
   params <- pass_args(alg, ..., params = params, qgis_env = qgis_env)  
-
+  
   # build the Python command 
   # r_to_py(params) would also create a dictionary which would be a rather
   # elegant solution. But there are two problems: First, we did not get rid off
@@ -939,7 +966,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   }, character(1))
   # paste the function arguments together
   args <- paste(vals, collapse = ", ")
-
+  
   # convert R parameter-argument list into a Python dictionary
   py_run_string(paste("args = ", r_to_py(args)))
   py_run_string(paste0("params = ", py_unicode(r_to_py(names(params)))))
@@ -966,7 +993,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # clean up after yourself!!
   py_run_string(
     "try:\n  del(res, args, params)\nexcept:\  pass")
-
+  
   # load output
   if (load_output) {
     # just keep the output files
