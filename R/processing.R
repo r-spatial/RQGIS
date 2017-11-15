@@ -719,8 +719,14 @@ pass_args <- function(alg, ..., params = NULL, io_dir = tempdir(),
   }
   
   # collect all the function arguments and respective default values for the
-  # specified geoalgorithm
-  params_all <- get_args_man(alg, options = TRUE)
+  # specified geoalgorithm we need to suppress the message here, otherwise
+  # default values will be printed to the console. Before printing such a
+  # message we have to check if the user has specified some optional parameters
+  # via ... or if he left optional parameters unspecified in a
+  # parameter-argument list(see a bit below)
+  suppressMessages(
+    params_all <- get_args_man(alg, options = TRUE)
+  )
   
   # check if there are too few/many function arguments
   ind <- setdiff(names(params), names(params_all))
@@ -743,6 +749,20 @@ pass_args <- function(alg, ..., params = NULL, io_dir = tempdir(),
     params <- params_2
     rm(params_2)
   }
+  
+  # print a message if default values have been automatically chosen. This will
+  # happen if the user has specified not all arguments via ... or if he used a
+  # parameter-argument list without indicating an optional parameter.
+  args <- py_run_string(
+    sprintf("algorithm_params = RQGIS.get_args_man('%s')",
+            alg))$algorithm_params
+  ind_2 = args$params[args$opts] %in% ind
+  if (any(ind_2)) {
+    msg = paste(paste0( args$params[args$opts][ind_2], ": 0"), collapse = "\n")
+    message("Choosing default values for following parameters:\n", msg, "\n",
+            "See get_options('", alg, "') for all available options.")
+  }
+  
   
   # retrieve the options for a specific parameter
   opts <- py_run_string(sprintf("opts = RQGIS.get_options('%s')", alg))$opts
