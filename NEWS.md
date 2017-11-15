@@ -3,6 +3,7 @@
 ## Bugs
   * Linux: `qgis_session_info()` now tries several times to find out about the installed GRASS version (`find` frequently fails at the first attempt when used witin a function), and additionally suppresses a confusing warning message regarding access rights (permission denied when trying to access points.shp, however the points are accessed regardless because these are used to test if GRASS can be accessed which is the case).
   * LTR change from 2.14 to 2.18
+  * `get_args_man()` now prints out which default options were chosen.
 
 # RQGIS 1.0.2
 
