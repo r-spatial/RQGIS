@@ -25,7 +25,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   alg <- "qgis:polygoncentroids"
   # finally, let QGIS do the work!!
   vec_1 <- run_qgis(alg, INPUT_LAYER = polys, 
-                    OUTPUT_LAYER = file.path(tempdir(), "coords.shp"),
+                    OUTPUT_LAYER = "coords.shp",
                     show_output_paths = FALSE,
                     # let's load the QGIS output directly into R!
                     load_output = TRUE)
@@ -110,7 +110,3 @@ test_that("Test, if GRASS7-algorithms are working?", {
   # check if the output is a raster
   expect_is(grass_out_2, "RasterLayer")
   })
-
-
-
-
