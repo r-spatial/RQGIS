@@ -623,18 +623,20 @@ get_args_man <- function(alg = "", options = TRUE,
 }
 
 #' @title Specifying QGIS geoalgorithm parameters the R way
-#' @description The function lets the user specify QGIS geoalgorithm parameters 
+#' @description The function lets the user specify QGIS geoalgorithm parameters
 #'   as R named arguments or a a parameter-argument list. When omitting required
-#'   parameters, defaults will be used if available as derived from 
-#'   [get_args_man()]. Additionally, the function checks thoroughly the 
+#'   parameters, defaults will be used if available as derived from
+#'   [get_args_man()]. Additionally, the function checks thoroughly the
 #'   user-provided parameters and arguments.
 #' @param alg The name of the geoalgorithm to use.
-#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as 
+#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as
 #'   R named arguments.
-#' @param params Parameter-argument list for a specific geoalgorithm, see 
-#'   [get_args_man()] for more details. Please note that you can either specify 
-#'   R arguments directly via the triple dots (see above) or via the 
+#' @param params Parameter-argument list for a specific geoalgorithm, see
+#'   [get_args_man()] for more details. Please note that you can either specify
+#'   R arguments directly via the triple dots (see above) or via the
 #'   parameter-argument list. However, you may not mix the two methods.
+#' @param io_dir Output directory for spatial objects to be saved and for input
+#'   and output files in case only a basename was specified (see below).
 #' @param qgis_env Environment containing all the paths to run the QGIS API. For
 #'   more information, refer to [set_env()].
 #' @return The function returns the complete parameter-argument list for a given
@@ -653,31 +655,31 @@ get_args_man <- function(alg = "", options = TRUE,
 #'   [get_args_man()].
 #'   \item If an argument value corresponds to a spatial object residing in R 
 #'   (`sp`-, `sf`- or `raster`-objects are supported), the function will save 
-#'   the spatial object to a temporary folder, and use the corresponding file 
-#'   path to replace the spatial object in the parameter-argument list. If the 
-#'   QGIS geoalgorithm parameter belongs to the 
-#'   `ParameterMultipleInput`-instance class (see for example 
-#'   `get_usage(grass7:v.patch)`) you may either use a character-string 
+#'   the spatial object to the folder specified in function parameter `io_dir` 
+#'   (default: `tempdir()`), and use the corresponding file path to replace the 
+#'   spatial object in the parameter-argument list. If the QGIS geoalgorithm
+#'   parameter belongs to the `ParameterMultipleInput`-instance class (see for 
+#'   example `get_usage(grass7:v.patch)`) you may either use a character-string 
 #'   containing the paths to the spatial objects separated by a semi-colon 
 #'   (e.g., "shape1.shp;shape2.shp;shape3.shp" - see also [QGIS 
 #'   documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html))
 #'   or provide a [base::list()] containing the spatial objects.
-#'   \item If the user only specified the name of an output file (e.g.
+#'   \item If the user only specified the name of an output file (e.g.,
 #'   "slope.asc") and not a complete path, the function will save the output in
-#'   the temporary folder, i.e. to `file.path(tempdir(), "slope.asc")`.
+#'   the folder specified in parameter `io_dir` (default: `tempdir()`).
 #'   \item If a parameter accepts as arguments values from a selection, the
 #'   function replaces verbal input by the corresponding number (required by the
 #'   QGIS Python API). Please refer to the example section for more details, and
 #'   to [get_options()] for valid options for a given geoalgorithm.
 #'  \item If `GRASS_REGION_PARAMETER` is "None" (the QGIS default), `run_qgis` 
-#'  will automatically determine the region extent based on the user-specified 
-#'  input layers. If you do want to specify the `GRASS_REGION_PARAMETER` 
-#'  yourself, please do it in accordance with the [QGIS 
-#'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
-#'  i.e., use a character string and separate the coordinates with a comma: 
-#'  "xmin, xmax, ymin, ymax".
+#'   will automatically determine the region extent based on the user-specified 
+#'   input layers. If you do want to specify the `GRASS_REGION_PARAMETER` 
+#'   yourself, please do it in accordance with the [QGIS 
+#'   documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
+#'   i.e., use a character string and separate the coordinates with a comma: 
+#'   "xmin, xmax, ymin, ymax".
 #'   }
-#' @note The function was inspired by [rgrass7::doGRASS()].
+#' @note This function was inspired by [rgrass7::doGRASS()].
 #' @author Jannes Muenchow
 #' @export
 #' @importFrom sp SpatialPointsDataFrame SpatialPolygonsDataFrame
@@ -700,7 +702,7 @@ get_args_man <- function(alg = "", options = TRUE,
 #' pass_args(alg, elevation = dem, format = "degrees")
 #' }
 
-pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
+pass_args <- function(alg, ..., params = NULL, io_dir = tempdir(),
                       qgis_env = set_env()) {
   dots <- list(...)
   if (!is.null(params) && (length(dots) > 0))
@@ -791,7 +793,7 @@ pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
   # certainly not an output file)
   params[!out$output] <- save_spatial_objects(params = params[!out$output], 
                                               type_name = out$type_name,
-                                              out_dir = out_dir)
+                                              io_dir = io_dir)
   
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
@@ -799,7 +801,7 @@ pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
   # if the user has not specified any output files, nothing happens
   params[out$output] <- lapply(params[out$output], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
-      normalizePath(file.path(out_dir, x), winslash = "/", mustWork = FALSE)
+      normalizePath(file.path(io_dir, x), winslash = "/", mustWork = FALSE)
     } else if (basename(x) != "None") {
       normalizePath(x, winslash = "/", mustWork = FALSE)
     } else {
@@ -846,56 +848,60 @@ pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
   params
 }
 
-#'@title Interface to QGIS commands
-#'@description `run_qgis` calls QGIS algorithms from within R while passing the 
-#'  corresponding function arguments.
-#'@param alg Name of the GIS function to be used (see [find_algorithms()]).
-#'@param ... Triple dots can be used to specify QGIS geoalgorithm arguments as R
-#'  named arguments. For more details, please refer to [pass_args()].
-#'@param params Parameter-argument list for a specific geoalgorithm. Please note
-#'  that you can either specify R named arguments directly via the triple dots 
-#'  (see above) or via a parameter-argument list. However, you may not mix the 
-#'  two methods. See the example section, [pass_args()] and [get_args_man()] for
-#'  more details.
-#'@param load_output If `TRUE`, all QGIS output files ([sf::sf()]-object in the 
-#'  case of vector data and [raster::raster()]-object in the case of a raster) 
-#'  specified by the user (i.e. the user has to indicate output files) will be 
-#'  loaded into R. A list will be returned if there is more than one output file
-#'  (e.g., `grass7:r.slope.aspect`). See the example section for more details.
-#'@param show_output_paths Logical. QGIS computes all possible output files for
-#'  a given geoalgorithm, and saves them to a temporary location in case the
-#'  user has not specified explicitly another output location. Setting
-#'  `show_output` to `TRUE` (the default) will print all output paths to the
-#'  console after the successful geoprocessing.
-#'@param qgis_env Environment containing all the paths to run the QGIS API. For 
-#'  more information, refer to [set_env()].
-#'@details This workhorse function calls the QGIS Python API, and specifically 
-#'  `processing.runalg`.
-#'@return The function prints a list (named according to the output parameters) 
-#'  containing the paths to the files created by QGIS. If not otherwise 
-#'  specified, the function saves the QGIS generated output files to a temporary
-#'  folder (created by QGIS). Optionally, function parameter `load_output` loads
-#'  spatial QGIS output (vector and raster data) into R.
-#'@note Please note that one can also pass spatial R objects as input parameters
-#'  where suitable (e.g., input layer, input raster). Supported formats are 
-#'  [sp::SpatialPointsDataFrame()]-, [sp::SpatialLinesDataFrame()]-, 
-#'  [sp::SpatialPolygonsDataFrame()]-, [sf::sf()]- (of class `sf`, `sfc` as well
-#'  as `sfg`), and [raster::raster()]-objects. See the example section for more 
-#'  details.
+#' @title Interface to QGIS commands
+#' @description `run_qgis` calls QGIS algorithms from within R while passing the
+#'   corresponding function arguments.
+#' @param alg Name of the GIS function to be used (see [find_algorithms()]).
+#' @param ... Triple dots can be used to specify QGIS geoalgorithm arguments as
+#'   R named arguments. For more details, please refer to [pass_args()].
+#' @param params Parameter-argument list for a specific geoalgorithm. Please
+#'   note that you can either specify R named arguments directly via the triple
+#'   dots (see above) or via a parameter-argument list. However, you may not mix
+#'   the two methods. See the example section, [pass_args()] and
+#'   [get_args_man()] for more details.
+#' @param load_output If `TRUE`, all QGIS output files ([sf::sf()]-object in the
+#'   case of vector data and [raster::raster()]-object in the case of a raster)
+#'   specified by the user (i.e. the user has to indicate output files) will be
+#'   loaded into R. A list will be returned if there is more than one output
+#'   file (e.g., `grass7:r.slope.aspect`). See the example section for more
+#'   details.
+#' @param show_output_paths Logical. QGIS computes all possible output files for
+#'   a given geoalgorithm, and saves them to a temporary location in case the
+#'   user has not specified explicitly another output location. Setting
+#'   `show_output` to `TRUE` (the default) will print all output paths to the
+#'   console after the successful geoprocessing.
+#' @param io_dir Output directory for spatial objects to be saved and for input
+#'   and output files in case only a basename was specified (see [pass_args()]
+#'   for more details).
+#' @param qgis_env Environment containing all the paths to run the QGIS API. For
+#'   more information, refer to [set_env()].
+#' @details This workhorse function calls the QGIS Python API, and specifically
+#'   `processing.runalg`.
+#' @return The function prints a list (named according to the output parameters)
+#'   containing the paths to the files created by QGIS. If not otherwise
+#'   specified, the function saves the QGIS generated output files to a
+#'   temporary folder (created by QGIS). Optionally, function parameter
+#'   `load_output` loads spatial QGIS output (vector and raster data) into R.
+#' @note Please note that one can also pass spatial R objects as input
+#'   parameters where suitable (e.g., input layer, input raster). Supported
+#'   formats are [sp::SpatialPointsDataFrame()]-,
+#'   [sp::SpatialLinesDataFrame()]-, [sp::SpatialPolygonsDataFrame()]-,
+#'   [sf::sf()]- (of class `sf`, `sfc` as well as `sfg`), and
+#'   [raster::raster()]-objects. See the example section for more details.
 #'  
-#'  GRASS users do not have to specify manually the GRASS region extent 
-#'  (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default), 
+#'  GRASS users do not have to specify manually the GRASS region extent
+#'  (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),
 #'  `run_qgis` (see [pass_args()] for more details) will automatically determine
-#'  the region extent based on the user-specified input layers. If you do want 
-#'  to specify it yourself, please do it in accordance with the [QGIS 
+#'  the region extent based on the user-specified input layers. If you do want
+#'  to specify it yourself, please do it in accordance with the [QGIS
 #'  documentation](https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html),
-#'   i.e. use a character string and separate the coordinates with a comma: 
+#'  i.e., use a character string and separate the coordinates with a comma:
 #'  "xmin, xmax, ymin, ymax".
 #'  
-#'@author Jannes Muenchow, Victor Olaya, QGIS core team
-#'@export
-#'@importFrom sf read_sf
-#'@importFrom raster raster
+#' @author Jannes Muenchow, Victor Olaya, QGIS core team
+#' @export
+#' @importFrom sf read_sf
+#' @importFrom raster raster
 #' @examples
 #' \dontrun{
 #' # calculate the slope of a DEM
@@ -907,13 +913,13 @@ pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
 #' alg <- "grass7:r.slope.aspect"
 #' get_usage(alg)
 #' # 1. run QGIS using R named arguments, and load the QGIS output back into R
-#' slope <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
+#' slope <- run_qgis(alg, elevation = dem, slope = "slope.asc",
 #'                   load_output = TRUE)
 #' # 2. doing the same with a parameter-argument list
 #' params <- list(elevation = dem, slope = "slope.asc")
 #' slope <- run_qgis(alg, params = params, load_output = TRUE)
-#' # 3. calculate the slope, the aspect and the pcurvature. 
-#' terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc", 
+#' # 3. calculate the slope, the aspect and the pcurvature.
+#' terrain <- run_qgis(alg, elevation = dem, slope = "slope.asc",
 #'                     aspect = "aspect.asc", pcurvature = "pcurv.asc",
 #'                     load_output = TRUE)
 #' # the three output rasters are returned in a list of length 3
@@ -921,7 +927,7 @@ pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
 #'}
 
 run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
-                     show_output_paths = TRUE, out_dir = tempdir(),
+                     show_output_paths = TRUE, io_dir = tempdir(),
                      qgis_env = set_env()) {
   
   # check if the QGIS application has already been started
@@ -949,7 +955,7 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   
   
   # construct a parameter-argument list using get_args_man and user input
-  params <- pass_args(alg, ..., params = params, out_dir = out_dir, 
+  params <- pass_args(alg, ..., params = params, io_dir = io_dir, 
                       qgis_env = qgis_env)  
   
   # build the Python command 

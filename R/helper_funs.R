@@ -379,7 +379,7 @@ setup_mac <- function(qgis_env = set_env()) {
 }
 
 #' @title Save spatial objects
-#' @description The function saves spatial objects (`sp`, `sf` and `raster`) to 
+#' @description The function saves spatial objects (`sp`, `sf` and `raster`) to
 #'   a temporary folder on the computer's hard drive.
 #' @param params A parameter-argument list as returned by [pass_args()].
 #' @param type_name A character string containing the QGIS parameter type for
@@ -387,8 +387,10 @@ setup_mac <- function(qgis_env = set_env()) {
 #'   The Python method `RQGIS.get_args_man` returns a Python dictionary with one
 #'   of its elements corresponding to the type_name (see also the example
 #'   section).
+#' @param io_dir Output directory for spatial objects to be saved and (see
+#'   [pass_args()] for more details).
 #' @keywords internal
-#' @examples 
+#' @examples
 #' \dontrun{
 #' library("RQGIS")
 #' library("raster")
@@ -404,11 +406,11 @@ setup_mac <- function(qgis_env = set_env()) {
 #' out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
 #' params <- get_args_man(alg)
 #' params$input <- list(r1, r2, r3)
-#' params[] <- save_spatial_objects(params = params, 
+#' params[] <- save_spatial_objects(params = params,
 #'                                  type_name = out$type_name)
 #' }
 #' @author Jannes Muenchow
-save_spatial_objects <- function(params, type_name, out_dir = tempdir()) {
+save_spatial_objects <- function(params, type_name, io_dir = tempdir()) {
 
   lapply(seq_along(params), function(i) {
     tmp <- class(params[[i]])
@@ -429,9 +431,9 @@ save_spatial_objects <- function(params, type_name, out_dir = tempdir()) {
       # sf-object, nothing happens
       params[[i]] <- st_as_sf(params[[i]])
       # write sf as a shapefile to a temporary location while overwriting any
-      # previous versions, I don't know why but sometimes the overwriting does 
-      # not work...
-      fname <- file.path(out_dir, paste0(names(params)[i], ".shp"))
+      # previous versions.
+      # This is a Windows-only problem (see also github-branch unlock)
+      fname <- file.path(io_dir, paste0(names(params)[i], ".shp"))
       cap <- capture.output({
         suppressWarnings(
           test <- 
@@ -439,7 +441,7 @@ save_spatial_objects <- function(params, type_name, out_dir = tempdir()) {
         )
       })
       if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(out_dir))) {
+        while (tolower(basename(fname)) %in% tolower(dir(io_dir))) {
           fname <- paste0(gsub(".shp", "", fname), 1, ".shp")  
         }
         write_sf(params[[i]], fname, quiet = TRUE)
@@ -447,14 +449,14 @@ save_spatial_objects <- function(params, type_name, out_dir = tempdir()) {
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
-      fname <- file.path(out_dir, paste0(names(params)[[i]], ".tif"))
+      fname <- file.path(io_dir, paste0(names(params)[[i]], ".tif"))
       suppressWarnings(
         test <- 
           try(writeRaster(params[[i]], filename = fname, format = "GTiff", 
                           prj = TRUE, overwrite = TRUE), silent = TRUE)
       )
       if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(out_dir))) {
+        while (tolower(basename(fname)) %in% tolower(dir(io_dir))) {
           fname <- paste0(gsub(".tif", "", fname), 1, ".tif")  
         }
         writeRaster(params[[i]], filename = fname, format = "GTiff", 
