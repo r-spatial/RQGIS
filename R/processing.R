@@ -700,7 +700,8 @@ get_args_man <- function(alg = "", options = TRUE,
 #' pass_args(alg, elevation = dem, format = "degrees")
 #' }
 
-pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
+pass_args <- function(alg, ..., params = NULL, out_dir = tempdir(),
+                      qgis_env = set_env()) {
   dots <- list(...)
   if (!is.null(params) && (length(dots) > 0))
     stop(paste("Use either QGIS parameters as R arguments,",
@@ -789,7 +790,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # just run through list elements which might be an input file (i.e. which are
   # certainly not an output file)
   params[!out$output] <- save_spatial_objects(params = params[!out$output], 
-                                              type_name = out$type_name)
+                                              type_name = out$type_name,
+                                              out_dir = out_dir)
   
   # if the user has only specified an output filename without a directory path,
   # make sure that the output will be saved to the temporary R folder (not doing
@@ -797,7 +799,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   # if the user has not specified any output files, nothing happens
   params[out$output] <- lapply(params[out$output], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
-      normalizePath(file.path(tempdir(), x), winslash = "/", mustWork = FALSE)
+      normalizePath(file.path(out_dir, x), winslash = "/", mustWork = FALSE)
     } else if (basename(x) != "None") {
       normalizePath(x, winslash = "/", mustWork = FALSE)
     } else {
@@ -919,7 +921,8 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'}
 
 run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
-                     show_output_paths = TRUE, qgis_env = set_env()) {
+                     show_output_paths = TRUE, out_dir = tempdir(),
+                     qgis_env = set_env()) {
   
   # check if the QGIS application has already been started
   tmp <- try(expr =  open_app(qgis_env = qgis_env), silent = TRUE)
@@ -946,7 +949,8 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   
   
   # construct a parameter-argument list using get_args_man and user input
-  params <- pass_args(alg, ..., params = params, qgis_env = qgis_env)  
+  params <- pass_args(alg, ..., params = params, out_dir = out_dir, 
+                      qgis_env = qgis_env)  
   
   # build the Python command 
   # r_to_py(params) would also create a dictionary which would be a rather

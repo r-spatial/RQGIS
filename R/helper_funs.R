@@ -408,7 +408,7 @@ setup_mac <- function(qgis_env = set_env()) {
 #'                                  type_name = out$type_name)
 #' }
 #' @author Jannes Muenchow
-save_spatial_objects <- function(params, type_name) {
+save_spatial_objects <- function(params, type_name, out_dir = tempdir()) {
 
   lapply(seq_along(params), function(i) {
     tmp <- class(params[[i]])
@@ -431,7 +431,7 @@ save_spatial_objects <- function(params, type_name) {
       # write sf as a shapefile to a temporary location while overwriting any
       # previous versions, I don't know why but sometimes the overwriting does 
       # not work...
-      fname <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
+      fname <- file.path(out_dir, paste0(names(params)[i], ".shp"))
       cap <- capture.output({
         suppressWarnings(
           test <- 
@@ -439,7 +439,7 @@ save_spatial_objects <- function(params, type_name) {
         )
       })
       if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+        while (tolower(basename(fname)) %in% tolower(dir(out_dir))) {
           fname <- paste0(gsub(".shp", "", fname), 1, ".shp")  
         }
         write_sf(params[[i]], fname, quiet = TRUE)
@@ -447,14 +447,14 @@ save_spatial_objects <- function(params, type_name) {
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
-      fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
+      fname <- file.path(out_dir, paste0(names(params)[[i]], ".tif"))
       suppressWarnings(
         test <- 
           try(writeRaster(params[[i]], filename = fname, format = "GTiff", 
                           prj = TRUE, overwrite = TRUE), silent = TRUE)
       )
       if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+        while (tolower(basename(fname)) %in% tolower(dir(out_dir))) {
           fname <- paste0(gsub(".tif", "", fname), 1, ".tif")  
         }
         writeRaster(params[[i]], filename = fname, format = "GTiff", 
