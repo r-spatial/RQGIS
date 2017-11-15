@@ -609,6 +609,9 @@ get_args_man <- function(alg = "", options = TRUE,
   # options to choose from
   if (options) {
     args$vals[args$opts] <- "0"
+    msg = paste(paste0(args$params[args$opts], ": 0"), collapse = "\n")
+    message("Choosing default values for following parameters:\n", msg, "\n",
+            "See get_options('", alg, "') for all available options.")
   }
   # clean up after yourself!!
   py_run_string(
