@@ -607,7 +607,7 @@ get_args_man <- function(alg = "", options = TRUE,
   
   # If desired, select the first option if a function argument has several
   # options to choose from
-  if (options) {
+  if (options && length(args$vals[args$opts]) > 0) {
     args$vals[args$opts] <- "0"
     msg = paste(paste0(args$params[args$opts], ": 0"), collapse = "\n")
     message("Choosing default values for following parameters:\n", msg, "\n",
