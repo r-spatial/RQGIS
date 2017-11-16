@@ -4,8 +4,8 @@
   * Linux: `qgis_session_info()` now tries several times to find out about the installed GRASS version (`find` frequently fails at the first attempt when used witin a function), and additionally suppresses a confusing warning message regarding access rights (permission denied when trying to access points.shp, however these points are accessed regardless of this message since they are used to test if GRASS can be accessed which is the case).
 
 ## Features
-  * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen.
-  * New function parameter `io_dir` for `run_qgis()`, `pass_args()` and `save_spatial_objects()`. `io_dir` lets the user specify where to save spatial objects residing in R. Additionally, this is also the folder where to look for files if the user only specified a basename for input and/or output files.
+  * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
+  * New function parameter `io_dir` for `run_qgis()`, `pass_args()` and `save_spatial_objects()`. `io_dir` lets the user specify where to save spatial objects residing in R. Additionally, this is also the folder where to look for files if the user only specified a basename for input and/or output files (suggested by @rkrug).
 
 
 # RQGIS 1.0.2
