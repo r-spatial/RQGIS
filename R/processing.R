@@ -973,6 +973,12 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
                "Please use 'grass7:v.extract' instead."))
   }
   
+  # necessary to set the wd to io_dir in case the user has only specified a
+  # basename for an input file, e.g. "dem.tif". Not setting the directory would
+  # cause R to look for the file in the current directory (not what we want)
+  cwd = getwd()
+  setwd(io_dir)
+  on.exit(setwd(cwd))
   
   # construct a parameter-argument list using get_args_man and user input
   params <- pass_args(alg, ..., params = params, io_dir = io_dir, 
