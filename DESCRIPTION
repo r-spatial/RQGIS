@@ -42,4 +42,5 @@ Suggests:
     rgrass7,
     rmarkdown,
     testthat
+    RSAGA
 VignetteBuilder: knitr
