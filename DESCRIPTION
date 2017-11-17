@@ -41,6 +41,6 @@ Suggests:
     knitr,
     rgrass7,
     rmarkdown,
-    testthat
+    testthat,
     RSAGA
 VignetteBuilder: knitr
