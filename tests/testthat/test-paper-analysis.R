@@ -28,8 +28,6 @@ test_that("get_usage finds grass7:r.slope.aspect", {
   expect_match(use, "ALGORITHM: r.slope.aspect")
 })
 
-
-
 test_that(paste("Test that all terrain attributes can be derived and that", 
                 "the model can be fitted"), {
   params <- get_args_man(alg = "grass7:r.slope.aspect")
@@ -50,17 +48,17 @@ test_that(paste("Test that all terrain attributes can be derived and that",
   run_qgis("saga:sinkremoval",
            DEM = dem, 
            METHOD = "[1] Fill Sinks", 
-           DEM_PREPROC = "sdem.sdat",
+           DEM_PREPROC = "sdem.tif",
            show_output_paths = FALSE)  
   expect(exp = TRUE, file.exists(file.path(tempdir(), "sdem.sdat")))
   
   # Compute wetness index
   run_qgis("saga:sagawetnessindex",
-           DEM = "sdem.sdat",
-           SLOPE_TYPE = 1, 
-           SLOPE = "cslope.sdat",
+           DEM = "sdem.tif",
            AREA = "carea.sdat",
-           show_output_paths = FALSE)
+           SLOPE = "cslope.sdat",
+           SLOPE_TYPE = 1, 
+           show_output_paths = TRUE)
   expect(exp = TRUE, file.exists(file.path(tempdir(), "cslope.sdat")))
   expect(exp = TRUE, file.exists(file.path(tempdir(), "carea.sdat")))
   
