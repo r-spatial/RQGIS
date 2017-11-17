@@ -48,19 +48,19 @@ test_that(paste("Test that all terrain attributes can be derived and that",
   run_qgis("saga:sinkremoval",
            DEM = dem, 
            METHOD = "[1] Fill Sinks", 
-           DEM_PREPROC = "sdem.tif",
+           DEM_PREPROC = "sdem.sdat",
            show_output_paths = FALSE)  
-  expect(exp = TRUE, file.exists(file.path(tempdir(), "sdem.sdat")))
+  expect_true(file.exists(file.path(tempdir(), "sdem.sdat")))
   
   # Compute wetness index
   run_qgis("saga:sagawetnessindex",
-           DEM = "sdem.tif",
+           DEM = "sdem.sdat",
            AREA = "carea.sdat",
            SLOPE = "cslope.sdat",
            SLOPE_TYPE = 1, 
            show_output_paths = TRUE)
-  expect(exp = TRUE, file.exists(file.path(tempdir(), "cslope.sdat")))
-  expect(exp = TRUE, file.exists(file.path(tempdir(), "carea.sdat")))
+  expect_true(file.exists(file.path(tempdir(), "cslope.sdat")))
+  expect_true(file.exists(file.path(tempdir(), "carea.sdat")))
   
   # transform
   cslope <- raster(file.path(tempdir(), "cslope.sdat"))
@@ -124,7 +124,3 @@ test_that("Test that we can call the PYQGIS API directly", {
     substring(., 1, 40)
   expect_match(alghelp, "ALGORITHM: Random points inside polygons")
   })
-
-
-
-
