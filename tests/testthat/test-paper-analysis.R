@@ -13,15 +13,11 @@ test_that("qgis_session_info yields a list as output", {
   expect_length(info, 8)
 })
 
-## ------------------------------------------------------------------------
 test_that("find_algorithms finds curvature algorithms", {
   algs <- find_algorithms(search_term = "curvature", 
                          name_only = TRUE)
   expect_gt(length(algs), 1)
 })
-
-## ----open_help, eval = FALSE---------------------------------------------
-## open_help(alg = "grass7:r.slope.aspect")
 
 test_that("get_usage finds grass7:r.slope.aspect", {
   use <- get_usage(alg = "grass7:r.slope.aspect", intern = TRUE)
@@ -34,8 +30,8 @@ test_that(paste("Test that all terrain attributes can be derived and that",
   expect_length(params, 17)
   # Calculate curvatures
   params$elevation <- dem
-  params$pcurvature <- "pcurv.tif"
-  params$tcurvature <- "tcurv.tif"
+  params$pcurvature <- file.path(tempdir(), "pcurv.tif")
+  params$tcurvature <- file.path(tempdir(), "tcurv.tif")
   out <- run_qgis(alg = "grass7:r.slope.aspect",
                   params = params,
                   load_output = TRUE,
@@ -48,15 +44,15 @@ test_that(paste("Test that all terrain attributes can be derived and that",
   run_qgis("saga:sinkremoval",
            DEM = dem, 
            METHOD = "[1] Fill Sinks", 
-           DEM_PREPROC = "sdem.sdat",
+           DEM_PREPROC = file.path(tempdir(), "sdem.sdat"),
            show_output_paths = FALSE)  
   expect_true(file.exists(file.path(tempdir(), "sdem.sdat")))
   
   # Compute wetness index
   run_qgis("saga:sagawetnessindex",
-           DEM = "sdem.sdat",
-           AREA = "carea.sdat",
-           SLOPE = "cslope.sdat",
+           DEM = file.path(tempdir(), "sdem.sdat"),
+           AREA = file.path(tempdir(), "carea.sdat"),
+           SLOPE = file.path(tempdir(), "cslope.sdat"),
            SLOPE_TYPE = 1, 
            show_output_paths = TRUE)
   expect_true(file.exists(file.path(tempdir(), "cslope.sdat")))
