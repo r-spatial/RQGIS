@@ -54,7 +54,7 @@ test_that(paste("Test that all terrain attributes can be derived and that",
            AREA = file.path(tempdir(), "carea.sdat"),
            SLOPE = file.path(tempdir(), "cslope.sdat"),
            SLOPE_TYPE = 1, 
-           show_output_paths = TRUE)
+           show_output_paths = FALSE)
   expect_true(file.exists(file.path(tempdir(), "cslope.sdat")))
   expect_true(file.exists(file.path(tempdir(), "carea.sdat")))
   
@@ -87,7 +87,8 @@ test_that(paste("Test that all terrain attributes can be derived and that",
   vals <- RSAGA::pick.from.ascii.grids(data = as.data.frame(random_points),
                                        X.name = "x", 
                                        Y.name = "y", 
-                                       file = file.path(tempdir(), raster_names),
+                                       file = file.path(tempdir(),
+                                                        raster_names),
                                        varname = raster_names)
   expect_false(any(!raster_names %in% names(vals)))
   
@@ -105,7 +106,6 @@ test_that(paste("Test that all terrain attributes can be derived and that",
                   type = "response")
   expect_is(pred, "RasterLayer")
   })
-
 
 test_that("Test that we can call the PYQGIS API directly", {
   met <- py_run_string("methods = dir(RQGIS)")$methods
