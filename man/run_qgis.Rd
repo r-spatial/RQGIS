@@ -5,7 +5,7 @@
 \title{Interface to QGIS commands}
 \usage{
 run_qgis(alg = NULL, ..., params = NULL, load_output = FALSE,
-  show_output_paths = TRUE, io_dir = tempdir(), qgis_env = set_env())
+  show_output_paths = TRUE, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{Name of the GIS function to be used (see \code{\link[=find_algorithms]{find_algorithms()}}).}
@@ -31,10 +31,6 @@ a given geoalgorithm, and saves them to a temporary location in case the
 user has not specified explicitly another output location. Setting
 \code{show_output} to \code{TRUE} (the default) will print all output paths to the
 console after the successful geoprocessing.}
-
-\item{io_dir}{Output directory for spatial objects to be saved and for input
-and output files in case only a basename was specified (see \code{\link[=pass_args]{pass_args()}}
-for more details).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}

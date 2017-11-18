@@ -4,7 +4,7 @@
 \alias{save_spatial_objects}
 \title{Save spatial objects}
 \usage{
-save_spatial_objects(params, type_name, io_dir = tempdir())
+save_spatial_objects(params, type_name)
 }
 \arguments{
 \item{params}{A parameter-argument list as returned by \code{\link[=pass_args]{pass_args()}}.}
@@ -14,9 +14,6 @@ each parameter (boolean, multipleinput, extent, number, etc.) of \code{params}.
 The Python method \code{RQGIS.get_args_man} returns a Python dictionary with one
 of its elements corresponding to the type_name (see also the example
 section).}
-
-\item{io_dir}{Output directory for spatial objects to be saved and (see
-\code{\link[=pass_args]{pass_args()}} for more details).}
 }
 \description{
 The function saves spatial objects (\code{sp}, \code{sf} and \code{raster}) to
