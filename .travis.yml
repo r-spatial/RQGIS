@@ -28,25 +28,25 @@ matrix:
       env: LTR_Linux=true
       
     # build QGIS NIGHTLY on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
-      env: NIGHTLY_Linux=true
+    #- os: linux
+    #  dist: trusty
+    #  sudo: required
+    #  latex: false
+    #  jdk: oraclejdk9
+    #  env: NIGHTLY_Linux=true
       
     ### build QGIS LTR on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
-      env: LTR_mac=true
+      env: OLD_LTR_mac=true
     ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode8.3
       latex: false
       sudo: required
-      env: DEV_mac=true
+      env: LTR_mac=true
 
 warnings_are_errors: false
 
@@ -114,8 +114,8 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
 
   # install qgis
-  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
-  - if [[ "${DEV_mac}" ]]; then brew install grass7 && brew install qgis2; fi
+  - if [[ "${OLD_LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
+  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   
