@@ -1,7 +1,7 @@
 ## Known (R)QGIS problems
 
 - `grass7:r.viewshed` does not work under Linux (under Windows it does...)
-```{r}
+```{r, eval = FALSE}
 data("dem")
 data("random_points")
 
@@ -20,7 +20,7 @@ out <- run_qgis(alg, input = dem, coordinates = "796361,8934049",
 
 - `grass7:r.watershed`: The algorithm is executed sucessfully but no output is produced though QGIS tells otherwise (issue #81).
 
-```{r}
+```{r, eval = FALSE}
 library("RQGIS")
 data("dem")
 run_qgis("grass7:r.watershed", drainage = "drain.tif", elevation = dem, 
@@ -29,7 +29,7 @@ run_qgis("grass7:r.watershed", drainage = "drain.tif", elevation = dem,
 
 - `qgis:intersection` produces under Linux the same result when running twice with different input layers. Under Windows it works (issue #74).
 
-```{r}
+```{r, eval = FALSE}
 library(sp)
 crds <- cbind(x=c(0, 0, 400, 400, 0), y=c(0, 400, 400, 0, 0))
 Pl <- Polygon(crds)
@@ -68,4 +68,14 @@ test2 <- RQGIS::run_qgis("qgis:intersection", INPUT = SPDF1, INPUT2 = SPDF3,
                          load_output = TRUE)
 plot(test2, add = TRUE, col = "blue")
 identical(test1, test2)
+```
+
+- `saga:gridbuffer`: Following example works under Windows with QGIS 2.14 and SAGA 2.1.2 but not with QGIS 2.18 and SAGA 2.3.2
+
+```{r, eval = FALSE}
+set_env(dev = FALSE)
+data(dem)
+run_qgis(alg = "saga:gridbuffer", FEATURES = dem, 
+         BUFFERTYPE = "1", 
+         DIST = "1")
 ```
