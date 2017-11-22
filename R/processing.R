@@ -733,16 +733,14 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   
   # if function arguments are missing, QGIS will use the default since we submit
   # our parameter-arguments as a Python-dictionary (see Processing.runAlgorithm)
-  # nevertheless, we will indicate them already here since we have already 
+  # nevertheless, we will indicate them already here since we have already
   # retrieved them, it makes our processing more transparent, and it makes life
-  # easier in run_qgis
-  ind <- setdiff(names(params_all), names(params))
-  if (length(ind) > 0) {
-    params_2 <- params_all
-    params_2[names(params)] <- params
-    params <- params_2
-    rm(params_2)
-  }
+  # easier in run_qgis (additionally, we make sure here to use the correct
+  # parameter order)
+  params_2 <- params_all
+  params_2[names(params)] <- params
+  params <- params_2
+  rm(params_2)
   
   # print a message if default values have been automatically chosen. This will
   # happen if the user has specified not all arguments via ... or if he used a
@@ -836,7 +834,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
     # final bounding box in the QGIS/GRASS notation
     params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
   }
-  # make sure function arguments are in the correct order is not srictly
+  # make sure function again arguments are in the correct order is not srictly
   # necessary any longer since we use a Python dictionary to pass our arguments.
   # However, otherwise, the user might become confused... and for
   # RQGIS.check_args the correct order is important as well! Doing the check
