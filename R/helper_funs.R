@@ -635,7 +635,7 @@ set_py_config <- function(qgis_env = NULL, dev = NULL, python_version = NULL) {
         # set this to '/usr/bin/python3' (Linux) and '/usr/local/bin/python3' 
         # (Mac) once QGIS3 is the dev version
         # Note: For Mac we assume a Python3 installation via homebrew...
-        use_python("/usr/bin/python2", required = TRUE)
+        use_python("/usr/bin/python", required = TRUE)
       } else if (Sys.info()["sysname"] == "Darwin") {
         use_python("/usr/bin/python2.7", required = TRUE)
       } else if (Sys.info()["sysname"] == "Windows") {
@@ -644,7 +644,7 @@ set_py_config <- function(qgis_env = NULL, dev = NULL, python_version = NULL) {
       }
     } else {
       if (Sys.info()["sysname"] == "Linux") {
-        use_python("/usr/bin/python2", required = TRUE)
+        use_python("/usr/bin/python", required = TRUE)
       } else if (Sys.info()["sysname"] == "Darwin") {
         use_python("/usr/bin/python2.7", required = TRUE)
       } else if (Sys.info()["sysname"] == "Windows") {
