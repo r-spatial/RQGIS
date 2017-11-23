@@ -1,7 +1,6 @@
 # RQGIS 1.0.2.9000
 
 ## Features
-=======
   * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
   * more extensive testing through a new test file (`test-paper-analysis`)
   * You can now force to use a custom python version in `set_env()` using the `python_version` argument. Also, we require Python2 now for QGIS 2.x to prevent issues with users that have set Python3 as system default. 
