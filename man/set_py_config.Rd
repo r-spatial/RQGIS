@@ -4,7 +4,7 @@
 \alias{set_py_config}
 \title{Set py_config appropiately}
 \usage{
-set_py_config(dev = NULL, python_version = NULL)
+set_py_config(qgis_env = NULL, dev = NULL, python_version = NULL)
 }
 \arguments{
 \item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of

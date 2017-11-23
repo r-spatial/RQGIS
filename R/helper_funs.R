@@ -1,5 +1,5 @@
 #' @title Checking paths to QGIS applications
-#' @importFrom purrr map_lgl
+#' @importFrom purrr map_lgl walk
 #' @description `check_apps` checks if software applications necessary to
 #'   run QGIS (QGIS and Python plugins) are installed in the correct
 #'   locations.
@@ -627,7 +627,7 @@ check_for_server <- function() {
 #' @seealso [`set_env`]
 #' @export
 
-set_py_config <- function(dev = NULL, python_version = NULL) {
+set_py_config <- function(qgis_env = NULL, dev = NULL, python_version = NULL) {
   
   if (is.null(python_version)) {
     if (dev == TRUE) {

@@ -191,7 +191,7 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE,
              "continue using the Kyngchaos installation."))
   }
   
-  set_py_config(dev = dev, python_version = python_version)
+  set_py_config(qgis_env = qgis_env, dev = dev, python_version = python_version)
   
   # return your result
   qgis_env
