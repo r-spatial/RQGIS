@@ -35,7 +35,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   # now use ...-notation and sf as input
   vec_2 <- run_qgis(alg = "qgis:polygoncentroids",
                     INPUT_LAYER = st_as_sf(polys),
-                    OUTPUT_LAYER = "coords.shp",
+                    OUTPUT_LAYER = file.path(tempdir(), "coords.shp"),
                     show_output_paths = FALSE, load_output = TRUE)
   # check if the output is spatial object
   expect_is(vec_2, "sf")
@@ -75,7 +75,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   # now use ...-notation
   saga_out_2 <- run_qgis("saga:sagawetnessindex", 
                          DEM = dem,
-                         TWI = "twi.sdat",
+                         TWI = file.path(tempdir(), "twi.sdat"),
                          show_output_paths = FALSE, load_output = TRUE)
   # check if the output is a raster
   expect_is(saga_out_2, "RasterLayer")
@@ -105,12 +105,8 @@ test_that("Test, if GRASS7-algorithms are working?", {
   # now use ...-notation
   grass_out_2 <- run_qgis("grass7:r.slope.aspect", 
                           elevation = dem,
-                          slope = "slope.tif",
+                          slope = file.path(tempdir(), "slope.tif"),
                           show_output_paths = FALSE, load_output = TRUE)
   # check if the output is a raster
   expect_is(grass_out_2, "RasterLayer")
   })
-
-
-
-

@@ -25,5 +25,3 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
   # 50
   expect_gt(length(test), 50)
   })
-
-
