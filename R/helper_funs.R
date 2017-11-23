@@ -1,4 +1,5 @@
 #' @title Checking paths to QGIS applications
+#' @importFrom purrr map_lgl
 #' @description `check_apps` checks if software applications necessary to
 #'   run QGIS (QGIS and Python plugins) are installed in the correct
 #'   locations.
@@ -41,17 +42,29 @@ check_apps <- function(root, ...) {
          operating systems.")
   }
   
-  out <- 
-    lapply(apps, function(app) {
-      if (file.exists(app)) {
-        app
-      } else {
-        path <- NULL
+  apps_found <- map_lgl(apps, file.exists)
+  if (all(apps_found)) {
+    out <- apps
+  } else {
+    # if apps are not found, try to see if the git version is installed
+    if (Sys.info()["sysname"] == "Linux") {
+      # Arch Linux
+      check_apps_git <- c("/usr/bin/qgis-git", 
+                          "/opt/qgis-git/share/qgis/python/plugins")
+      apps_git_found <- map_lgl(check_apps_git, file.exists)
+    }
+    if (all(apps_git_found)) {
+      out <- check_apps_git
+    } else {
+      path <- NULL
+      walk(apps, function(app) {
         # apps necessary to run the QGIS-API
-        stop("Folder ", dirname(app), " could not be found under ",
-             basename(app)," Please install it.")
-      }
-    })
+        stop(basename(app), " could not be found under '",
+             dirname(app),"'. Please install it.")
+      })
+    }
+  }
+
   names(out) <- c("qgis_prefix_path", "python_plugins")
   # return your result
   out
@@ -605,39 +618,38 @@ check_for_server <- function() {
   }
 }
 
-
-#' @title Check for QGIS version to set py_config appropiately
-#' @description Helper function to detect whether QGIS2 or QGIS3 is installed
-#' @param qgis_env Environment settings containing all the paths to run the QGIS
-#'   API. For more information, refer to [set_env()].
-#' @return Sets `py_ config` accordingly.
+#' @title Set py_config appropiately
+#' @description Helper function to set py_config appropriately or manually
+#' @inheritParams set_env
+#' @return Sets `py_config` accordingly.
 #' @keywords internal
 #' @author Patrick Schratz
+#' @seealso [`set_env`]
 #' @export
 
-set_py_config <- function(qgis_env = NULL) {
+set_py_config <- function(dev = NULL, python_version = NULL) {
   
-  if (Sys.info()["sysname"] == "Linux") {
-    # this is the only place on linux where a version is hidden in a folder name
-    if (dir.exists("~/.qgis2")) {
-      # tested on Ubuntu and Arch
-      use_python("/usr/bin/python2", required = TRUE)
+  if (is.null(python_version)) {
+    if (dev == TRUE) {
+      if (any(c("Linux", "Darwin") %in% Sys.info()["sysname"])) {
+        # set this to '/usr/bin/python3' once QGIS3 is the dev version
+        use_python("/usr/bin/python2", required = TRUE)
+      } else if (Sys.info()["sysname"] == "Windows") {
+        use_python(file.path(qgis_env$root, "bin/python.exe"), 
+                   required = TRUE)
+      }
     } else {
-      use_python("/usr/bin/python3", required = TRUE)
+      if (any(c("Linux", "Darwin") %in% Sys.info()["sysname"])) {
+        use_python("/usr/bin/python2", required = TRUE)
+      } else if (Sys.info()["sysname"] == "Windows") {
+        use_python(file.path(qgis_env$root, "bin/python.exe"), 
+                   required = TRUE)
+      }
     }
-  } else if (Sys.info()["sysname"] == "Darwin") {
-    if (dir.exists("/usr/local/Cellar/qgis2") |
-        dir.exists("/usr/local/Cellar/qgis2-ltr")) {
-      vers <- as.numeric(substr(set_env(), 1, 1))
-    } #else if () {
-    # kyngchaos version check here
-    #}
-    if (vers <= 18) {
-      use_python("/usr/bin/python2", required = TRUE)
-    } else {
-      use_python("/usr/bin/python3", required = TRUE)
+  } else {
+    find_python <- try(use_python(python_version, required = TRUE))
+    if (class(find_python) == "try-error") {
+      stop("You entered an invald python binary path. Please try again.")
     }
-  } else if (Sys.info()["sysname"] == "Windows") {
-    
   }
 }

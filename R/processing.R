@@ -13,6 +13,10 @@
 #'   used new values for function arguments `root` and/or `dev`.
 #' @param dev If set to `TRUE`, `set_env` will use the development version of 
 #'   QGIS (if available).
+#' @param python_version  Optional use a custom Python version. 
+#'   Please provide the full path to the respective executable.
+#'   This is particulary useful if you want use RQGIS with QGIS 2.99 as we 
+#'   currently require Python2 for 'LTR' and 'DEV' setting in `set_env()`.
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run 
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the 
@@ -22,14 +26,19 @@
 #' # Letting set_env look for the QGIS installation might take a while depending
 #' # on how full the C: drive is (Windows)
 #' set_env()
+#' 
 #' # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 #' # installation
 #' set_env("C:/OSGEO4~1")  # Windows example
+#' 
+#' # Example for setting Python3 in Linux
+#' set_env(python_version = "/usr/bin/python3")
 #' }
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
+set_env <- function(root = NULL, new = FALSE, dev = FALSE, 
+                    python_version = NULL, ...) {
   # ok, let's try to find QGIS first in the most likely place!
   dots <- list(...)
   # load cached qgis_env if possible
@@ -182,6 +191,8 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
              "continue using the Kyngchaos installation."))
   }
   
+  set_py_config(dev = dev, python_version = python_version)
+  
   # return your result
   qgis_env
 }
@@ -239,14 +250,6 @@ open_app <- function(qgis_env = set_env()) {
   } else if (Sys.info()["sysname"] == "Darwin") { 
     setup_mac(qgis_env = qgis_env)
   }
-  
-  # check for python version. we need python2 for QGIS <= 2.18 as otherwise 
-  # python modules are not found
-  # PROBLEM: We cannot use py_config() to check which python version is used as 
-  # using a reticulate function already initializes the default python
-  # so we can only force to use a default python2 that we hope to exist
-  # in the specified location
-  set_py_config(qgis_env = qgis_env)
   
   # make sure that QGIS is not already running (this would crash R) app =
   # QgsApplication([], True)  # see below 

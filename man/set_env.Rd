@@ -4,7 +4,8 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, new = FALSE, dev = FALSE, ...)
+set_env(root = NULL, new = FALSE, dev = FALSE, python_version = NULL,
+  ...)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
@@ -20,6 +21,11 @@ used new values for function arguments \code{root} and/or \code{dev}.}
 
 \item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of
 QGIS (if available).}
+
+\item{python_version}{Optional use a custom Python version.
+Please provide the full path to the respective executable.
+This is particulary useful if you want use RQGIS with QGIS 2.99 as we
+currently require Python2 for 'LTR' and 'DEV' setting in \code{set_env()}.}
 
 \item{...}{Currently not in use.}
 }
@@ -37,9 +43,13 @@ within R.
 # Letting set_env look for the QGIS installation might take a while depending
 # on how full the C: drive is (Windows)
 set_env()
+
 # It is much faster (0 sec) to explicitly state the root path to the QGIS 
 # installation
 set_env("C:/OSGEO4~1")  # Windows example
+
+# Example for setting Python3 in Linux
+set_env(python_version = "/usr/bin/python3")
 }
 
 }

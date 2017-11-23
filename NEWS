@@ -1,3 +1,9 @@
+RQGIS 1.0.2.9000
+--------------------------------------------------------------------------------
+
+Features:
+  * You can now force to use a custom python version in `set_env()` using the `python_version` argument. Also, we require Python2 now for QGIS 2.x to prevent issues with users that have set Python3 as system default. 
+
 RQGIS 1.0.2
 --------------------------------------------------------------------------------
 

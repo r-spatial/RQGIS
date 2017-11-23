@@ -27,6 +27,7 @@ Depends:
     R (>= 3.2.0),
     reticulate (>= 1.2)
 Imports:
+         purrr,
          raster,
          RCurl,
          readr,
