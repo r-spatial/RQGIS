@@ -147,7 +147,9 @@ After restarting QGIS, you should recognize the change of the SAGA version under
 
 # Linux
 
-## QGIS (and GRASS)
+## Ubuntu
+
+### QGIS (and GRASS)
 If you install QGIS with the built-in software managers, you will most likely get an outdated QGIS version. To install more recent QGIS releases, we recommend to follow the installation instructions from the [QGIS installers website](https://www.qgis.org/en/site/forusers/alldownloads.html). 
 
 Here, we just describe exemplarily the QGIS installation procedure under Debian/Ubuntu following the description found [here](https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu). RQGIS should work as well with Linux derivatives other than Ubuntu. However, we did not test this.
@@ -162,30 +164,52 @@ sudo apt autoremove
 sudo apt-get update
 ```
 
-Next add the correct repository to `/etc/apt/sources.list`. Here, we use the QGIS long-term release (2.14) (for QGIS 2.18, we would have to use http://qgis.org/ubuntugis instead of http://qgis.org/ubuntugis-ltr):
+Next add the correct repository to `/etc/apt/sources.list`. Here, we use the current long-term release (2.18):
+
+**QGIS 2.18.x**
+
+```sh
+# add QGIS repository for Ubuntu 16.04 to sources.list
+sudo sh -c 'echo "deb http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+```
+
+**QGIS 2.14.x**
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
 sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" >> /etc/apt/sources.list'
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
-For Ubuntu 14.04, simply replace `xenial` with `trusty`. 
 
-After that, we can install QGIS and GRASS as follows:
+**QGIS nightly (2.99)**
 
 ```sh
-sudo apt-get update
-sudo apt-get install qgis python-qgis qgis-plugin-grass
+# add QGIS repository for Ubuntu 16.04 to sources.list
+sudo sh -c 'echo "deb http://qgis.org/ubuntugis-nightly xenial main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-nightly xenial main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
+sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 
-If this results in keyserver errors, add the qgis.org repository public key to your apt keyring:
+**For other Ubuntu releases, simply replace 'xenial' with the respective release name.**
+
+Now we need to add the GPG key so that we do not face key errors:
 
 ```sh
 wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import
 # to verify, run:
 # gpg --fingerprint CAEB3DC3BDF7FB45
 gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -
+```
+
+After that, we can install QGIS and GRASS as follows:
+
+```sh
 sudo apt-get update
 sudo apt-get install qgis python-qgis qgis-plugin-grass
 ```
@@ -199,7 +223,7 @@ sudo apt-get upgrade
 
 Assuming we have installed QGIS 2.18 and wish to replace it by QGIS 2.14, one naturally has to change `etc/apt/sources.list` accordingly. Additionally, we probably need to downgrade some packages. For more information, please refer to this [post](https://stackoverflow.com/questions/36879592/has-anyone-got-qgis-to-install-on-ubuntu-16-04-lts).
 
-## SAGA
+### SAGA
 
 You can install the SAGA LTS 2.3.1 version from the [ubuntugis/unstable](https://launchpad.net/~ubuntugis/+archive/ubuntu/ubuntugis-unstable) repository.
 If you haven't done so yet, add the repository and then simply install SAGA via `apt-get`:
@@ -287,7 +311,8 @@ cd /home/<YourUserName>/saga-2.3.1
 sudo make uninstall
 ```
 
-## Orfeo Toolbox (OTB)
+### Orfeo Toolbox (OTB)
+
 You can download the Orfeo Toolbox from [here](https://www.orfeo-toolbox.org/download/). We save the .run-script to the Desktop. Of course, you might select any other accesible folder. Next, we create a folder named "Applications" to which we move the .run script. Finally, we install OTB. Please note that so far there is only a **64-bit** OTB version available. This version does not work on 32-bit machines!
 
 ```sh
@@ -308,3 +333,9 @@ OTB algorithms should be now availabe in the "Processing Toolbox" and in RQGIS (
 ```sh
 rmdir /home/<YourUserName>/Applications/
 ```
+
+## Arch Linux
+
+You can install various QGIS, SAGA and GRASS versions from the [Arch User Repository](https://aur.archlinux.org/). 
+
+We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package manager.

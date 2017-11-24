@@ -29,10 +29,25 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../reference/index.html">Reference</a>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
 </li>
 <li>
-  <a href="../articles/index.html">Articles</a>
+  <a href="../reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/install_guide.html">(R)QGIS installation guide for Windows, Mac &amp; Linux</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="../news/index.html">News</a>
@@ -60,82 +75,60 @@
       <h1>(R)QGIS installation guide for Windows, Mac &amp; Linux</h1>
                         <h4 class="author">Jannes Muenchow, Patrick Schratz</h4>
             
-            <h4 class="date">2017-06-27</h4>
+            <h4 class="date">2017-11-14</h4>
           </div>
 
     
     
 <div class="contents">
-<div id="vignette-info" class="section level1">
-<h1 class="hasAnchor">
-<a href="#vignette-info" class="anchor"></a>Vignette info</h1>
+<section id="vignette-info" class="level1"><h1>Vignette info</h1>
 <p>This vignette guides you through the installation process of QGIS, GRASS- and SAGA-GIS on three different platforms (Windows, Mac, Linux). Following our instructions should ensure that RQGIS will work properly. With the exception of SAGA, we recommend to use the latest stable version of all software packages. Though other versions might also work with RQGIS, we did not test this.</p>
 <p>Overall, RQGIS allows access to more than 1000 geoalgorithms. However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party providers and software package versions.</p>
-</div>
-<div id="windows" class="section level1">
-<h1 class="hasAnchor">
-<a href="#windows" class="anchor"></a>Windows</h1>
+</section><section id="windows" class="level1"><h1>Windows</h1>
 <p>There are at least two options to install QGIS on Windows in such a way that RQGIS can access QGIS. The first option is the Standalone Installer from the <a href="https://www.qgis.org/en/site/forusers/download.html">QGIS installer page</a>. This will install QGIS along with the third-party providers GRASS and SAGA. However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, PostGIS, etc.), we recommend to use the OSGeo4W Network installer. This installer is available on the <a href="https://www.qgis.org/en/site/forusers/download.html">QGIS installer page</a> as well as on the <a href="http://trac.osgeo.org/osgeo4w/">OSGeo4W-website</a>.</p>
 <p>To install OSGeo4W, the easiest way is to to use the Express installation:</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/00_express.PNG">
-</div>
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/00_express.PNG"></p>
 <p>We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Select “Express Installation”</li>
 <li>Next check “QGIS, GRASS and GDAL”</li>
 <li>Start the installation.</li>
 </ol>
 <p>This installation is more or less equivalent to the standalone QGIS-installation. However, to have the full choice of available geoalgorithms provided by QGIS, we recommend to use the advanced settings of the OSGeo4W Network installer:</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Run the OSGeo4W setup and choose the advanced installation.</li>
 </ol>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/01_initial_setup.PNG">
-</div>
-<ol start="2" style="list-style-type: decimal">
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/01_initial_setup.PNG"></p>
+<ol start="2" type="1">
 <li>Subsequently, accept the default settings until you reach the “Select Packages” window.</li>
 </ol>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/04_select_packages.PNG">
-</div>
-<ol start="3" style="list-style-type: decimal">
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/04_select_packages.PNG"></p>
+<ol start="3" type="1">
 <li>After expanding the command line utilities, we choose several commandline tools such as gdal and python-core (of course, you can select other components as well):</li>
 </ol>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/05_command_line_utilties.PNG">
-</div>
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/05_command_line_utilties.PNG"></p>
 <p>Additionally, we choose the Desktop-GIS GRASS 6 &amp; 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).</p>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures//06_desktop_gis.PNG">
-</div>
-<ol start="4" style="list-style-type: decimal">
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures//06_desktop_gis.PNG"></p>
+<ol start="4" type="1">
 <li>We leave the rest as is, click “Next” and wait for the OSGeo4W-suggestions which we accept.</li>
 </ol>
-<div class="figure">
-<img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/08_suggestions.PNG">
-</div>
+<p><img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/08_suggestions.PNG"></p>
 <p>Clicking “Next” once more will start the download and installation process which might take a while.</p>
 <p>If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running <code>../OSGeo4W/bin/osgeo4w-setup.exe</code>. Alternatively, you can download and run again the latest <a href="http://trac.osgeo.org/osgeo4w/">OSGeo4W-executable</a>.</p>
 <p>If you additionally want to use the <strong>LiDAR processing tools</strong> (LAStools), please follow the steps found <a href="https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/">here</a>.</p>
-</div>
-<div id="mac-os-x" class="section level1">
-<h1 class="hasAnchor">
-<a href="#mac-os-x" class="anchor"></a>Mac OS X</h1>
+</section><section id="mac-os-x" class="level1"><h1>Mac OS X</h1>
 <p><strong>NOTE</strong><br>
 We recommend to do all installations using the package management system <code>homebrew</code>.</p>
-<div id="qgis" class="section level2">
-<h2 class="hasAnchor">
-<a href="#qgis" class="anchor"></a>QGIS</h2>
+<section id="qgis" class="level2"><h2>QGIS</h2>
 <p>Two options exist installing QGIS on macOS</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Compile from source from <a href="https://github.com/OSGeo/homebrew-osgeo4mac">osgeo4mac</a> <strong>(recommended)</strong>
 </li>
 </ol>
 <p>The <code>osgeo4mac</code> tap supports the most recent QGIS versions for both the development version and the long term release (LTR). You can compile with various options, e.g. <code>--with-grass</code> or <code>--with-saga-gis-lts</code>. Check <code>brew info qgis2</code> for all available options. We recommend to compile QGIS using</p>
 <p><code>brew install qgis2 --with-grass --with-saga-gis-lts</code>.</p>
 <p>The installation will take some time (30-45 mins, depending on your system) if you build from source. You can also install the bottled versions (= binary) step by step which will reduce installation time to a few minutes. If you want to install the LTR version, simply replace <code>qgis2</code> by <code>qgis2-ltr</code>.</p>
-<ol start="2" style="list-style-type: decimal">
+<ol start="2" type="1">
 <li>Install QGIS binary from Kyngchaos</li>
 </ol>
 <p>Homebrew also supports <a href="https://caskroom.github.io/">GUI installations</a>. QGIS can be installed using</p>
@@ -148,71 +141,111 @@ QSqlQuery::prepare: database not open
 [1] "ERROR: Opening of authentication db FAILED"
 [2] "WARNING: Auth db query exec() FAILED"</code></pre>
 <p>These look quite ugly but <strong>DO NOT affect RQGIS usage</strong>.</p>
-</div>
-<div id="grass" class="section level2">
-<h2 class="hasAnchor">
-<a href="#grass" class="anchor"></a>GRASS</h2>
+</section><section id="grass" class="level2"><h2>GRASS</h2>
 <p>If you install QGIS &gt; 2.16 on your system using <code>brew cask install qgis</code>, GRASS7 will work out-of-the-box within QGIS. GRASS6 is deprecated and does not work anymore in QGIS &gt; 2.16 (see this <a href="http://gis.stackexchange.com/a/205964/43409">link</a>). If you installed QGIS using option 1 (osgeo4mac), GRASS 7 will also work with QGIS &lt; 2.16.</p>
 <p>You can still use GRASS6 if you</p>
-<ol style="list-style-type: decimal">
-<li>Install it via <code>brew install grass6</code> from the ‘osgeo4mac’ tap</li>
+<ol type="1">
+<li>Install QGIS and GRASS via <code>brew install grass6</code> from the ‘osgeo4mac’ tap</li>
 <li>Link it in QGIS via “Processing - Options - Providers”</li>
 </ol>
 <p>The binary GRASS installation can be found <a href="https://grass.osgeo.org/download/software/mac-osx/">here</a>.</p>
-</div>
-<div id="saga" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saga" class="anchor"></a>SAGA</h2>
+</section><section id="saga" class="level2"><h2>SAGA</h2>
 <p>The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.</p>
 <p>Using homebrew, SAGA can be compiled via <code>brew install saga-gis-lts</code>. If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.</p>
 <p>There is no binary install of SAGA for Mac. Therefore, we recommended to use the bottle installation from <code>homebrew</code>. Alternatively, you can compile SAGA from source from the <a href="https://sourceforge.net/projects/saga-gis/files/">SAGA website</a>. Make sure to check RQGIS compatibility with your SAGA version! You can do so using <code><a href="../reference/qgis_session_info.html">qgis_session_info()</a></code> in RQGIS.</p>
 <p>To link a custom installation of SAGA with QGIS, follow these steps:</p>
-<ol style="list-style-type: decimal">
+<ol type="1">
 <li>Open the following file of your QGIS installation: (<code>.../python/plugins/processing/algs/saga/SagaUtils.py</code>)</li>
 <li>In the function <code>findSagaFolder()</code> change the path setting pointing to the folder containing <code>saga_cmd</code>:</li>
 </ol>
-<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python">testfolder <span class="op">=</span> os.path.join(QgsApplication.prefixPath(), <span class="st">'bin'</span>)</code></pre></div>
+<pre class="sourceCode py" id="cb2"><code class="sourceCode python"><div class="sourceLine" id="cb2-1" data-line-number="1">testfolder <span class="op">=</span> os.path.join(QgsApplication.prefixPath(), <span class="st">'bin'</span>)</div></code></pre>
 <p>For homebrew installations (always located under “/usr/local/Cellar”) a working setup would look like this:</p>
-<div class="sourceCode"><pre class="sourceCode py"><code class="sourceCode python"><span class="co"># testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')</span>
-testfolder <span class="op">=</span> <span class="st">'/usr/local/Cellar/saga-gis/2.2.2/bin'</span></code></pre></div>
+<pre class="sourceCode py" id="cb3"><code class="sourceCode python"><div class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')</span></div>
+<div class="sourceLine" id="cb3-2" data-line-number="2">testfolder <span class="op">=</span> <span class="st">'/usr/local/Cellar/saga-gis/2.2.2/bin'</span>
+</div></code></pre>
 <p>After restarting QGIS, you should recognize the change of the SAGA version under “Processing-&gt;Toolbox”.</p>
-</div>
-</div>
-<div id="linux" class="section level1">
-<h1 class="hasAnchor">
-<a href="#linux" class="anchor"></a>Linux</h1>
-<div id="qgis-and-grass" class="section level2">
-<h2 class="hasAnchor">
-<a href="#qgis-and-grass" class="anchor"></a>QGIS (and GRASS)</h2>
+</section></section><section id="linux" class="level1"><h1>Linux</h1>
+<section id="ubuntu" class="level2"><h2>Ubuntu</h2>
+<section id="qgis-and-grass" class="level3"><h3>QGIS (and GRASS)</h3>
 <p>If you install QGIS with the built-in software managers, you will most likely get an outdated QGIS version. To install more recent QGIS releases, we recommend to follow the installation instructions from the <a href="https://www.qgis.org/en/site/forusers/alldownloads.html">QGIS installers website</a>.</p>
 <p>Here, we just describe exemplarily the QGIS installation procedure under Debian/Ubuntu following the description found <a href="https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu">here</a>. RQGIS should work as well with Linux derivatives other than Ubuntu. However, we did not test this.</p>
 <p>Open a terminal window. First of all, make sure to remove QGIS and GRASS packages you may have installed before from other repositories:</p>
 <!--http://gis.stackexchange.com/questions/167472/qgis-2-8-ubuntu-14-04-installation-issues-terminal-command-attempts-to-install-->
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get --purge remove qgis
-<span class="fu">sudo</span> apt autoremove --purge remove 
-<span class="fu">sudo</span> apt autoremove
-<span class="fu">sudo</span> apt-get update</code></pre></div>
-<p>Next add the correct repository to sources.list. Here, we use the QGIS long-term release (2.14) (for QGIS 2.18, we would have to use <a href="http://qgis.org/ubuntugis" class="uri">http://qgis.org/ubuntugis</a> instead of <a href="http://qgis.org/ubuntugis-ltr" class="uri">http://qgis.org/ubuntugis-ltr</a>):</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># add QGIS repository for Ubuntu 16.04 to sources.list</span>
-<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://qgis.org/ubuntugis-ltr xenial main" &gt;&gt; /etc/apt/sources.list'</span>
-<span class="fu">sudo</span> sh -c <span class="st">'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" &gt;&gt; /etc/apt/sources.list'</span>
-<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" &gt;&gt; /etc/apt/sources.list'</span></code></pre></div>
-<p>For Ubuntu 14.04, simply replace <code>xenial</code> with <code>trusty</code>.</p>
-<p>After that, we can install QGIS and GRASS as follows:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get update
-<span class="fu">sudo</span> apt-get install qgis python-qgis qgis-plugin-grass</code></pre></div>
-<p>If this results in keyserver errors, add the qgis.org repository public key to your apt keyring:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">wget</span> -O - http://qgis.org/downloads/qgis-2015.gpg.key <span class="kw">|</span> <span class="ex">gpg</span> --import
-<span class="co"># to verify, run:</span>
-<span class="co"># gpg --fingerprint 3FF5FFCAD71472C4</span>
-<span class="ex">gpg</span> --export --armor 3FF5FFCAD71472C4 <span class="kw">|</span> <span class="fu">sudo</span> apt-key add -
-<span class="fu">sudo</span> apt-get update
-<span class="fu">sudo</span> apt-get install qgis python-qgis qgis-plugin-grass</code></pre></div>
-<p>This will install the QGIS 2.14 release (LTR) as well as GRASS-GIS as third-party provider.</p>
+<pre class="sourceCode sh" id="cb4"><code class="sourceCode bash"><div class="sourceLine" id="cb4-1" data-line-number="1">
+<span class="fu">sudo</span> apt-get --purge remove qgis</div>
+<div class="sourceLine" id="cb4-2" data-line-number="2">
+<span class="fu">sudo</span> apt autoremove --purge-remove </div>
+<div class="sourceLine" id="cb4-3" data-line-number="3">
+<span class="fu">sudo</span> apt autoremove</div>
+<div class="sourceLine" id="cb4-4" data-line-number="4">
+<span class="fu">sudo</span> apt-get update</div></code></pre>
+<p>Next add the correct repository to <code>/etc/apt/sources.list</code>. Here, we use the current long-term release (2.18):</p>
+<p><strong>QGIS 2.18.x</strong></p>
+<pre class="sourceCode sh" id="cb5"><code class="sourceCode bash"><div class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># add QGIS repository for Ubuntu 16.04 to sources.list</span></div>
+<div class="sourceLine" id="cb5-2" data-line-number="2">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://qgis.org/ubuntugis xenial main" &gt;&gt; /etc/apt/sources.list'</span>
 </div>
-<div id="saga-1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#saga-1" class="anchor"></a>SAGA</h2>
+<div class="sourceLine" id="cb5-3" data-line-number="3">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb-src http://qgis.org/ubuntugis xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb5-4" data-line-number="4">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb5-5" data-line-number="5">
+<span class="fu">sudo</span> add-apt-repository ppa:ubuntugis/ubuntugis-unstable</div></code></pre>
+<p><strong>QGIS 2.14.x</strong></p>
+<pre class="sourceCode sh" id="cb6"><code class="sourceCode bash"><div class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># add QGIS repository for Ubuntu 16.04 to sources.list</span></div>
+<div class="sourceLine" id="cb6-2" data-line-number="2">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://qgis.org/ubuntugis-ltr xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb6-3" data-line-number="3">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb-src http://qgis.org/ubuntugis-ltr xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb6-4" data-line-number="4">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb6-5" data-line-number="5">
+<span class="fu">sudo</span> add-apt-repository ppa:ubuntugis/ubuntugis-unstable</div></code></pre>
+<p><strong>QGIS nightly (2.99)</strong></p>
+<pre class="sourceCode sh" id="cb7"><code class="sourceCode bash"><div class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># add QGIS repository for Ubuntu 16.04 to sources.list</span></div>
+<div class="sourceLine" id="cb7-2" data-line-number="2">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://qgis.org/ubuntugis-nightly xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb7-3" data-line-number="3">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb-src http://qgis.org/ubuntugis-nightly xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb7-4" data-line-number="4">
+<span class="fu">sudo</span> sh -c <span class="st">'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" &gt;&gt; /etc/apt/sources.list'</span>
+</div>
+<div class="sourceLine" id="cb7-5" data-line-number="5">
+<span class="fu">sudo</span> add-apt-repository ppa:ubuntugis/ubuntugis-unstable</div></code></pre>
+<p><strong>For other Ubuntu releases, simply replace ‘xenial’ with the respective release name.</strong></p>
+<p>Now we need to add the GPG key so that we do not face key errors:</p>
+<pre class="sourceCode sh" id="cb8"><code class="sourceCode bash"><div class="sourceLine" id="cb8-1" data-line-number="1">
+<span class="fu">wget</span> -O - http://qgis.org/downloads/qgis-2017.gpg.key <span class="kw">|</span> <span class="ex">gpg</span> --import</div>
+<div class="sourceLine" id="cb8-2" data-line-number="2"><span class="co"># to verify, run:</span></div>
+<div class="sourceLine" id="cb8-3" data-line-number="3"><span class="co"># gpg --fingerprint CAEB3DC3BDF7FB45</span></div>
+<div class="sourceLine" id="cb8-4" data-line-number="4">
+<span class="ex">gpg</span> --export --armor CAEB3DC3BDF7FB45 <span class="kw">|</span> <span class="fu">sudo</span> apt-key add -</div></code></pre>
+<p>After that, we can install QGIS and GRASS as follows:</p>
+<pre class="sourceCode sh" id="cb9"><code class="sourceCode bash"><div class="sourceLine" id="cb9-1" data-line-number="1">
+<span class="fu">sudo</span> apt-get update</div>
+<div class="sourceLine" id="cb9-2" data-line-number="2">
+<span class="fu">sudo</span> apt-get install qgis python-qgis qgis-plugin-grass</div></code></pre>
+<p>This will install the QGIS 2.14 release (LTR) as well as GRASS-GIS as third-party provider. To upgrade to QGIS 2.18 one simply has to change <code>/etc/apt/sources.list</code> (see above) and run:</p>
+<pre class="sourceCode sh" id="cb10"><code class="sourceCode bash"><div class="sourceLine" id="cb10-1" data-line-number="1">
+<span class="fu">sudo</span> apt-get update</div>
+<div class="sourceLine" id="cb10-2" data-line-number="2">
+<span class="fu">sudo</span> apt-get upgrade</div></code></pre>
+<p>Assuming we have installed QGIS 2.18 and wish to replace it by QGIS 2.14, one naturally has to change <code>etc/apt/sources.list</code> accordingly. Additionally, we probably need to downgrade some packages. For more information, please refer to this <a href="https://stackoverflow.com/questions/36879592/has-anyone-got-qgis-to-install-on-ubuntu-16-04-lts">post</a>.</p>
+</section><section id="saga-1" class="level3"><h3>SAGA</h3>
+<p>You can install the SAGA LTS 2.3.1 version from the <a href="https://launchpad.net/~ubuntugis/+archive/ubuntu/ubuntugis-unstable">ubuntugis/unstable</a> repository. If you haven’t done so yet, add the repository and then simply install SAGA via <code>apt-get</code>:</p>
+<pre class="sourceCode sh" id="cb11"><code class="sourceCode bash"><div class="sourceLine" id="cb11-1" data-line-number="1">
+<span class="fu">sudo</span> add-apt-repository ppa:ubuntugis/ubuntugis-unstable</div>
+<div class="sourceLine" id="cb11-2" data-line-number="2">
+<span class="fu">sudo</span> apt-get update</div>
+<div class="sourceLine" id="cb11-3" data-line-number="3">
+<span class="fu">sudo</span> apt-get install saga</div></code></pre>
 <!---
 To use SAGA functions within (R)QGIS, you naturally need to install SAGA GIS. To install the most recent SAGA version, simply execute the following lines in a terminal window: 
 
@@ -223,55 +256,79 @@ sudo apt-get install saga
 ```
 sudo add-apt-repository --remove ppa:johanvdw/saga-gis
 --->
-<p>Unfortunately, QGIS does not support the latest SAGA versions. To find out which SAGA versions are supported by your QGIS installation, run:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">"RQGIS"</span>)
-info &lt;-<span class="st"> </span><span class="kw"><a href="../reference/qgis_session_info.html">qgis_session_info</a></span>()
-info<span class="op">$</span>supported_saga_versions</code></pre></div>
-<p>This also means we cannot simply use a package manager to install SAGA. Instead we need to compile one of the SAGA versions from source supported by QGIS. After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA &gt;= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this <a href="https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/">page</a> for a more comprehensive SAGA installation guide. Please note that we simply present in great parts a copy of this guide here.</p>
+<p>If you would like to use another SAGA version, you need to compile it yourself. To find out which SAGA versions are supported by your QGIS installation, run:</p>
+<pre class="sourceCode r" id="cb12"><code class="sourceCode r"><div class="sourceLine" id="cb12-1" data-line-number="1">
+<span class="kw">library</span>(<span class="st">"RQGIS"</span>)</div>
+<div class="sourceLine" id="cb12-2" data-line-number="2">info &lt;-<span class="st"> </span><span class="kw"><a href="../reference/qgis_session_info.html">qgis_session_info</a></span>()</div>
+<div class="sourceLine" id="cb12-3" data-line-number="3">info<span class="op">$</span>supported_saga_versions</div></code></pre>
+<p>After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA &gt;= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this <a href="https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/">page</a> for a more comprehensive SAGA installation guide. Please note that we here simply reproduce in great parts a copy of this guide.</p>
 <p>First of all, install all necessary SAGA dependencies and a few compilation and configuration tools:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
-
-<span class="co"># compilation and configuration tools</span>
-<span class="fu">sudo</span> apt-get install g++ make automake libtool git</code></pre></div>
+<pre class="sourceCode sh" id="cb13"><code class="sourceCode bash"><div class="sourceLine" id="cb13-1" data-line-number="1">
+<span class="fu">sudo</span> apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev</div>
+<div class="sourceLine" id="cb13-2" data-line-number="2"></div>
+<div class="sourceLine" id="cb13-3" data-line-number="3"><span class="co"># compilation and configuration tools</span></div>
+<div class="sourceLine" id="cb13-4" data-line-number="4">
+<span class="fu">sudo</span> apt-get install g++ make automake libtool git</div></code></pre>
 <p>Next, we would like to download a specific SAGA version. Check out the various available versions <a href="https://sourceforge.net/projects/saga-gis/files/">here</a>. Here, we will download SAGA 2.3.1 into our home directory, unpack it and change the working directory to the unpacked folder:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">wget</span> -O /home/jannes/saga-git <span class="st">"https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.3/SAGA%202.3.1/saga_2.3.1.tar.gz"</span>
-<span class="bu">cd</span> /home/jannes
-<span class="fu">sudo</span> tar -xvzf saga-git
-<span class="bu">cd</span> saga-2.3.1</code></pre></div>
+<pre class="sourceCode sh" id="cb14"><code class="sourceCode bash"><div class="sourceLine" id="cb14-1" data-line-number="1">
+<span class="fu">wget</span> -O /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/saga-git <span class="st">"https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.3/SAGA%202.3.1/saga_2.3.1.tar.gz"</span>
+</div>
+<div class="sourceLine" id="cb14-2" data-line-number="2">
+<span class="bu">cd</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>
+</div>
+<div class="sourceLine" id="cb14-3" data-line-number="3">
+<span class="fu">sudo</span> tar -xvzf saga-git</div>
+<div class="sourceLine" id="cb14-4" data-line-number="4">
+<span class="bu">cd</span> saga-2.3.1</div></code></pre>
 <p>Having done so, we are ready to compile SAGA:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">sudo</span> autoreconf -i
-<span class="fu">sudo</span> ./configure
-<span class="fu">sudo</span> make
-<span class="fu">sudo</span> make install</code></pre></div>
+<pre class="sourceCode sh" id="cb15"><code class="sourceCode bash"><div class="sourceLine" id="cb15-1" data-line-number="1">
+<span class="fu">sudo</span> autoreconf -i</div>
+<div class="sourceLine" id="cb15-2" data-line-number="2">
+<span class="fu">sudo</span> ./configure</div>
+<div class="sourceLine" id="cb15-3" data-line-number="3">
+<span class="fu">sudo</span> make</div>
+<div class="sourceLine" id="cb15-4" data-line-number="4">
+<span class="fu">sudo</span> make install</div></code></pre>
 <p>To check if SAGA was successfully compiled, run:</p>
 <pre><code>saga_cmd
 saga_gui</code></pre>
 <p>Sometimes <code>saga_gui</code> produces following error message:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="ex">saga_gui</span>: error while loading shared libraries: libsaga_gdi-2.3.1.so: cannot open shared object file: No such file or directory</code></pre></div>
+<pre class="sourceCode sh" id="cb17"><code class="sourceCode bash"><div class="sourceLine" id="cb17-1" data-line-number="1">
+<span class="ex">saga_gui</span>: error while loading shared libraries: libsaga_gdi-2.3.1.so: cannot open shared object file: No such file or directory</div></code></pre>
 <p>In this case, you have to enable the SAGA GUI by specifying the path where <code>libsaga_gdi-2.3.1.so</code> is located:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">export</span> <span class="va">LD_LIBRARY_PATH=</span>/usr/local/lib:<span class="va">$LD_LIBRARY_PATH</span>
-<span class="ex">saga_gui</span></code></pre></div>
+<pre class="sourceCode sh" id="cb18"><code class="sourceCode bash"><div class="sourceLine" id="cb18-1" data-line-number="1">
+<span class="bu">export</span> <span class="va">LD_LIBRARY_PATH=</span>/usr/local/lib:<span class="va">$LD_LIBRARY_PATH</span>
+</div>
+<div class="sourceLine" id="cb18-2" data-line-number="2"><span class="ex">saga_gui</span></div></code></pre>
 <p>Using SAGA &gt;= 2.2.1 you might encounter following message in the Processing log when opening QGIS: <code>Problem with SAGA installation: installed SAGA version (2.3.1) is not supported</code>. Though in this case SAGA is not available in the processing toolbox, you might still able to use it via the QGIS Python API and therefore also with RQGIS. Please note that SAGA 2.3.1 is the latest SAGA version supported by QGIS (2.14 and 2.18).</p>
 <p>In case you would like to uninstall SAGA, type:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="bu">cd</span> /home/jannes/saga-2.3.1
-<span class="fu">sudo</span> make uninstall</code></pre></div>
-</div>
-<div id="orfeo-toolbox-otb" class="section level2">
-<h2 class="hasAnchor">
-<a href="#orfeo-toolbox-otb" class="anchor"></a>Orfeo Toolbox (OTB)</h2>
+<pre class="sourceCode sh" id="cb19"><code class="sourceCode bash"><div class="sourceLine" id="cb19-1" data-line-number="1">
+<span class="bu">cd</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/saga-2.3.1</div>
+<div class="sourceLine" id="cb19-2" data-line-number="2">
+<span class="fu">sudo</span> make uninstall</div></code></pre>
+</section><section id="orfeo-toolbox-otb" class="level3"><h3>Orfeo Toolbox (OTB)</h3>
 <p>You can download the Orfeo Toolbox from <a href="https://www.orfeo-toolbox.org/download/">here</a>. We save the .run-script to the Desktop. Of course, you might select any other accesible folder. Next, we create a folder named “Applications” to which we move the .run script. Finally, we install OTB. Please note that so far there is only a <strong>64-bit</strong> OTB version available. This version does not work on 32-bit machines!</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">mkdir</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/
-<span class="fu">mv</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Desktop/<span class="op">&lt;</span>filename<span class="op">&gt;</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications
-<span class="fu">sh</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>NameOfScript<span class="op">&gt;</span></code></pre></div>
+<pre class="sourceCode sh" id="cb20"><code class="sourceCode bash"><div class="sourceLine" id="cb20-1" data-line-number="1">
+<span class="fu">mkdir</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/</div>
+<div class="sourceLine" id="cb20-2" data-line-number="2">
+<span class="fu">mv</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Desktop/<span class="op">&lt;</span>filename<span class="op">&gt;</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications</div>
+<div class="sourceLine" id="cb20-3" data-line-number="3">
+<span class="fu">sh</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>NameOfScript<span class="op">&gt;</span>
+</div></code></pre>
 <p>(R)QGIS assumes that the “OTB applications folder” is located at “/usr/lib/otb/applications” (see also <a href="https://docs.qgis.org/2.14/en/docs/user_manual/processing/3rdParty.html#orfeo-toolbox">QGIS manual</a>). Therefore, we need to move the OTB installation to the corresponding folder:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="co"># move applications folder</span>
-<span class="fu">sudo</span> mv /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>YourOTBInstallation<span class="op">&gt;</span>/lib/otb /usr/lib/
-<span class="co"># commandline tools</span>
-<span class="fu">cp</span> -a /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>YourOTBInstallation<span class="op">&gt;</span>/bin/. /usr/bin</code></pre></div>
+<pre class="sourceCode sh" id="cb21"><code class="sourceCode bash"><div class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># move applications folder</span></div>
+<div class="sourceLine" id="cb21-2" data-line-number="2">
+<span class="fu">sudo</span> mv /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>YourOTBInstallation<span class="op">&gt;</span>/lib/otb /usr/lib/</div>
+<div class="sourceLine" id="cb21-3" data-line-number="3"><span class="co"># commandline tools</span></div>
+<div class="sourceLine" id="cb21-4" data-line-number="4">
+<span class="fu">cp</span> -a /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/<span class="op">&lt;</span>YourOTBInstallation<span class="op">&gt;</span>/bin/. /usr/bin</div></code></pre>
 <p>OTB algorithms should be now availabe in the “Processing Toolbox” and in RQGIS (use <code><a href="../reference/find_algorithms.html">find_algorithms()</a></code> to check). Finally, we clean up after ourselves by deleting the previously created Applications folder:</p>
-<div class="sourceCode"><pre class="sourceCode sh"><code class="sourceCode bash"><span class="fu">rmdir</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/</code></pre></div>
-</div>
-</div>
+<pre class="sourceCode sh" id="cb22"><code class="sourceCode bash"><div class="sourceLine" id="cb22-1" data-line-number="1">
+<span class="fu">rmdir</span> /home/<span class="op">&lt;</span>YourUserName<span class="op">&gt;</span>/Applications/</div></code></pre>
+</section></section><section id="arch-linux" class="level2"><h2>Arch Linux</h2>
+<p>You can install various QGIS, SAGA and GRASS versions from the <a href="https://aur.archlinux.org/">Arch User Repository</a>.</p>
+<p>We recommend to use the <a href="https://wiki.archlinux.de/title/Yaourt">yaourt</a> package manager.</p>
+</section></section>
 </div>
   </div>
 
@@ -291,9 +348,8 @@ saga_gui</code></pre>
 </li>
       <li>
 <a href="#linux">Linux</a><ul class="nav nav-pills nav-stacked">
-<li><a href="#qgis-and-grass">QGIS (and GRASS)</a></li>
-      <li><a href="#saga-1">SAGA</a></li>
-      <li><a href="#orfeo-toolbox-otb">Orfeo Toolbox (OTB)</a></li>
+<li><a href="#ubuntu">Ubuntu</a></li>
+      <li><a href="#arch-linux">Arch Linux</a></li>
       </ul>
 </li>
       </ul>

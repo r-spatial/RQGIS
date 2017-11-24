@@ -601,7 +601,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 }
 
 #' @title Save spatial objects
-#' @description The function saves spatial objects (`sp`, `sf` and `raster`) to 
+#' @description The function saves spatial objects (`sp`, `sf` and `raster`) to
 #'   a temporary folder on the computer's hard drive.
 #' @param params A parameter-argument list as returned by [pass_args()].
 #' @param type_name A character string containing the QGIS parameter type for
@@ -610,7 +610,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #'   of its elements corresponding to the type_name (see also the example
 #'   section).
 #' @keywords internal
-#' @examples 
+#' @examples
 #' \dontrun{
 #' library("RQGIS")
 #' library("raster")
@@ -626,7 +626,7 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
 #' out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
 #' params <- get_args_man(alg)
 #' params$input <- list(r1, r2, r3)
-#' params[] <- save_spatial_objects(params = params, 
+#' params[] <- save_spatial_objects(params = params,
 #'                                  type_name = out$type_name)
 #' }
 #' @author Jannes Muenchow
@@ -651,8 +651,8 @@ save_spatial_objects <- function(params, type_name) {
       # sf-object, nothing happens
       params[[i]] <- st_as_sf(params[[i]])
       # write sf as a shapefile to a temporary location while overwriting any
-      # previous versions, I don't know why but sometimes the overwriting does 
-      # not work...
+      # previous versions.
+      # This is a Windows-only problem (see also github-branch unlock)
       fname <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
       cap <- capture.output({
         suppressWarnings(

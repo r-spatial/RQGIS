@@ -197,8 +197,7 @@ class RQGIS:
     except:
       # with QGIS 2.18.10 only SAGA 2.3.0 and 2.3.1 is suppported 
       # well, observe next QGIS releases and try to avoid the hard-coding!
-      saga_versions = ["2.3.0", "2.3.1"]
-    
+      saga_versions = [""]
     # GDAL
     gdal_v = gdal.VersionInfo('VERSION_NUM')
     gdal_v = '.'.join([gdal_v[0], gdal_v[2], gdal_v[4]])
