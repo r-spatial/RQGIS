@@ -4,12 +4,11 @@
   * Linux: `qgis_session_info()` now tries several times to find out about the installed GRASS version (`find` frequently fails at the first attempt when used witin a function), and additionally suppresses a confusing warning message regarding access rights (permission denied when trying to access points.shp, however these points are accessed regardless of this message since they are used to test if GRASS can be accessed which is the case).
     * If a user specifies simply a basename for an input or output file, `run_qgis()` will now look for this file in the working directory (`getwd()`) or save it to this locations (suggested by @rkrug).
     * Specifying all parameters of a QGIS geoalgorithm in the "wrong" order caused an error. Issue https://github.com/jannes-m/RQGIS/commit/45aef93c22107b2f34ee5ce4aa16cec485fc9489 solved this problem (@raff-k)
-    *
+    * `qgis_session_info()` no longer prints the supported saga versions if there is nothing to report (method `supportedVersions` was deleted from `SagaAlgorithmProvider` since  QGIS 2.18.10)
 
 ## Features
   * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
   * more extensive testing through a new test file (`test-paper-analysis`)
-
 
 
 # RQGIS 1.0.2

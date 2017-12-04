@@ -29,7 +29,7 @@
 #' 
 #' @export
 #' @author Jannes Muenchow, Patrick Schratz
-set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
+set_env <- function(root = NULL, new = FALSE, dev = TRUE, ...) {
   # ok, let's try to find QGIS first in the most likely place!
   dots <- list(...)
   # load cached qgis_env if possible
@@ -374,8 +374,14 @@ qgis_session_info <- function(qgis_env = set_env()) {
   }
   
   # sort it again since Python dictionary sorting is random
-  out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
-        "supported_saga_versions")]
+  out = out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
+              "supported_saga_versions")]
+  # if supported_saga_versions is empty (since 2.18) don't return it
+  if (out$supported_saga_versions == "") {
+    out[names(out) != "supported_saga_versions"]
+  } else {
+    out
+  }
 }
 
 #' @title Find and list available QGIS algorithms

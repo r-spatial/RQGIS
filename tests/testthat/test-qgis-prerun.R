@@ -8,8 +8,8 @@ test_that("qgis_session_info yields a list as output", {
   
   info <- qgis_session_info()
   
-  # check if the output is a list of length 6
-  expect_length(info, 6)
+  # check if the output is a list of length 5 or 6
+  expect_gt(length(info), 4)
   })
 
 test_that("find_algorithms finds QGIS geoalgorithms", {
