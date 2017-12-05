@@ -12,7 +12,6 @@ matrix:
     # build QGIS OLD_LTR on Linux
     - os: linux
       dist: trusty
-      python: "2.7"
       sudo: required
       latex: false
       jdk: oraclejdk9
