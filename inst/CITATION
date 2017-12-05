@@ -1,0 +1,19 @@
+citHeader("To cite package 'RQGIS' in publications use:")
+citEntry(entry = "Article",
+	title = "RQGIS: Integrating R with QGIS for Statistical Geocomputing",
+	author = personList(as.person("Jannes Muenchow"),
+	                    as.person("Patrick Schratz"),
+	                    as.person("Alexander Brenning")),
+	journal = "R Journal",
+	year = "2017",
+	volume = "",
+	pages = "",
+	note = "Accepted for publication on 2017-12-04",
+	url = "https://journal.r-project.org/archive/2017/RJ-2017-067/index.html",
+	header = "To cite the 'RQGIS' package use:",
+	textVersion = 
+	  paste("Muenchow, J., Schratz, P., and A. Brenning. 2017",
+		      "RQGIS: Integrating R with QGIS for Statistical Geocomputing.",
+		      "R Journal, 2017.",
+		      "https://journal.r-project.org/archive/2017/RJ-2017-067/index.html")
+)
