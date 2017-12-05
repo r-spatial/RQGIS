@@ -11,7 +11,7 @@ NULL
 #   if (Sys.info()["sysname"] == "Windows") {
 #     # run Windows setup
 #     setup_win(qgis_env = qgis_env)
-# 
+#
 #     # Ok, basically, we added a few new paths (especially under Windows) but
 #     # that's about it, we don't have to change that back. Only under Windows we
 #     # start with a clean, i.e. empty PATH, and delete everything what was in
@@ -29,4 +29,3 @@ NULL
 # .onUnload <- function(libname, pkgname) {
 #   do.call(Sys.setenv, as.list(get("settings", envir = .RQGIS_cache)))
 #   }
-
