@@ -398,12 +398,12 @@ qgis_session_info <- function(qgis_env = set_env()) {
   out = out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
               "supported_saga_versions")]
   # if supported_saga_versions is empty (since 2.18) don't return it
-  if (out$supported_saga_versions == "") {
+  if (length(out$supported_saga_versions) == 1 && 
+             out$supported_saga_versions == "") {
     out[names(out) != "supported_saga_versions"]
   } else {
     out
   }
-
 }
 
 #' @title Find and list available QGIS algorithms
