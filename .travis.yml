@@ -118,6 +118,7 @@ before_install:
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
+  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
   
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
@@ -128,6 +129,21 @@ before_script:
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
+  - R -q -e 'tic::before_script()'
+
+install: R -q -e 'tic::install()'
+after_install: R -q -e 'tic::after_install()'
+script: R -q -e 'tic::script()'
+after_success: R -q -e 'tic::after_success()'
+after_failure: R -q -e 'tic::after_failure()'
+before_deploy: R -q -e 'tic::before_deploy()'
+deploy:
+  provider: script
+  script: R -q -e 'tic::deploy()'
+  on:
+    all_branches: true
+after_deploy: R -q -e 'tic::after_deploy()'
+after_script: R -q -e 'tic::after_script()'
 
 notifications:
   slack:
