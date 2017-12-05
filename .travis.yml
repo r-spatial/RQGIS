@@ -93,7 +93,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update -y && sudo apt-get install equivs; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then chmod ugo+x inst/travis/gdal-abi.sh; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi.control; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi.control; fi
     
   # install latest qgis-ltr using aptitude to resolve dependencies
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
