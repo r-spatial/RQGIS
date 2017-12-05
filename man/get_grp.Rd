@@ -35,7 +35,7 @@ alg <- "grass7:r.patch"
 out <- py_run_string(sprintf("out = RQGIS.get_args_man('\%s')", alg))$out
 params <- get_args_man(alg)
 params$input <- list(r1, r2, r3)
-params[] <- save_spatial_objects(alg = alg, params = params, 
+params[] <- save_spatial_objects(alg = alg, params = params,
                                  type_name = out$type_name)
 get_grp(params = params, type_name = out$type_name)
 }

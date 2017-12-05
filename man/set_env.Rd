@@ -4,7 +4,7 @@
 \alias{set_env}
 \title{Retrieve the environment settings to run QGIS from within R}
 \usage{
-set_env(root = NULL, new = FALSE, dev = FALSE, ...)
+set_env(root = NULL, new = FALSE, dev = TRUE, ...)
 }
 \arguments{
 \item{root}{Root path to the QGIS-installation. If left empty, the function
@@ -37,7 +37,7 @@ within R.
 # Letting set_env look for the QGIS installation might take a while depending
 # on how full the C: drive is (Windows)
 set_env()
-# It is much faster (0 sec) to explicitly state the root path to the QGIS 
+# It is much faster (0 sec) to explicitly state the root path to the QGIS
 # installation
 set_env("C:/OSGEO4~1")  # Windows example
 }
