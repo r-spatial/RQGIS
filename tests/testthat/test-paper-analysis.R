@@ -10,7 +10,7 @@ test_that("qgis_session_info yields a list as output", {
   info_r <- version
   info_qgis <- qgis_session_info()
   info <- c(platform = info_r$platform, R = info_r$version.string, info_qgis)
-  expect_length(info, 7)
+  expect_length(info, 8)
 })
 
 test_that("find_algorithms finds curvature algorithms", {
