@@ -1,11 +1,17 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
-# cache: packages	
+cache: packages	
 
 # artifcats uploading to s3 bucket. times out sometimes for mac builds
 # addons:
 #  artifacts:
 #    s3_region: "eu-central-1" # defaults to "us-east-1"
+
+warnings_are_errors: false
+
+r_github_packages:
+  - jimhester/covr
+  - hadley/devtools
 
 # DO NOT CHANGE THE CODE BELOW
 before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
@@ -64,11 +70,6 @@ matrix:
       latex: false
       sudo: required
       env: LTR_mac=true
-
-warnings_are_errors: false
-
-r_github_packages:
-  - jimhester/covr
 
 # if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.3
 # if we install everything from ubuntugis-ltr deb, we get most recent QGIS but only GDAL1 -> error in tests 
