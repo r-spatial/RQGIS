@@ -1,11 +1,26 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
-# cache: packages	
+cache: packages	
 
 # artifcats uploading to s3 bucket. times out sometimes for mac builds
 # addons:
 #  artifacts:
 #    s3_region: "eu-central-1" # defaults to "us-east-1"
+
+warnings_are_errors: false
+
+r_github_packages:
+  - jimhester/covr
+  - hadley/devtools
+
+# DO NOT CHANGE THE CODE BELOW
+before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
+install: R -q -e 'tic::install()'
+after_install: R -q -e 'tic::after_install()'
+before_script: R -q -e 'tic::before_script()'
+script: R -q -e 'tic::script()'
+after_success: R -q -e 'tic::after_success()'
+after_failure: R -q -e 'tic::after_failure()'
 
 matrix:
   include:
@@ -26,6 +41,14 @@ matrix:
       latex: false
       jdk: oraclejdk9
       env: LTR_Linux=true
+      before_deploy: R -q -e 'tic::before_deploy();remotes::install_github("pat-s/pkgdown")'
+      deploy:
+          provider: script
+          script: R -q -e 'tic::deploy()'
+          on:
+            all_branches: true
+      after_deploy: R -q -e 'tic::after_deploy()'
+      after_script: R -q -e 'tic::after_script()'
       
     # build QGIS NIGHTLY on Linux
     #- os: linux
@@ -47,11 +70,6 @@ matrix:
       latex: false
       sudo: required
       env: LTR_mac=true
-
-warnings_are_errors: false
-
-r_github_packages:
-  - jimhester/covr
 
 # if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.3
 # if we install everything from ubuntugis-ltr deb, we get most recent QGIS but only GDAL1 -> error in tests 
@@ -93,7 +111,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update -y && sudo apt-get install equivs; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then chmod ugo+x inst/travis/gdal-abi.sh; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi-2-1-3_2.1.3_all.deb && sudo rm -rf gdal-abi.control; fi
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi.control; fi
     
   # install latest qgis-ltr using aptitude to resolve dependencies
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo aptitude install -y qgis python-qgis; fi  
@@ -118,6 +136,7 @@ before_install:
   - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
+  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
   
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
@@ -128,6 +147,7 @@ before_script:
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
+  - R -q -e 'tic::before_script()'
 
 notifications:
   slack:
