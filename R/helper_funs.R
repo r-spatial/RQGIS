@@ -501,7 +501,10 @@ save_spatial_objects <- function(params, type_name) {
       # pass_args), then normalize this path in case a Windows user has
       # used backslashes which might lead to trouble when sth. like \t \n or
       # alike appears in the path
-      normalizePath(params[[i]], winslash = "/")
+      tmp = normalizePath(params[[i]], winslash = "/")
+      # if a network folder is given, normalizePath will convert //, \\, \\\\
+      # always into \\\\, however Python doesn't like that
+      gsub("^\\\\\\\\", "//", tmp)
     } else {
       params[[i]]
     }
