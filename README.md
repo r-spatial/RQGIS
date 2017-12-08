@@ -58,9 +58,9 @@
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by establishing a tunnel to the Python QGIS API via the [reticulate-package](https://github.com/rstudio/reticulate). This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also <https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html>). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
 
 Please check also out our paper presenting **RQGIS** in detail:
-<p align="center">
+
 <https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf>
-</p>
+
 <p align="center">
 <img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/r_qgis_puzzle.png" width="40%"/>
 </p>
@@ -199,9 +199,8 @@ plot(out$geometry, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 </p>
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates()`. For a more detailed introduction to **RQGIS** and more complex examples have a look at our paper:
 
-<p align="center">
 <https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf>
-</p>
+
 Advanced topics
 ===============
 
