@@ -59,7 +59,7 @@ RQGIS establishes an interface between R and QGIS, i.e. it allows the user to ac
 
 Please check also out our paper presenting **RQGIS** in detail:
 
-<https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf>
+<a href = "https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf">https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf</a>
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/r_qgis_puzzle.png" width="40%"/>
@@ -199,7 +199,7 @@ plot(out$geometry, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 </p>
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates()`. For a more detailed introduction to **RQGIS** and more complex examples have a look at our paper:
 
-<https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf>
+<a href = "https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf">https://rjournal.github.io/archive/2017/RJ-2017-067/RJ-2017-067.pdf</a>
 
 Advanced topics
 ===============
