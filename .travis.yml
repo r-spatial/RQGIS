@@ -11,7 +11,6 @@ warnings_are_errors: false
 
 r_github_packages:
   - jimhester/covr
-  - hadley/devtools
 
 # DO NOT CHANGE THE CODE BELOW
 before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
@@ -146,8 +145,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "devtools::install_github('edzer/sfr')"; fi
-  - R -q -e 'tic::before_script()'
+  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "install.packages('devtools'); devtools::install_github('edzer/sfr')"; fi
 
 notifications:
   slack:
