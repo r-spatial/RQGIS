@@ -32,14 +32,15 @@ matrix:
       latex: false
       jdk: oraclejdk9
       env: DEPLOY=true LTR_Linux=true
-      before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
-      install: R -q -e 'tic::install()'
-      after_install: R -q -e 'tic::after_install()'
-      before_script: R -q -e 'tic::before_script()'
-      script:
-        - R CMD build .
-      after_success: R -q -e 'tic::after_success()'
-      after_failure: R -q -e 'tic::after_failure()'
+      before_deploy: R -q -e 'tic::before_deploy();remotes::install_github("pat-s/pkgdown")'
+      deploy:
+          provider: script
+          script: R -q -e 'tic::deploy()'
+          on:
+            all_branches: true
+      after_deploy: R -q -e 'tic::after_deploy()'
+      after_script: R -q -e 'tic::after_script()'
+      
     # build QGIS OLD_LTR on Linux
     - os: linux
       dist: trusty
