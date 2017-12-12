@@ -30,7 +30,8 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      jdk: oraclejdk9
+      # jdk: oraclejdk9
+      r_check_args: "--no-tests"
       env: DEPLOY=true
       before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
       install: R -q -e 'tic::install()'
