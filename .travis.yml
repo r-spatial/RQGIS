@@ -23,7 +23,7 @@ after_failure: R -q -e 'tic::after_failure()'
 
 matrix:
   allow_failures: 
-    - env: DEPLOY=true
+    - env: DEPLOY=true LTR_Linux=true
   include:
     # deploy pkgdown docs
     - os: linux
@@ -41,6 +41,7 @@ matrix:
         - R CMD build .
       after_success: R -q -e 'tic::after_success()'
       after_failure: R -q -e 'tic::after_failure()'
+
     # build QGIS OLD_LTR on Linux
     - os: linux
       dist: trusty
