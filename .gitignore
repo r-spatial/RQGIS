@@ -13,4 +13,3 @@ GADM_2.8_DEU_adm1.rds
 .DS*
 inst/travis/gdal-abi.sh
 .Rbuildignore
-README.md
