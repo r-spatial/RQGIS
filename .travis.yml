@@ -32,7 +32,7 @@ matrix:
       latex: false
       # jdk: oraclejdk9
       r_check_args: "--no-tests"
-      env: DEPLOY=true
+      env: DEPLOY=true LTR_Linux=true
       before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
@@ -142,8 +142,8 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
 
   # install qgis
-  - if [[ "${OLD_LTR_mac}" ]]; then brew install grass7 && brew install qgis2-ltr; fi
-  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew install qgis2; fi
+  - if [[ "${OLD_LTR_mac}" ]]; then brew install qgis2-ltr; fi
+  - if [[ "${LTR_mac}" ]]; then brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
