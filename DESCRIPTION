@@ -4,9 +4,15 @@ Type: Package
 Title: Integrating R with QGIS
 Version: 1.0.2.9000
 Authors@R: c(
-    person("Jannes", "Muenchow", , "jannes.muenchow@uni-jena.de", c("aut", "cre")),
-    person("Patrick", "Schratz", , "patrick.schratz@uni-jena.de", role = "aut")
-    )
+    person("Jannes", "Muenchow",
+    email = "jannes.muenchow@uni-jena.de", 
+    role = c("aut", "cre"),
+    comment = c(ORCID = '0000-0001-7834-4717')),
+    person("Patrick", "Schratz", ,
+    email = "patrick.schratz@uni-jena.de", 
+    role = c("aut"),
+    comment = c(ORCID = '0000-0003-0748-6624')
+    ))
 Description: Establishes an interface between R and 'QGIS', i.e. it allows
     the user to access 'QGIS' functionalities from the R console. It achieves this
     by using the 'QGIS' Python API via the command line. Hence, RQGIS extends R's

@@ -407,12 +407,12 @@ qgis_session_info <- function(qgis_env = set_env()) {
   out = out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
               "supported_saga_versions")]
   # if supported_saga_versions is empty (since 2.18) don't return it
-  if (out$supported_saga_versions == "") {
+  if (length(out$supported_saga_versions) == 1 && 
+             out$supported_saga_versions == "") {
     out[names(out) != "supported_saga_versions"]
   } else {
     out
   }
-
 }
 
 #' @title Find and list available QGIS algorithms
@@ -867,14 +867,24 @@ pass_args <- function(alg, ..., params = NULL, qgis_env = set_env()) {
   )
 
   # if the user has only specified an output filename without a directory path,
-  # make sure that the output will be saved to the temporary R folder (not doing
-  # so could sometimes save the output in the temporary QGIS folder)
-  # if the user has not specified any output files, nothing happens
+  # make sure that the output will be saved to the current directory (R default)
+  # if the user has not specified any output files, the QGIS temporary folder
+  # will be used (if None is specified which is the QGIS default)
   params[out$output] <- lapply(params[out$output], function(x) {
     if (basename(x) != "None" && dirname(x) == ".") {
-      normalizePath(file.path(getwd(), x), winslash = "/", mustWork = FALSE)
+      tmp = normalizePath(getwd(), winslash = "/")
+      # if a network folder is given, normalizePath will convert //, \\, \\\\
+      # always into \\\\, however Python doesn't like it (well it would,
+      # however, when passing e.g., "\\\\unstrut" through py_run_string this will
+      # become "\\unstrut", however Python would require either "\\\\unstrut" or
+      # r"\\unstrut")
+      tmp = gsub("^\\\\\\\\", "//", tmp)
+      file.path(tmp, x)
     } else if (basename(x) != "None") {
-      normalizePath(x, winslash = "/", mustWork = FALSE)
+      # make sure the dir path exists
+      normalizePath(dirname(x), winslash = "/", mustWork = TRUE)
+      tmp = normalizePath(x, winslash = "/", mustWork = FALSE)
+      gsub("^\\\\\\\\", "//", tmp)
     } else {
       x
     }
