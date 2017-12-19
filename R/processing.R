@@ -102,9 +102,9 @@ set_env <- function(root = NULL, new = FALSE, dev = TRUE, ...) {
           stdout = TRUE, stderr = TRUE
         )
       )
-
+      
       no_homebrew <- str_detect(path, "find: /usr/local")
-
+      
       if (is.na(no_homebrew[1])) {
         message(paste0(
           "Found no QGIS homebrew installation. ",
@@ -115,16 +115,20 @@ set_env <- function(root = NULL, new = FALSE, dev = TRUE, ...) {
         root <- path
         message("Found QGIS osgeo4mac installation. Setting environment...")
       }
-
+      
       # check for multiple homebrew installations
-      if (length(path) == 2) {
-
+      if (length(path) >= 2) {
+        
         # extract version out of root path
         path1 <-
           as.numeric(regmatches(path[1], gregexpr("[0-9]+", path[1]))[[1]][3])
         path2 <-
           as.numeric(regmatches(path[2], gregexpr("[0-9]+", path[2]))[[1]][3])
-
+        if (length(path) == 3) {
+          path3 <-
+            as.numeric(regmatches(path[3], gregexpr("[0-9]+", path[3]))[[1]][3])
+        }
+        
         # account for 'dev' arg installations are not constant within path ->
         # depend on which version was installed first/last hence we have to
         # catch all possibilites
@@ -142,13 +146,7 @@ set_env <- function(root = NULL, new = FALSE, dev = TRUE, ...) {
           message("Found QGIS osgeo4mac LTR installation. Setting environment...")
         }
       }
-      # just in case if someone has more than 2 QGIS homebrew installations
-      # (very unlikely though)
-      if (length(path) > 2) {
-        stop("Found more than 2 QGIS homebrew installations. 
-             Please clean up or set 'set_env()' manually.")
-      }
-
+      
       # check for Kyngchaos installation
       if (is.null(root)) {
         path <- system("find /Applications -name 'QGIS.app'", intern = TRUE)
