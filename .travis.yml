@@ -142,8 +142,8 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then pip2 install psycopg2 && pip2 install matplotlib && pip2 install pyparsing; fi
 
   # install qgis
-  - if [[ "${OLD_LTR_mac}" ]]; then brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
-  - if [[ "${LTR_mac}" ]]; then brew install grass7 && brew unlink grass7 && brew install qgis2; fi
+  - if [[ "${OLD_LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
+  - if [[ "${LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
   - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
