@@ -413,9 +413,10 @@ setup_mac <- function(qgis_env = set_env()) {
 #' @param params A parameter-argument list as returned by [pass_args()].
 #' @param type_name A character string containing the QGIS parameter type for
 #'   each parameter (boolean, multipleinput, extent, number, etc.) of `params`.
-#'   The Python method `RQGIS.get_args_man` returns a Python dictionary with one
-#'   of its elements corresponding to the type_name (see also the example
+#'   The Python method `RQGIS.get_args_man()` returns a Python dictionary with
+#'   one of its elements corresponding to the type_name (see also the example
 #'   section).
+#' @param NA_flag Value used for NAs when exporting raster objects.
 #' @keywords internal
 #' @examples
 #' \dontrun{
@@ -437,12 +438,12 @@ setup_mac <- function(qgis_env = set_env()) {
 #'                                  type_name = out$type_name)
 #' }
 #' @author Jannes Muenchow
-save_spatial_objects <- function(params, type_name) {
+save_spatial_objects <- function(params, type_name, NA_flag = -99999) {
   lapply(seq_along(params), function(i) {
     tmp <- class(params[[i]])
     if (tmp == "list" && type_name[i] == "multipleinput") {
       names(params[[i]]) <- paste0("inp", 1:length(params[[i]]))
-      out <- save_spatial_objects(params = params[[i]])
+      out <- save_spatial_objects(params = params[[i]], NA_flag = NA_flag)
       return(paste(unlist(out), collapse = ";"))
     }
 
@@ -480,7 +481,7 @@ save_spatial_objects <- function(params, type_name) {
         test <-
           try(writeRaster(
             params[[i]], filename = fname, format = "GTiff",
-            prj = TRUE, overwrite = TRUE
+            prj = TRUE, overwrite = TRUE, NAflag = NA_flag
           ), silent = TRUE)
       )
       if (inherits(test, "try-error")) {
@@ -489,7 +490,7 @@ save_spatial_objects <- function(params, type_name) {
         }
         writeRaster(
           params[[i]], filename = fname, format = "GTiff",
-          prj = TRUE, overwrite = TRUE
+          prj = TRUE, overwrite = TRUE, NAflag = NA_flag
         )
       }
       # return the result

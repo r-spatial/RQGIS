@@ -4,7 +4,7 @@
 \alias{pass_args}
 \title{Specifying QGIS geoalgorithm parameters the R way}
 \usage{
-pass_args(alg, ..., params = NULL, qgis_env = set_env())
+pass_args(alg, ..., params = NULL, NA_flag = -99999, qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the geoalgorithm to use.}
@@ -16,6 +16,9 @@ R named arguments.}
 \code{\link[=get_args_man]{get_args_man()}} for more details. Please note that you can either specify
 R arguments directly via the triple dots (see above) or via the
 parameter-argument list. However, you may not mix the two methods.}
+
+\item{NA_flag}{Value used for NAs when exporting raster objects through
+\code{\link[=save_spatial_objects]{save_spatial_objects()}} (default: -99999).}
 
 \item{qgis_env}{Environment containing all the paths to run the QGIS API. For
 more information, refer to \code{\link[=set_env]{set_env()}}.}

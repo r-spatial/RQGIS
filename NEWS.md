@@ -6,11 +6,11 @@
     * Specifying all parameters of a QGIS geoalgorithm in the "wrong" order caused an error. Issue https://github.com/jannes-m/RQGIS/commit/45aef93c22107b2f34ee5ce4aa16cec485fc9489 solved this problem (@raff-k)
     * `qgis_session_info()` no longer prints the supported saga versions if there is nothing to report (method `supportedVersions` was deleted from `SagaAlgorithmProvider` since  QGIS 2.18.10)
     * `run_qgis()` accepts network addresses as filenames under Windows again (#735e856, @susanatfybr)
+    * `run_qgis()`, `pass_args()` and `save_spatial_objects()` now have an additional parameter named `NA_flag`, which allows to specify a value for NAs when exporting rasters (issue #93 raised by @raff-k and solved through #82e88070).
 
 ## Features
   * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
   * more extensive testing through a new test file (`test-paper-analysis`)
-
 
 # RQGIS 1.0.2
 
