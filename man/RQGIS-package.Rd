@@ -35,11 +35,11 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Jannes Muenchow \email{jannes.muenchow@uni-jena.de}
+\strong{Maintainer}: Jannes Muenchow \email{jannes.muenchow@uni-jena.de} (0000-0001-7834-4717)
 
 Authors:
 \itemize{
-  \item Patrick Schratz \email{patrick.schratz@uni-jena.de}
+  \item Patrick Schratz \email{patrick.schratz@uni-jena.de} (0000-0003-0748-6624)
 }
 
 }

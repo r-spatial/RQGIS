@@ -5,6 +5,7 @@
     * If a user specifies simply a basename for an input or output file, `run_qgis()` will now look for this file in the working directory (`getwd()`) or save it to this locations (suggested by @rkrug).
     * Specifying all parameters of a QGIS geoalgorithm in the "wrong" order caused an error. Issue https://github.com/jannes-m/RQGIS/commit/45aef93c22107b2f34ee5ce4aa16cec485fc9489 solved this problem (@raff-k)
     * `qgis_session_info()` no longer prints the supported saga versions if there is nothing to report (method `supportedVersions` was deleted from `SagaAlgorithmProvider` since  QGIS 2.18.10)
+    * `run_qgis()` accepts network addresses as filenames under Windows again (#735e856, @susanatfybr)
 
 ## Features
   * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
