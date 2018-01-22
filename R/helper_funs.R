@@ -512,10 +512,14 @@ save_spatial_objects <- function(params, type_name, NA_flag = -99999) {
   })
 }
 
-#' @title Retrieve the `GRASS_REGION_PARAMETER`
-#' @description Retrieve the `GRASS_REGION_PARAMETER` by running through a
-#'   parameter-argument list while merging the extents of all spatial objects.
-#' @param params A parameter-argument list as returned by [pass_args()].
+#' @title Retrieve the joint extent of all specified spatial objects
+#' @description Retrieve the joint extent of all specified spatial objects by
+#'   running through a parameter-argument list while merging the extents of all
+#'   spatial objects. This is mostly needed for the `GRASS_REGION_PARAMETER`.
+#'   Still there are geoalgorithms which require an extent object.
+#' @param params A parameter-argument list as returned by [get_args_man()] or
+#'   [pass_args()], which contains all spatial objects from which the joint
+#'   extent should be retrieved.
 #' @param type_name A character string containing the QGIS parameter type for
 #'   each parameter (boolean, multipleinput, extent, number, etc.) of `params`.
 #'   The Python method `RQGIS.get_args_man` returns a Python dictionary with one
@@ -538,52 +542,71 @@ save_spatial_objects <- function(params, type_name, NA_flag = -99999) {
 #' out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
 #' params <- get_args_man(alg)
 #' params$input <- list(r1, r2, r3)
-#' params[] <- save_spatial_objects(alg = alg, params = params,
+#' get_extent(params = params, type_name = out$type_name)
+#' # or if we save the input rasters in files stored on disk
+#' params[] <- save_spatial_objects(params = params,
 #'                                  type_name = out$type_name)
-#' get_grp(params = params, type_name = out$type_name)
+#' get_extent(params = params, type_name = out$type_name)
 #' }
 #' @author Jannes Muenchow
-get_grp <- function(params, type_name) {
+get_extent <- function(params, type_name) {
   ext <- mapply(function(x, y) {
     if (y == "multipleinput") {
-      get_grp(unlist(strsplit(x, split = ";")), "")
-    } else {
-      # We cannot simply use gsub as we have done before (gsub("[.].*",
-      # "",basename(x))) if the filename itself also contains dots, e.g.,
-      # gis.osm_roads_free_1.shp
-      # We could use regexp to cut off the file extension
-      # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
-      # but let's use an already existing function
-      my_layer <- file_path_sans_ext(basename(as.character(x)))
-      # determine bbox in the case of a vector layer
-      tmp <- try(
-        expr = ogrInfo(dsn = x, layer = my_layer)$extent,
-        silent = TRUE
-      )
-      if (!inherits(tmp, "try-error")) {
-        # check if this is always this way (xmin, ymin, xmax, ymax...)
-        extent(tmp[c(1, 3, 2, 4)])
+      # in the case of multiple input use recursion:
+      # if the input is a list of rasters/shapefiles, unlist it, otherwise split
+      # the strings by ; which separates multiple file store locations on disk
+      if (is.list(x)) {
+        get_extent(x, "")
       } else {
-        # determine bbox in the case of a raster
-        ext <- try(
-          expr = GDALinfo(x, returnStats = FALSE),
-          silent = TRUE
-        )
-        # check if it is still an error
-        if (!inherits(ext, "try-error")) {
-          # xmin, xmax, ymin, ymax
-          extent(c(
-            ext["ll.x"],
-            ext["ll.x"] + ext["columns"] * ext["res.x"],
-            ext["ll.y"],
-            ext["ll.y"] + ext["rows"] * ext["res.y"]
-          ))
-        } else {
-          NA
-        }
+        get_extent(unlist(strsplit(x, split = ";")), "") 
+      }
+    } else {
+      # determine bbox in the case of a vector/raster layer residing in R
+      tmp <- try(expr = extent(x), silent = TRUE)
+      # determine bbox in the case of a raster stored on disk
+      if (!inherits(tmp, "try-error")) {
+        tmp 
+      } else {
+        tmp <- try(
+          expr = {
+            ext = GDALinfo(x, returnStats = FALSE)
+            # xmin, xmax, ymin, ymax
+            extent(c(
+              ext["ll.x"],
+              ext["ll.x"] + ext["columns"] * ext["res.x"],
+              ext["ll.y"],
+              ext["ll.y"] + ext["rows"] * ext["res.y"]
+            ))
+          }, silent = TRUE)
+      }
+      # determine bbox in the case of a vector layer stored on disk
+      if (!inherits(tmp, "try-error")) {
+        tmp
+      } else {
+        # We cannot simply use gsub as we have done before (gsub("[.].*",
+        # "",basename(x))) if the filename itself also contains dots, e.g.,
+        # gis.osm_roads_free_1.shp
+        # We could use regexp to cut off the file extension
+        # my_layer <- stringr::str_extract(basename(x), "[A-z].+[^\\.[A-z]]")
+        # but let's use an already existing function
+        tmp = try(
+          # [c(1, 3, 2, 4)] (xmin, ymin, xmax, ymax...) -> check if this is the
+          # case for all vector formats (hopefully)
+          expr <- {
+            my_layer <- file_path_sans_ext(basename(as.character(x)))
+            extent(ogrInfo(dsn = dirname(as.character(x)), 
+                           layer = my_layer)$extent[c(1, 3, 2, 4)])
+          }, silent = TRUE) 
+      }
+      # return tmp if an extent could be determined, if not return NA for the
+      # given object object
+      if (!inherits(tmp, "try-error")) {
+        tmp
+      } else {
+        NA
       }
     }
-  }, x = params, y = type_name)
+  }, x = params, y = type_name, SIMPLIFY = FALSE)
   # now that we have possibly several extents, union them
   ext <- ext[!is.na(ext)]
   ext <- Reduce(raster::merge, ext)
@@ -597,7 +620,6 @@ get_grp <- function(params, type_name) {
   ext <- gsub(",", ".", ext[1:4])
   ext
 }
-
 
 #' @title Check if RQGIS is loaded on a server
 #' @description Performs cross-platform (Unix, Windows) and OS (Debian/Ubuntu) checks for a server infrastructure

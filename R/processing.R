@@ -730,7 +730,8 @@ get_args_man <- function(alg = "", options = TRUE,
 #' pass_args(alg, elevation = dem, format = "degrees")
 #' }
 
-pass_args <- function(alg, ..., params = NULL, NA_flag = -99999, qgis_env = set_env()) {
+pass_args <- function(alg, ..., params = NULL, NA_flag = -99999, 
+                      qgis_env = set_env()) {
   dots <- list(...)
   if (!is.null(params) && (length(dots) > 0)) {
     stop(paste(
@@ -882,22 +883,23 @@ pass_args <- function(alg, ..., params = NULL, NA_flag = -99999, qgis_env = set_
     }
   })
 
-  # set the bbox in the case of GRASS functions if it hasn't already been
-  # provided (if there are more of these 3rd-party based specifics, put them in
-  # a new function)
-  if (grepl("grass7?:", alg) &&
-    grepl("None", params$GRASS_REGION_PARAMETER)) {
+  # provide automatically extent objects in case the user has not specified them
+  # (most often needed for the GRASS_REGION_PARAMETER)
+  
+  ind = out$type_name == "extent" & (params == "\"None\"" | params == "None")
+  if (any(ind)) {
     # run through the arguments and check if we can extract a bbox. While doing
     # so, dismiss the output arguments. Not doing so could cause R to crash
     # since the output-file might already exist. For instance, the already
     # existing output might have another CRS.
-    ext <- get_grp(
+    ext <- get_extent(
       params = params[!out$output],
       type_name = out$type_name[!out$output]
     )
     # final bounding box in the QGIS/GRASS notation
-    params$GRASS_REGION_PARAMETER <- paste(ext, collapse = ",")
-  }
+    params[ind] <- paste(ext, collapse = ",")
+    }    
+
   # make sure function again arguments are in the correct order is not srictly
   # necessary any longer since we use a Python dictionary to pass our arguments.
   # However, otherwise, the user might become confused... and for

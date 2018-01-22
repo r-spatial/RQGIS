@@ -11,6 +11,7 @@
 ## Features
   * `get_args_man()`, `run_qgis()` and `pass_args()` now print which default options were chosen (suggested by @rkrug).
   * more extensive testing through a new test file (`test-paper-analysis`)
+  * `get_grp()` was replaced by the more generic `get_extent()`. If a geoalgorithm requires an extent object it will be computed automatically from the provided input spatial objects (if not specified explicitly by the user) (#95).
 
 # RQGIS 1.0.2
 
