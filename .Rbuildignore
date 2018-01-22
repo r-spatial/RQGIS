@@ -13,3 +13,5 @@ docs/
 LICENSE
 ^revdep$
 known_issues.Rmd
+tic.R
+_pkgdown.yml

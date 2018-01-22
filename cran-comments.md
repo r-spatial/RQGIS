@@ -1,7 +1,7 @@
 ## Test environments
-* local Windows installation, R 3.4.2 and win-builder (devel)
-* local Ubuntu 16.04 installation, R 3.4.2
-* local OS X installation, R 3.4.2
+* local Windows installation, R 3.4.3 and win-builder (devel)
+* local Ubuntu 16.04 installation, R 3.4.3
+* local OS X installation, R 3.4.3
 
 ## R CMD check results
 Status: OK

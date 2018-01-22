@@ -1,4 +1,4 @@
-# RQGIS 1.0.2.9000
+# RQGIS 1.0.3
 
 ## Bugs
   * Linux: `qgis_session_info()` now tries several times to find out about the installed GRASS version (`find` frequently fails at the first attempt when used witin a function), and additionally suppresses a confusing warning message regarding access rights (permission denied when trying to access points.shp, however these points are accessed regardless of this message since they are used to test if GRASS can be accessed which is the case).
