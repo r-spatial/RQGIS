@@ -58,11 +58,12 @@ test_that("Test, if multiple input works with pass_args?", {
   expect_identical(params$GRASS_REGION_PARAMETER, "-10.8,28.8,-10.8,30.6")
   
   # check if extent is also working for extent objects other than GRP
-  alg <- "saga:resampling"
-  params <- pass_args(alg, INPUT = dem)
-  expect_identical(
-    params$OUTPUT_EXTENT, 
-    "794599.107614635,798208.557614635,8931774.87460253,8935384.32460253")
+  # only works for >= SAGA 2.3, hence skip as long we are using QGIS 2.14
+  # alg <- "saga:resampling"
+  # params <- pass_args(alg, INPUT = dem)
+  # expect_identical(
+  #   params$OUTPUT_EXTENT, 
+  #   "794599.107614635,798208.557614635,8931774.87460253,8935384.32460253")
   
   # also write a test for shapefiles -> find a function that takes multiple
   # shapefiles as input (ParameterMultipleInput), e.g., grass7:v.patch
