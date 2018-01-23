@@ -29,6 +29,10 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
 })
 
 test_that("get_extent is working correctly", {
+  testthat::skip_on_appveyor()
+  # testthat::skip_on_travis()
+  testthat::skip_on_cran()
+  
   # test multiple rasters
   r1 = raster(extent(0, 1, 1, 2), nrows = 2, ncols = 2)
   r2 = raster(extent(-2, 2, 0, 1), nrow = 2, ncols = 3)

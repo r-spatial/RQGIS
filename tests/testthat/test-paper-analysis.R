@@ -7,6 +7,10 @@ context("paper")
 
 
 test_that("qgis_session_info yields a list as output", {
+  skip_on_appveyor()
+  skip_on_cran()
+  # testthat::skip_on_travis()
+  
   info_r <- version
   info_qgis <- qgis_session_info()
   info <- c(platform = info_r$platform, R = info_r$version.string, info_qgis)
@@ -14,6 +18,10 @@ test_that("qgis_session_info yields a list as output", {
 })
 
 test_that("find_algorithms finds curvature algorithms", {
+  skip_on_appveyor()
+  skip_on_cran()
+  # testthat::skip_on_travis()
+  
   algs <- find_algorithms(
     search_term = "curvature",
     name_only = TRUE
@@ -22,6 +30,10 @@ test_that("find_algorithms finds curvature algorithms", {
 })
 
 test_that("get_usage finds grass7:r.slope.aspect", {
+  skip_on_appveyor()
+  skip_on_cran()
+  # testthat::skip_on_travis()
+  
   use <- get_usage(alg = "grass7:r.slope.aspect", intern = TRUE)
   expect_match(use, "ALGORITHM: r.slope.aspect")
 })
@@ -30,6 +42,10 @@ test_that(paste(
   "Test that all terrain attributes can be derived and that",
   "the model can be fitted"
 ), {
+  skip_on_appveyor()
+  skip_on_cran()
+  # testthat::skip_on_travis()
+  
   params <- get_args_man(alg = "grass7:r.slope.aspect")
   expect_length(params, 17)
   # Calculate curvatures
@@ -130,6 +146,10 @@ test_that(paste(
 })
 
 test_that("Test that we can call the PYQGIS API directly", {
+  skip_on_appveyor()
+  skip_on_cran()
+  # testthat::skip_on_travis()
+  
   met <- py_run_string("methods = dir(RQGIS)")$methods
   expect_gt(length(met), 5)
 
