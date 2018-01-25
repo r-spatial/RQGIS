@@ -4,16 +4,18 @@
 \alias{save_spatial_objects}
 \title{Save spatial objects}
 \usage{
-save_spatial_objects(params, type_name)
+save_spatial_objects(params, type_name, NA_flag = -99999)
 }
 \arguments{
 \item{params}{A parameter-argument list as returned by \code{\link[=pass_args]{pass_args()}}.}
 
 \item{type_name}{A character string containing the QGIS parameter type for
 each parameter (boolean, multipleinput, extent, number, etc.) of \code{params}.
-The Python method \code{RQGIS.get_args_man} returns a Python dictionary with one
-of its elements corresponding to the type_name (see also the example
+The Python method \code{RQGIS.get_args_man()} returns a Python dictionary with
+one of its elements corresponding to the type_name (see also the example
 section).}
+
+\item{NA_flag}{Value used for NAs when exporting raster objects.}
 }
 \description{
 The function saves spatial objects (\code{sp}, \code{sf} and \code{raster}) to
