@@ -2,6 +2,7 @@
 
 - `grass7:r.viewshed` does not work under Linux (under Windows it does...)
 ```{r, eval = FALSE}
+library("RQGIS")
 data("dem")
 data("random_points")
 
@@ -27,10 +28,11 @@ run_qgis("grass7:r.watershed", drainage = "drain.tif", elevation = dem,
          load_output = TRUE)
 ```
 
-- `qgis:intersection` produces under Linux the same result when running twice with different input layers. Under Windows it works (issue #74).
+- `qgis:intersection` produces under Linux the same result when running twice with different input layers. Under Windows it works (issue #74). The problem is resolved when using the unlock-branch, i.e., when explicitly loading and registering spatial objects in QGIS (see `?qgis_load_geom()`) as well as unregistering the objects after the successful geoprocessing (internally done in `run_qgis()`).
 
 ```{r, eval = FALSE}
-library(sp)
+library("sp")
+library("sf")
 crds <- cbind(x=c(0, 0, 400, 400, 0), y=c(0, 400, 400, 0, 0))
 Pl <- Polygon(crds)
 ID <- "1"
@@ -53,9 +55,8 @@ SPls <- SpatialPolygons(list(Pls))
 df <- data.frame(value=1, row.names=ID)
 SPDF3 <- SpatialPolygonsDataFrame(SPls, df)
 
-library(RQGIS)
 # RQGIS::set_env("/Applications/QGIS.app")
-set_env(dev = TRUE)
+# set_env()
 plot(st_geometry(st_as_sf(SPDF1)), xlim = c(-400, 400), ylim = c(-400, 600))
 plot(st_geometry(st_as_sf(SPDF2)), add = TRUE)
 plot(st_geometry(st_as_sf(SPDF3)), add = TRUE)
@@ -66,7 +67,7 @@ plot(st_geometry(test1), add = TRUE, col = "red")
 test2 <- RQGIS::run_qgis("qgis:intersection", INPUT = SPDF1, INPUT2 = SPDF3, 
                          OUTPUT = file.path(tempdir(), "test2.shp"),
                          load_output = TRUE)
-plot(test2, add = TRUE, col = "blue")
+plot(st_geometry(test2), add = TRUE, col = "blue")
 identical(test1, test2)
 ```
 
