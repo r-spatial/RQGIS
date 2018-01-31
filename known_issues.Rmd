@@ -81,4 +81,3 @@ run_qgis(alg = "saga:gridbuffer", FEATURES = dem,
          DIST = "1")
 ```
 
-- `grass7:i.segment`: QGIS runs infinite using a large input raster with many NA values, QGIS 2.18.14 and GRASS GIS 7.2.2 (issue #90)
