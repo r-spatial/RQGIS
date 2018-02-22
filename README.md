@@ -55,7 +55,7 @@
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
-#### Attention
+### Attention RQGIS users
 
 Please use the QGIS LTR **2.18** since RQGIS so far does not support QGIS 3!!
 
