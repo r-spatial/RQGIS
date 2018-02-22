@@ -43,8 +43,7 @@ rvers = "3.2.0"
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
 
-
-#### Attention
+### Attention RQGIS users
 Please use the QGIS LTR **2.18** since RQGIS so far does not support QGIS 3!!
 
 RQGIS establishes an interface between R and QGIS, i.e. it allows the user to access QGIS functionalities from within R. It achieves this by establishing a tunnel to the Python QGIS API via the [reticulate-package](https://github.com/rstudio/reticulate). This provides the user with an extensive suite of GIS functions, since QGIS allows you to call native as well as third-party algorithms via its processing framework (see also [https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html](https://docs.qgis.org/2.14/en/docs/user_manual/processing/index.html)). Third-party providers include among others GDAL, GRASS GIS, SAGA GIS, the Orfeo Toolbox, TauDEM and tools for LiDAR data. RQGIS brings you this incredibly powerful geoprocessing environment to the R console.
