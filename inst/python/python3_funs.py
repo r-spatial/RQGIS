@@ -30,3 +30,18 @@ def qgis_session_info():
     values = [qgis, gdal_v, g7, saga]
     info = dict(zip(keys, values))
     return info
+
+def get_options(alg):
+  alg = QgsApplication.processingRegistry().createAlgorithmById(alg)	
+  opts = dict()
+  for i in alg.params:
+    tmp = i.toVariantMap()
+    if "options" in tmp.keys():
+      out = list()
+      ls = tmp["options"]
+      for j in range(len(ls)):
+        out.append(str(j) + " - " + ls[j])
+      key = tmp["name"] + "(" + tmp["description"] + ")"
+      opts[key] = out  
+  return(opts)
+
