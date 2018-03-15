@@ -494,6 +494,9 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 get_usage <- function(alg = NULL, intern = FALSE,
                       qgis_env = set_env()) {
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
+  
+  # QGIS 3: use algorithmHelp instead
+  # from processing.tools.general import algorithmHelp
   out <-
     py_capture_output(py_run_string(sprintf("processing.alghelp('%s')", alg)))
   out <- gsub("^\\[|\\]$|'", "", out)
