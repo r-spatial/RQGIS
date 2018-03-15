@@ -1,3 +1,4 @@
+import os
 import re
 import webbrowser
 
@@ -7,7 +8,8 @@ from processing.algs.grass7.Grass7Utils import Grass7Utils
 from osgeo import gdal
 from processing.tools.system import isWindows, isMac
 
-
+# Author: Victor Olaya, Jannes Muenchow
+# Method to return versions of QGIS and third-party providers
 def qgis_session_info():
   # import re
   # from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
@@ -42,21 +44,97 @@ def qgis_session_info():
   info = dict(zip(keys, values))
   return info
 
+# Author: Victor Olaya, Jannes Muenchow
+# Method to return all available geoalgorithms
+def alglist():
+  s = ''
+  for i in QgsApplication.processingRegistry().algorithms():
+    l = i.displayName().ljust(50, "-")
+    r = i.id()
+    s += '{}--->{}\n'.format(l, r)
+  print(s)
+
+# Author: Victor Olaya, Jannes Muenchow
+# Method to give back available options
+# inspired by:
+# from processing.tools.general import algorithmHelp
 def get_options(alg):
-  alg = QgsApplication.processingRegistry().createAlgorithmById(alg)	
-  opts = dict()
-  for i in alg.params:
-    tmp = i.toVariantMap()
-    if "options" in tmp.keys():
-      out = list()
-      ls = tmp["options"]
-      for j in range(len(ls)):
-        out.append(str(j) + " - " + ls[j])
-      key = tmp["name"] + "(" + tmp["description"] + ")"
-      opts[key] = out  
-  return(opts)
+  alg = QgsApplication.processingRegistry().algorithmById(alg)
+  for p in alg.parameterDefinitions():
+    # print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
+    # if p.description():
+    #   print('\t' + p.description())
+    if isinstance(p, QgsProcessingParameterEnum):
+      if p.description():
+        print('\t' + p.name() + ' (' + p.description() + ')')
+      opts = []
+      for i, o in enumerate(p.options()):
+        opts.append('\t\t{} - {}'.format(i, o))
+      print('\n'.join(opts))
 
+# def get_options(alg):
+#   alg = QgsApplication.processingRegistry().createAlgorithmById(alg)
+#   opts = dict()
+#   for i in alg.params:
+#     tmp = i.toVariantMap()
+#     if "options" in tmp.keys():
+#       out = list()
+#       ls = tmp["options"]
+#       for j in range(len(ls)):
+#         out.append(str(j) + " - " + ls[j])
+#       key = tmp["name"] + "(" + tmp["description"] + ")"
+#       opts[key] = out
+#   return(opts)
 
+# Author: Jannes Muenchow, Victor Olaya
+# Method to retrieve geoalgorithm parameter names, default values, output
+# parameters, parameter options, and type_names
+def get_args_man(alg):
+  alg = QgsApplication.processingRegistry().createAlgorithmById(alg)
+  # parameter names
+  params = []
+  # default values
+  vals = []
+  # output boolean 
+  output = []
+  # parameter value type (vector, raster, multiple, etc.)
+  type_name = []
+  # options boolean (maybe no longer necessary...)
+  opts = []
+  outs = []
+  for i in alg.outputDefinitions():
+    outs.append(i.name())
+  
+  for i in alg.parameterDefinitions():
+    # parameter names
+    params.append(i.name())
+    # add boolean if parameter is an option
+    if isinstance(i, QgsProcessingParameterEnum):
+        opts.append(True)
+    else:
+        opts.append(False)
+    # check if this is an output parameter
+    if i.name() in outs:
+        output.append(True)
+    else:
+        output.append(False)
+    # default values
+    vals.append(i.defaultValue())
+    # types
+    # this returns source, field, enum, number, sink
+    # in QGIS 18 it was vector, raster, tablefield, selection, number, extent
+    # so maybe we have to adjust (not sure what we need the type for
+    type_name.append(i.typeName())
+  
+  args = dict(zip(["params", "vals", "opts", "output", "type_name"], \
+                  [params, vals, opts, output, type_name]))
+  return args 
+
+# Author: Victor Olaya, Jannes Muenchow
+# Method to open automatically the online help for a specific geoalgorithm
+# copied from baseHelpForAlgorithm in processing\tools\help.py (QGIS 2)
+# from processing.tools.help import *
+# find the provider (qgis, saga, grass, etc.)
 def open_help(alg):
   # import re
   # import webbrowser
