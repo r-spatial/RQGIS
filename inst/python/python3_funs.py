@@ -215,3 +215,9 @@ class RQGIS:
       webbrowser.open(url)
     finally:
       os.dup2(savout, 1)
+    
+  # check if all necessary function arguments were provided
+  # inspired by runAlgorithm from processing/core/Processing 
+  # probably not available for QGIS3, check as soon you can use
+  # QGIS3 via reticulate
+  # def check_args(self, alg, args):
