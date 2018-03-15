@@ -137,7 +137,7 @@ class RQGIS:
     opts = []
     
     for i in alg.outputDefinitions():
-      outs.append(i.name())
+      out_tmp.append(i.name())
     
     for i in alg.parameterDefinitions():
       # parameter names
@@ -148,7 +148,7 @@ class RQGIS:
       else:
         opts.append(False)
       # check if this is an output parameter
-      if i.name() in outs:
+      if i.name() in out_tmp:
         output.append(True)
       else:
         output.append(False)
