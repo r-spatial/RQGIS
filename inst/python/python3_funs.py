@@ -157,7 +157,7 @@ class RQGIS:
       else:
         output.append(False)
       # default values
-      vals.append(i.defaultValue())
+      vals.append(str(i.defaultValue()))
       # types
       # this returns source, field, enum, number, sink
       # in QGIS 18 it was vector, raster, tablefield, selection, number, extent
