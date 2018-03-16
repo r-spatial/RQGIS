@@ -20,6 +20,10 @@ __date__ = 'May 2018'
 __copyright__ = '(C) 2018, Jannes Muenchow, Victor Olaya'
 
 import os, re, webbrowser
+from qgis.core import (QgsSettings, 
+                       Qgis, 
+                       QgsApplication, 
+                       QgsProcessingParameterEnum)
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.algs.saga import SagaUtils
 from processing.algs.grass7.Grass7Utils import Grass7Utils
@@ -42,7 +46,7 @@ class RQGIS:
   
   # Author: Victor Olaya, Jannes Muenchow
   # Method to return versions of QGIS and third-party providers
-  def qgis_session_info():
+  def qgis_session_info(self):
     # import re
     # from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
     # from processing.algs.saga import SagaUtils
@@ -79,7 +83,7 @@ class RQGIS:
     
   # Author: Victor Olaya, Jannes Muenchow
   # Method to return all available geoalgorithms
-  def alglist():
+  def alglist(self):
     s = ''
     for i in QgsApplication.processingRegistry().algorithms():
       l = i.displayName().ljust(50, "-")
@@ -91,7 +95,7 @@ class RQGIS:
   # Method to give back available options
   # inspired by:
   # from processing.tools.general import algorithmHelp
-  def get_options(alg):
+  def get_options(self, alg):
     alg = QgsApplication.processingRegistry().algorithmById(alg)
     for p in alg.parameterDefinitions():
       # print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
@@ -122,7 +126,7 @@ class RQGIS:
   # Author: Jannes Muenchow, Victor Olaya
   # Method to retrieve geoalgorithm parameter names, default values, output
   # parameters, parameter options, and type_names
-  def get_args_man(alg):
+  def get_args_man(self, alg):
     alg = QgsApplication.processingRegistry().createAlgorithmById(alg)
     # parameter names
     params = []
@@ -169,7 +173,7 @@ class RQGIS:
   # copied from baseHelpForAlgorithm in processing\tools\help.py (QGIS 2)
   # from processing.tools.help import *
   # find the provider (qgis, saga, grass, etc.)
-  def open_help(alg):
+  def open_help(self, alg):
     # import re
     # import webbrowser
     alg = QgsApplication.processingRegistry().createAlgorithmById(alg)	
