@@ -1,3 +1,5 @@
+library("reticulate")
+
 Sys.setenv(OSGEO4W_ROOT = "C:\\OSGeo4W64")
 shell("ECHO %OSGEO4W_ROOT%")
 # REM start with clean path
@@ -22,7 +24,6 @@ Sys.setenv(QGIS_PREFIX_PATH = "C:\\OSGeo4W64\\apps\\qgis")
 # set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\apps\qgis\qtplugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 # shell.exec("python3")  # yeah, it works!!!
 
-library("reticulate")
 use_python(
   file.path("C:\\OSGeo4W64", "bin/python3.exe"),
   required = TRUE
@@ -35,10 +36,31 @@ py_run_string("from PyQt5.QtCore import *")
 py_run_string("from PyQt5.QtGui import *")
 py_run_string("from qgis.gui import *")
 py_run_string("QgsApplication.setPrefixPath('C:/OSGeo4W64/apps/qgis', True)")
-py_run_string("QgsApplication.showSettings()")
+# py_run_string("QgsApplication.showSettings()")
+
+# not running the next two lines leads to a Qt problem when running 
+# QgsApplication([], True)
+# browseURL("http://wiki.qt.io/Deploy_an_Application_on_Windows")
+py_run_string("from qgis.PyQt.QtCore import QCoreApplication")
+# the strange thing is shell.exec(python3) works without it because here 
+# all Qt paths are available as needed as set in SET QT_PLUGIN_PATH
+# but these are not available when running Python3 via reticulate
+py_run_string("a = QCoreApplication.libraryPaths()")$a  # empty list
+# so, we need to set them again
+py_run_string("QCoreApplication.setLibraryPaths(['C:/OSGEO4~1/apps/qgis/plugins', 'C:/OSGEO4~1/apps/qgis/qtplugins', 'C:/OSGEO4~1/apps/qt5/plugins', 'C:/OSGeo4W64/apps/qt4/plugins', 'C:/OSGeo4W64/bin'])")
+py_run_string("a = QCoreApplication.libraryPaths()")$a
+
 py_run_string("app = QgsApplication([], True)")
 py_run_string("QgsApplication.initQgis()")
 py_run_string("sys.path.append(r'C:/OSGeo4W64/apps/qgis/python/plugins')")
 py_run_string("from processing.core.Processing import Processing")
 py_run_string("Processing.initialize()")
 py_run_string("import processing")
+
+py_run_string("sys.path.append(r'D:/programming/R/RQGIS/RQGIS/inst/python')")
+py_run_string("from python3_funs import RQGIS")
+py_run_string("RQGIS = RQGIS()")
+py_capture_output(py_run_string("RQGIS.alglist()"))
+py_run_string("a = RQGIS.qgis_session_info()")$a
+py_run_string("b = RQGIS.get_args_man('qgis:distancematrix')")$b
+
