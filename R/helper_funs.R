@@ -139,7 +139,8 @@ setup_win <- function(qgis_env = set_env()) {
   setwd("C:/")
   windir <- shell("ECHO %WINDIR%", intern = TRUE)
   windir <- normalizePath(windir, "/")
-
+  
+  # start with a fresh PATH
   Sys.setenv(PATH = paste(
     file.path(qgis_env$root, "bin"),
     file.path(windir, "system32"),
