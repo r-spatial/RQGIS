@@ -297,7 +297,7 @@ open_app <- function(qgis_env = set_env()) {
   # alghelp)
   py_file <- system.file("python", "python_funs.py", package = "RQGIS")
   py_run_file(py_file)
-  # initialize our RQGIS class
+  # instantiate/initialize RQGIS class
   py_run_string("RQGIS = RQGIS()")
 }
 
