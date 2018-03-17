@@ -63,4 +63,5 @@ py_run_string("RQGIS = RQGIS()")
 py_capture_output(py_run_string("RQGIS.alglist()"))
 py_run_string("a = RQGIS.qgis_session_info()")$a
 py_run_string("b = RQGIS.get_args_man('qgis:distancematrix')")$b
-
+cat(py_capture_output(py_run_string("RQGIS.alghelp('qgis:distancematrix')")))
+cat(py_capture_output(py_run_string("RQGIS.get_options('qgis:distancematrix')")))
