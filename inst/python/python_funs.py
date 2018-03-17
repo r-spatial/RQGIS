@@ -57,6 +57,21 @@ class RQGIS:
     # could be also something useful. If not needed, use pass
     pass
   
+  # Author: Victor Olaya, Jannes Muenchow
+  # Method to list all available processing geoalgorithms
+  def alglist(self):
+    return(processing.alglist())
+  
+  # Author: Victor Olaya, Jannes Muenchow
+  # Method to show help
+  def alghelp(self, alg):
+    return(processing.alghelp(alg))
+  
+  # Author: Victor Olaya, Jannes Muenchow
+  # Method to show options of a geoalgorithm
+  def algoption(self, alg):
+    return(processing.algoptions(alg))
+  
   # Author: Jannes Muenchow, Victor Olaya
   # Method to retrieve geoalgorithm arguments
   def get_args_man(self, alg):

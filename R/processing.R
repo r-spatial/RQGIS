@@ -443,7 +443,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   # Advantage of this approach: we are using directly alglist and do not have to
   # save it in inst
   # Disadvantage: more processing
-  algs <- py_capture_output(py_run_string("processing.alglist()"))
+  algs <- py_capture_output(py_run_string("RQGIS.alglist()"))
   algs <- gsub("\n", "', '", algs)
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
@@ -495,11 +495,10 @@ get_usage <- function(alg = NULL, intern = FALSE,
                       qgis_env = set_env()) {
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
   
-  # QGIS 3: use algorithmHelp instead
-  # from processing.tools.general import algorithmHelp
   out <-
-    py_capture_output(py_run_string(sprintf("processing.alghelp('%s')", alg)))
+    py_capture_output(py_run_string(sprintf("RQGIS.alghelp('%s')", alg)))
   out <- gsub("^\\[|\\]$|'", "", out)
+  # some refining needed here, e.g., in case of qgis:distancematrix
   out <- gsub(", ", "\n", out)
   if (intern) {
     out
@@ -530,7 +529,7 @@ get_options <- function(alg = "", intern = FALSE,
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
   out <-
     py_capture_output(py_run_string(
-      sprintf("processing.algoptions('%s')", alg)
+      sprintf("RQGIS.algoptions('%s')", alg)
     ))
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)

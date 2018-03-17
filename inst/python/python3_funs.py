@@ -24,6 +24,7 @@ from qgis.core import (QgsSettings,
                        Qgis, 
                        QgsApplication, 
                        QgsProcessingParameterEnum)
+from processing.tools.general import algorithmHelp
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.algs.saga import SagaUtils
 from processing.algs.grass7.Grass7Utils import Grass7Utils
@@ -91,6 +92,10 @@ class RQGIS:
       s += '{}--->{}\n'.format(l, r)
     print(s)
   
+  def alghelp(self, alg):
+  # QGIS 3: use algorithmHelp instead
+  # from processing.tools.general import algorithmHelp
+    return(algorithmHelp(alg))
   # Author: Victor Olaya, Jannes Muenchow
   # Method to give back available options
   # inspired by:
