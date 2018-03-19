@@ -393,15 +393,7 @@ qgis_session_info <- function(qgis_env = set_env()) {
   }
 
   # sort it again since Python dictionary sorting is random
-  out = out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
-              "supported_saga_versions")]
-  # if supported_saga_versions is empty (since 2.18) don't return it
-  if (length(out$supported_saga_versions) == 1 && 
-             out$supported_saga_versions == "") {
-    out[names(out) != "supported_saga_versions"]
-  } else {
-    out
-  }
+  out[sort(names(out))]
 }
 
 #' @title Find and list available QGIS algorithms
@@ -529,7 +521,7 @@ get_options <- function(alg = "", intern = FALSE,
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
   out <-
     py_capture_output(py_run_string(
-      sprintf("RQGIS.algoptions('%s')", alg)
+      sprintf("RQGIS.get_options('%s')", alg)
     ))
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
@@ -909,11 +901,11 @@ pass_args <- function(alg, ..., params = NULL, NA_flag = -99999,
   # here has also the advantage that the function tells the user all missing
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-
+  
+  # RQGIS.check_args() only available for QGIS 2
   check <- py_run_string(sprintf(
     "check = RQGIS.check_args('%s', %s)", alg,
-    py_unicode(r_to_py(unlist(params)))
-  ))$check
+    paste0("[", convert_to_tuple(params), "]")))$check
   # stop the function if wrong arguments were supplied, e.g.,
   # 'grass7:r.slope.aspect":
   # format must be an integer, so you cannot supply "hallo", the same goes for
@@ -923,7 +915,8 @@ pass_args <- function(alg, ..., params = NULL, NA_flag = -99999,
       "Invalid argument value '%s' for parameter '%s'\n",
       check, names(check)
     ))
-  }
+  }  
+  
   # # clean up after yourself!!
   py_run_string(
     "try:\n  del(out, opts, check)\nexcept:\  pass"
@@ -1052,24 +1045,16 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # one long string. Maybe it would work even if we did not explicitly take care
   # of this. But to be on the safe side, we proceed as follows:
 
-  vals <- vapply(params, function(x) {
-    # get rid off 'strange' or incomplete shellQuotes
-    tmp <- unlist(strsplit(as.character(x), ""))
-    tmp <- tmp[tmp != "\""]
-    # paste the argument together again
-    tmp <- paste(tmp, collapse = "")
-    # shellQuote argument if is not True, False or None
-    ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
-  }, character(1))
-  # paste the function arguments together
-  args <- paste(vals, collapse = ", ")
-
   # convert R parameter-argument list into a Python dictionary
-  py_run_string(paste("args = ", r_to_py(args)))
-  py_run_string(paste0("params = ", py_unicode(r_to_py(names(params)))))
+  py_run_string(paste0("args = ", convert_to_tuple(params)))  # argument tuple
+  # r_to_py(paste0("args = ", convert_to_tuple(params)))
+  # r_to_py(paste0("params = ", convert_to_tuple(names(params))))
+  py_run_string(paste0("params = ", convert_to_tuple(names(params))))  # name tuple
   py_run_string("params = dict((x, y) for x, y in zip(params, args))")
 
-  cmd <- paste(sprintf("res = processing.runalg('%s', params)", alg))
+  cmd <- 
+    paste(sprintf(
+      "res = Processing.runAlgorithm(algOrName = '%s', parameters = params, feedback = QgsProcessingFeedback())", alg))
 
   # run QGIS
   msg <- py_capture_output(py_run_string(cmd))
