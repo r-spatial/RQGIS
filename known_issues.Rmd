@@ -98,9 +98,14 @@ st_transform(4326)
                                                                               
 # grass7 ------------------------------------------------------------------   
 # https://grass.osgeo.org/grass74/manuals/v.rast.stats.html                   
+set_env(dev = FALSE)
 alg = "grass7:v.rast.stats"                                                   
 get_usage(alg)                                                                
 
-tmp = run_qgis(alg, map = zion, raster = srtm, column_prefix = "new_",    
-               output = "new_zion.shp", load_output = TRUE)     
+tmp = run_qgis(alg, 
+               map = zion, 
+               raster = srtm, 
+               column_prefix = "new_",    
+               output = file.path(tempdir(), "new_zion.shp"),
+               load_output = TRUE)     
 ```
