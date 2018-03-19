@@ -46,8 +46,18 @@ py_run_string("from qgis.PyQt.QtCore import QCoreApplication")
 # all Qt paths are available as needed as set in SET QT_PLUGIN_PATH
 # but these are not available when running Python3 via reticulate
 py_run_string("a = QCoreApplication.libraryPaths()")$a  # empty list
-# so, we need to set them again
-py_run_string("QCoreApplication.setLibraryPaths(['C:/OSGEO4~1/apps/qgis/plugins', 'C:/OSGEO4~1/apps/qgis/qtplugins', 'C:/OSGEO4~1/apps/qt5/plugins', 'C:/OSGeo4W64/apps/qt4/plugins', 'C:/OSGeo4W64/bin'])")
+# so, we need to set them again 
+# I have looked them up in the QGIS 3 GUI using QCoreApplication.libraryPaths()
+# py_run_string("QCoreApplication.setLibraryPaths(['C:/OSGEO4~1/apps/qgis/plugins', 'C:/OSGEO4~1/apps/qgis/qtplugins', 'C:/OSGEO4~1/apps/qt5/plugins', 'C:/OSGeo4W64/apps/qt4/plugins', 'C:/OSGeo4W64/bin'])")
+py_run_string(
+  sprintf("QCoreApplication.setLibraryPaths(['%s', '%s', '%s', '%s'])",
+          file.path(qgis_env$root, "apps/qgis/plugins"),
+          file.path(qgis_env$root, "apps/qgis/qtplugins"),
+          file.path(qgis_env$root, "apps/qt5/plugins"),
+          file.path(qgis_env$root, "apps/qt4/plugins"),
+          file.path(qgis_env$root, "bin"))
+  )
+              
 py_run_string("a = QCoreApplication.libraryPaths()")$a
 
 py_run_string("app = QgsApplication([], True)")

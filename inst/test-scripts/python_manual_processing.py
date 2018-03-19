@@ -1,4 +1,4 @@
-# Python 3
+# Python 3=================================================
 # in R open Python3 shell
 # shell.exec("C:/OSGeo4W64/bin/python-qgis.bat")  # Windows R command
 # or run:
@@ -49,8 +49,7 @@ RQGIS.alglist()
 RQGIS.qgis_session_info()
 RQGIS.get_args_man('qgis:distancematrix')
 
-# Python 2
-=======
+# Python 2=================================================
 # open python-qgis-ltr.bat
 # shell.exec("C:/OSGeo4W64/bin/python-qgis-ltr.bat")  # Windows R command
 import os, sys, re, webbrowser
