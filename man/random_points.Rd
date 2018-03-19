@@ -3,7 +3,7 @@
 \name{random_points}
 \alias{random_points}
 \title{Random points.}
-\format{A \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} object with 100 rows and 4
+\format{An \link{sf} object with 100 rows and 4
 variables:
 \describe{
 \item{id}{Plot ID.}
@@ -12,7 +12,7 @@ variables:
 \item{y}{Latitude.}
 }}
 \description{
-A \code{\link[sp:SpatialPointsDataFrame]{sp::SpatialPointsDataFrame()}} (EPSG:32717) object
+An \link{sf} (EPSG:32717) object
 with 100 randomly sampled points (stratified by altitude). For more
 details, please refer to Muenchow et al. (2013).
 }

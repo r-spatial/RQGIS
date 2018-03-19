@@ -1,11 +1,11 @@
 #' @title Random points.
 #'
 #' @name random_points
-#' @description A [sp::SpatialPointsDataFrame()] (EPSG:32717) object
+#' @description An [sf] (EPSG:32717) object
 #'   with 100 randomly sampled points (stratified by altitude). For more
 #'   details, please refer to Muenchow et al. (2013).
 #'
-#' @format A [sp::SpatialPointsDataFrame()] object with 100 rows and 4
+#' @format An [sf] object with 100 rows and 4
 #'   variables:
 #' \describe{
 #'   \item{id}{Plot ID.}
@@ -14,7 +14,6 @@
 #'   \item{y}{Latitude.}
 #'   }
 #'
-#' @importFrom sp SpatialPointsDataFrame
 #'
 #' @references
 #' Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013):
