@@ -14,7 +14,6 @@
 #'   \item{y}{Latitude.}
 #'   }
 #'
-#' @import sf
 #'
 #' @references
 #' Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013):
