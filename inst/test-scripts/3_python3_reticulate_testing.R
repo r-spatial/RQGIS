@@ -29,15 +29,17 @@ use_python(
   required = TRUE
 )
 # py_config()
-py_run_string("import os, sys")
+py_run_string("import os, sys, re, webbrowser")
 py_run_string("from qgis.core import *")
-py_run_string("from osgeo import ogr")
+py_run_string("import qgis.utils")
+py_run_string("from osgeo import *")
+py_run_string("from osgeo.ogr import *")
 py_run_string("from PyQt5.QtCore import *")
 py_run_string("from PyQt5.QtGui import *")
 py_run_string("from qgis.gui import *")
 py_run_string("QgsApplication.setPrefixPath('C:/OSGeo4W64/apps/qgis', True)")
-# py_run_string("QgsApplication.showSettings()")
-
+py_run_string("QgsApplication.setPrefixPath(r'C:/OSGEO4W64/apps/qgis', True)")
+py_run_string("QgsApplication.showSettings()")
 # not running the next two lines leads to a Qt problem when running 
 # QgsApplication([], True)
 # browseURL("http://wiki.qt.io/Deploy_an_Application_on_Windows")
@@ -49,6 +51,7 @@ py_run_string("a = QCoreApplication.libraryPaths()")$a  # empty list
 # so, we need to set them again 
 # I have looked them up in the QGIS 3 GUI using QCoreApplication.libraryPaths()
 # py_run_string("QCoreApplication.setLibraryPaths(['C:/OSGEO4~1/apps/qgis/plugins', 'C:/OSGEO4~1/apps/qgis/qtplugins', 'C:/OSGEO4~1/apps/qt5/plugins', 'C:/OSGeo4W64/apps/qt4/plugins', 'C:/OSGeo4W64/bin'])")
+qgis_env = list(root = "C:/OSGeo4W64")
 py_run_string(
   sprintf("QCoreApplication.setLibraryPaths(['%s', '%s', '%s', '%s'])",
           file.path(qgis_env$root, "apps/qgis/plugins"),
@@ -59,7 +62,6 @@ py_run_string(
   )
               
 py_run_string("a = QCoreApplication.libraryPaths()")$a
-
 py_run_string("app = QgsApplication([], True)")
 py_run_string("QgsApplication.initQgis()")
 py_run_string("sys.path.append(r'C:/OSGeo4W64/apps/qgis/python/plugins')")
@@ -67,6 +69,7 @@ py_run_string("from processing.core.Processing import Processing")
 py_run_string("Processing.initialize()")
 py_run_string("import processing")
 
+# attaching RQGIS class
 py_run_string("sys.path.append(r'D:/programming/R/RQGIS/RQGIS/inst/python')")
 py_run_string("from python3_funs import RQGIS")
 py_run_string("RQGIS = RQGIS()")
@@ -75,3 +78,14 @@ py_run_string("a = RQGIS.qgis_session_info()")$a
 py_run_string("b = RQGIS.get_args_man('qgis:distancematrix')")$b
 cat(py_capture_output(py_run_string("RQGIS.alghelp('qgis:distancematrix')")))
 cat(py_capture_output(py_run_string("RQGIS.get_options('qgis:distancematrix')")))
+
+# trying to run processing geoalgorithms
+py_run_string('args = "C:/Users/pi37pat/Desktop/dem.tif", "1", "C:/Users/pi37pat/Desktop/aspect4.tif"')
+py_run_string('params = "INPUT", "Z_FACTOR", "OUTPUT"')
+py_run_string("params = dict((x, y) for x, y in zip(params, args))")
+py_run_string("feedback = QgsProcessingFeedback()")
+py_run_string("Processing.runAlgorithm(algOrName = 'qgis:aspect', parameters = params, 
+              feedback = feedback)")
+
+py_run_string("def imports():\n\tfor name, val in globals().items():\n\t\tif isinstance(val, types.ModuleType):\n\t\t\tyield val.__name__")
+py_run_string("a=list(imports())")$a
