@@ -56,6 +56,8 @@ open_app3 <- function(qgis_env = set_env()) {
   py_run_string("from PyQt5.QtCore import *")
   py_run_string("from PyQt5.QtGui import *")
   py_run_string("from qgis.gui import *")
+  # native geoalgorithms
+  py_run_string("from qgis.analysis import (QgsNativeAlgorithms)")
   # interestingly, under Linux the app would start also without running the next
   # two lines
   set_prefix <- paste0(
@@ -94,9 +96,11 @@ open_app3 <- function(qgis_env = set_env()) {
   py_run_string("app = QgsApplication([], True)")
   py_run_string("QgsApplication.initQgis()")
   py_run_string(paste0("sys.path.append(r'", qgis_env$python_plugins, "')"))
+  # add native geoalgorithms
+  py_run_string("QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())")
   py_run_string("from processing.core.Processing import Processing")
   # try:
-  py_run_string("from processing.core.Processing import *")
+  #py_run_string("from processing.core.Processing import *")
   py_run_string("Processing.initialize()")
   py_run_string("import processing")
   
@@ -150,7 +154,7 @@ setup_win3 <- function(qgis_env = set_env()) {
   # call all bat-files
   run_ini(qgis_env = qgis_env)
   # qt5_env.bat
-  Sys.setenv(PATH = paste("C:\\OSGeo4W64\\apps\\qt5\\bin",
+  Sys.setenv(PATH = paste(file.path(qgis_env$root, "apps/qt5/bin"),
                           Sys.getenv("PATH"), sep = ";"))
   Sys.setenv(
     QT_PLUGIN_PATH = paste(file.path(qgis_env$root, "apps/qt5/plugins"),
