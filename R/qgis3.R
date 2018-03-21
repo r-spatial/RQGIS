@@ -177,7 +177,7 @@ setup_win3 <- function(qgis_env = set_env()) {
     file.path(qgis_env$root, "apps", my_qgis, "bin"),
     sep = ";"
   ))
-  ' Sys.setenv(GDAL_FILENAME_IS_UTF8 = "YES")
+  # Sys.setenv(GDAL_FILENAME_IS_UTF8 = "YES")
   # set the PYTHONPATH variable, so that QGIS knows where to search for
   # QGIS libraries and appropriate Python modules
   python_path <- Sys.getenv("PYTHONPATH")
