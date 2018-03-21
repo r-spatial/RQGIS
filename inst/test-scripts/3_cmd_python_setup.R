@@ -15,14 +15,14 @@ call qt5_env.bat
 call py3_env.bat
 @echo off
 path %OSGEO4W_ROOT%\apps\qgis\bin;%PATH%
-  set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/qgis
+set QGIS_PREFIX_PATH=%OSGEO4W_ROOT:\=/%/apps/qgis
 set GDAL_FILENAME_IS_UTF8=YES
 REM Set VSI cache to be used as buffer, see #6448
 set VSI_CACHE=TRUE
 set VSI_CACHE_SIZE=1000000
 set QT_PLUGIN_PATH=%OSGEO4W_ROOT%\apps\qgis\qtplugins;%OSGEO4W_ROOT%\apps\qt5\plugins
 set PYTHONPATH=%OSGEO4W_ROOT%\apps\qgis\python;%PYTHONPATH%
-  set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\apps\qgis
+set QGIS_PREFIX_PATH=%OSGEO4W_ROOT%\apps\qgis
 @echo on
 REM open Python3
 REM "%PYTHONHOME%\python"
@@ -63,7 +63,7 @@ shell.exec("C:\\OSGeo4W64\\apps\\Python36\\python")
 
 # 2.1 Terminal version=====================================
 #**********************************************************
-REM Run in terminal
+# REM Run in terminal
 C:/OSGeo4W64/bin/python-qgis.bat
 
 # 2.2 R version============================================
