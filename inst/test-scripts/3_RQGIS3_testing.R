@@ -1,6 +1,7 @@
 devtools::load_all()
 set_env(dev = TRUE)
 open_app3()
+
 alg = "grass7:r.slope.aspect"
 params = pass_args(alg, elevation = "C:/Users/pi37pat/Desktop/dem.tif", 
                    slope = "C:/Users/pi37pat/Desktop/slope.tif")
@@ -8,6 +9,16 @@ params = pass_args(alg, elevation = "C:/Users/pi37pat/Desktop/dem.tif",
 alg = "qgis:aspect"
 get_args_man(alg)
 params = pass_args(alg, INPUT = "C:/Users/pi37pat/Desktop/dem.tif", OUTPUT = "aspect.tif")
+
+# find_algorithms("voronoi")
+alg = "qgis:voronoipolygons"
+get_usage(alg)
+get_args_man(alg)
+py_run_string("from processing.tests import TestData")
+p = py_run_string("p = TestData.points()")$p
+params = pass_args(alg, INPUT = p)
+params$OUTPUT = "memory:"
+
 
 alg = "native:centroids"
 get_args_man(alg)
@@ -25,6 +36,18 @@ py_run_string(sprintf("QgsProject.instance().addMapLayer(%s)",
 py_run_string(
   sprintf("if not %s.isValid(): raise Exception('Failed to load %s')", 
           layer, file))
+
+file = 'r"C:/Users/pi37pat/Desktop/polys.shp"'
+base_name = basename(file)
+layer = "poly"
+py_run_string(sprintf("%s = QgsVectorLayer('%s', '%s', 'ogr')",
+                      layer, file, layer))
+py_run_string(sprintf("QgsProject.instance().addMapLayer(%s)",
+                      layer))
+py_run_string(
+  sprintf("if not %s.isValid(): raise Exception('Failed to load %s')", 
+          layer, file))
+
 
 # load input rasters and/or vectors into QGIS and register them
 out <- py_run_string(sprintf("out = RQGIS.get_args_man('%s')", alg))$out
@@ -71,3 +94,5 @@ qgis_load_geom <- function(params, type_name) {
     }
   })
 }
+
+
