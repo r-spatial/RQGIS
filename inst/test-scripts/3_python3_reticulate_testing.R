@@ -32,8 +32,7 @@ use_python(
 py_run_string("import os, sys, re, webbrowser")
 py_run_string("from qgis.core import *")
 py_run_string("import qgis.utils")
-py_run_string("from osgeo import *")
-py_run_string("from osgeo.ogr import *")
+py_run_string("from osgeo import ogr")
 py_run_string("from PyQt5.QtCore import *")
 py_run_string("from PyQt5.QtGui import *")
 py_run_string("from qgis.gui import *")
@@ -80,12 +79,18 @@ cat(py_capture_output(py_run_string("RQGIS.alghelp('qgis:distancematrix')")))
 cat(py_capture_output(py_run_string("RQGIS.get_options('qgis:distancematrix')")))
 
 # trying to run processing geoalgorithms
-py_run_string('args = "C:/Users/pi37pat/Desktop/dem.tif", "1", "C:/Users/pi37pat/Desktop/aspect4.tif"')
+py_run_string('args = "C:/Users/pi37pat/Desktop/dem.tif", "1", "C:/Users/pi37pat/Desktop/aspect14.tif"')
 py_run_string('params = "INPUT", "Z_FACTOR", "OUTPUT"')
 py_run_string("params = dict((x, y) for x, y in zip(params, args))")
 py_run_string("feedback = QgsProcessingFeedback()")
 py_run_string("Processing.runAlgorithm(algOrName = 'qgis:aspect', parameters = params, 
               feedback = feedback)")
+# trying to run native geoalgorithm
+py_run_string('args = "C:/Users/pi37pat/Desktop/polys.gml", "C:/Users/pi37pat/Desktop/points.shp"')
+py_run_string('params = "INPUT", "OUTPUT"')
+py_run_string('params = dict((x, y) for x, y in zip(params, args))')
+py_run_string('feedback = QgsProcessingFeedback()')
+py_run_string("Processing.runAlgorithm(algOrName = 'native:centroids', parameters = params, feedback = feedback)")
 
 py_run_string("def imports():\n\tfor name, val in globals().items():\n\t\tif isinstance(val, types.ModuleType):\n\t\t\tyield val.__name__")
 py_run_string("a=list(imports())")$a
