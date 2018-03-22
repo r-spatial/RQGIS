@@ -132,6 +132,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
    
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python@2; fi
   
   # install required python packages
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install --user psycopg2 && pip2 install --user matplotlib && pip2 install --user pyparsing; fi
