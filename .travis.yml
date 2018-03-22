@@ -1,15 +1,18 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
-cache: 
+cache:
   - ccache
   - packages	
-#  directories:
-#    - $HOME/Library/Caches/Homebrew
 
-warnings_are_errors: false
-
-r_github_packages:
-  - jimhester/covr
+addons:
+  apt:
+    sources:
+      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
+    packages:
+      - libgdal-dev
+      - libudunits2-dev
+      - python-gdal
+      - saga
 
 # DO NOT CHANGE THE CODE BELOW
 before_install: R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
@@ -96,27 +99,16 @@ before_install:
   
   - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-nightly trusty main" >> /etc/apt/sources.list'; fi
   - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-nightly trusty main " >> /etc/apt/sources.list'; fi
-  # for newest geos version from ubuntugis ppa
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main " >> /etc/apt/sources.list'; fi
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo sh -c 'echo "deb-src http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu trusty main" >> /etc/apt/sources.list'; fi
-  
+
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then wget -O - http://qgis.org/downloads/qgis-2017.gpg.key | gpg --import; fi
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then gpg --fingerprint CAEB3DC3BDF7FB45 && gpg --export --armor CAEB3DC3BDF7FB45 | sudo apt-key add -; fi
   
-  # remove postgresql installations causing upgrade errors otherwise
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.1; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.2; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.3; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.4; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.5; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get remove -y postgresql-9.6; fi
-  
   # install gdal, saga and proj4 from ubuntugis ppa (gdal2.1)
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
+  #- if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable; fi
 
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated; fi # if you already have gdal 1.11 installed
-  - if [[ "${NIGHTLY_Linux}" ]]; then sudo apt install libgeos-c1v5; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga; fi
+  #- if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get update && sudo apt upgrade -y --allow-unauthenticated; fi # if you already have gdal 1.11 installed
+  #- if [[ "${NIGHTLY_Linux}" ]]; then sudo apt install libgeos-c1v5; fi
+  #- if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install gdal-bin libgdal-dev python-gdal python3-gdal libudunits2-dev saga; fi
     
   # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
   # see https://gis.stackexchange.com/questions/216780/cannot-install-qgis-2-18-from-repository-on-debian-stretch-package-gdal-abi-2
@@ -149,7 +141,7 @@ before_install:
   - if [[ "${LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2; fi
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
-  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); remotes::install_github("pat-s/pkgdown"); tic::prepare_all_stages(); tic::before_install()'
+  - R -q -e 'install.packages("remotes"); remotes::install_github("ropenscilabs/tic"); tic::prepare_all_stages(); tic::before_install()'
   
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
@@ -168,6 +160,3 @@ notifications:
   on_success: change # default: always
   on_failure: change # default: always
   email: false
-    
-after_success:
-  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
