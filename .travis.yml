@@ -67,13 +67,13 @@ matrix:
     - os: osx
       osx_image: xcode9.2
       latex: false
-      sudo: required
+      sudo: false
       env: OLD_LTR_mac=true
     ### build QGIS DEV on macOS
     - os: osx
       osx_image: xcode9.2
       latex: false
-      sudo: required
+      sudo: false
       env: LTR_mac=true
 
 # if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.3
