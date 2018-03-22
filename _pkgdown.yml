@@ -1,3 +1,8 @@
 template:
   params:
-    bootswatch: yeti
+    bootswatch: cosmo
+
+development:
+  mode: auto
+  destination: dev
+  version_label: info
