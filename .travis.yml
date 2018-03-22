@@ -134,7 +134,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install numpy; fi
   
   # tap osgeo4mac tap
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac && brew tap homebrew/science; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
    
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
   
