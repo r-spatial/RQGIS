@@ -70,13 +70,13 @@ matrix:
       
     ### build QGIS LTR on macOS
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.2
       latex: false
       sudo: required
       env: OLD_LTR_mac=true
     ### build QGIS DEV on macOS
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode9.2
       latex: false
       sudo: required
       env: LTR_mac=true
