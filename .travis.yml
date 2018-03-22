@@ -2,11 +2,6 @@
 language: r		 
 cache: packages	
 
-# artifcats uploading to s3 bucket. times out sometimes for mac builds
-# addons:
-#  artifacts:
-#    s3_region: "eu-central-1" # defaults to "us-east-1"
-
 warnings_are_errors: false
 
 r_github_packages:
@@ -139,7 +134,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
   
   # install required python packages
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip install psycopg2 && pip install matplotlib && pip install pyparsing; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip install --user psycopg2 && pip install --user matplotlib && pip install --user pyparsing; fi
 
   # install qgis
   - if [[ "${OLD_LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
