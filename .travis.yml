@@ -32,7 +32,7 @@ matrix:
       # jdk: oraclejdk9
       r_check_args: "--no-tests"
       env: DEPLOY=true LTR_Linux=true
-      before_deploy: R -q -e 'tic::before_deploy();remotes::install_github("pat-s/pkgdown")'
+      before_deploy: R -q -e 'tic::before_deploy()'
       deploy:
           provider: script
           script: R -q -e 'tic::deploy()'
@@ -137,7 +137,7 @@ before_install:
   # tap osgeo4mac tap
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
    
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts && brew install proj; fi
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python@2; fi
   
   # install required python packages
@@ -158,7 +158,7 @@ before_script:
   - sleep 3 # give xvfb some time to start
   
   # reinstall rgdal because binary installation on osx has from linking to libgdal.dylib
-  - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "install.packages('devtools'); devtools::install_github('edzer/sfr')"; fi
+  #- if [ "${TRAVIS_OS_NAME}" = "osx" ]; then R -e "install.packages('rgdal', type = 'source')" && R -e "install.packages('devtools'); devtools::install_github('edzer/sfr')"; fi
 
 notifications:
   slack:
