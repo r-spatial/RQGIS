@@ -105,7 +105,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python@2; fi
   
   # install required python packages
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install --user psycopg2 matplotlib pyparsing gdal yaml jinja owslib pygments; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install --user psycopg2 matplotlib pyparsing gdal pyyaml jinja2 owslib pygments; fi
   # install qgis
   - if [[ "${OLD_LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
   - if [[ "${LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2; fi
