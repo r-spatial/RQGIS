@@ -24,7 +24,6 @@ matrix:
       env: qgis218=true
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
-      before_script: R -q -e 'tic::before_script()'
       script: R -q -e 'tic::script()'
       before_deploy: R -q -e 'tic::before_deploy()'
       deploy:
@@ -44,7 +43,6 @@ matrix:
       env: OLD_LTR_mac=true
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
-      before_script: R -q -e 'tic::before_script()'
       script: R -q -e 'tic::script()'
     ### build QGIS DEV on macOS
     - os: osx
@@ -54,7 +52,6 @@ matrix:
       env: LTR_mac=true
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
-      before_script: R -q -e 'tic::before_script()'
       script: R -q -e 'tic::script()'
 
 # if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.X for trusty
