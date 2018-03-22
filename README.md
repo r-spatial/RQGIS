@@ -39,8 +39,8 @@ version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-
 <td>R CMD check</td>
 <td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
 <td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_Linux=true&amp;label=QGIS%20LTR%20(2.18.17)&amp;branch=master" alt="qgis218=true Status" /></a></td>
-<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=OLD_LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.22)&amp;branch=master" alt="OLD_LTR_mac=true Status" /></a><br />
-<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.17)&amp;branch=master" alt="LTR_mac=true Status" /></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=OLD_LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="OLD_LTR_mac=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.15)&amp;branch=master" alt="LTR_mac=true Status" /></a></td>
 <td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
 </tr>
 <tr class="odd">
