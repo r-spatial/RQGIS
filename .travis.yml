@@ -1,10 +1,10 @@
 # R for travis: see documentation at https://docs.travis-ci.com/user/languages/r
 language: r		 
 cache: 
-  ccache: true
+  - ccache
   - packages	
-  directories:
-    - $HOME/Library/Caches/Homebrew
+#  directories:
+#    - $HOME/Library/Caches/Homebrew
 
 warnings_are_errors: false
 
@@ -85,6 +85,7 @@ matrix:
 # because GDAL2 is required 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ccache; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export PATH="/usr/local/opt/ccache/libexec:$PATH"; fi
   
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt-get -y --force-yes update -qq; fi
   - if [[ "${OLD_LTR_Linux}" ]]; then sudo sh -c 'echo "deb http://qgis.org/ubuntugis-ltr trusty main" >> /etc/apt/sources.list'; fi
