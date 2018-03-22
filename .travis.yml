@@ -33,7 +33,6 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      # jdk: oraclejdk9
       r_check_args: "--no-tests"
       env: DEPLOY=true qgis218=true
       before_deploy: R -q -e 'tic::before_deploy()'
@@ -44,14 +43,6 @@ matrix:
             all_branches: true
       after_deploy: R -q -e 'tic::after_deploy()'
       after_script: R -q -e 'tic::after_script()'
-
-    # build QGIS OLD_LTR on Linux
-    - os: linux
-      dist: trusty
-      sudo: required
-      latex: false
-      jdk: oraclejdk9
-      env: qgis218=true
 
     ### build QGIS LTR on macOS
     - os: osx
@@ -114,8 +105,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install python@2; fi
   
   # install required python packages
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install --user psycopg2 && pip2 install --user matplotlib && pip2 install --user pyparsing; fi
-
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then pip2 install --user psycopg2 matplotlib pyparsing gdal yaml jinja owslib pygments; fi
   # install qgis
   - if [[ "${OLD_LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2-ltr; fi
   - if [[ "${LTR_mac}" ]]; then brew cask uninstall --force oclint && sudo rm -rf /usr/local/gfortran/bin/gfortran && brew install grass7 && brew unlink grass7 && brew install qgis2; fi
