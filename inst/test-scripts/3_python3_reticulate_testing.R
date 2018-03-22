@@ -28,6 +28,8 @@ use_python(
   file.path("C:\\OSGeo4W64", "bin/python3.exe"),
   required = TRUE
 )
+# also possible
+# use_python(file.path(Sys.getenv("PYTHONHOME"), "python.exe"), required = TRUE)
 # py_config()
 py_run_string("import os, sys, re, webbrowser")
 py_run_string("from qgis.core import *")
@@ -52,7 +54,7 @@ py_run_string("a = QCoreApplication.libraryPaths()")$a  # empty list
 # py_run_string("QCoreApplication.setLibraryPaths(['C:/OSGEO4~1/apps/qgis/plugins', 'C:/OSGEO4~1/apps/qgis/qtplugins', 'C:/OSGEO4~1/apps/qt5/plugins', 'C:/OSGeo4W64/apps/qt4/plugins', 'C:/OSGeo4W64/bin'])")
 qgis_env = list(root = "C:/OSGeo4W64")
 py_run_string(
-  sprintf("QCoreApplication.setLibraryPaths(['%s', '%s', '%s', '%s'])",
+  sprintf("QCoreApplication.setLibraryPaths(['%s', '%s', '%s', '%s', '%s'])",
           file.path(qgis_env$root, "apps/qgis/plugins"),
           file.path(qgis_env$root, "apps/qgis/qtplugins"),
           file.path(qgis_env$root, "apps/qt5/plugins"),
@@ -83,7 +85,9 @@ py_run_string('args = "C:/Users/pi37pat/Desktop/dem.tif", "1", "C:/Users/pi37pat
 py_run_string('params = "INPUT", "Z_FACTOR", "OUTPUT"')
 py_run_string("params = dict((x, y) for x, y in zip(params, args))")
 py_run_string("feedback = QgsProcessingFeedback()")
-py_run_string("Processing.runAlgorithm(algOrName = 'qgis:aspect', parameters = params, 
+py_run_string('alg = QgsApplication.processingRegistry().createAlgorithmById("qgis:aspect")')
+py_run_string("alg = alg.create()")
+py_run_string("Processing.runAlgorithm(algOrName = alg, parameters = params, 
               feedback = feedback)")
 # trying to run native geoalgorithm
 py_run_string('args = "C:/Users/pi37pat/Desktop/polys.gml", "C:/Users/pi37pat/Desktop/points.shp"')
@@ -92,5 +96,57 @@ py_run_string('params = dict((x, y) for x, y in zip(params, args))')
 py_run_string('feedback = QgsProcessingFeedback()')
 py_run_string("Processing.runAlgorithm(algOrName = 'native:centroids', parameters = params, feedback = feedback)")
 
-py_run_string("def imports():\n\tfor name, val in globals().items():\n\t\tif isinstance(val, types.ModuleType):\n\t\t\tyield val.__name__")
-py_run_string("a=list(imports())")$a
+#**********************************************************
+# COMPARISON WITH CONSOLE----------------------------------
+#**********************************************************
+
+# checking environment variables (seem all ok)
+py_run_string("a = os.getenv('OSGeo4W_ROOT')")$a
+py_run_string("a = os.getenv('PYTHONPATH')")$a
+py_run_string("a = os.getenv('QT_PLUGIN_PATH')")$a
+py_run_string("a = os.getenv('PYTHONHOME')")
+py_run_string("a = os.getenv('QGIS_PREFIX_PATH')")$a
+py_run_string("a = os.getenv('PATH')")$a
+# more or less the same as os.getenv("PATH") in Python 3
+# py_run_string("a = os.get_exec_path()")$a
+
+# checking loaded modules (seem also ok)
+py_run_string(
+  paste0("def imports():\n\tfor name, val in globals().items():", 
+         "\n\t\tif isinstance(val, types.ModuleType):", 
+         "\n\t\t\tyield val.__name__"))
+py_run_string("a = list(imports())")$a
+# def imports():
+#   for name, val in globals().items():
+#     if isinstance(val, types.ModuleType):
+#       yield val.__name__
+
+# Here are differences but not sure if relevant
+# I think it's ok since in RQGIS2 also RStudio paths are returned 
+py_run_string("a = QCoreApplication.applicationDirPath()")$a
+py_run_string("a = QCoreApplication.applicationFilePath()")$a
+
+# Drivers and formats, here are major differences and I guess this is the
+# problem...
+# in RQGIS2 providers & Co. are returned
+py_run_string("tmp =  QgsProviderRegistry.instance().providerList()")$tmp
+# only returns [1] "memory"
+# Python console returns: 
+# ['DB2', 'WFS', 'arcgisfeatureserver', 'arcgismapserver', 'delimitedtext',
+#  'gdal', 'geonode', 'gpx', 'memory', 'mssql', 'ogr', 'oracle', 'ows', 'postgres',
+#  'spatialite', 'virtual', 'wcs', 'wms']
+py_run_string("tmp = QgsProviderRegistry.instance().directoryDrivers()")$tmp
+# returns ""
+# Python console returns:
+# 'ESRI FileGDB,FileGDB;UK. NTF2,UK. NTF;OpenFileGDB,OpenFileGDB;U.S. Census TIGER/Line,TIGER;Arc/Info Binary Coverage,AVCBin;
+cat(py_run_string("tmp = QgsProviderRegistry.instance().pluginList()")$tmp)
+# only returns Memory provider
+py_run_string("vectors = QgsProviderRegistry.instance().fileVectorFilters().split(';;')")$vectors
+# returns ""
+# Python console returns 53 vector formats
+py_run_string("rasters = QgsProviderRegistry.instance().fileRasterFilters().split(';;')")$rasters
+# returns ""
+# Python console returns 78 raster formats
+
+
+

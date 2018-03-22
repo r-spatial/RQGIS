@@ -59,24 +59,7 @@ Processing.runAlgorithm(algOrName = 'native:centroids', parameters = params,
 # Processing.runAlgorithm(algOrName = 'grass7:r.slope.aspect', parameters = params, 
 #                         feedback = feedback)
 # 
-# # checking environment variables (seem all ok)
-# os.getenv("OSGeo4W_ROOT")
-# os.getenv("PYTHONPATH")
-# os.getenv("QT_PLUGIN_PATH")
-# os.getenv("PYTHONHOME")
-# os.getenv("QGIS_PREFIX_PATH")
-# os.getenv("PATH")
-# # more or less the same as os.getenv("PATH")
-# os.get_exec_path()
-# # checking loaded modules (seem also ok)
-# def imports():
-#   for name, val in globals().items():
-#     if isinstance(val, types.ModuleType):
-#       yield val.__name__
 
-# # Here are differences but not sure if relevant...
-# QCoreApplication.applicationDirPath())
-# QCoreApplication.applicationFilePath())
 
 # # Python 2=================================================
 # # open python-qgis-ltr.bat
