@@ -3,6 +3,6 @@ template:
     bootswatch: cosmo
 
 development:
-  mode: auto
+  mode: release
   destination: dev
   version_label: info
