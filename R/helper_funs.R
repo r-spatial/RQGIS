@@ -460,39 +460,29 @@ save_spatial_objects <- function(params, type_name, NA_flag = -99999) {
       # write sf as a shapefile to a temporary location while overwriting any
       # previous versions.
       # This is a Windows-only problem (see also github-branch unlock)
-      fname <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
-      cap <- capture.output({
-        suppressWarnings(
-          test <-
-            try(write_sf(params[[i]], fname, quiet = TRUE), silent = TRUE)
-        )
-      })
-      if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
-          fname <- paste0(gsub(".shp", "", fname), 1, ".shp")
-        }
-        write_sf(params[[i]], fname, quiet = TRUE)
-      }
+      fname <- tempfile(fileext = ".shp")
+      write_sf(params[[i]], fname, quiet = TRUE)
+      # if (inherits(test, "try-error")) {
+      #   while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+      #     fname <- paste0(gsub(".shp", "", fname), 1, ".shp")
+      #   }
+      #   write_sf(params[[i]], fname, quiet = TRUE)
+      # }
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
-      fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
-      suppressWarnings(
-        test <-
-          try(writeRaster(
-            params[[i]], filename = fname, format = "GTiff",
-            prj = TRUE, overwrite = TRUE, NAflag = NA_flag
-          ), silent = TRUE)
-      )
-      if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
-          fname <- paste0(gsub(".tif", "", fname), 1, ".tif")
-        }
-        writeRaster(
-          params[[i]], filename = fname, format = "GTiff",
-          prj = TRUE, overwrite = TRUE, NAflag = NA_flag
-        )
-      }
+      fname <- tempfile(fileext = ".tif")
+      writeRaster(params[[i]], filename = fname, format = "GTiff",
+                  prj = TRUE, overwrite = TRUE, NAflag = NA_flag)
+      # if (inherits(test, "try-error")) {
+      #   while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+      #     fname <- paste0(gsub(".tif", "", fname), 1, ".tif")
+      #   }
+      #   writeRaster(
+      #     params[[i]], filename = fname, format = "GTiff",
+      #     prj = TRUE, overwrite = TRUE, NAflag = NA_flag
+      #   )
+      # }
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (type_name[i] %in% c("vector", "raster", "table") &&
