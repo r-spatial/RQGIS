@@ -1,6 +1,7 @@
 # RQGIS 1.0.3.9000
 
 ## Bugs
+  * Making sure that RQGIS does not return the same result when using same parameters names (e.g., INPUT). See #82 and 494e666. Thanks to @lbusett for suggesting a solution.
 
 ## Features
 
