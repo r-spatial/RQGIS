@@ -166,7 +166,7 @@ sudo apt-get update
 
 Next add the correct repository to `/etc/apt/sources.list`. Here, we use the current long-term release (2.18):
 
-**QGIS 2.18.x**
+**QGIS 3.x**
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -176,7 +176,7 @@ sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubun
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 
-**QGIS 2.14.x**
+**QGIS 2.18.x**
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -186,7 +186,7 @@ sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubun
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 
-**QGIS nightly (2.99)**
+**QGIS nightly (3.99)**
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -258,7 +258,7 @@ After the installation you will find the SAGA algorithms in the processing toolb
 First of all, install all necessary SAGA dependencies and a few compilation and configuration tools:
 
 ```sh
-sudo apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
+sudo apt-get install libwxgtk3.0-dev libtiff5-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
 
 # compilation and configuration tools
 sudo apt-get install g++ make automake libtool git
