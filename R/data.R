@@ -5,13 +5,10 @@
 #'   with 100 randomly sampled points (stratified by altitude). For more
 #'   details, please refer to Muenchow et al. (2013).
 #'
-#' @format An [sf] object with 100 rows and 4
-#'   variables:
+#' @format An [sf] object with 100 rows and 2 variables:
 #' \describe{
 #'   \item{id}{Plot ID.}
-#'   \item{spri}{No of vascular plants per plot (species richness).}
-#'   \item{x}{Longitude.}
-#'   \item{y}{Latitude.}
+#'   \item{spri}{Number of vascular plant species per plot (species richness).}
 #'   }
 #'
 #'
