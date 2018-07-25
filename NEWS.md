@@ -5,6 +5,7 @@
   * Updating `random_points` in accordance with issue https://github.com/r-spatial/sf/issues/685
 
 ## Features
+  * new data `comm` and `study_area` added
 
 
 # RQGIS 1.0.3
