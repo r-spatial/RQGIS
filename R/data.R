@@ -92,7 +92,8 @@ NULL
 #'   [random_points]. Please note that in fact 100 sites have been
 #'   visited but in 16 of them no species could be found (see again
 #'   [random_points]).
-#' @format An dataframe with 84 sites (rows) and 69 species (columns).
+#' @format An dataframe with 84 sites (rows) and 69 species (columns). Species
+#'   presence is given in percentage points.
 #'
 #' @references Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H.
 #' (2013): Predictive mapping of species richness and plant species'
