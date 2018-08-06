@@ -6,6 +6,7 @@
 
 ## Features
   * new data `comm` and `study_area` added
+  * updating `install_guide` vignette
 
 
 # RQGIS 1.0.3
