@@ -337,5 +337,3 @@ rmdir /home/<YourUserName>/Applications/
 ## Arch Linux
 
 You can install various QGIS, SAGA and GRASS versions from the [Arch User Repository](https://aur.archlinux.org/). 
-
-We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package manager.
