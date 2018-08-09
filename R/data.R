@@ -5,13 +5,11 @@
 #'   with 100 randomly sampled points (stratified by altitude). For more
 #'   details, please refer to Muenchow et al. (2013).
 #'
-#' @format An [sf] object with 100 rows and 4
-#'   variables:
+#' @format An [sf] object with 100 rows and 3 variables:
 #' \describe{
 #'   \item{id}{Plot ID.}
-#'   \item{spri}{No of vascular plants per plot (species richness).}
-#'   \item{x}{Longitude.}
-#'   \item{y}{Latitude.}
+#'   \item{spri}{Number of vascular plant species per plot (species richness).}
+#'   \item{geometry}{Simple feature point geometry.}
 #'   }
 #'
 #'
@@ -66,4 +64,39 @@ NULL
 #'
 #' USGS (2013): U.S. Geological Survey. Earth Explorer. Available at:
 #' http://earthexplorer.usgs.gov/ (last accessed 1 March 2013).
+NULL
+
+#' @title Mask of the study area
+#'
+#' @name study_area
+#' @description An [sf] (EPSG:32717) object of geometry class polygon.
+#'
+#' @format An [sf] object with 1 row and 2 variables:
+#' \describe{
+#'   \item{name}{Name.}
+#'   \item{geometry}{Simple feature polyon geometry.}
+#'   }
+#'
+#' @references
+#' Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H. (2013):
+#' Predictive mapping of species richness and plant species' distributions of a
+#' Peruvian fog oasis along an altitudinal gradient. Biotropica 45, 5, 557-566,
+#' doi: 10.1111/btp.12049.
+NULL
+
+#' @title Community matrix of the Mt. Mongón
+#'
+#' @name comm
+#' @description A community matrix with species as columns and sites as rows.
+#'   The rownames correspond to the id which can be also found in
+#'   [random_points]. Please note that in fact 100 sites have been
+#'   visited but in 16 of them no species could be found (see again
+#'   [random_points]).
+#' @format An dataframe with 84 sites (rows) and 69 species (columns). Species
+#'   presence is given in percentage points.
+#'
+#' @references Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H.
+#' (2013): Predictive mapping of species richness and plant species'
+#' distributions of a Peruvian fog oasis along an altitudinal gradient.
+#' Biotropica 45, 5, 557-566, doi: 10.1111/btp.12049.
 NULL
