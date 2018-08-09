@@ -67,27 +67,27 @@ test_that(paste(
     "saga:sinkremoval",
     DEM = dem,
     METHOD = "[1] Fill Sinks",
-    DEM_PREPROC = file.path(tempdir(), "sdem.tif"),
+    DEM_PREPROC = file.path(tempdir(), "sdem.sdat"),
     show_output_paths = FALSE
   )
-  expect_true(file.exists(file.path(tempdir(), "sdem.tif")))
+  expect_true(file.exists(file.path(tempdir(), "sdem.sdat")))
 
   # Compute wetness index
   run_qgis(
     "saga:sagawetnessindex",
-    DEM = file.path(tempdir(), "sdem.tif"),
-    AREA = file.path(tempdir(), "carea.tif"),
-    SLOPE = file.path(tempdir(), "cslope.tif"),
+    DEM = file.path(tempdir(), "sdem.sdat"),
+    AREA = file.path(tempdir(), "carea.sdat"),
+    SLOPE = file.path(tempdir(), "cslope.sdat"),
     SLOPE_TYPE = 1,
     show_output_paths = FALSE
   )
-  expect_true(file.exists(file.path(tempdir(), "cslope.tif")))
-  expect_true(file.exists(file.path(tempdir(), "carea.tif")))
+  expect_true(file.exists(file.path(tempdir(), "cslope.sdat")))
+  expect_true(file.exists(file.path(tempdir(), "carea.sdat")))
 
   # transform
-  cslope <- raster(file.path(tempdir(), "cslope.tif"))
+  cslope <- raster(file.path(tempdir(), "cslope.sdat"))
   cslope <- cslope * 180 / pi
-  carea <- raster(file.path(tempdir(), "carea.tif"))
+  carea <- raster(file.path(tempdir(), "carea.sdat"))
   log_carea <- log(carea / 1e+06)
   data("dem", package = "RQGIS")
   dem <- dem / 1000
