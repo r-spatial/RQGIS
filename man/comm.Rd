@@ -3,7 +3,8 @@
 \name{comm}
 \alias{comm}
 \title{Community matrix of the Mt. Mongón}
-\format{An dataframe with 84 sites (rows) and 69 species (columns).}
+\format{An dataframe with 84 sites (rows) and 69 species (columns). Species
+presence is given in percentage points.}
 \description{
 A community matrix with species as columns and sites as rows.
 The rownames correspond to the id which can be also found in

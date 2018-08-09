@@ -4,7 +4,8 @@
 \alias{pass_args}
 \title{Specifying QGIS geoalgorithm parameters the R way}
 \usage{
-pass_args(alg, ..., params = NULL, NA_flag = -99999, qgis_env = set_env())
+pass_args(alg, ..., params = NULL, NA_flag = -99999,
+  qgis_env = set_env())
 }
 \arguments{
 \item{alg}{The name of the geoalgorithm to use.}
@@ -54,7 +55,7 @@ replace the spatial object in the parameter-argument list. If the QGIS
 geoalgorithm parameter belongs to the \code{ParameterMultipleInput}-instance
 class (see for example \code{get_usage(grass7:v.patch)}) you may either use a
 character-string containing the paths to the spatial objects separated by a
-semi-colon (e.g., "shape1.shp;shape2.shp;shape3.shp" - see also \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation})
+semi-colon (e.g., "shape1.shp;shape2.shp;shape3.shp" - see also \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGIS documentation})
 or provide a \code{\link[base:list]{base::list()}} where each spatial object corresponds to one
 list element.
 \item If a parameter accepts as arguments values from a selection, the
@@ -64,7 +65,7 @@ to \code{\link[=get_options]{get_options()}} for valid options for a given geoal
 \item If \code{GRASS_REGION_PARAMETER} is "None" (the QGIS default), \code{run_qgis}
 will automatically determine the region extent based on the user-specified
 input layers. If you do want to specify the \code{GRASS_REGION_PARAMETER}
-yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation},
+yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGIS documentation},
 i.e., use a character string and separate the coordinates with a comma:
 "xmin, xmax, ymin, ymax".
 }
