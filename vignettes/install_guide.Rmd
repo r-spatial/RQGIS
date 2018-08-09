@@ -95,19 +95,22 @@ sudo apt-get update
 
 Next add the correct repository to `/etc/apt/sources.list`. Here, we use the current long-term release (2.18):
 
-<!--
-**QGIS 3.x**
+**QGIS 2.18.x for Ubuntu 18.04**
+
+The "ubuntugis" repo does not have support for `bionic`.
+So we need to use the "debian" repos.
+
 
 ```sh
-# add QGIS repository for Ubuntu 16.04 to sources.list
-sudo sh -c 'echo "deb http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
-sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+# add QGIS repository for Ubuntu 18.04 to sources.list
+sudo sh -c 'echo "deb http://qgis.org/debian-ltr bionic main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://qgis.org/debian-ltr bionic main" >> /etc/apt/sources.list'
 ```
--->
 
-**QGIS 2.18.x**
+
+**QGIS 2.18.x for Ubuntu 16.04**
+
+Since `xenial` lacks a native `gdal2` installation, we will use the "ubuntugis" repos including its "ubuntugis-unstable" repo (for `gdal2`) to install QGIS.
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -146,15 +149,6 @@ After that, we can install QGIS and GRASS as follows:
 sudo apt-get update
 sudo apt-get install qgis python-qgis qgis-plugin-grass
 ```
-
-This will install the QGIS 2.14 release (LTR) as well as GRASS-GIS as third-party provider. To upgrade to QGIS 2.18 one simply has to change `/etc/apt/sources.list` (see above) and run:
-
-```sh
-sudo apt-get update
-sudo apt-get upgrade
-```
-
-Assuming we have installed QGIS 2.18 and wish to replace it by QGIS 2.14, one naturally has to change `etc/apt/sources.list` accordingly. Additionally, we probably need to downgrade some packages. For more information, please refer to this [post](https://stackoverflow.com/questions/36879592/has-anyone-got-qgis-to-install-on-ubuntu-16-04-lts).
 
 ### SAGA
 
@@ -276,7 +270,6 @@ rmdir /home/<YourUserName>/Applications/
 ## Arch Linux
 
 You can install various QGIS, SAGA and GRASS versions from the [Arch User Repository](https://aur.archlinux.org/). 
-
 We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package manager.
 
 
@@ -365,3 +358,4 @@ testfolder = '/usr/local/Cellar/saga-gis/2.2.2/bin'
 ```
 
 After restarting QGIS, you should recognize the change of the SAGA version under "Processing->Toolbox". 
+
