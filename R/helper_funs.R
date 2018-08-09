@@ -347,6 +347,13 @@ setup_linux <- function(qgis_env = set_env()) {
   # setting here the QGIS_PREFIX_PATH also works instead of running it twice
   # later on
   Sys.setenv(QGIS_PREFIX_PATH = qgis_env$root)
+  # make sure to use Python2
+  # in QGIS Python console run
+  # import sys
+  # sys.version  # which python version is used
+  # sys.exectutable  # and where to find the executable
+  # use_python("/usr/bin/python2.7", required = TRUE)
+  use_python("/usr/bin/python2", required = TRUE)
 }
 
 
