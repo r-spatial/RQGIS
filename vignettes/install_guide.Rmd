@@ -172,8 +172,10 @@ sudo apt-get install saga
 sudo add-apt-repository --remove ppa:johanvdw/saga-gis
 --->
 
-If you would like to use another SAGA version, you need to compile it yourself.
+If you would like to use another SAGA version, you need to compile it yourself (see [here](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/)). 
+Please note however, that QGIS currently only supports the SAGA LTR 2.3.x as far as we know.
 
+<!--
 After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA >= 2.2.1 see further below). 
 Prior to the SAGA installation, we need to install various dependencies required by SAGA.
 Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this [page](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/) for a more comprehensive SAGA installation guide.
@@ -237,7 +239,9 @@ In case you would like to uninstall SAGA, type:
 cd /home/<YourUserName>/saga-2.3.1
 sudo make uninstall
 ```
+--> 
 
+<!--
 ### Orfeo Toolbox (OTB)
 
 You can download the Orfeo Toolbox from [here](https://www.orfeo-toolbox.org/download/).
@@ -266,6 +270,7 @@ Finally, we clean up after ourselves by deleting the previously created Applicat
 ```sh
 rmdir /home/<YourUserName>/Applications/
 ```
+--> 
 
 ## Arch Linux
 
@@ -330,6 +335,10 @@ You can still use GRASS6 if you
 
 The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
 
+When installing GRASS independently of QGIS via `homebrew`, please make sure to install it **after** you have installed QGIS.
+Only this way, the correct path will be added to the QGIS processing plugin.
+Otherwise, the GRASS installation will work, however, `GRASS7Utils.grassPath()`, a QGIS function that links to the GRASS installation, gives back a non-existing path such as `/Applications/Grass-7.0.app/Contents/MacOS` which in turn prevents GRASS algorithms from working from within QGIS.
+
 ## SAGA
 The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.  
 
@@ -337,7 +346,7 @@ Using homebrew, SAGA can be compiled via `brew install saga-gis-lts`.
 If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.
 
 There is no binary install of SAGA for Mac.
-Therefore, we recommended to use the bottle installation from `homebrew`.
+Therefore, we recommend to use the bottle installation from `homebrew`.
 Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). 
 Make sure to check RQGIS compatibility with your SAGA version! 
 
