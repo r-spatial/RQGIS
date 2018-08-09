@@ -309,7 +309,7 @@ However, this is tedious and QGIS2 only supports the SAGA LTS version.
 
 ## GRASS
 
-You can install GRASS6 and GRASS7 via `hoembrew`
+You can install GRASS6 and GRASS7 via `homebrew`:
 
 ```sh
 # brew tap osgeo4mac
@@ -319,7 +319,7 @@ brew install grass6 grass7
 The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
 However, we recommend to use the `homebrew` approach.
 
-When installing GRASS independently of QGIS via `homebrew`, please make sure to install it **before** you have installed QGIS.
+When installing GRASS7 independently of QGIS via `homebrew`, please make sure to install it **before** you have installed QGIS.
 Only this way, the path for the QGIS processing plugin will be updated.
 Otherwise, the GRASS installation will work, however, `GRASS7Utils.grassPath()`, a QGIS function that links to the GRASS installation, gives back a non-existing path such as `/Applications/Grass-7.0.app/Contents/MacOS` which in turn prevents GRASS algorithms from working from within QGIS.
 
@@ -336,6 +336,7 @@ brew install qgis2
 
 Check `brew info qgis2` for more available options. 
 However, if you use them, QGIS will be compiled from source which may take > 30 min (depending on your system).
+Otherwise, pre-built bottles (= binaries) will be used which speeds up the installation process a lot.
 
 **Note:** Make sure to install SAGA and GRASS before QGIS so that QGIS finds the correct paths.
 
