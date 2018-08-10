@@ -3,13 +3,11 @@
 \name{random_points}
 \alias{random_points}
 \title{Random points.}
-\format{An \link{sf} object with 100 rows and 4
-variables:
+\format{An \link{sf} object with 100 rows and 3 variables:
 \describe{
 \item{id}{Plot ID.}
-\item{spri}{No of vascular plants per plot (species richness).}
-\item{x}{Longitude.}
-\item{y}{Latitude.}
+\item{spri}{Number of vascular plant species per plot (species richness).}
+\item{geometry}{Simple feature point geometry.}
 }}
 \description{
 An \link{sf} (EPSG:32717) object

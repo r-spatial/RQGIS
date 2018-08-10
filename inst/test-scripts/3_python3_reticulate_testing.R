@@ -147,6 +147,33 @@ py_run_string("vectors = QgsProviderRegistry.instance().fileVectorFilters().spli
 py_run_string("rasters = QgsProviderRegistry.instance().fileRasterFilters().split(';;')")$rasters
 # returns ""
 # Python console returns 78 raster formats
+py_run_string("tmp=QgsProviderRegistry.instance().library('gdal')")$tmp
+# returns ""
+# Python console: 'C:/OSGEO4~1/apps/qgis/plugins/gdalprovider.dll
+py_run_string("tmp=list(QgsProviderRegistry.instance().libraryDirectory())")$tmp
+# returns: list()
+# Python console: ['arcgisfeatureserverprovider.dll', 'arcgismapserverprovider.dll', 'basicauthmethod.dll', 'coordinatecaptureplugin.dll', 'db2provider.dll', 'delimitedtextprovider.dll', 'evis.dll', 'gdalprovider.dll', 'geometrycheckerplugin.dll', 'geonodeprovider.dll', 'georefplugin.dll', 'gpsimporterplugin.dll', 'gpxprovider.dll', 'grassplugin6.dll', 'grassplugin7.dll', 'grassprovider6.dll', 'grassprovider7.dll', 'grassrasterprovider6.dll', 'grassrasterprovider7.dll', 'identcertauthmethod.dll', 'mssqlprovider.dll', 'offlineeditingplugin.dll', 'ogrprovider.dll', 'oracleprovider.dll', 'owsprovider.dll', 'pkcs12authmethod.dll', 'pkipathsauthmethod.dll', 'postgresprovider.dll', 'spatialiteprovider.dll', 'topolplugin.dll', 'virtuallayerprovider.dll', 'wcsprovider.dll', 'wfsprovider.dll', 'wmsprovider.dll']
+py_run_string("QgsProviderRegistry.instance().setLibraryDirectory('C:/OSGEO4~1/apps/qgis/plugins')")
 
+py_run_string("tmp = list()")
+py_run_string(paste0("for i in QgsApplication.processingRegistry().providers():\n\t",
+                     "tmp.append(i.name())"))$tmp
 
-
+# showSettings just a shortcut for following commands
+cat(py_run_string("a=QgsApplication.showSettings()")$a)
+py_run_string("a=QgsApplication.prefixPath()")$a  # good
+# QgsApplication.setPrefixPath
+py_run_string("a=QgsApplication.pluginPath()")$a  # good
+# QgsApplication.setPluginPath
+py_run_string("a=QgsApplication.libraryPaths()")$a  # good
+# QgsApplication.setLibraryPaths
+py_run_string("a=QgsApplication.qgisUserDatabaseFilePath()")$a
+# changeable with QgsApplication.setPkgDataPath
+py_run_string("a=QgsApplication.qgisAuthDatabaseFilePath()")$a
+# QgsApplication.setAuthDatabaseDirPath
+py_run_string("QgsApplication.setAuthDatabaseDirPath('C:/Users/pi37pat/AppData/Roaming/QGIS/QGIS3')")
+# using regular expressions to find specific methods
+# import re
+# re.compile("set")
+# list(filter(r.match, dir(QgsApplication)))
+>>>>>>> master

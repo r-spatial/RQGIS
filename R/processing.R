@@ -12,7 +12,9 @@
 #'   again. Otherwise, the cached output will be loaded back into R even if you
 #'   used new values for function arguments `root` and/or `dev`.
 #' @param dev If set to `TRUE`, `set_env` will use the development version of
-#'   QGIS (if available).
+#'   QGIS (if available). Since RQGIS so far does not support QGIS 3 (developer
+#'   version), setting `dev` to TRUE will result in an error message under
+#'   Windows.
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the
@@ -57,33 +59,37 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       osgeo <- osgeo[ind]
       # if there in fact is a 32- and a 64-bit version, take the 64-bit
       # ("C:/OSGEO~1")
+      # search LTR and DEV QGIS version in the C: or C:/OSGeo4W drive
       wd <- ifelse(length(osgeo) > 0, osgeo[1], "C:/")
-      message(sprintf("Trying to find QGIS in %s.", wd))
+      message(sprintf("Trying to find QGIS LTR in %s", wd))
       setwd(wd)
       # raw <- "dir /s /b | findstr"
       # make it more general, since C:/WINDOWS/System32 might not be part of
       # PATH on every Windows machine
       raw <- "dir /s /b | %SystemRoot%\\System32\\findstr /r"
-      # search QGIS on the the C: drive
-      cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
+      cmd <- paste(raw, shQuote("bin\\\\qgis.bat$ | bin\\\\qgis-ltr.bat$"))
       root <- shell(cmd, intern = TRUE)
-
 
       if (length(root) == 0) {
         stop(
-          "Sorry, I could not find QGIS on your C: drive.",
-          " Please specify the root to your QGIS-installation",
-          " manually."
+          "Sorry, we could not find QGIS on your C: drive. ",
+          "Please specify the root to your QGIS-installation ",
+          "manually."
         )
-      } else if (length(root) > 1) {
+        # > 2 because we are looking for qgis.bat and qgis-ltr.bat
+        # and in OSGeo4W64, we find both of them
+        } else if (length(root) > 2) {
         stop(
-          "There are several QGIS installations on your system.",
+          "There are several QGIS installations on your system. ",
           "Please choose one of them:\n",
-          paste(root, collapse = "\n")
+          paste(unique(gsub("\\\\bin.*", "", root)), collapse = "\n")
         )
       } else {
-        # define root, i.e. OSGeo4W-installation
-        root <- gsub("\\\\bin.*", "", root)
+        # define root, i.e. OSGeo4W-installation here, we only define the root
+        # path, and this is the same for LTR and DEV, therefore, we can choose
+        # the first element without worrying since ltr will then be chosen in
+        # check_apps()
+        root <- gsub("\\\\bin.*", "", root[1])
       }
     }
     # harmonize root syntax

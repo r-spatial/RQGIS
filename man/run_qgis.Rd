@@ -64,7 +64,7 @@ GRASS users do not have to specify manually the GRASS region extent
 (function argument GRASS_REGION_PARAMETER). If "None" (the QGIS default),
 \code{run_qgis} (see \code{\link[=pass_args]{pass_args()}} for more details) will automatically determine
 the region extent based on the user-specified input layers. If you do want
-to specify it yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGISdocumentation},
+to specify it yourself, please do it in accordance with the \href{https://docs.qgis.org/2.8/en/docs/user_manual/processing/console.html}{QGIS documentation},
 i.e., use a character string and separate the coordinates with a comma:
 "xmin, xmax, ymin, ymax".
 }
