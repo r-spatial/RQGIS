@@ -14,10 +14,11 @@ open_help(alg)
 get_args_man(alg)
 point <- random_points[sample(1:nrow(random_points), 1), ]
 coord <- paste(sf::st_coordinates(point), collapse = ",")
-out <- run_qgis(alg, input = dem, coordinates = "796361,8934049",
+out <- run_qgis(alg, input = dem, coordinates = coord,
                 output = "out.tif", load_output = TRUE)
 # under Linux you might not get an output (I think we should file a bug...)
 ```
+Works also under Linux using QGIS 2.18.22 in conjunction with GRASS GIS 7.4.1.
 
 - `grass7:r.watershed()`: The algorithm is executed sucessfully but no output is produced though QGIS tells otherwise (issue #81).
 
@@ -28,6 +29,7 @@ run_qgis("grass7:r.watershed", drainage = "drain.tif", elevation = dem,
          load_output = TRUE)
 ```
 
+<!--
 - `qgis:intersection()` produces under Linux the same result when running twice with different input layers. Under Windows it works (issue #74). The problem is resolved when using the unlock-branch, i.e., when explicitly loading and registering spatial objects in QGIS (see `?qgis_load_geom()`) as well as unregistering the objects after the successful geoprocessing (internally done in `run_qgis()`).
 
 ```{r, eval = FALSE}
@@ -70,15 +72,16 @@ test2 <- RQGIS::run_qgis("qgis:intersection", INPUT = SPDF1, INPUT2 = SPDF3,
 plot(st_geometry(test2), add = TRUE, col = "blue")
 identical(test1, test2)
 ```
+-->
 
 - `saga:gridbuffer()`: Following example works under Windows with QGIS 2.14 and SAGA 2.1.2 but not with QGIS 2.18 and SAGA 2.3.2
 
 ```{r, eval = FALSE}
 set_env(dev = FALSE)
 data(dem)
-run_qgis(alg = "saga:gridbuffer", FEATURES = dem, 
+out = run_qgis(alg = "saga:gridbuffer", FEATURES = dem, 
          BUFFERTYPE = "1", 
-         DIST = "1")
+         DIST = "1", load_output = TRUE)
 ```
 
 
@@ -89,7 +92,8 @@ library(RQGIS)
 library(spData)                                                               
 library(spDataLarge)                                                          
 library(sf)                                                                   
-library(raster)                                                               
+library(raster)      
+library(dplyr)
                                                                               
 # load the data -----------------------------------------------------------   
 srtm = raster((system.file("raster/srtm.tif", package = "spDataLarge")))      
