@@ -19,7 +19,9 @@ again. Otherwise, the cached output will be loaded back into R even if you
 used new values for function arguments \code{root} and/or \code{dev}.}
 
 \item{dev}{If set to \code{TRUE}, \code{set_env} will use the development version of
-QGIS (if available).}
+QGIS (if available). Since RQGIS so far does not support QGIS 3 (developer
+version), setting \code{dev} to TRUE will result in an error message under
+Windows.}
 
 \item{...}{Currently not in use.}
 }
