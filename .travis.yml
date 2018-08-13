@@ -21,7 +21,7 @@ matrix:
       dist: trusty
       sudo: required
       latex: false
-      env: linux
+      env: linux=true
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
       script: R -q -e 'tic::script()'
@@ -42,7 +42,7 @@ matrix:
     - os: osx
       latex: false
       sudo: false
-      env: mac
+      env: mac=true
       install: R -q -e 'tic::install()'
       after_install: R -q -e 'tic::after_install()'
       script: R -q -e 'tic::script()'
