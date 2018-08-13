@@ -25,7 +25,9 @@ check_apps <- function(root, ...) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
-      my_qgis <- my_qgis[1]
+      # my_qgis <- my_qgis[1]
+      stop("Either you have set dev to TRUE (please set to FALSE) or we could ",  
+           "not find a QGIS LTR (2.18) on your system. Please install!")
     }
     apps <- c(
       file.path(path_apps, my_qgis),
