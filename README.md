@@ -15,7 +15,7 @@ Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=lin
 [![mac=true
 Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=mac=true&label=macOS)](https://travis-ci.org/jannes-m/RQGIS)
 [![Build
-status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/appveyor?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/appveyor)
+status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/master?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/master)
 <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a>
 
 #### CRAN
