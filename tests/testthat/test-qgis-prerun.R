@@ -4,22 +4,16 @@ library("raster")
 library("sf")
 
 test_that("qgis_session_info yields a list as output", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
- 
+  
   info <- qgis_session_info()
   # check if the output is a list of length 5 or 6
   expect_gt(length(info), 4)
-  })
-
-
+})
 
 test_that("find_algorithms finds QGIS geoalgorithms", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
-
+  
   algs <- find_algorithms()
   # just retrieve QGIS geoalgorithms
   test <- grep("qgis:", algs, value = TRUE)
@@ -29,8 +23,6 @@ test_that("find_algorithms finds QGIS geoalgorithms", {
 })
 
 test_that("get_extent is working correctly", {
-  testthat::skip_on_appveyor()
-  # testthat::skip_on_travis()
   testthat::skip_on_cran()
   
   # test multiple rasters
