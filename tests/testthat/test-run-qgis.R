@@ -7,10 +7,8 @@ context("run_qgis")
 # Check QGIS-----------------------------------------------
 
 test_that("Test, if QGIS-algorithms are working?", {
-  testthat::skip_on_appveyor()
-  # testthat::skip_on_travis()
   testthat::skip_on_cran()
-
+  
   coords_1 <- matrix(
     data = c(0, 0, 1, 0, 1, 1, 0, 1, 0, 0),
     ncol = 2, byrow = TRUE
@@ -22,7 +20,7 @@ test_that("Test, if QGIS-algorithms are working?", {
     Polygons(list(Polygon(coords_2)), 2)
   )
   polys <- as(SpatialPolygons(polys), "SpatialPolygonsDataFrame")
-
+  
   # Retrieve the function arguments in such a way that they can be easily
   # specified and serve as input for run_qgis
   alg <- "qgis:polygoncentroids"
@@ -34,7 +32,7 @@ test_that("Test, if QGIS-algorithms are working?", {
     # let's load the QGIS output directly into R!
     load_output = TRUE
   )
-
+  
   # check if the output is an spatial object
   expect_is(vec_1, "sf")
   # now use ...-notation and sf as input
@@ -46,7 +44,7 @@ test_that("Test, if QGIS-algorithms are working?", {
   )
   # check if the output is spatial object
   expect_is(vec_2, "sf")
-
+  
   # check geojson and gpkg
   vec_3 <- run_qgis(
     alg, INPUT_LAYER = polys,
@@ -71,8 +69,7 @@ test_that("Test, if QGIS-algorithms are working?", {
 test_that("Test, if SAGA-algorithms are working?", {
   testthat::skip_on_appveyor()
   testthat::skip_on_cran()
-  # testthat::skip_on_travis()
-
+  
   # attach data
   data("dem")
   params <- get_args_man(alg = "saga:sagawetnessindex", options = TRUE)
@@ -99,10 +96,8 @@ test_that("Test, if SAGA-algorithms are working?", {
 # Check GRASS 7------------------------------------------------------
 
 test_that("Test, if GRASS7-algorithms are working?", {
-  testthat::skip_on_appveyor()
-  # testthat::skip_on_travis()
   testthat::skip_on_cran()
-
+  
   # attach data
   data("dem")
   params <- get_args_man(alg = "grass7:r.slope.aspect", options = TRUE)
@@ -116,7 +111,7 @@ test_that("Test, if GRASS7-algorithms are working?", {
   # check if the output is a raster
   expect_is(grass_out_1[[1]], "RasterLayer")
   expect_is(grass_out_1[[2]], "RasterLayer")
-
+  
   # now use ...-notation
   grass_out_2 <- run_qgis(
     "grass7:r.slope.aspect",
