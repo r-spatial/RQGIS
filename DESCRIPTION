@@ -1,8 +1,8 @@
 Package: RQGIS
-Date: 2018-01-22
+Date: 2018-08-14
 Type: Package
 Title: Integrating R with QGIS
-Version: 1.0.3.9000
+Version: 1.0.4
 Authors@R: c(
     person("Jannes", "Muenchow",
     email = "jannes.muenchow@uni-jena.de", 
@@ -42,7 +42,7 @@ Imports:
          stringr,
          tools,
          XML
-SystemRequirements: Python (>= 2.7), QGIS (>= 2.14)
+SystemRequirements: Python (>= 2.7), QGIS (>= 2.14 & < 3)
 Suggests:
     knitr,
     rgrass7,
