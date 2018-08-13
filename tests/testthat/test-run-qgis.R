@@ -74,7 +74,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   data("dem")
   params <- get_args_man(alg = "saga:sagawetnessindex", options = TRUE)
   params$DEM <- dem
-  params$TWI <- file.path(tempdir(), "twi.sdat")
+  params$TWI <- file.path(tempdir(), "twi.tif")
   saga_out_1 <- run_qgis(
     "saga:sagawetnessindex", params = params,
     show_output_paths = FALSE, load_output = TRUE
@@ -85,7 +85,7 @@ test_that("Test, if SAGA-algorithms are working?", {
   saga_out_2 <- run_qgis(
     "saga:sagawetnessindex",
     DEM = dem,
-    TWI = file.path(tempdir(), "twi.sdat"),
+    TWI = file.path(tempdir(), "twi.tif"),
     show_output_paths = FALSE, load_output = TRUE
   )
   # check if the output is a raster
