@@ -291,63 +291,32 @@ We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package
 
 # Mac OS X
 
-## SAGA
-
-There is no binary install of SAGA for macOS.
-We recommend to use the bottle installation from `homebrew`:
-
-```sh
-# brew tap osgeo4mac
-brew install saga-gis-lts
-brew link saga-gis-lts --force
-```
-
-If you do not link SAGA with force, QGIS will not be able to detect SAGA.
-
-Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). 
-However, this is tedious and QGIS2 only supports the SAGA LTS version.
-
-## GRASS
-
-You can install GRASS6 and GRASS7 via `homebrew`:
-
-```sh
-# brew tap osgeo4mac
-brew install grass6 grass7
-```
-
-The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
-However, we recommend to use the `homebrew` approach.
-
-When installing GRASS7 independently of QGIS via `homebrew`, please make sure to install it **before** you have installed QGIS.
-Only this way, the path for the QGIS processing plugin will be updated.
-Otherwise, the GRASS installation will work, however, `GRASS7Utils.grassPath()`, a QGIS function that links to the GRASS installation, gives back a non-existing path such as `/Applications/Grass-7.0.app/Contents/MacOS` which in turn prevents GRASS algorithms from working from within QGIS.
+**NOTE**  
+We recommend to do all installations using the package management system `homebrew`.
 
 ## QGIS
 
 Two options exist installing QGIS on macOS
 
-1. Using `homebrew` (**recommended**)
+1. Compile from source from [osgeo4mac](https://github.com/OSGeo/homebrew-osgeo4mac) **(recommended)**
 
-```
-# brew tap osgeo4mac
-brew install qgis2
-```
+The `osgeo4mac` tap supports the most recent QGIS versions for both the development version and the long term release (LTR).
+You can compile with various options, e.g. `--with-grass` or `--with-saga-gis-lts`.
+Check `brew info qgis2` for all available options. 
+We recommend to compile QGIS using 
 
-Check `brew info qgis2` for more available options. 
-However, if you use them, QGIS will be compiled from source which may take > 30 min (depending on your system).
-Otherwise, pre-built bottles (= binaries) will be used which speeds up the installation process a lot.
+`brew install qgis2 --with-grass --with-saga-gis-lts`. 
 
-**Note:** Make sure to install SAGA and GRASS before QGIS so that QGIS finds the correct paths.
+The installation will take some time (30-45 mins, depending on your system) if you build from source.
+You can also install the bottled versions (= binary) step by step which will reduce installation time to a few minutes.
+If you want to install the LTR version, simply replace `qgis2` by `qgis2-ltr`. 
 
 2. Install QGIS binary from Kyngchaos
 
 Homebrew also supports [GUI installations](https://caskroom.github.io/). 
 QGIS can be installed using 
 
-```sh
-brew cask install qgis
-```
+`brew cask install qgis` 
 
 from the command line if homebrew is installed and configured correctly. 
 If you do not (want to) use `homebrew`, you can install the QGIS binary from [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html). 
@@ -363,4 +332,50 @@ QSqlQuery::prepare: database not open
 [2] "WARNING: Auth db query exec() FAILED"
 ```
 
-These messages **DO NOT affect RQGIS usage**. 
+These messages look quite ugly but they **DO NOT affect RQGIS usage**. 
+
+## GRASS
+
+If you install QGIS > 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
+GRASS6 is deprecated and does not work anymore in QGIS > 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
+If you installed QGIS using option 1 (osgeo4mac), GRASS 7 will also work with QGIS < 2.16. 
+
+You can still use GRASS6 if you 
+
+1. Install QGIS and GRASS via `brew install grass6` from the 'osgeo4mac' tap
+2. Link it in QGIS via "Processing - Options - Providers"
+
+The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
+
+When installing GRASS independently of QGIS via `homebrew`, please make sure to install it **after** you have installed QGIS.
+Only this way, the correct path will be added to the QGIS processing plugin.
+Otherwise, the GRASS installation will work, however, `GRASS7Utils.grassPath()`, a QGIS function that links to the GRASS installation, gives back a non-existing path such as `/Applications/Grass-7.0.app/Contents/MacOS` which in turn prevents GRASS algorithms from working from within QGIS.
+
+## SAGA
+The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.  
+
+Using homebrew, SAGA can be compiled via `brew install saga-gis-lts`. 
+If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.
+
+There is no binary install of SAGA for Mac.
+Therefore, we recommend to use the bottle installation from `homebrew`.
+Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). 
+Make sure to check RQGIS compatibility with your SAGA version! 
+
+To link a custom installation of SAGA with QGIS, follow these steps:
+
+1. Open the following file of your QGIS installation: (`.../python/plugins/processing/algs/saga/SagaUtils.py`)
+2. In the function `findSagaFolder()` change the path setting pointing to the folder containing `saga_cmd`:
+
+```py
+testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
+```
+
+For homebrew installations (always located under "/usr/local/Cellar") a working setup would look like this:
+
+```py
+# testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
+testfolder = '/usr/local/Cellar/saga-gis/2.2.2/bin'
+```
+
+After restarting QGIS, you should recognize the change of the SAGA version under "Processing->Toolbox". 
