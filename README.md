@@ -11,11 +11,11 @@ version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-
 [![Last-changedate](https://img.shields.io/badge/last%20change-2018--08--13-yellowgreen.svg)](/commits/master)
 
 [![linux=true
-Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=linux=true&label=Linux&branch=master)](https://travis-ci.org/jannes-m/RQGIS)
+Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=linux=true&label=Linux)](https://travis-ci.org/jannes-m/RQGIS)
 [![mac=true
-Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=mac=true&label=macOS&branch=master)](https://travis-ci.org/jannes-m/RQGIS)
+Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=mac=true&label=macOS)](https://travis-ci.org/jannes-m/RQGIS)
 [![Build
-status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/appveyor?svg=true)](https://ci.appveyor.com/project/pat-s/rqgis/branch/appveyor)
+status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/master?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/master)
 <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a>
 
 #### CRAN
