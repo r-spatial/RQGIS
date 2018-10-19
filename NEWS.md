@@ -1,5 +1,8 @@
 # RQGIS 1.0.4.9000
 
+## Bugs
+  * Make the test for the correct Python path more generic in `setup_win()` since one user has named the QGIS folder `bin` (commit 0588716)
+  
 # RQGIS 1.0.4
 
 ## Bugs
