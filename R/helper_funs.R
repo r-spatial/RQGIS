@@ -185,8 +185,7 @@ setup_win <- function(qgis_env = set_env()) {
   a <- py_config()
   # py_config() adds following paths to PATH:
   # "C:\\OSGeo4W64\\bin;C:\\OSGeo4W64\\bin\\Scripts;
-  py_path <- gsub("/bin.*", "", normalizePath(a$python, "/"))
-  if (!identical(py_path, qgis_env$root)) {
+  if (!grepl(qgis_env$root, normalizePath(a$python, "/"))) {
     stop("Wrong Python binary. Restart R and check again!")
   }
 }
