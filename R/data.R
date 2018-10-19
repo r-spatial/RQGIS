@@ -74,11 +74,7 @@ NULL
 #' @format An [sf] object with 1 row and 2 variables:
 #' \describe{
 #'   \item{name}{Name.}
-<<<<<<< HEAD
 #'   \item{geometry}{Simple feature polygon geometry.}
-=======
-#'   \item{geometry}{Simple feature polyon geometry.}
->>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 #'   }
 #'
 #' @references

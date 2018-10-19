@@ -86,7 +86,7 @@ py_run_string('params = "INPUT", "Z_FACTOR", "OUTPUT"')
 py_run_string("params = dict((x, y) for x, y in zip(params, args))")
 py_run_string("feedback = QgsProcessingFeedback()")
 py_run_string('alg = QgsApplication.processingRegistry().createAlgorithmById("qgis:aspect")')
-py_run_string("alg = alg.create()")
+# py_run_string("alg = alg.create()")
 py_run_string("Processing.runAlgorithm(algOrName = alg, parameters = params, 
               feedback = feedback)")
 # trying to run native geoalgorithm
@@ -176,4 +176,3 @@ py_run_string("QgsApplication.setAuthDatabaseDirPath('C:/Users/pi37pat/AppData/R
 # import re
 # re.compile("set")
 # list(filter(r.match, dir(QgsApplication)))
->>>>>>> master
