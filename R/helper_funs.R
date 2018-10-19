@@ -25,7 +25,9 @@ check_apps <- function(root, ...) {
       my_qgis <- ifelse("qgis-ltr" %in% my_qgis, "qgis-ltr", my_qgis[1])
     } else {
       # use ../apps/qgis, i.e. most likely the most recent QGIS version
-      my_qgis <- my_qgis[1]
+      # my_qgis <- my_qgis[1]
+      stop("Either you have set dev to TRUE (please set to FALSE) or we could ",  
+           "not find a QGIS LTR (2.18) on your system. Please install!")
     }
     apps <- c(
       file.path(path_apps, my_qgis),
@@ -74,7 +76,7 @@ check_apps <- function(root, ...) {
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
   url <- ifelse(grepl(7, alg),
-    "http://grass.osgeo.org/grass72/manuals/",
+    "http://grass.osgeo.org/grass75/manuals/",
     "http://grass.osgeo.org/grass64/manuals/"
   )
   url_ind <- paste0(url, "full_index.html")
@@ -139,8 +141,7 @@ setup_win <- function(qgis_env = set_env()) {
   setwd("C:/")
   windir <- shell("ECHO %WINDIR%", intern = TRUE)
   windir <- normalizePath(windir, "/")
-  
-  # start with a fresh PATH
+
   Sys.setenv(PATH = paste(
     file.path(qgis_env$root, "bin"),
     file.path(windir, "system32"),
@@ -348,6 +349,13 @@ setup_linux <- function(qgis_env = set_env()) {
   # setting here the QGIS_PREFIX_PATH also works instead of running it twice
   # later on
   Sys.setenv(QGIS_PREFIX_PATH = qgis_env$root)
+  # make sure to use Python2
+  # in QGIS Python console run
+  # import sys
+  # sys.version  # which python version is used
+  # sys.exectutable  # and where to find the executable
+  # use_python("/usr/bin/python2.7", required = TRUE)
+  use_python("/usr/bin/python2", required = TRUE)
 }
 
 
@@ -461,39 +469,29 @@ save_spatial_objects <- function(params, type_name, NA_flag = -99999) {
       # write sf as a shapefile to a temporary location while overwriting any
       # previous versions.
       # This is a Windows-only problem (see also github-branch unlock)
-      fname <- file.path(tempdir(), paste0(names(params)[i], ".shp"))
-      cap <- capture.output({
-        suppressWarnings(
-          test <-
-            try(write_sf(params[[i]], fname, quiet = TRUE), silent = TRUE)
-        )
-      })
-      if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
-          fname <- paste0(gsub(".shp", "", fname), 1, ".shp")
-        }
-        write_sf(params[[i]], fname, quiet = TRUE)
-      }
+      fname <- tempfile(fileext = ".shp")
+      write_sf(params[[i]], fname, quiet = TRUE)
+      # if (inherits(test, "try-error")) {
+      #   while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+      #     fname <- paste0(gsub(".shp", "", fname), 1, ".shp")
+      #   }
+      #   write_sf(params[[i]], fname, quiet = TRUE)
+      # }
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (tmp == "RasterLayer") {
-      fname <- file.path(tempdir(), paste0(names(params)[[i]], ".tif"))
-      suppressWarnings(
-        test <-
-          try(writeRaster(
-            params[[i]], filename = fname, format = "GTiff",
-            prj = TRUE, overwrite = TRUE, NAflag = NA_flag
-          ), silent = TRUE)
-      )
-      if (inherits(test, "try-error")) {
-        while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
-          fname <- paste0(gsub(".tif", "", fname), 1, ".tif")
-        }
-        writeRaster(
-          params[[i]], filename = fname, format = "GTiff",
-          prj = TRUE, overwrite = TRUE, NAflag = NA_flag
-        )
-      }
+      fname <- tempfile(fileext = ".tif")
+      writeRaster(params[[i]], filename = fname, format = "GTiff",
+                  prj = TRUE, overwrite = TRUE, NAflag = NA_flag)
+      # if (inherits(test, "try-error")) {
+      #   while (tolower(basename(fname)) %in% tolower(dir(tempdir()))) {
+      #     fname <- paste0(gsub(".tif", "", fname), 1, ".tif")
+      #   }
+      #   writeRaster(
+      #     params[[i]], filename = fname, format = "GTiff",
+      #     prj = TRUE, overwrite = TRUE, NAflag = NA_flag
+      #   )
+      # }
       # return the result
       normalizePath(fname, winslash = "/")
     } else if (type_name[i] %in% c("vector", "raster", "table") &&

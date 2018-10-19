@@ -22,25 +22,36 @@ knitr::opts_chunk$set(
 
 
 # Vignette info
-This vignette guides you through the installation process of QGIS, GRASS- and SAGA-GIS on three different platforms (Windows, Mac, Linux). Following our instructions should ensure that RQGIS will work properly. With the exception of SAGA, we recommend to use the latest stable version of all software packages. Though other versions might also work with RQGIS, we did not test this.
+This vignette guides you through the installation process of QGIS, GRASS- and SAGA-GIS on three different platforms (Windows, Mac, Linux). 
+Please use the long-term release **QGIS 2.18**.
+So far, **RQGIS** does not work with **QGIS 3**.
+Following our instructions should ensure that RQGIS will work properly. 
+With the exception of SAGA, we recommend to use the latest stable version of all software packages. 
+Though other versions might also work with RQGIS, we did not test this.
 
-Overall, RQGIS allows access to more than 1000 geoalgorithms. However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party providers and software package versions.
+Overall, RQGIS allows access to more than 1000 geoalgorithms.
+However, please note that the number of geoalgorithms you can use from within RQGIS depends on the platform, the system architecture, the selection of installed third-party providers and software package versions.
 
 # Windows
 
-There are at least two options to install QGIS on Windows in such a way that RQGIS can access QGIS. The first option is the Standalone Installer from the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html). This will install QGIS along with the third-party providers GRASS and SAGA. However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, PostGIS, etc.), we recommend to use the OSGeo4W Network installer. This installer is available on the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html) as well as on the [OSGeo4W-website](http://trac.osgeo.org/osgeo4w/). 
+There are at least two options to install QGIS on Windows in such a way that RQGIS can access QGIS. The first option is the Standalone Installer from the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html). 
+This will install QGIS along with the third-party providers GRASS and SAGA. 
+However, if you would like to use even more third-party providers (e.g., GDAL, GEOS, Taudem, OTB, PostGIS, etc.), we recommend to use the OSGeo4W Network installer. 
+This installer is available on the [QGIS installer page](https://www.qgis.org/en/site/forusers/download.html) as well as on the [OSGeo4W-website](http://trac.osgeo.org/osgeo4w/). 
 
 To install OSGeo4W, the easiest way is to to use the Express installation:
 
 ![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/00_express.PNG)
 
-We are sorry, that our installer uses a German dialog. Apparently, OSGeo4w automatically uses the language in accordance with the IP-address. Nevertheless, it should be easy enough to follow our steps.
+We are sorry, that our installer uses a German dialog.
+Apparently, OSGeo4w automatically uses the language in accordance with the system locale. Nevertheless, it should be easy enough to follow our steps.
 
 1. Select "Express Installation" 
 2. Next check "QGIS, GRASS and GDAL"
 3. Start the installation.
 
-This installation is more or less equivalent to the standalone QGIS-installation. However, to have the full choice of available geoalgorithms provided by QGIS, we recommend to use the  advanced settings of the OSGeo4W Network installer:
+This installation is more or less equivalent to the standalone QGIS-installation.
+However, to have the full choice of available geoalgorithms provided by QGIS, we recommend to use the  advanced settings of the OSGeo4W Network installer:
 
 1. Run the OSGeo4W setup and choose the advanced installation. 
 
@@ -54,105 +65,34 @@ This installation is more or less equivalent to the standalone QGIS-installation
 
 ![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/05_command_line_utilties.PNG)
 
-Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly. By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).
+Additionally, we choose the Desktop-GIS GRASS 6 & 7, the Orfeo Toolbox, SAGA, and of course QGIS. Here, we install both the most recent QGIS version as well as the long-term release. 
+RQGIS will use the latter by default since this is the most stable version and everything is already set up correctly.
+<!--
+By contrast, using QGIS 2.16.1 would require some additional code adjustment (see above).
 
 ![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures//06_desktop_gis.PNG)
-
+-->
 4. We leave the rest as is, click "Next" and wait for the OSGeo4W-suggestions which we accept.
 
 ![](https://raw.githubusercontent.com/jannes-m/RQGIS/master/figures/08_suggestions.PNG)
 
 Clicking "Next" once more will start the download and installation process which might take a while.
 
-If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running `../OSGeo4W/bin/osgeo4w-setup.exe`. Alternatively, you can download and run again the latest [OSGeo4W-executable](http://trac.osgeo.org/osgeo4w/).
+If you wish to to modify, uninstall or update some of the installed components, you might do so later on by running `../OSGeo4W/bin/osgeo4w-setup.exe`. 
+Alternatively, you can download and run again the latest [OSGeo4W-executable](http://trac.osgeo.org/osgeo4w/).
 
 If you additionally want to use the **LiDAR processing tools** (LAStools), please follow the steps found [here](https://rapidlasso.com/2013/09/29/how-to-install-lastools-toolbox-in-qgis/).
-
-# Mac OS X
-
-**NOTE**  
-We recommend to do all installations using the package management system `homebrew`.
-
-## QGIS
-
-Two options exist installing QGIS on macOS
-
-1. Compile from source from [osgeo4mac](https://github.com/OSGeo/homebrew-osgeo4mac) **(recommended)**
-
-The `osgeo4mac` tap supports the most recent QGIS versions for both the development version and the long term release (LTR). You can compile with various options, e.g. `--with-grass` or `--with-saga-gis-lts`. Check `brew info qgis2` for all available options. We recommend to compile QGIS using 
-
-`brew install qgis2 --with-grass --with-saga-gis-lts`. 
-
-The installation will take some time (30-45 mins, depending on your system) if you build from source. You can also install the bottled versions (= binary) step by step which will reduce installation time to a few minutes.
-If you want to install the LTR version, simply replace `qgis2` by `qgis2-ltr`. 
-
-2. Install QGIS binary from Kyngchaos
-
-Homebrew also supports [GUI installations](https://caskroom.github.io/). QGIS can be installed using 
-
-`brew cask install qgis` 
-
-from the command line if homebrew is installed and configured correctly. 
-If you do not (want to) use `homebrew`, you can install the QGIS binary from [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html). This is exactly the same as calling `brew cask install qgis`.
-
-If you choose this option, you will get the following error messages during processing
-
-```
-QSqlDatabase: QSQLITE driver not loaded
-QSqlDatabase: available drivers:
-QSqlQuery::prepare: database not open
-[1] "ERROR: Opening of authentication db FAILED"
-[2] "WARNING: Auth db query exec() FAILED"
-```
-
-These look quite ugly but **DO NOT affect RQGIS usage**. 
-
-## GRASS
-
-If you install QGIS > 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
-GRASS6 is deprecated and does not work anymore in QGIS > 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
-If you installed QGIS using option 1 (osgeo4mac), GRASS 7 will also work with QGIS < 2.16. 
-
-You can still use GRASS6 if you 
-
-1. Install QGIS and GRASS via `brew install grass6` from the 'osgeo4mac' tap
-2. Link it in QGIS via "Processing - Options - Providers"
-
-The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
-
-## SAGA
-The QGIS for Mac Kyngchaos binary comes with a preconfigured SAGA installation and should work out of the box.  
-
-Using homebrew, SAGA can be compiled via `brew install saga-gis-lts`. If you installed QGIS using option 1) from the QGIS Mac section of this document, you will already have SAGA installed.
-
-There is no binary install of SAGA for Mac. Therefore, we recommended to use the bottle installation from `homebrew`. Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). Make sure to check RQGIS compatibility with your SAGA version! You can do so using `qgis_session_info()` in RQGIS.
-
-To link a custom installation of SAGA with QGIS, follow these steps:
-
-1. Open the following file of your QGIS installation: (`.../python/plugins/processing/algs/saga/SagaUtils.py`)
-2. In the function `findSagaFolder()` change the path setting pointing to the folder containing `saga_cmd`:
-
-```py
-testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-```
-
-For homebrew installations (always located under "/usr/local/Cellar") a working setup would look like this:
-
-```py
-# testfolder = os.path.join(QgsApplication.prefixPath(), 'bin')
-testfolder = '/usr/local/Cellar/saga-gis/2.2.2/bin'
-```
-
-After restarting QGIS, you should recognize the change of the SAGA version under "Processing->Toolbox". 
 
 # Linux
 
 ## Ubuntu
 
 ### QGIS (and GRASS)
-If you install QGIS with the built-in software managers, you will most likely get an outdated QGIS version. To install more recent QGIS releases, we recommend to follow the installation instructions from the [QGIS installers website](https://www.qgis.org/en/site/forusers/alldownloads.html). 
+If you install QGIS with the built-in software managers, you will most likely get an outdated QGIS version. 
+To install more recent QGIS releases, we recommend to follow the installation instructions from the [QGIS installers website](https://www.qgis.org/en/site/forusers/alldownloads.html). 
 
-Here, we just describe exemplarily the QGIS installation procedure under Debian/Ubuntu following the description found [here](https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu). RQGIS should work as well with Linux derivatives other than Ubuntu. However, we did not test this.
+Here, we just describe exemplarily the QGIS installation procedure under Debian/Ubuntu following the description found [here](https://www.qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu).
+RQGIS should work as well with Linux derivatives other than Ubuntu. However, we did not test this.
 
 Open a terminal window. First of all, make sure to remove QGIS and GRASS packages you may have installed before from other repositories:
 
@@ -164,19 +104,24 @@ sudo apt autoremove
 sudo apt-get update
 ```
 
-Next add the correct repository to `/etc/apt/sources.list`. Here, we use the current long-term release (2.18):
+Next add the correct repository to `/etc/apt/sources.list`.
+Here, we use the current long-term release (2.18):
 
-**QGIS 2.18.x**
+**QGIS 2.18.x for Ubuntu 18.04**
+
+The "ubuntugis" repo does not have support for `bionic`.
+So we need to use the "debian" repos.
+
 
 ```sh
-# add QGIS repository for Ubuntu 16.04 to sources.list
-sudo sh -c 'echo "deb http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis xenial main" >> /etc/apt/sources.list'
-sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
-sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+# add QGIS repository for Ubuntu 18.04 to sources.list
+sudo sh -c 'echo "deb http://qgis.org/debian-ltr bionic main" >> /etc/apt/sources.list'
+sudo sh -c 'echo "deb-src http://qgis.org/debian-ltr bionic main" >> /etc/apt/sources.list'
 ```
 
-**QGIS 2.14.x**
+**QGIS 2.18.x for Ubuntu 16.04**
+
+Since `xenial` lacks a native `gdal2` installation, we will use the "ubuntugis" repos including its "ubuntugis-unstable" repo (for `gdal2`) to install QGIS.
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -186,7 +131,8 @@ sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubun
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
 
-**QGIS nightly (2.99)**
+<!--
+**QGIS nightly (3.99)**
 
 ```sh
 # add QGIS repository for Ubuntu 16.04 to sources.list
@@ -195,6 +141,7 @@ sudo sh -c 'echo "deb-src http://qgis.org/ubuntugis-nightly xenial main" >> /etc
 sudo sh -c 'echo "deb http://ppa.launchpad.net/ubuntugis/ubuntugis-unstable/ubuntu xenial main" >> /etc/apt/sources.list'
 sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable
 ```
+--> 
 
 **For other Ubuntu releases, simply replace 'xenial' with the respective release name.**
 
@@ -213,15 +160,6 @@ After that, we can install QGIS and GRASS as follows:
 sudo apt-get update
 sudo apt-get install qgis python-qgis qgis-plugin-grass
 ```
-
-This will install the QGIS 2.14 release (LTR) as well as GRASS-GIS as third-party provider. To upgrade to QGIS 2.18 one simply has to change `/etc/apt/sources.list` (see above) and run:
-
-```sh
-sudo apt-get update
-sudo apt-get upgrade
-```
-
-Assuming we have installed QGIS 2.18 and wish to replace it by QGIS 2.14, one naturally has to change `etc/apt/sources.list` accordingly. Additionally, we probably need to downgrade some packages. For more information, please refer to this [post](https://stackoverflow.com/questions/36879592/has-anyone-got-qgis-to-install-on-ubuntu-16-04-lts).
 
 ### SAGA
 
@@ -245,26 +183,27 @@ sudo apt-get install saga
 sudo add-apt-repository --remove ppa:johanvdw/saga-gis
 --->
 
-If you would like to use another SAGA version, you need to compile it yourself. To find out which SAGA versions are supported by your QGIS installation, run:
+If you would like to use another SAGA version, you need to compile it yourself (see [here](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/)). 
+Please note, however, that QGIS currently only supports the SAGA LTR 2.3.x as far as we know.
 
-```{r saga, eval = FALSE, echo = TRUE, message = FALSE}
-library("RQGIS")
-info <- qgis_session_info()
-info$supported_saga_versions
-```
-
-After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA >= 2.2.1 see further below). Prior to the SAGA installation, we need to install various dependencies required by SAGA. Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this [page](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/) for a more comprehensive SAGA installation guide. Please note that we here simply reproduce in great parts a copy of this guide.
+<!--
+After the installation you will find the SAGA algorithms in the processing toolbox of the QGIS GUI (this might not be true for SAGA >= 2.2.1 see further below). 
+Prior to the SAGA installation, we need to install various dependencies required by SAGA.
+Here, we just quickly show how to install SAGA and its dependencies under Ubuntu. Please refer to this [page](https://sourceforge.net/p/saga-gis/wiki/Compiling%20SAGA%20on%20Linux/) for a more comprehensive SAGA installation guide.
+Please note that we here simply reproduce in great parts a copy of this guide.
 
 First of all, install all necessary SAGA dependencies and a few compilation and configuration tools:
 
 ```sh
-sudo apt-get install libwxgtk3.0-dev libtiff4-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
+sudo apt-get install libwxgtk3.0-dev libtiff5-dev libgdal-dev libproj-dev libjasper-dev libexpat1-dev wx-common libexpat1-dev libogdi3.2-dev unixodbc-dev
 
 # compilation and configuration tools
 sudo apt-get install g++ make automake libtool git
 ```
 
-Next, we would like to download a specific SAGA version. Check out the various available versions [here](https://sourceforge.net/projects/saga-gis/files/). Here, we will download SAGA 2.3.1 into our home directory, unpack it and change the working directory to the unpacked folder:
+Next, we would like to download a specific SAGA version. 
+Check out the various available versions [here](https://sourceforge.net/projects/saga-gis/files/). 
+Here, we will download SAGA 2.3.1 into our home directory, unpack it and change the working directory to the unpacked folder:
 
 ```sh
 wget -O /home/<YourUserName>/saga-git "https://sourceforge.net/projects/saga-gis/files/SAGA%20-%202.3/SAGA%202.3.1/saga_2.3.1.tar.gz"
@@ -302,7 +241,8 @@ saga_gui
 Using SAGA >= 2.2.1 you might encounter following message in the Processing log when opening QGIS: 
 `Problem with SAGA installation: installed SAGA version (2.3.1) is not supported`. 
 Though in this case SAGA is not available in the processing toolbox, you might still able to use it 
-via the QGIS Python API and therefore also with RQGIS. Please note that SAGA 2.3.1 is the latest SAGA version supported by QGIS (2.14 and 2.18).
+via the QGIS Python API and therefore also with RQGIS.
+Please note that SAGA 2.3.1 is the latest SAGA version supported by QGIS (2.14 and 2.18).
 
 In case you would like to uninstall SAGA, type:
 
@@ -310,17 +250,24 @@ In case you would like to uninstall SAGA, type:
 cd /home/<YourUserName>/saga-2.3.1
 sudo make uninstall
 ```
+--> 
 
+<!--
 ### Orfeo Toolbox (OTB)
 
-You can download the Orfeo Toolbox from [here](https://www.orfeo-toolbox.org/download/). We save the .run-script to the Desktop. Of course, you might select any other accesible folder. Next, we create a folder named "Applications" to which we move the .run script. Finally, we install OTB. Please note that so far there is only a **64-bit** OTB version available. This version does not work on 32-bit machines!
+You can download the Orfeo Toolbox from [here](https://www.orfeo-toolbox.org/download/).
+We save the .run-script to the Desktop. Of course, you might select any other accesible folder.
+Next, we create a folder named "Applications" to which we move the .run script. Finally, we install OTB. 
+Please note that so far there is only a **64-bit** OTB version available.
+This version does not work on 32-bit machines!
 
 ```sh
 mkdir /home/<YourUserName>/Applications/
 mv /home/<YourUserName>/Desktop/<filename> /home/<YourUserName>/Applications
 sh /home/<YourUserName>/Applications/<NameOfScript>
 ```
-(R)QGIS assumes that the "OTB applications folder" is located at "/usr/lib/otb/applications" (see also [QGIS manual](https://docs.qgis.org/2.14/en/docs/user_manual/processing/3rdParty.html#orfeo-toolbox)). Therefore, we need to move the OTB installation to the corresponding folder: 
+(R)QGIS assumes that the "OTB applications folder" is located at "/usr/lib/otb/applications" (see also [QGIS manual](https://docs.qgis.org/2.14/en/docs/user_manual/processing/3rdParty.html#orfeo-toolbox)). 
+Therefore, we need to move the OTB installation to the corresponding folder: 
 
 ```sh
 # move applications folder
@@ -328,14 +275,92 @@ sudo mv /home/<YourUserName>/Applications/<YourOTBInstallation>/lib/otb /usr/lib
 # commandline tools
 cp -a /home/<YourUserName>/Applications/<YourOTBInstallation>/bin/. /usr/bin
 ```
-OTB algorithms should be now availabe in the "Processing Toolbox" and in RQGIS (use `find_algorithms()` to check). Finally, we clean up after ourselves by deleting the previously created Applications folder:
+OTB algorithms should be now availabe in the "Processing Toolbox" and in RQGIS (use `find_algorithms()` to check). 
+Finally, we clean up after ourselves by deleting the previously created Applications folder:
 
 ```sh
 rmdir /home/<YourUserName>/Applications/
 ```
+--> 
 
 ## Arch Linux
 
 You can install various QGIS, SAGA and GRASS versions from the [Arch User Repository](https://aur.archlinux.org/). 
-
 We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package manager.
+
+
+# Mac OS X
+
+## SAGA
+
+There is no binary install of SAGA for macOS.
+We recommend to use the bottle installation from `homebrew`:
+
+```sh
+# brew tap osgeo4mac
+brew install saga-gis-lts
+brew link saga-gis-lts --force
+```
+
+If you do not link SAGA with force, QGIS will not be able to detect SAGA.
+
+Alternatively, you can compile SAGA from source from the [SAGA website](https://sourceforge.net/projects/saga-gis/files/). 
+However, this is tedious and QGIS2 only supports the SAGA LTS version.
+
+## GRASS
+
+You can install GRASS6 and GRASS7 via `homebrew`:
+
+```sh
+# brew tap osgeo4mac
+brew install grass6 grass7
+```
+
+The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
+However, we recommend to use the `homebrew` approach.
+
+When installing GRASS7 independently of QGIS via `homebrew`, please make sure to install it **before** you have installed QGIS.
+Only this way, the path for the QGIS processing plugin will be updated.
+Otherwise, the GRASS installation will work, however, `GRASS7Utils.grassPath()`, a QGIS function that links to the GRASS installation, gives back a non-existing path such as `/Applications/Grass-7.0.app/Contents/MacOS` which in turn prevents GRASS algorithms from working from within QGIS.
+
+## QGIS
+
+Two options exist installing QGIS on macOS
+
+1. Using `homebrew` (**recommended**)
+
+```
+# brew tap osgeo4mac
+brew install qgis2
+```
+
+Check `brew info qgis2` for more available options. 
+However, if you use them, QGIS will be compiled from source which may take > 30 min (depending on your system).
+Otherwise, pre-built bottles (= binaries) will be used which speeds up the installation process a lot.
+
+**Note:** Make sure to install SAGA and GRASS before QGIS so that QGIS finds the correct paths.
+
+2. Install QGIS binary from Kyngchaos
+
+Homebrew also supports [GUI installations](https://caskroom.github.io/). 
+QGIS can be installed using 
+
+```sh
+brew cask install qgis
+```
+
+from the command line if homebrew is installed and configured correctly. 
+If you do not (want to) use `homebrew`, you can install the QGIS binary from [https://www.qgis.org/en/site/forusers/download.html](https://www.qgis.org/en/site/forusers/download.html). 
+This is exactly the same as calling `brew cask install qgis`.
+
+If you choose this option, you will get the following error messages during QGIS processing
+
+```
+QSqlDatabase: QSQLITE driver not loaded
+QSqlDatabase: available drivers:
+QSqlQuery::prepare: database not open
+[1] "ERROR: Opening of authentication db FAILED"
+[2] "WARNING: Auth db query exec() FAILED"
+```
+
+These messages **DO NOT affect RQGIS usage**. 

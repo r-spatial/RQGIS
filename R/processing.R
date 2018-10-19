@@ -12,7 +12,9 @@
 #'   again. Otherwise, the cached output will be loaded back into R even if you
 #'   used new values for function arguments `root` and/or `dev`.
 #' @param dev If set to `TRUE`, `set_env` will use the development version of
-#'   QGIS (if available).
+#'   QGIS (if available). Since RQGIS so far does not support QGIS 3 (developer
+#'   version), setting `dev` to TRUE will result in an error message under
+#'   Windows.
 #' @param ... Currently not in use.
 #' @return The function returns a list containing all the path necessary to run
 #'   QGIS from within R. This is the root path, the QGIS prefix path and the
@@ -57,33 +59,37 @@ set_env <- function(root = NULL, new = FALSE, dev = FALSE, ...) {
       osgeo <- osgeo[ind]
       # if there in fact is a 32- and a 64-bit version, take the 64-bit
       # ("C:/OSGEO~1")
+      # search LTR and DEV QGIS version in the C: or C:/OSGeo4W drive
       wd <- ifelse(length(osgeo) > 0, osgeo[1], "C:/")
-      message(sprintf("Trying to find QGIS in %s.", wd))
+      message(sprintf("Trying to find QGIS LTR in %s", wd))
       setwd(wd)
       # raw <- "dir /s /b | findstr"
       # make it more general, since C:/WINDOWS/System32 might not be part of
       # PATH on every Windows machine
       raw <- "dir /s /b | %SystemRoot%\\System32\\findstr /r"
-      # search QGIS on the the C: drive
-      cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
+      cmd <- paste(raw, shQuote("bin\\\\qgis.bat$ | bin\\\\qgis-ltr.bat$"))
       root <- shell(cmd, intern = TRUE)
-
 
       if (length(root) == 0) {
         stop(
-          "Sorry, I could not find QGIS on your C: drive.",
-          " Please specify the root to your QGIS-installation",
-          " manually."
+          "Sorry, we could not find QGIS on your C: drive. ",
+          "Please specify the root to your QGIS-installation ",
+          "manually."
         )
-      } else if (length(root) > 1) {
+        # > 2 because we are looking for qgis.bat and qgis-ltr.bat
+        # and in OSGeo4W64, we find both of them
+        } else if (length(root) > 2) {
         stop(
-          "There are several QGIS installations on your system.",
+          "There are several QGIS installations on your system. ",
           "Please choose one of them:\n",
-          paste(root, collapse = "\n")
+          paste(unique(gsub("\\\\bin.*", "", root)), collapse = "\n")
         )
       } else {
-        # define root, i.e. OSGeo4W-installation
-        root <- gsub("\\\\bin.*", "", root)
+        # define root, i.e. OSGeo4W-installation here, we only define the root
+        # path, and this is the same for LTR and DEV, therefore, we can choose
+        # the first element without worrying since ltr will then be chosen in
+        # check_apps()
+        root <- gsub("\\\\bin.*", "", root[1])
       }
     }
     # harmonize root syntax
@@ -297,7 +303,7 @@ open_app <- function(qgis_env = set_env()) {
   # alghelp)
   py_file <- system.file("python", "python_funs.py", package = "RQGIS")
   py_run_file(py_file)
-  # instantiate/initialize RQGIS class
+  # initialize our RQGIS class
   py_run_string("RQGIS = RQGIS()")
 }
 
@@ -393,7 +399,15 @@ qgis_session_info <- function(qgis_env = set_env()) {
   }
 
   # sort it again since Python dictionary sorting is random
-  out[sort(names(out))]
+  out = out[c("qgis_version", "gdal", "grass6", "grass7", "saga",
+              "supported_saga_versions")]
+  # if supported_saga_versions is empty (since 2.18) don't return it
+  if (length(out$supported_saga_versions) == 1 && 
+             out$supported_saga_versions == "") {
+    out[names(out) != "supported_saga_versions"]
+  } else {
+    out
+  }
 }
 
 #' @title Find and list available QGIS algorithms
@@ -435,7 +449,7 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
   # Advantage of this approach: we are using directly alglist and do not have to
   # save it in inst
   # Disadvantage: more processing
-  algs <- py_capture_output(py_run_string("RQGIS.alglist()"))
+  algs <- py_capture_output(py_run_string("processing.alglist()"))
   algs <- gsub("\n", "', '", algs)
   algs <- unlist(strsplit(algs, "', |, '"))
   algs <- unlist(strsplit(algs, '", '))
@@ -486,11 +500,9 @@ find_algorithms <- function(search_term = NULL, name_only = FALSE,
 get_usage <- function(alg = NULL, intern = FALSE,
                       qgis_env = set_env()) {
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
-  
   out <-
-    py_capture_output(py_run_string(sprintf("RQGIS.alghelp('%s')", alg)))
+    py_capture_output(py_run_string(sprintf("processing.alghelp('%s')", alg)))
   out <- gsub("^\\[|\\]$|'", "", out)
-  # some refining needed here, e.g., in case of qgis:distancematrix
   out <- gsub(", ", "\n", out)
   if (intern) {
     out
@@ -521,7 +533,7 @@ get_options <- function(alg = "", intern = FALSE,
   tmp <- try(expr = open_app(qgis_env = qgis_env), silent = TRUE)
   out <-
     py_capture_output(py_run_string(
-      sprintf("RQGIS.get_options('%s')", alg)
+      sprintf("processing.algoptions('%s')", alg)
     ))
   out <- gsub("^\\[|\\]$|'", "", out)
   out <- gsub(", ", "\n", out)
@@ -901,11 +913,11 @@ pass_args <- function(alg, ..., params = NULL, NA_flag = -99999,
   # here has also the advantage that the function tells the user all missing
   # function arguments, QGIS returns only one at a time
   params <- params[names(params_all)]
-  
-  # RQGIS.check_args() only available for QGIS 2
+
   check <- py_run_string(sprintf(
     "check = RQGIS.check_args('%s', %s)", alg,
-    paste0("[", convert_to_tuple(params), "]")))$check
+    py_unicode(r_to_py(unlist(params)))
+  ))$check
   # stop the function if wrong arguments were supplied, e.g.,
   # 'grass7:r.slope.aspect":
   # format must be an integer, so you cannot supply "hallo", the same goes for
@@ -915,8 +927,7 @@ pass_args <- function(alg, ..., params = NULL, NA_flag = -99999,
       "Invalid argument value '%s' for parameter '%s'\n",
       check, names(check)
     ))
-  }  
-  
+  }
   # # clean up after yourself!!
   py_run_string(
     "try:\n  del(out, opts, check)\nexcept:\  pass"
@@ -1045,16 +1056,24 @@ run_qgis <- function(alg = NULL, ..., params = NULL, load_output = FALSE,
   # one long string. Maybe it would work even if we did not explicitly take care
   # of this. But to be on the safe side, we proceed as follows:
 
+  vals <- vapply(params, function(x) {
+    # get rid off 'strange' or incomplete shellQuotes
+    tmp <- unlist(strsplit(as.character(x), ""))
+    tmp <- tmp[tmp != "\""]
+    # paste the argument together again
+    tmp <- paste(tmp, collapse = "")
+    # shellQuote argument if is not True, False or None
+    ifelse(grepl("True|False|None", tmp), tmp, shQuote(tmp))
+  }, character(1))
+  # paste the function arguments together
+  args <- paste(vals, collapse = ", ")
+
   # convert R parameter-argument list into a Python dictionary
-  py_run_string(paste0("args = ", convert_to_tuple(params)))  # argument tuple
-  # r_to_py(paste0("args = ", convert_to_tuple(params)))
-  # r_to_py(paste0("params = ", convert_to_tuple(names(params))))
-  py_run_string(paste0("params = ", convert_to_tuple(names(params))))  # name tuple
+  py_run_string(paste("args = ", r_to_py(args)))
+  py_run_string(paste0("params = ", py_unicode(r_to_py(names(params)))))
   py_run_string("params = dict((x, y) for x, y in zip(params, args))")
 
-  cmd <- 
-    paste(sprintf(
-      "res = Processing.runAlgorithm(algOrName = '%s', parameters = params, feedback = QgsProcessingFeedback())", alg))
+  cmd <- paste(sprintf("res = processing.runalg('%s', params)", alg))
 
   # run QGIS
   msg <- py_capture_output(py_run_string(cmd))

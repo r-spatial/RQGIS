@@ -7,9 +7,7 @@ context("paper")
 
 
 test_that("qgis_session_info yields a list as output", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
   
   info_r <- version
   info_qgis <- qgis_session_info()
@@ -18,9 +16,7 @@ test_that("qgis_session_info yields a list as output", {
 })
 
 test_that("find_algorithms finds curvature algorithms", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
   
   algs <- find_algorithms(
     search_term = "curvature",
@@ -30,9 +26,7 @@ test_that("find_algorithms finds curvature algorithms", {
 })
 
 test_that("get_usage finds grass7:r.slope.aspect", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
   
   use <- get_usage(alg = "grass7:r.slope.aspect", intern = TRUE)
   expect_match(use, "ALGORITHM: r.slope.aspect")
@@ -42,9 +36,7 @@ test_that(paste(
   "Test that all terrain attributes can be derived and that",
   "the model can be fitted"
 ), {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
   
   params <- get_args_man(alg = "grass7:r.slope.aspect")
   expect_length(params, 17)
@@ -61,33 +53,33 @@ test_that(paste(
   # check if the output is a raster
   expect_is(out[[1]], "RasterLayer")
   expect_is(out[[2]], "RasterLayer")
-
+  
   # Remove possible artifacts
   run_qgis(
     "saga:sinkremoval",
     DEM = dem,
     METHOD = "[1] Fill Sinks",
-    DEM_PREPROC = file.path(tempdir(), "sdem.sdat"),
+    DEM_PREPROC = file.path(tempdir(), "sdem.tif"),
     show_output_paths = FALSE
   )
-  expect_true(file.exists(file.path(tempdir(), "sdem.sdat")))
-
+  expect_true(file.exists(file.path(tempdir(), "sdem.tif")))
+  
   # Compute wetness index
   run_qgis(
     "saga:sagawetnessindex",
-    DEM = file.path(tempdir(), "sdem.sdat"),
-    AREA = file.path(tempdir(), "carea.sdat"),
-    SLOPE = file.path(tempdir(), "cslope.sdat"),
+    DEM = file.path(tempdir(), "sdem.tif"),
+    AREA = file.path(tempdir(), "carea.tif"),
+    SLOPE = file.path(tempdir(), "cslope.tif"),
     SLOPE_TYPE = 1,
     show_output_paths = FALSE
   )
-  expect_true(file.exists(file.path(tempdir(), "cslope.sdat")))
-  expect_true(file.exists(file.path(tempdir(), "carea.sdat")))
-
+  expect_true(file.exists(file.path(tempdir(), "cslope.tif")))
+  expect_true(file.exists(file.path(tempdir(), "carea.tif")))
+  
   # transform
-  cslope <- raster(file.path(tempdir(), "cslope.sdat"))
+  cslope <- raster(file.path(tempdir(), "cslope.tif"))
   cslope <- cslope * 180 / pi
-  carea <- raster(file.path(tempdir(), "carea.sdat"))
+  carea <- raster(file.path(tempdir(), "carea.tif"))
   log_carea <- log(carea / 1e+06)
   data("dem", package = "RQGIS")
   dem <- dem / 1000
@@ -107,7 +99,7 @@ test_that(paste(
       overwrite = TRUE
     )
   }
-
+  
   # extract values to points
   data("random_points", package = "RQGIS")
   random_points[, c("x", "y")] <- sf::st_coordinates(random_points)
@@ -123,13 +115,13 @@ test_that(paste(
     varname = raster_names
   )
   expect_false(any(!raster_names %in% names(vals)))
-
+  
   fit <- glm(
     spri ~ dem1 + dem2 + cslope + ndvi + log_carea,
     data = vals,
     family = "poisson"
   )
-
+  
   # make the prediction
   raster_names <- c(
     "dem1.asc", "dem2.asc", "log_carea.asc", "cslope.asc",
@@ -146,13 +138,11 @@ test_that(paste(
 })
 
 test_that("Test that we can call the PYQGIS API directly", {
-  skip_on_appveyor()
   skip_on_cran()
-  # testthat::skip_on_travis()
   
   met <- py_run_string("methods = dir(RQGIS)")$methods
   expect_gt(length(met), 5)
-
+  
   py_cmd <-
     "opts = RQGIS.get_options('qgis:randompointsinsidepolygonsvariable')"
   opts <- py_run_string(py_cmd)$opts
