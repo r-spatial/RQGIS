@@ -1,3 +1,8 @@
+# RQGIS 1.0.4.9000
+
+## Bugs
+  * Making Python binary checking in `setup_win()` more generic since one user named the folder containing the QGIS installation `bin`
+  
 # RQGIS 1.0.4
 
 ## Bugs
