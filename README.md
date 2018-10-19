@@ -8,6 +8,7 @@ state and is being actively
 developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
 [![minimal R
 version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/)
+<<<<<<< HEAD
 [![Last-changedate](https://img.shields.io/badge/last%20change-2018--08--13-yellowgreen.svg)](/commits/master)
 
 [![linux=true
@@ -17,6 +18,52 @@ Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=mac
 [![Build
 status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/master?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/master)
 <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a>
+=======
+[![Last-changedate](https://img.shields.io/badge/last%20change-2018--04--23-yellowgreen.svg)](/commits/master)
+
+<table>
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 24%" />
+<col style="width: 18%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Resource:</th>
+<th>CRAN</th>
+<th>Travis CI</th>
+<th>Travis CI</th>
+<th>Appveyor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><em>Platforms:</em></td>
+<td><em>Multiple</em></td>
+<td><em>Linux</em></td>
+<td><em>macOS</em></td>
+<td><em>Windows</em></td>
+</tr>
+<tr class="even">
+<td>R CMD check</td>
+<td><a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=qgis218=true&amp;label=QGIS%20LTR%20(2.18.19)&amp;branch=master" alt="qgis218=true Status" /></a></td>
+<td><a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=OLD_LTR_mac=true&amp;label=QGIS%20LTR%20(2.14.14)&amp;branch=master" alt="OLD_LTR_mac=true Status" /></a><br />
+<a href="https://travis-ci.org/jannes-m/RQGIS"><img src="https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&amp;label=QGIS%20DEV%20(2.18.15)&amp;branch=master" alt="LTR_mac=true Status" /></a></td>
+<td><a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a></td>
+</tr>
+<tr class="odd">
+<td>Test coverage</td>
+<td></td>
+<td><a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/rPython/graph/badge.svg" alt="Coverage Status"/></a></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+>>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 
 #### CRAN
 
@@ -81,6 +128,10 @@ In order to run RQGIS properly, you need to download various third-party
 software packages. Our vignette should help you with the download and
 installation procedures on various platforms (Windows, Linux, Mac OSX).
 To access it, use `vignette("install_guide", package = "RQGIS")`.
+<<<<<<< HEAD
+=======
+Overall, we recommend to use the current LTR of QGIS (2.14) with RQGIS.
+>>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 
 You can install:
 
@@ -161,8 +212,13 @@ set_env()
 Secondly, we would like to find out how the function in QGIS is called
 which gives us the centroids of a polygon shapefile. To do so, we use
 `find_algorithms`. Here, we look for a geoalgorithm that contains the
+<<<<<<< HEAD
 words “polygon” and “centroid”.  
 Note that you can use regular expressions.
+=======
+words “polygon” and “centroid”. Note that you can use regular
+expressions.
+>>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 
 ``` r
 library("RQGIS")

@@ -5,11 +5,19 @@
 ## Bugs
   * Making sure that RQGIS does not return the same result when using same parameters names (e.g., INPUT). See #82 and 494e666. Thanks to @lbusett for suggesting a solution.
   * Updating `random_points` in accordance with issue https://github.com/r-spatial/sf/issues/685
+<<<<<<< HEAD
   * `set_env()` now also searches for `qgis-ltr.bat`
 
 ## Features
   * new example data `comm` and `study_area` added
   * updating `install_guide` vignette
+=======
+
+## Features
+  * new data `comm` and `study_area` added
+  * updating `install_guide` vignette
+
+>>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 
 # RQGIS 1.0.3
 

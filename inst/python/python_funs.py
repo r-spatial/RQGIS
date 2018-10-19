@@ -69,7 +69,7 @@ class RQGIS:
   
   # Author: Victor Olaya, Jannes Muenchow
   # Method to show options of a geoalgorithm
-  def algoption(self, alg):
+  def algoptions(self, alg):
     return(processing.algoptions(alg))
   
   # Author: Jannes Muenchow, Victor Olaya

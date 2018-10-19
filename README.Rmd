@@ -27,10 +27,19 @@ rvers = "3.2.0"
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-`r rvers`-6666ff.svg)](https://cran.r-project.org/)
 [![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master)  
 
+<<<<<<< HEAD
 [![linux=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=linux=true&label=Linux)](https://travis-ci.org/jannes-m/RQGIS) 
 [![mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=mac=true&label=macOS)](https://travis-ci.org/jannes-m/RQGIS) 
 [![Build status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/master?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/master)
 <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a>  
+=======
+| Resource:     | CRAN                | Travis CI       | Travis CI        | Appveyor         |
+| ------------- | ------------------- | --------------- | ---------------- | ---------------- |
+| _Platforms:_  | _Multiple_          | _Linux_         | _macOS_          | _Windows_        |
+| R CMD check   | <a href="https://cran.r-project.org/web/checks/check_results_RQGIS.html"><img border="0" src="http://www.r-pkg.org/badges/version/RQGIS" alt="CRAN version"></a> | [![qgis218=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=qgis218=true&label=QGIS LTR (2.18.19)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) | [![OLD_LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=OLD_LTR_mac=true&label=QGIS LTR (2.14.14)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) \
+[![LTR_mac=true Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?env=LTR_mac=true&label=QGIS DEV (2.18.15)&branch=master)](https://travis-ci.org/jannes-m/RQGIS) | <a href="https://ci.appveyor.com/project/jannes-m/RQGIS"><img src="https://ci.appveyor.com/api/projects/status/github/jannes-m/RQGIS?svg=true" alt="Build status"></a> |
+| Test coverage | | <a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/rPython/graph/badge.svg" alt="Coverage Status"/></a>     |                  |                  |
+>>>>>>> 9fffbe2515fbfe622d6ac43131559d4a26cb0f9c
 
 #### CRAN
 

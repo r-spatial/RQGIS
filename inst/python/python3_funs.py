@@ -20,15 +20,33 @@ __date__ = 'May 2018'
 __copyright__ = '(C) 2018, Jannes Muenchow, Victor Olaya'
 
 import os, re, webbrowser
-from qgis.core import (QgsSettings, 
-                       Qgis, 
-                       QgsApplication, 
-                       QgsProcessingParameterEnum)
+import traceback
+from qgis.core import (QgsSettings,
+                       QgsProcessingFeedback,
+                       Qgis,
+                       QgsMessageLog,
+                       QgsApplication,
+                       QgsMapLayer,
+                       QgsProcessingProvider,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputMapLayer,
+                       QgsProcessingOutputMultipleLayers)
+
+# from qgis.core import (QgsSettings,
+#                        Qgis,
+#                        QgsApplication,
+#                        QgsProcessingParameterEnum)
 from processing.tools.general import algorithmHelp
 from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
 from processing.algs.saga import SagaUtils
 from processing.algs.grass7.Grass7Utils import Grass7Utils
 from osgeo import gdal
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools.system import isWindows, isMac
 
 # RQGIS class should make it unlikely that somebody accidentally overwrites our
@@ -96,6 +114,7 @@ class RQGIS:
   # QGIS 3: use algorithmHelp instead
   # from processing.tools.general import algorithmHelp
     return(algorithmHelp(alg))
+  
   # Author: Victor Olaya, Jannes Muenchow
   # Method to give back available options
   # inspired by:
@@ -229,4 +248,5 @@ class RQGIS:
   # inspired by runAlgorithm from processing/core/Processing 
   # probably not available for QGIS3, check as soon you can use
   # QGIS3 via reticulate
-  # def check_args(self, alg, args):
+  def check_args(self, alg, args):
+    return None
