@@ -6,7 +6,7 @@
 \format{An \link{sf} object with 1 row and 2 variables:
 \describe{
 \item{name}{Name.}
-\item{geometry}{Simple feature polyon geometry.}
+\item{geometry}{Simple feature polygon geometry.}
 }}
 \description{
 An \link{sf} (EPSG:32717) object of geometry class polygon.
