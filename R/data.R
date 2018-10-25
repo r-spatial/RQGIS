@@ -93,9 +93,9 @@ NULL
 #'   visited but in 16 of them no species could be found (see again
 #'   [random_points]).
 #' @format A dataframe with 100 sites (rows) and 69 species (columns). Species
-#'   presence is given in percentage points (between 0-100% per species and
+#'   presence is given in percentage points (between 0-100\% per species and
 #'   site). Due to overlapping cover between individual plants, the total cover
-#'   per site can be >100%.
+#'   per site can be >100\%.
 #'
 #' @references Muenchow, J., Bräuning, A., Rodríguez, E.F. & von Wehrden, H.
 #'   (2013): Predictive mapping of species richness and plant species'
