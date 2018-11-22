@@ -280,6 +280,7 @@ open_app <- function(qgis_env = set_env()) {
       "except:\n  pass")
   py_run_string(py_cmd)
   
+  # start Python QGIS API
   py_run_string("import os, sys, re, webbrowser")
   py_run_string("from qgis.core import *")
   py_run_string("from osgeo import ogr")
