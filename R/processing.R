@@ -268,7 +268,19 @@ open_app <- function(qgis_env = set_env()) {
   if (!inherits(tmp, "try-error")) {
     stop("Python QGIS application is already running.")
   }
-
+  
+  # add virtual display if available (important for processing on the server)
+  # only possible if pyvirtualdisplay and xvfb are installed, see dockerfile of
+  # github.com/jannes-m/docker-rqgis/rqgis3/dockerfile
+  py_cmd =
+    paste0(
+      "try:\n  from pyvirtualdisplay import Display\n",
+      "  display = Display(visible=False, size=(1024, 768), color_depth=24)\n",
+      "  display.start()\n",
+      "except:\n  pass")
+  py_run_string(py_cmd)
+  
+  # start Python QGIS API
   py_run_string("import os, sys, re, webbrowser")
   py_run_string("from qgis.core import *")
   py_run_string("from osgeo import ogr")
