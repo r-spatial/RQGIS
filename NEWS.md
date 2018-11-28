@@ -1,6 +1,10 @@
 # RQGIS 1.0.4.9000
 
-
+## Bugs
+  * Making Python binary checking in `setup_win()` more generic since one user named the folder containing the QGIS installation `bin`.
+  * `comm` dataset now contains 100 observations, i.e. also those in which no plant species were recorded.
+  *
+  
 # RQGIS 1.0.4
 
 ## Bugs
