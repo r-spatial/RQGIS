@@ -1,0 +1,6 @@
+pandoc: '2.2'
+pkgdown: 1.2.0
+pkgdown_sha: ~
+articles:
+  install_guide: install_guide.html
+
