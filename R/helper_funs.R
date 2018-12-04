@@ -76,8 +76,8 @@ check_apps <- function(root, ...) {
 open_grass_help <- function(alg) {
   grass_name <- gsub(".*:", "", alg)
   url <- ifelse(grepl(7, alg),
-    "http://grass.osgeo.org/grass75/manuals/",
-    "http://grass.osgeo.org/grass64/manuals/"
+    "https://grass.osgeo.org/grass77/manuals/",
+    "https://grass.osgeo.org/grass64/manuals/"
   )
   url_ind <- paste0(url, "full_index.html")
   doc <- RCurl::getURL(url_ind)
