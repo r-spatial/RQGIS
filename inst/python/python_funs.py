@@ -129,6 +129,7 @@ class RQGIS:
     url = ('https:///docs.qgis.org/%s/en/docs/user_manual/' +
            'processing_algs/%s/%s.html#%s') % (version, provider,
            safeGroupName, safeAlgName)
+    return(url)
     # suppress error messages raised by the browser, e.g.,
     # console.error: CustomizableUI: 
     # TypeError: aNode.previousSibling is null -- 
@@ -136,14 +137,14 @@ class RQGIS:
     # Solution was found here:
     # paste0("http://stackoverflow.com/questions/2323080/",
     #        "how-can-i-disable-the-webbrowser-message-in-python")
-    savout = os.dup(1)
-    os.close(1)
-    os.open(os.devnull, os.O_RDWR)
-    try:
-      webbrowser.open(url)
-    finally:
-      os.dup2(savout, 1)
-  
+    # savout = os.dup(1)
+    # os.close(1)
+    # os.open(os.devnull, os.O_RDWR)
+    # try:
+    #   webbrowser.open(url)
+    # finally:
+    #   os.dup2(savout, 1)
+    # 
   # Author: Victor Olaya, Jannes Muenchow
   def qgis_session_info(self):
     # import re
