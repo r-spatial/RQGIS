@@ -597,7 +597,8 @@ open_help <- function(alg = "", qgis_env = set_env()) {
   } else {
     algName <- alg
     # open the QGIS online help
-    py_run_string(sprintf("RQGIS.open_help('%s')", algName))
+    url = py_run_string(sprintf("url = RQGIS.open_help('%s')", algName))$url
+    browseURL(url)
   }
 }
 
