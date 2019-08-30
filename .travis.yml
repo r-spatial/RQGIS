@@ -13,6 +13,7 @@ addons:
       - libudunits2-dev
       - python-gdal
       - saga
+      - grass
       - equivs
 
 matrix:
