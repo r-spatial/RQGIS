@@ -53,7 +53,7 @@ matrix:
 
 before_install:
   # install latest qgis-ltr using aptitude to resolve dependencies
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo aptitude install -y qgis python-qgis; fi  
+  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install -y --force-yes qgis python-qgis; fi  
   
   #############
   # OSX
