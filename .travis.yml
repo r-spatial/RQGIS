@@ -6,7 +6,7 @@ addons:
   apt:
     sources:
       - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-      - sourceline: 'deb http://qgis.org/ubuntugis-ltr trusty main'
+      - sourceline: 'deb http://qgis.org/ubuntugis-ltr xenial main'
         key_url: 'http://qgis.org/downloads/qgis-2017.gpg.key'
     packages:
       - libgdal-dev
@@ -19,7 +19,7 @@ addons:
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       latex: false
       env: linux=true
@@ -48,16 +48,10 @@ matrix:
       after_install: R -q -e 'tic::after_install()'
       script: R -q -e 'tic::script()'
 
-# if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.X for trusty
+# if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.X for xenial
 # if we install everything from qgis.org/ubuntugis-ltr, we get most recent QGIS but missing GDAL2
 
 before_install:
-  # we need to fake gdal-abi-2-1-3 as qgis won't find it otherwise because it searches for gdal20
-  # see https://gis.stackexchange.com/questions/216780/cannot-install-qgis-2-18-from-repository-on-debian-stretch-package-gdal-abi-2
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then chmod ugo+x inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then ./inst/travis/gdal-abi.sh; fi
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo equivs-build gdal-abi.control && sudo sudo dpkg -i gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi-2-1-0_2.1.0_all.deb && sudo rm -rf gdal-abi.control; fi
-    
   # install latest qgis-ltr using aptitude to resolve dependencies
   - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo aptitude install -y qgis python-qgis; fi  
   
@@ -81,7 +75,7 @@ before_install:
   # install grass7 and unlink it so that the QGIS linking later on works
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install grass7 && brew unlink grass7; fi
   # install qgis2
-  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install qgis2; fi
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install qgis-ltr@2; fi
   
   
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then brew link --overwrite --force gdal2; fi
