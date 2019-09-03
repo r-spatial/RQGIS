@@ -2,43 +2,8 @@
 language: r		 
 cache: packages	
 
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:ubuntugis/ubuntugis-unstable'
-      - sourceline: 'deb http://qgis.org/ubuntugis-ltr xenial main'
-        key_url: 'http://qgis.org/downloads/qgis-2017.gpg.key'
-    packages:
-      - libgdal-dev
-      - libudunits2-dev
-      - python-gdal
-      - saga
-      - grass
-      - equivs
-
 matrix:
   include:
-    - os: linux
-      dist: xenial
-      sudo: required
-      latex: false
-      env: linux=true
-      install: R -q -e 'tic::install()'
-      after_install: R -q -e 'tic::after_install()'
-      script: R -q -e 'tic::script()'
-      before_deploy: R -q -e 'tic::before_deploy()'
-      deploy:
-          provider: script
-          script: R -q -e 'tic::deploy()'
-          on:
-            branches: master
-            condition:
-               - $TRAVIS_PULL_REQUEST = false
-               - $TRAVIS_EVENT_TYPE != cron
-      after_deploy: R -q -e 'tic::after_deploy()'
-      after_script: R -q -e 'tic::after_script()'
-      after_success: R -q -e 'tic::after_success()'
-
     ### build QGIS DEV on macOS
     - os: osx
       latex: false
@@ -48,13 +13,7 @@ matrix:
       after_install: R -q -e 'tic::after_install()'
       script: R -q -e 'tic::script()'
 
-# if we install everything from ubuntugis-unstable PPA, we get GDAL2 but only QGIS 2.14.X for xenial
-# if we install everything from qgis.org/ubuntugis-ltr, we get most recent QGIS but missing GDAL2
-
 before_install:
-  # install latest qgis-ltr using aptitude to resolve dependencies
-  - if [ "${TRAVIS_OS_NAME}" == "linux" ]; then sudo apt install -y --force-yes qgis python-qgis; fi  
-  
   #############
   # OSX
   #############
@@ -63,6 +22,7 @@ before_install:
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew tap osgeo/osgeo4mac; fi
    
   # install saga-gis-lts
+  - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew unlink proj && brew unlink libgeotiff && brew unlink libspatialite && brew unlink postgresql && brew unlink gdal && brew unlink postgis; fi
   - if [ "${TRAVIS_OS_NAME}" == "osx" ]; then brew install saga-gis-lts && brew link saga-gis-lts --force; fi
   
   # we need python2
@@ -84,7 +44,6 @@ before_install:
 # imitate a X virtual display -> https://docs.travis-ci.com/user/gui-and-headless-browsers/#Using-xvfb-to-Run-Tests-That-Require-a-GUI
 before_script:
   - "export DISPLAY=:99.0"
-  - if [ "${TRAVIS_OS_NAME}" = "linux" ]; then sh -e /etc/init.d/xvfb start; fi
   - if [ "${TRAVIS_OS_NAME}" = "osx" ]; then ( sudo Xvfb :99 -ac -screen 0 1024x768x8; echo ok )& fi
   - sleep 3 # give xvfb some time to start
   
