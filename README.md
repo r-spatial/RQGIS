@@ -7,13 +7,11 @@
 
 [![Lifecycle:
 retired](https://img.shields.io/badge/lifecycle-retired-orange.svg)](https://www.tidyverse.org/lifecycle/#retired)
-<!-- badges: end --> [![minimal R
-version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2019--10--07-yellowgreen.svg)](/commits/master)
+<!-- badges: end -->
 
 #### CRAN
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS)
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version-ago/RQGIS)](https://cran.r-project.org/package=RQGIS)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS)
 ![](http://cranlogs.r-pkg.org/badges/grand-total/RQGIS)
 
