@@ -3,20 +3,13 @@
 
 #### General
 
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
-[![minimal R
-version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2019--08--31-yellowgreen.svg)](/commits/master)
+<!-- badges: start -->
 
-[![linux=true
-Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=linux=true&label=Linux)](https://travis-ci.org/jannes-m/RQGIS)
-[![mac=true
-Status](https://badges.herokuapp.com/travis/jannes-m/RQGIS?branch=master&env=mac=true&label=macOS)](https://travis-ci.org/jannes-m/RQGIS)
-[![Build
-status](https://ci.appveyor.com/api/projects/status/ftk03jo1933vm3we/branch/master?svg=true)](https://ci.appveyor.com/project/jannes-m/rqgis/branch/master)
-<a href="https://codecov.io/gh/jannes-m/RQGIS"><img src="https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg" alt="Coverage Status"/></a>
+[![Lifecycle:
+retired](https://img.shields.io/badge/lifecycle-retired-orange.svg)](https://www.tidyverse.org/lifecycle/#retired)
+<!-- badges: end --> [![minimal R
+version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2019--10--07-yellowgreen.svg)](/commits/master)
 
 #### CRAN
 
@@ -48,7 +41,8 @@ Third-party providers include among others GDAL, GRASS GIS, SAGA GIS,
 the Orfeo Toolbox, TauDEM and tools for LiDAR data. **RQGIS** brings you
 this incredibly powerful geoprocessing environment to the R console.
 
-Please check also out our paper presenting **RQGIS** in detail:
+Please check also out our paper presenting **RQGIS** in
+detail:
 
 <div style="text-align:center">
 
@@ -244,7 +238,7 @@ out = run_qgis(alg = "qgis:polygoncentroids",
 
 Please note that our `INPUT_LAYER` is a spatial object residing in R’s
 global environment. Of course, you can also use a path to specify
-`INPUT_LAYER` (e.g. “ger.shp”) which is the better option if your data
+`INPUT_LAYER` (e.g. “ger.shp”) which is the better option if your data
 is somewhere stored on your hard drive. Finally, `run_qgis()` calls the
 QGIS API to run the specified geoalgorithm with the corresponding
 function arguments. Since we set `load_output` to `TRUE`, `run_qgis()`
@@ -267,7 +261,8 @@ plot(out$geometry, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 
 Of course, this is a very simple example. We could have achieved the
 same using `sp::coordinates()`. For a more detailed introduction to
-**RQGIS** and more complex examples have a look at our paper:
+**RQGIS** and more complex examples have a look at our
+paper:
 
 <div style="text-align:center">
 
