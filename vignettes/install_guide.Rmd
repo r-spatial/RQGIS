@@ -288,8 +288,15 @@ rmdir /home/<YourUserName>/Applications/
 You can install various QGIS, SAGA and GRASS versions from the [Arch User Repository](https://aur.archlinux.org/). 
 We recommend to use the [yaourt](https://wiki.archlinux.de/title/Yaourt) package manager.
 
+## Fedora
 
-# Mac OS X
+You can install current stable QGIS, SAGA and GRASS GIS versions via the standard software package manager:
+
+```sh
+sudo dnf install qgis-python qgis qgis-grass saga grass-gui grass-libs
+```
+
+# Mac OSX
 
 ## SAGA
 
